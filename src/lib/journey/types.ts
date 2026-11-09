@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { PlanetLook } from './planet';
 
 export interface Pointer { x: number; y: number; sx: number; sy: number }
 
@@ -15,18 +16,18 @@ export interface LowerScene {
 export interface Moon { orbitR: number; size: number; color: number; seed: number; speed: number; phase: number }
 
 export interface OrbitConfig {
-  texture: string;
-  cloudTexture?: string;
+  look: PlanetLook;
   radiusKm: number;
+  /** starting altitude, in planet radii */
   startAltRadii: number;
-  rim: [number, number, number];
-  rimOuter: [number, number, number];
+  /** altitude where the haze takes over, in planet radii */
+  handoverAlt: number;
   target: { lat: number; lon: number };
   startYaw: number;
   startTilt: number;
-  spin: number;
+  /** how the end of the descent is lit and framed, matching the lower scene */
+  landing: { sunElev: number; sunYaw: number; faceYaw: number; pitch: number };
   moons: Moon[];
-  lightYaw: number;
 }
 
 export interface World {

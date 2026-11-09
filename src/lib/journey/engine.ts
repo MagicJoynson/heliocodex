@@ -1,10 +1,17 @@
 import * as THREE from 'three';
 import { clamp01, ease, potato } from './noise';
+import { createPlanet } from './planet';
+import { createStars } from './stars';
 import type { World, Pointer } from './types';
 
 /**
- * Scroll-driven descent: orbit -> haze -> the lower scene.
+ * Scroll-driven descent: orbit -> low altitude -> a short haze -> the lower scene.
  * progress 0 = high orbit, 1 = bottom of the page.
+ *
+ * The Sun is fixed in space. The landing site is chosen near the terminator so that, as you fall,
+ * you also travel from full daylight into the low light the lower scene is set in. On the way
+ * down the camera turns from looking straight at the planet to looking along the horizon, in the
+ * direction the lower scene faces, so the handover is a short blink rather than a cut.
  */
 export interface Journey {
   setProgress(p: number): void;
@@ -12,54 +19,51 @@ export interface Journey {
   readout(): string;
 }
 
-export const HANDOVER = 0.58;
+export const HANDOVER = 0.5;
 
 export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, world: World): Journey {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
+  const small = innerWidth < 760;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, small ? 2 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const loader = new THREE.TextureLoader();
-  const tex = (f: string) => { const t = loader.load(`/textures/${f}`); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t; };
   const o = world.orbit;
   haze.style.background = world.hazeCss;
 
   // ---- orbit scene --------------------------------------------------------
   const A = new THREE.Scene();
-  const camA = new THREE.PerspectiveCamera(38, 1, 0.0005, 400);
-  A.add(new THREE.Mesh(
-    new THREE.SphereGeometry(200, 40, 28),
-    new THREE.MeshBasicMaterial({ map: tex('2k_stars_milky_way.jpg'), side: THREE.BackSide, color: 0x5a5148, depthWrite: false }),
-  ));
-  const planet = new THREE.Mesh(new THREE.SphereGeometry(1, 128, 96), new THREE.MeshStandardMaterial({ map: tex(o.texture), roughness: 1 }));
-  A.add(planet);
-  if (o.cloudTexture) {
-    const clouds = new THREE.Mesh(
-      new THREE.SphereGeometry(1.012, 96, 64),
-      new THREE.MeshStandardMaterial({ map: tex(o.cloudTexture), transparent: true, opacity: 0.6, depthWrite: false }),
-    );
-    clouds.name = 'clouds';
-    A.add(clouds);
-  }
-  const rim = new THREE.Mesh(
-    new THREE.SphereGeometry(1.028, 96, 64),
-    new THREE.ShaderMaterial({
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-      uniforms: { c1: { value: new THREE.Vector3(...o.rim) }, c2: { value: new THREE.Vector3(...o.rimOuter) } },
-      vertexShader: `varying vec3 vN; varying vec3 vP; void main(){ vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.); vP=mv.xyz; gl_Position=projectionMatrix*mv; }`,
-      fragmentShader: `varying vec3 vN; varying vec3 vP; uniform vec3 c1; uniform vec3 c2;
-        void main(){ float f=pow(1.-abs(dot(normalize(vN),normalize(-vP))),3.2);
-          vec3 col=mix(c1,c2,pow(f,2.)); gl_FragColor=vec4(col*f*.9,f*.8); }`,
-    }),
-  );
-  A.add(rim);
-  const sun = new THREE.DirectionalLight(0xfff0dd, 3.4);
-  A.add(sun, new THREE.AmbientLight(0x1a1210, 0.7));
+  const camA = new THREE.PerspectiveCamera(38, 1, 0.0005, 600);
+  const stars = createStars();
+  A.add(stars.group);
+  const planet = createPlanet(o.look, renderer.capabilities.maxTextureSize, !small);
+  A.add(planet.group, planet.sky);
+  const sunLight = new THREE.DirectionalLight(0xfff4e8, 3.2);
+  A.add(sunLight, new THREE.AmbientLight(0x22201c, 0.5));
 
   const up = new THREE.Vector3(0, 1, 0);
-  const lat = (o.target.lat * Math.PI) / 180, lon = (o.target.lon * Math.PI) / 180;
+  const lat = THREE.MathUtils.degToRad(o.target.lat), lon = THREE.MathUtils.degToRad(o.target.lon);
   const target = new THREE.Vector3(Math.cos(lat) * Math.cos(lon), Math.sin(lat), -Math.cos(lat) * Math.sin(lon));
   const startDir = target.clone().applyAxisAngle(up, o.startYaw).applyAxisAngle(new THREE.Vector3(1, 0, 0), o.startTilt).normalize();
+
+  // local frame at the landing site
+  const travel = startDir.clone().addScaledVector(target, -startDir.dot(target)).negate().normalize(); // direction of travel at the end
+  const east = new THREE.Vector3().crossVectors(travel, target).normalize();
+
+  // the Sun: o.landing.sunElev above the landing horizon, sitting o.landing.sunYaw to the right of where we end up facing
+  const L = o.landing;
+  const faceDir = travel.clone().applyAxisAngle(target, THREE.MathUtils.degToRad(L.faceYaw)).normalize();
+  const faceRight = new THREE.Vector3().crossVectors(faceDir, target).normalize();
+  const el = THREE.MathUtils.degToRad(L.sunElev), az = THREE.MathUtils.degToRad(L.sunYaw);
+  const sunDir = new THREE.Vector3()
+    .addScaledVector(faceDir, Math.cos(el) * Math.cos(az))
+    .addScaledVector(faceRight, Math.cos(el) * Math.sin(az))
+    .addScaledVector(target, Math.sin(el))
+    .normalize();
+  planet.setSun(sunDir);
+  sunLight.position.copy(sunDir).multiplyScalar(20);
+  void east;
+
+  // moons, drawn on a plane that keeps them in shot from the start view
   const mRight = new THREE.Vector3().crossVectors(up, startDir).normalize();
   const mUp = new THREE.Vector3().crossVectors(startDir, mRight).normalize();
   const moons = o.moons.map((m) => {
@@ -87,7 +91,8 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
   addEventListener('resize', resize);
   resize();
 
-  const tmp = new THREE.Vector3();
+  const pos = new THREE.Vector3(), dir = new THREE.Vector3(), fwd = new THREE.Vector3(), look = new THREE.Vector3(), q = new THREE.Quaternion();
+  const endAlt = o.handoverAlt;
   let clock = performance.now(), tSim = 0;
   function frame(now: number) {
     const dt = Math.min((now - clock) / 1000, 0.1);
@@ -97,20 +102,40 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
     pointer.sy += (pointer.y - pointer.sy) * 0.05;
     const p = progress;
 
-    if (p < HANDOVER + 0.04) {
-      const e = ease(clamp01(p / HANDOVER));
-      const h = o.startAltRadii * Math.pow(1 - e, 2.6) + 0.012 * (1 - e) + 0.0004;
+    if (p < HANDOVER + 0.03) {
+      const e = clamp01(p / HANDOVER);
+      // altitude falls off exponentially so each stretch of scroll covers a similar change in view
+      const h = endAlt * Math.pow(o.startAltRadii / endAlt, Math.pow(1 - ease(e), 1.15));
       text = fmtAlt(h * o.radiusKm);
-      tmp.copy(startDir).lerp(target, Math.pow(e, 0.8)).normalize();
-      camA.position.copy(tmp).multiplyScalar(1 + h);
-      camA.up.copy(up);
-      camA.lookAt(0, 0, 0);
-      sun.position.copy(camA.position).normalize().applyAxisAngle(up, o.lightYaw).multiplyScalar(10);
-      sun.position.y += 3;
-      planet.rotation.y = tSim * o.spin;
-      rim.rotation.y = planet.rotation.y;
-      const cl = A.getObjectByName('clouds');
-      if (cl) cl.rotation.y = tSim * o.spin * 1.6;
+      // ground track: most of the sideways travel happens high up
+      const k = 1 - Math.pow(1 - ease(Math.min(1, e * 1.08)), 2.2);
+      dir.copy(startDir).lerp(target, k).normalize();
+      pos.copy(dir).multiplyScalar(1 + h);
+      camA.position.copy(pos);
+      camA.near = Math.max(h * 0.25, 1e-6);
+      camA.far = 600;
+      camA.updateProjectionMatrix();
+
+      // where to look: the planet's centre, turning to the horizon as we get low
+      const dip = Math.acos(1 / (1 + h));
+      const pitch = THREE.MathUtils.lerp(Math.PI / 2, dip + THREE.MathUtils.degToRad(L.pitch), ease(clamp01((e - 0.5) / 0.5)));
+      // facing: blend travel direction into the final facing direction
+      q.setFromUnitVectors(target, dir);
+      fwd.copy(faceDir).applyQuaternion(q);
+      fwd.addScaledVector(dir, -fwd.dot(dir)).normalize();
+      look.copy(fwd).multiplyScalar(Math.cos(pitch)).addScaledVector(dir, -Math.sin(pitch));
+      const toCentre = dir.clone().negate();
+      const w = ease(clamp01((e - 0.45) / 0.35));
+      look.lerp(toCentre, 1 - w).normalize();
+      camA.up.copy(w > 0.01 ? dir : up);
+      camA.lookAt(pos.clone().add(look));
+      // a little parallax from the pointer
+      camA.rotateY(-pointer.sx * 0.02);
+      camA.rotateX(-pointer.sy * 0.015);
+
+      stars.group.position.copy(pos);
+      stars.setFade(1 - clamp01((o.look.skyTop - h) / (o.look.skyTop * 0.6)) * (o.look.airDensity > 0.6 ? 1 : 0.6));
+      planet.update(camA, h, tSim);
       for (const { m, mesh } of moons) {
         const a = m.phase + tSim * m.speed;
         moonPos(a, m.orbitR, mesh.position);
@@ -118,8 +143,8 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       }
       renderer.render(A, camA);
     }
-    const hz = p < HANDOVER ? ease(clamp01((p - 0.44) / 0.14)) : 1 - ease(clamp01((p - HANDOVER) / 0.1));
-    haze.style.opacity = String(hz * 0.96);
+    const hz = p < HANDOVER ? ease(clamp01((p - (HANDOVER - 0.035)) / 0.035)) : 1 - ease(clamp01((p - HANDOVER) / 0.05));
+    haze.style.opacity = String(hz);
 
     if (p >= HANDOVER) {
       const g = clamp01((p - HANDOVER) / (1 - HANDOVER));
