@@ -1,0 +1,161 @@
+---
+import Base from '../layouts/Base.astro';
+import { bodies, planets } from '../data/bodies';
+import { phys, fmt, hoursToDay, daysToYear } from '../lib/format';
+import facts from '../data/facts.json';
+
+const sceneBodies = bodies.map((b) => ({ slug: b.slug, name: b.name, color: b.color, tiltDeg: b.tiltDeg, retrograde: b.retrograde }));
+const panelData = Object.fromEntries(
+  bodies.map((b) => {
+    const p = phys(b.slug) as Record<string, number> | undefined;
+    const e = (facts.planets as any)[b.slug]?.elements;
+    return [
+      b.slug,
+      {
+        name: b.name,
+        kind: b.kind,
+        tagline: b.tagline,
+        rows: b.slug === 'sun'
+          ? [['Radius', '695,700 km'], ['Surface', '5,772 K'], ['Spectral type', 'G2 V']]
+          : [
+              ['Radius', `${fmt(p!.radius_mean_km)} km`],
+              ['Orbit', `${fmt(e.a_au, 3)} au`],
+              ['Year', daysToYear(p!.orbit_period_days)],
+              ['Day', hoursToDay(p!.day_hours)],
+              ['Moons', `${p!.moons}`],
+            ],
+      },
+    ];
+  }),
+);
+---
+<Base title="Heliocodex" path="/">
+  <section class="stage" id="stage">
+    <canvas id="sky" aria-label="Interactive 3D model of the solar system. Drag to rotate, scroll to zoom, click a planet for details."></canvas>
+    <div class="stage-title">
+      <p class="eyebrow">Heliocodex</p>
+      <h1>The solar system, moving as it really does.</h1>
+      <p>Live positions from JPL orbital elements. Drag to look around, click a body to fly there.</p>
+    </div>
+
+    <aside class="panel" id="panel" aria-live="polite">
+      <button class="btn close" id="panel-close" type="button" aria-label="Close details">Close</button>
+      <p class="eyebrow" id="p-kind"></p>
+      <h2 id="p-name"></h2>
+      <p class="tagline" id="p-tag"></p>
+      <dl id="p-rows"></dl>
+      <dl>
+        <dt>Distance from Sun now</dt><dd id="p-dist">–</dd>
+        <dt>Sunlight takes</dt><dd id="p-light">–</dd>
+      </dl>
+      <a class="go" id="p-go" href="/">Read the full page</a>
+    </aside>
+
+    <div class="controls" role="group" aria-label="Time and scale controls">
+      <div class="group">
+        <button class="btn" id="play" type="button" aria-pressed="true">Pause</button>
+        <button class="btn" id="now" type="button">Today</button>
+      </div>
+      <div class="group" role="group" aria-label="Speed">
+        <button class="btn" data-speed="1" type="button">1 day/s</button>
+        <button class="btn" data-speed="10" type="button" aria-pressed="true">10 days/s</button>
+        <button class="btn" data-speed="100" type="button">100 days/s</button>
+        <button class="btn" data-speed="365.25" type="button">1 year/s</button>
+      </div>
+      <span class="date" id="date" aria-label="Simulated date"></span>
+      <button class="btn" id="scale" type="button" aria-pressed="false" title="Switch between a compressed layout and true relative distances">True distances</button>
+    </div>
+  </section>
+
+  <section class="wrap section-pad" id="bodies">
+    <p class="eyebrow">The bodies</p>
+    <h2 style="margin: 10px 0 28px;">Start with the Sun, then work outwards.</h2>
+    <div class="table-scroll">
+      <table class="body-table">
+        <thead><tr>
+          <th scope="col">Body</th><th scope="col">Type</th>
+          <th scope="col" class="num">Distance (au)</th><th scope="col" class="num">Radius (km)</th>
+          <th scope="col" class="num">Year</th><th scope="col" class="num">Moons</th>
+        </tr></thead>
+        <tbody>
+          {bodies.map((b) => {
+            const p = phys(b.slug) as Record<string, number> | undefined;
+            const e = (facts.planets as any)[b.slug]?.elements;
+            return (
+              <tr>
+                <td><span class="swatch" style={`background:${b.color}`}></span><a href={`/${b.slug}`}>{b.name}</a></td>
+                <td>{b.kind}</td>
+                <td class="num">{p ? fmt(e.a_au, 3) : '–'}</td>
+                <td class="num">{p ? fmt(p.radius_mean_km) : '695,700'}</td>
+                <td class="num">{p ? daysToYear(p.orbit_period_days) : '–'}</td>
+                <td class="num">{p ? p.moons : '–'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:18px;">Physical figures: NASA NSSDC planetary fact sheets. Orbital elements: NASA/JPL SSD. Moon counts are as listed by NASA and change as new moons are confirmed. Next on the list: every major moon, the dwarf planets, and exoplanets.</p>
+  </section>
+
+  <script define:vars={{ sceneBodies, panelData }} is:inline>
+    window.__helio = { sceneBodies, panelData };
+  </script>
+  <script>
+    import { createSolarSystem, lightTime } from '../lib/scene';
+    const { sceneBodies, panelData } = (window as any).__helio;
+    const $ = (id: string) => document.getElementById(id)!;
+    const panel = $('panel');
+    const dateEl = $('date');
+    const fmtDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+    const sys = createSolarSystem({
+      container: $('stage'),
+      canvas: $('sky') as HTMLCanvasElement,
+      bodies: sceneBodies,
+      onSelect(slug) {
+        if (!slug) { panel.classList.remove('open'); return; }
+        const d = panelData[slug];
+        $('p-kind').textContent = d.kind;
+        $('p-name').textContent = d.name;
+        $('p-tag').textContent = d.tagline;
+        $('p-rows').innerHTML = d.rows.map((r: string[]) => `<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
+        ($('p-go') as HTMLAnchorElement).href = `/${slug}`;
+        $('p-go').textContent = `Read the full page on ${d.name}`;
+        panel.classList.add('open');
+      },
+      onTick({ date, selected, distAU }) {
+        dateEl.textContent = fmtDate.format(date);
+        if (selected === 'sun') { $('p-dist').textContent = '–'; $('p-light').textContent = '–'; }
+        else if (distAU) {
+          $('p-dist').textContent = `${distAU.toFixed(3)} au`;
+          $('p-light').textContent = lightTime(distAU);
+        }
+      },
+    });
+
+    $('panel-close').addEventListener('click', () => sys.select(null));
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') sys.select(null); });
+
+    const play = $('play');
+    play.addEventListener('click', () => {
+      const p = !sys.isPlaying();
+      sys.setPlaying(p);
+      play.textContent = p ? 'Pause' : 'Play';
+      play.setAttribute('aria-pressed', String(p));
+    });
+    $('now').addEventListener('click', () => sys.now());
+    document.querySelectorAll<HTMLButtonElement>('[data-speed]').forEach((b) =>
+      b.addEventListener('click', () => {
+        sys.setSpeed(Number(b.dataset.speed));
+        document.querySelectorAll('[data-speed]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      }),
+    );
+    const scale = $('scale');
+    scale.addEventListener('click', () => {
+      const on = scale.getAttribute('aria-pressed') !== 'true';
+      scale.setAttribute('aria-pressed', String(on));
+      sys.setTrueDistance(on);
+    });
+  </script>
+</Base>

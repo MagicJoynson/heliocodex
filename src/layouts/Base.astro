@@ -1,0 +1,35 @@
+---
+import '../styles/global.css';
+interface Props { title: string; description?: string; path?: string; accent?: string }
+const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent } = Astro.props;
+const url = new URL(path, Astro.site).toString();
+const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{full}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    <meta property="og:title" content={full} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {accent && <style set:html={`:root{--accent:${accent}}`} />}
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="wordmark" href="/">Helio<span>codex</span></a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#bodies" aria-current={path === '/' ? undefined : undefined}>Bodies</a>
+        <a href="/sources" aria-current={path === '/sources' ? 'page' : undefined}>Sources</a>
+      </nav>
+    </header>
+    <slot />
+    <footer class="site-footer">
+      <p>Heliocodex is an independent project. Physical data comes from NASA NSSDC planetary fact sheets, orbits from NASA/JPL Solar System Dynamics, and planet maps from Solar System Scope (CC BY 4.0). Descriptions are written for this site. See <a href="/sources">Sources</a> for everything we use and how.</p>
+    </footer>
+  </body>
+</html>

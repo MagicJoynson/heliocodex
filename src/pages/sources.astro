@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Sources" path="/sources" description="Where Heliocodex gets its numbers, images and orbits, and how they are used.">
+  <div class="wrap section-pad prose" style="max-width: 760px">
+    <p class="eyebrow">Sources</p>
+    <h1 style="font-size: clamp(2rem, 5vw, 3rem); margin: 10px 0 24px;">Where the data comes from</h1>
+    <p>Every number on Heliocodex comes from an open scientific source. The descriptions are written for this site, not copied from anywhere. If you find an error, it is ours.</p>
+
+    <h2>Physical data</h2>
+    <p><a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/">NASA NSSDC Planetary Fact Sheets</a>, maintained by the NASA Space Science Data Coordinated Archive. Mass, radius, density, gravity, albedo, temperatures, atmosphere composition, rotation, orbit summary figures and moon counts. The Sun's values come from its own fact sheet.</p>
+
+    <h2>Orbits and positions</h2>
+    <p>The 3D model places each planet using the mean Keplerian elements and rates in <a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">Keplerian Elements for Approximate Positions of the Major Planets</a> (NASA/JPL Solar System Dynamics, Table 1, valid for 1800 to 2050). This is accurate enough to show where the planets really are for a visual model, but it is not an ephemeris. Later versions will use <a href="https://ssd.jpl.nasa.gov/horizons/">JPL Horizons</a> for precise positions and for moons.</p>
+
+    <h2>Surface maps</h2>
+    <p>Planet and Sun textures are from <a href="https://www.solarsystemscope.com/textures/">Solar System Scope</a>, licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, and are based on NASA imagery. Planet sizes in the main solar system view are exaggerated so that every body stays visible. Distances can be shown compressed or at true relative scale.</p>
+
+    <h2>Coming next</h2>
+    <p>The <a href="https://exoplanetarchive.ipac.caltech.edu/">NASA Exoplanet Archive</a> and <a href="https://exoplanet.eu/">The Extrasolar Planets Encyclopaedia</a> for exoplanets. <a href="https://science.nasa.gov/solar-system/">NASA Science</a> for mission history. JPL's Small-Body Database for dwarf planets, asteroids and comets.</p>
+
+    <h2>Reuse</h2>
+    <p>NASA material is generally free to use, but NASA does not endorse this site. Heliocodex is an independent project and is not affiliated with NASA, JPL or Solar System Scope.</p>
+  </div>
+</Base>
