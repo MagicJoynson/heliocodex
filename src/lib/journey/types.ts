@@ -11,6 +11,9 @@ export interface LowerScene {
   update(g: number, dt: number, t: number, pointer: Pointer, reduce: boolean): void;
   /** Text for the right-hand ruler while in this scene */
   readout(g: number): string;
+  toneMapping?: THREE.ToneMapping;
+  exposure?: number;
+  shadows?: boolean;
 }
 
 export interface Moon { orbitR: number; size: number; color: number; seed: number; speed: number; phase: number }

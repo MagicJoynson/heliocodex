@@ -1,4 +1,5 @@
-import { createGround } from './ground';
+import { createTerrain } from './terrain';
+import { fbm } from './noise';
 import { createOcean } from './ocean';
 import { createClouds } from './clouds';
 import type { World } from './types';
@@ -23,17 +24,18 @@ export const worlds: Record<string, World> = {
         { orbitR: 6.9, size: 0.034, color: 0x8a7d72, seed: 9, speed: 0.06, phase: 2.6 },
       ],
     },
-    buildLower: () => createGround({
-      horizon: '#d99d74', zenith: '#4d3126',
-      halo: { color: [0.42, 0.56, 0.8], power: 48, amount: 0.62 },
-      sunDir: [0.5, 0.1, -0.86], sunDisc: true, sunColor: 0xffd4a4, sunIntensity: 3.2,
-      fogColor: '#d99d74', fogNear: 6, fogFar: 700,
-      hemiSky: 0xc9946f, hemiGround: 0x2b1a14, hemiIntensity: 1.1,
-      texRGB: [168, 98, 62], tint: [0.7, 0.62, 0.58], rockColor: 0x6b4332,
-      relief: 1, mesa: 1, crackCells: 150, crackSoft: 3, texScale: 16,
-      dust: { color: 0xe9bf9a, opacity: 0.28, size: 0.55, count: 520 },
-      moonInSky: true, eyeHeight: 1.7, travel: 46,
-      readout: () => fmtM(1.7),
+    buildLower: () => createTerrain({
+      planetRadiusM: 3389500,
+      sky: { zenith: '#3b2b27', horizon: '#c99772', aureole: '#86a3d0', aureoleSize: 0.2, aureoleAmount: 0.8, sunDisc: 1, groundGlow: '#5b3d2e' },
+      sunDir: [0.5, 0.1, -0.86], sunColor: '#ffe3c6', sunIntensity: 3.0,
+      skyLight: '#c99a7a', groundLight: '#3a2418', ambient: 1.35,
+      haze: '#c4936f', hazeDensity: 1 / 15000,
+      dust: '#a9663f', gravel: '#5a3b2b', bedrock: '#b88b6a', slabs: 0.6, rock: '#7d5641',
+      rocks: 1300, pebbles: 6000,
+      height: marsHeight, eye: 2.1, travel: 40,
+      dustMotes: { color: '#e8c3a0', count: 260, opacity: 0.5 },
+      exposure: 1.05,
+      readout: () => fmtM(2.1),
     }),
   },
 
@@ -51,15 +53,16 @@ export const worlds: Record<string, World> = {
       landing: { sunElev: 40, sunYaw: 22, faceYaw: 180, pitch: 3 },
       moons: [],
     },
-    buildLower: () => createGround({
-      horizon: '#b87a34', zenith: '#8a5624',
-      sunDir: [0.2, 0.7, -0.5], sunDisc: false, sunColor: 0xffc27a, sunIntensity: 0.9,
-      fogColor: '#b07430', fogNear: 2, fogFar: 170,
-      hemiSky: 0xd89a48, hemiGround: 0x2a1809, hemiIntensity: 1.1,
-      texRGB: [96, 78, 64], tint: [0.55, 0.5, 0.42], rockColor: 0x4a3a2c,
-      relief: 0.5, mesa: 0.4, crackCells: 60, crackSoft: 5, texScale: 22,
-      dust: { color: 0xe4b060, opacity: 0.2, size: 0.8, count: 380 },
-      moonInSky: false, eyeHeight: 1.8, travel: 30,
+    buildLower: () => createTerrain({
+      planetRadiusM: 6051800,
+      sky: { zenith: '#b97a34', horizon: '#dca15a', aureole: '#f0c070', aureoleSize: 0.9, aureoleAmount: 0.25, sunDisc: 0, groundGlow: '#6a4520', toward: 0.25 },
+      sunDir: [0.2, 0.7, -0.5], sunColor: '#ffc27a', sunIntensity: 0.55,
+      skyLight: '#e2a250', groundLight: '#3a2410', ambient: 1.9,
+      haze: '#d39a52', hazeDensity: 1 / 900,
+      dust: '#6e5c49', gravel: '#4a4036', bedrock: '#7d6c58', slabs: 0.95, rock: '#5c4e40', rockFlat: 0.35,
+      rocks: 500, pebbles: 2500,
+      height: venusHeight, eye: 1.6, travel: 24,
+      exposure: 1.0,
       readout: () => '0 m · 92 bar',
     }),
   },
@@ -114,3 +117,44 @@ export const worlds: Record<string, World> = {
     }),
   },
 };
+
+/** Gale Crater, Mars: rolling plain, the Murray Buttes, Mount Sharp's layered slopes and the far crater rim. */
+function marsHeight(x: number, z: number) {
+  let h = (fbm(x / 650 + 3, z / 650, 5) - 0.5) * 34 + (fbm(x / 95 + 7, z / 95, 4) - 0.5) * 3 + (fbm(x / 15, z / 15 + 2, 3) - 0.5) * 0.35 + (fbm(x / 2.6, z / 2.6, 2) - 0.5) * 0.1;
+  // keep the ground under the camera's path gentle
+  const near = Math.min(1, Math.hypot(x, z + 20) / 60);
+  h *= 0.35 + 0.65 * near;
+  // Mount Sharp (Aeolis Mons): a broad layered mound, terraced by its strata and cut by gullies
+  const dx = x + 9000, dz = z + 24000;
+  const dk = Math.hypot(dx, dz) / 1000;
+  if (dk < 20) {
+    let m = 5500 * Math.pow(Math.max(0, 1 - Math.pow(dk / 19, 1.5)), 1.9);
+    m *= 1 - 0.3 * Math.abs(fbm(dx / 2600, dz / 2600, 4) - 0.5) * 2;
+    const step = 220, f = m / step;
+    m = (Math.floor(f) + Math.min(1, Math.pow((f % 1) / 0.35, 2))) * step;
+    h += m;
+  }
+  // the crater rim, 77 km from the centre
+  const dr = Math.hypot(dx, dz) - 77000;
+  const env = Math.exp(-((dr / 9000) ** 2));
+  if (env > 0.001) h += env * (1500 + 900 * fbm(dx / 7000, dz / 7000, 4));
+  // Murray Buttes: small flat-topped hills a few hundred metres away
+  for (const [bx, bz, r, ht] of [[-180, -420, 70, 16], [160, -640, 95, 22], [-420, -900, 120, 18], [420, -380, 55, 12]]) {
+    const d = Math.hypot(x - bx, z - bz) + (fbm(x / 40, z / 40, 3) - 0.5) * 40;
+    h += ht * (1 - smooth(r * 0.85, r * 1.25, d)) * (0.92 + 0.08 * fbm(x / 8, z / 8, 2));
+  }
+  return h;
+}
+
+/** Venus near a Venera landing site: flat, slabby volcanic plains, the horizon lost in haze. */
+function venusHeight(x: number, z: number) {
+  let h = (fbm(x / 900, z / 900 + 5, 4) - 0.5) * 40 + (fbm(x / 120, z / 120, 3) - 0.5) * 3 + (fbm(x / 9, z / 9, 2) - 0.5) * 0.25;
+  const near = Math.min(1, Math.hypot(x, z + 12) / 40);
+  h *= 0.3 + 0.7 * near;
+  return h;
+}
+
+function smooth(a: number, b: number, x: number) {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
+  return t * t * (3 - 2 * t);
+}

@@ -26,6 +26,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
   const small = innerWidth < 760;
   renderer.setPixelRatio(Math.min(devicePixelRatio, small ? 2 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const o = world.orbit;
   haze.style.background = world.hazeCss;
@@ -77,6 +78,8 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
 
   // ---- lower scene --------------------------------------------------------
   const lower = world.buildLower();
+  (window as unknown as { __lower: unknown; __r: unknown }).__lower = lower;
+  (window as unknown as { __r: unknown }).__r = renderer;
 
   // ---- driver -------------------------------------------------------------
   let progress = 0;
@@ -141,6 +144,9 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
         moonPos(a, m.orbitR, mesh.position);
         mesh.rotation.y = a;
       }
+      renderer.toneMapping = THREE.NoToneMapping;
+      renderer.toneMappingExposure = 1;
+      renderer.shadowMap.enabled = false;
       renderer.render(A, camA);
     }
     const hz = p < HANDOVER ? ease(clamp01((p - (HANDOVER - 0.035)) / 0.035)) : 1 - ease(clamp01((p - HANDOVER) / 0.05));
@@ -150,6 +156,9 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       const g = clamp01((p - HANDOVER) / (1 - HANDOVER));
       lower.update(g, dt, tSim, pointer, reduce);
       text = lower.readout(g);
+      renderer.toneMapping = lower.toneMapping ?? THREE.NoToneMapping;
+      renderer.toneMappingExposure = lower.exposure ?? 1;
+      renderer.shadowMap.enabled = !!lower.shadows;
       renderer.render(lower.scene, lower.camera);
     }
     requestAnimationFrame(frame);

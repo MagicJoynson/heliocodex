@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 
 export function hash(x: number, y: number) {
-  let h = x * 374761393 + y * 668265263;
-  h = (h ^ (h >> 13)) * 1274126177;
-  return ((h ^ (h >> 16)) >>> 0) / 4294967295;
+  let h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263)) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  h ^= h >>> 16;
+  return (h >>> 0) / 4294967296;
 }
 export function vnoise(x: number, y: number) {
   const xi = Math.floor(x), yi = Math.floor(y);
