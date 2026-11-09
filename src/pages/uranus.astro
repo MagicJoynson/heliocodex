@@ -1,0 +1,123 @@
+---
+import '@fontsource/instrument-serif/400.css';
+import '@fontsource/instrument-serif/400-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear } from '../lib/format';
+
+const p = facts.planets.uranus.physical as unknown as Record<string, number>;
+const e = facts.planets.uranus.elements;
+const rows: [string, string][] = [
+  ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
+  ['Radius at the poles', `${fmt(p.radius_polar_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 3)} × 10²⁴ kg`],
+  ['Average density', `${fmt(p.density_kgm3)} kg/m³`],
+  ['Distance from the Sun', `${fmt(e.a_au, 2)} au`],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['A day', '17 h 14 min, turning backwards'],
+  ['Axial tilt', `${p.obliquity_deg}°`],
+  ['Coldest air measured', '−224 °C'],
+  ['Known moons (NASA)', `${p.moons}`],
+];
+---
+<World world="uranus" title="Uranus" description="Drop into the blue-green haze of Uranus, the planet that rolls round the Sun on its side. Real NASA data and Voyager 2 images." readout="Pressure">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Seventh planet · 19.2 au from the Sun</p>
+      <h1>Uranus</h1>
+      <p class="lead">The planet that goes round the Sun lying on its side. It was the first one ever found with a telescope, and only one spacecraft has been to see it. Keep going and you will sink into the haze at 45° north, where at the moment the Sun never sets.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>Knocked over</h2>
+      <p>Most planets spin more or less upright. Uranus is tipped over by 98°, so it rolls along its orbit like a ball, and for part of each year one pole points almost straight at the Sun.</p>
+      <p>A year here lasts 84 of ours. Each pole gets about 42 years of daylight and then 42 years of night. The usual explanation is that something the size of the Earth or bigger hit it while the planets were still forming.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>Found by accident</h2>
+      <p>On 13 March 1781 William Herschel was working through the stars from his garden in Bath when one of them turned out to be a small disc. He thought it was a comet. Within a couple of years it was clear it was a planet, the first new one since ancient times, and the solar system doubled in width overnight.</p>
+      <p>Herschel wanted to call it George’s Star, after the king. Astronomers outside Britain did not, and the name Uranus, the Greek god of the sky, won in the end.</p>
+    </div>
+  </section>
+
+  <section class="beat haze" data-p="0.7">
+    <div class="copy">
+      <h2>Inside the haze</h2>
+      <p>The air is mostly hydrogen and helium, with a little methane. Methane soaks up red light, so what comes back out is this pale blue-green. A layer of haze hides most of the cloud below, which is why the planet looks so smooth from outside.</p>
+      <p>It is the middle of the night here, and the Sun is up. At 45° north in this season it never sets. It is behind you, 29° above the northern horizon, a hard point of light giving about a 370th of the sunshine we get at home.</p>
+      <p>Ahead, to the south, the five largest moons sit along one curve across the sky, because they all orbit over Uranus’s equator. Even Titania, the biggest, is only a bright dot from here.</p>
+    </div>
+  </section>
+
+  <section class="beat wide haze" data-p="0.86">
+    <div class="copy">
+      <h2>One visit</h2>
+      <p>Voyager 2 flew past on 24 January 1986, about 81,500 km above the cloud tops. Everyone hoped for storms like Jupiter’s. In true colour the planet was almost blank, a smooth blue-green ball, and only a handful of clouds turned up once the pictures were stretched hard on computers. Nothing has been back since.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/uranus/voyager-1986.jpg" width="1000" height="1000" alt="Uranus as a plain, pale blue-green sphere against black space, with almost no visible markings." loading="lazy" />
+      <figcaption>Uranus in roughly true colour, as Voyager 2 saw it in January 1986. Image: NASA/JPL-Caltech.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat wide haze" data-p="0.95">
+    <div class="copy">
+      <h2>Dark rings</h2>
+      <p>The rings were found from Earth before Voyager got there. In March 1977 astronomers watching Uranus pass in front of a star saw the star blink off and on several times before the planet reached it, and again after. Thirteen rings are known now. They are narrow and as dark as charcoal, nothing like Saturn’s bright ice.</p>
+    </div>
+    <figure class="plate small">
+      <img src="/img/uranus/crescent.jpg" width="1000" height="1000" alt="A thin blue-white crescent of Uranus against black space, the rest of the planet in darkness." loading="lazy" />
+      <figcaption>A crescent Uranus, seen by Voyager 2 as it left. Image: NASA/JPL.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last haze" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">
+        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <p class="aside">NASA NSSDC Uranus Fact Sheet and JPL orbital elements. Most of the moons are named after characters from Shakespeare and Alexander Pope. In 2022 American planetary scientists picked an orbiter and probe for Uranus as the next big mission they most wanted NASA to fly.</p>
+      <nav class="onward">
+        <a href="/saturn">← Saturn</a>
+        <a href="/neptune">Neptune →</a>
+      </nav>
+      <p class="aside">The clouds here are generated. The Sun’s place in the sky is worked out from JPL Horizons for 45° north at local midnight on 9 November 2026. Miranda, Ariel, Umbriel, Titania and Oberon are drawn at their true sizes and distances, placed along their orbits by hand.</p>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #f2fbfa; --ink-soft: #d3ebea; --ink-faint: #9cc2c2; --accent: #c8f2ec; --night: #071113; --night-a: rgba(6,16,18,.84);
+    --display: 'Instrument Serif', 'Times New Roman', serif; --text: 'Instrument Serif', 'Times New Roman', serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: linear-gradient(270deg, rgba(6,18,22,.62) 0%, rgba(6,18,22,.42) 24%, rgba(6,18,22,.16) 50%, rgba(6,18,22,0) 78%);
+    --tshadow: 0 1px 12px rgba(4,14,18,.7);
+    --scrim: rgba(6,20,24,.42);
+  }
+  /* Uranus: everything sits on the right, a soft serif, and each heading carries a thin line tipped at the planet's real tilt */
+  body { font-size: clamp(1.18rem, 1.08rem + .4vw, 1.4rem); }
+  .beat { justify-items: end; }
+  .copy { max-width: 31rem; }
+  h1 { font-size: clamp(4.4rem, 17vw, 12.5rem); font-weight: 400; letter-spacing: -.01em; line-height: .9; margin-bottom: .14em; font-style: italic; }
+  h2 { font-size: clamp(2.2rem, 4.4vw, 3.2rem); font-weight: 400; font-style: italic; line-height: 1.05; position: relative; padding-bottom: .35em; margin-bottom: .45em; }
+  /* the axis: 97.8° from upright, so 7.8° past horizontal */
+  h2::after { content: ''; position: absolute; left: -.2em; bottom: 0; width: 4.6em; height: 1px; background: linear-gradient(90deg, rgba(200,242,236,.75), rgba(200,242,236,0)); transform: rotate(-7.8deg); transform-origin: left center; }
+  .lead { font-size: 1.24em; line-height: 1.42; max-width: 22em; }
+  .copy p { line-height: 1.5; }
+  .plate { margin: 0; max-width: 34rem; }
+  .plate.small { max-width: 24rem; }
+  .plate:not(.small) { max-width: 28rem; }
+  .plate img { display: block; width: 100%; height: auto; border-radius: 50%; }
+  .plate figcaption { font-family: var(--mono); font-size: .7rem; letter-spacing: .02em; }
+  .haze .copy p, .haze h2 { text-shadow: 0 1px 2px rgba(6,26,30,.6), 0 2px 24px rgba(6,26,30,.7); }
+  .onward { font: italic 400 1.3rem var(--display); }
+  @media (min-width: 900px) { .copy { margin-right: 4.5rem; } .beat.wide { grid-template-columns: minmax(0, 34rem) minmax(0, 30rem); align-items: center; column-gap: 6vw; justify-content: end; } .beat.wide .plate { order: -1; } }
+  @media (max-width: 760px) { .beat { justify-items: start; } :root { --shade: linear-gradient(180deg, rgba(6,18,22,.2) 0%, rgba(6,18,22,.58) 55%, rgba(6,18,22,.78) 100%); } }
+</style>

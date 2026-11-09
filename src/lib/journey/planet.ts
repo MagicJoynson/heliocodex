@@ -32,6 +32,8 @@ export interface PlanetLook {
   airDensity: number;
   /** atmosphere height used for the limb glow, in planet radii */
   airHeight: number;
+  /** how strongly the thin glow round the edge shows, 1 by default */
+  rim?: number;
   /** colour of the day side near the terminator */
   dusk: [number, number, number];
   /** sky colours once you are low enough to see sky instead of space */
@@ -414,7 +416,7 @@ export function createPlanet(look: PlanetLook, maxTex: number, wantHi: boolean):
       skyUni.dip.value = Math.sqrt(2 * Math.max(alt, 0));
       const m = look.airDensity > 0 ? THREE.MathUtils.smoothstep(look.skyTop - alt, 0, look.skyTop * 0.85) : 0;
       skyUni.mixAmt.value = m;
-      shellUni.strength.value = 1 - THREE.MathUtils.smoothstep(look.airHeight * 1.2 - alt, 0, look.airHeight);
+      shellUni.strength.value = (look.rim ?? 1) * (1 - THREE.MathUtils.smoothstep(look.airHeight * 1.2 - alt, 0, look.airHeight));
       if (cloudMesh) cloudUni.opacity.value = 1 - THREE.MathUtils.smoothstep(0.0024 - alt, 0, 0.0012) * 0.6;
     },
   };

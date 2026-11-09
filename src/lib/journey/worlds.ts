@@ -3,10 +3,54 @@ import { fbm, hash } from './noise';
 import { createOcean } from './ocean';
 import { createClouds } from './clouds';
 import { createSaturnSky } from './saturn';
+import { createIceGiant } from './icegiant';
 import type { World } from './types';
 
 const fmtM = (m: number) => `${m.toFixed(1)} m`;
 const SATURN_SUN: [number, number, number] = [0.2312, 0.4493, 0.8629];
+/** The Sun's direction in a planet's frame (y = north pole), from its declination and the hour angle at longitude lon. */
+function sunPlanet(declDeg: number, hourDeg: number, lonDeg: number): [number, number, number] {
+  const d = declDeg * Math.PI / 180, L = (lonDeg - hourDeg) * Math.PI / 180;
+  return [Math.cos(d) * Math.cos(L), Math.sin(d), -Math.cos(d) * Math.sin(L)];
+}
+/** The same direction seen from the ground at lat/lon, facing due south (x right, y up, -z ahead). */
+function sunLocal(lat: number, lon: number, s: [number, number, number]): [number, number, number] {
+  const la = lat * Math.PI / 180, lo = lon * Math.PI / 180;
+  const up = [Math.cos(la) * Math.cos(lo), Math.sin(la), -Math.cos(la) * Math.sin(lo)];
+  let so = [up[0] * up[1], -1 + up[1] * up[1], up[2] * up[1]];
+  const n = Math.hypot(so[0], so[1], so[2]); so = so.map((v) => v / n);
+  const right = [so[1] * up[2] - so[2] * up[1], so[2] * up[0] - so[0] * up[2], so[0] * up[1] - so[1] * up[0]];
+  const dot = (a: number[], b: number[]) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  return [dot(s, right), dot(s, up), -dot(s, so)];
+}
+// Sun over 74.3° N on Uranus and 19.5° S on Neptune, 9 Nov 2026 (JPL Horizons sub-solar latitudes).
+// Uranus: the north pole tipped right towards the Sun, so at 45° north it never sets
+// The view is at local midnight: the Sun is due north and as low as it gets, 29° up.
+const URANUS_SUN = sunPlanet(74.3, 180, 0);
+/**
+ * A moon on a circular orbit over the equator, at orbital longitude phiDeg, seen from the cloud tops at
+ * lat/lon: its direction in the local frame and its angular radius (parallax included, since the
+ * moons are only a few planet radii away).
+ */
+function moonLocal(lat: number, lon: number, planetKm: number, distKm: number, moonKm: number, phiDeg: number) {
+  const la = lat * Math.PI / 180, lo = lon * Math.PI / 180, ph = phiDeg * Math.PI / 180;
+  const o = [planetKm * Math.cos(la) * Math.cos(lo), planetKm * Math.sin(la), -planetKm * Math.cos(la) * Math.sin(lo)];
+  const v = [distKm * Math.cos(ph) - o[0], -o[1], -distKm * Math.sin(ph) - o[2]];
+  const n = Math.hypot(v[0], v[1], v[2]);
+  return { dir: sunLocal(lat, lon, [v[0] / n, v[1] / n, v[2] / n]), radius: moonKm / n };
+}
+// Uranus's five large moons (orbit radius, radius in km), placed along their arc in the southern sky
+const URANUS_MOONS = ([
+  [129900, 235.8, -9, [0.42, 0.42, 0.42], [0.75, 0.74, 0.72]],   // Miranda
+  [190900, 578.9, 6, [0.36, 0.36, 0.36], [0.72, 0.71, 0.69]],    // Ariel
+  [266000, 584.7, -19, [0.22, 0.22, 0.22], [0.42, 0.41, 0.4]],   // Umbriel, the darkest
+  [436300, 788.9, 17, [0.33, 0.31, 0.3], [0.62, 0.58, 0.55]],    // Titania
+  [583500, 761.4, -29, [0.3, 0.28, 0.27], [0.55, 0.51, 0.48]],   // Oberon
+] as [number, number, number, [number, number, number], [number, number, number]][]).map(([d, r, ph, dark, light]) => ({ ...moonLocal(45, 0, 25559, d, r, ph), dark, light }));
+// Neptune: southern summer is ending
+// Late afternoon at 29° north, the Sun about 11° up in the west-south-west.
+const NEPTUNE_SUN = sunPlanet(-19.5, 65, 0);
+
 
 export const worlds: Record<string, World> = {
   mars: {
@@ -165,6 +209,57 @@ export const worlds: Record<string, World> = {
     buildLower: () => createSaturnSky({
       lat: 40, lon: 0, sun: SATURN_SUN, flattening: 0.098,
       readout: (g) => `${(0.2 + g * 0.35).toFixed(2)} bar`,
+    }),
+  },
+
+  uranus: {
+    slug: 'uranus',
+    hazeCss: 'radial-gradient(120% 90% at 50% 100%, #d9f1ef 0%, #8fc3c6 45%, #1d3a44 100%)',
+    orbit: {
+      look: {
+        map: '2k_uranus.jpg', detail: 'bands', grain: 0.1, relief: 0, craters: 0, exposure: 1, saturation: 1.05, stretch: 8,
+        air: [0.66, 0.86, 0.88], airDensity: 0.14, airHeight: 0.006, rim: 0.4, dusk: [0.5, 0.78, 0.8],
+        skyZenith: [0.05, 0.14, 0.22], skyHorizon: [0.6, 0.8, 0.82], skyTop: 0.005, ambient: 0.02, limbDark: 0.6,
+        flattening: 0.023,
+      },
+      radiusKm: 25559, startAltRadii: 3, handoverAlt: 0.002,
+      target: { lat: 45, lon: 0 }, startYaw: 0.6, startTilt: 0.3,
+      landing: { sunElev: 0, sunYaw: 0, faceYaw: 0, pitch: 4, sun: URANUS_SUN, faceSouth: true },
+      moons: [],
+    },
+    buildLower: () => createIceGiant({
+      sunDir: sunLocal(45, 0, URANUS_SUN), planetRadiusKm: 25559,
+      deckDark: [0.4, 0.64, 0.68], deckLight: [0.66, 0.86, 0.87], horizon: [0.6, 0.8, 0.82], zenith: [0.04, 0.12, 0.2],
+      haze: 800, cirrus: 0.3, cirrusHeight: 10, banding: 0.55,
+      yaw: 0, pitch: 0.3, heights: [70, 30],
+      moons: URANUS_MOONS,
+      exposure: 0.85,
+      readout: (g) => `${(0.6 + g * 0.6).toFixed(2)} bar`,
+    }),
+  },
+
+  neptune: {
+    slug: 'neptune',
+    hazeCss: 'radial-gradient(120% 90% at 50% 100%, #b9d0ff 0%, #4f74c8 45%, #0b1636 100%)',
+    orbit: {
+      look: {
+        map: '2k_neptune.jpg', detail: 'bands', grain: 0.22, relief: 0, craters: 0, exposure: 1, saturation: 1.1, stretch: 5,
+        air: [0.42, 0.58, 0.95], airDensity: 0.16, airHeight: 0.006, rim: 0.5, dusk: [0.8, 0.85, 1],
+        skyZenith: [0.01, 0.03, 0.1], skyHorizon: [0.36, 0.55, 0.85], skyTop: 0.005, ambient: 0.02, limbDark: 0.55,
+        flattening: 0.017,
+      },
+      radiusKm: 24764, startAltRadii: 3, handoverAlt: 0.002,
+      target: { lat: 29, lon: 0 }, startYaw: -0.9, startTilt: -0.25,
+      landing: { sunElev: 0, sunYaw: 0, faceYaw: 0, pitch: 4, sun: NEPTUNE_SUN, faceSouth: true },
+      moons: [],
+    },
+    buildLower: () => createIceGiant({
+      sunDir: sunLocal(29, 0, NEPTUNE_SUN), planetRadiusKm: 24764,
+      deckDark: [0.1, 0.2, 0.55], deckLight: [0.3, 0.46, 0.86], horizon: [0.36, 0.55, 0.85], zenith: [0.01, 0.03, 0.1],
+      haze: 1000, cirrus: 1, cirrusHeight: 14, banding: 0.7,
+      sunSide: 0.38, pitch: -0.07, heights: [70, 30],
+      exposure: 0.9,
+      readout: (g) => `${(0.4 + g * 0.6).toFixed(2)} bar`,
     }),
   },
 };
