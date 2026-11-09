@@ -44,6 +44,7 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
       const journey = createJourney(canvas, document.getElementById('haze')!, worlds[id]);
       const alt = document.getElementById('alt')!;
       const tick = document.getElementById('tick')!;
+      const altLabel = document.querySelector<HTMLElement>('.alt-label')!;
 
       // arriving from the solar system: start in the dark and let the planet come up
       const arrive = document.getElementById('arrive')!;
@@ -85,7 +86,11 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
         journey.setProgress(p);
         tick.style.top = `${p * 100}%`;
         const txt = journey.readout();
-        if (txt !== last) { alt.textContent = txt; last = txt; }
+        if (txt !== last) {
+          alt.textContent = txt; last = txt;
+          // above the clouds it is height; inside a gas giant it is pressure
+          altLabel.textContent = /^[\d.]+ bar$/.test(txt) ? 'Pressure' : 'Altitude';
+        }
       }
       addEventListener('scroll', update, { passive: true });
       addEventListener('resize', update);

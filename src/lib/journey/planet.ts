@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { SIMPLEX3 } from './shaders';
+import { createRingTexture, createRingMesh, RING_GLSL } from './rings';
 
 /**
  * A planet seen from orbit and all the way down to a few kilometres up.
@@ -43,6 +44,12 @@ export interface PlanetLook {
   limbDark: number;
   exposure?: number;
   saturation?: number;
+  /** Saturn's rings, with their shadow on the planet */
+  rings?: boolean;
+  /** how squashed the globe is: 1 - polar/equatorial radius */
+  flattening?: number;
+  /** how far cloud detail is drawn out along lines of latitude (default 2.4 for bands) */
+  stretch?: number;
 }
 
 const VERT = /* glsl */ `
@@ -53,7 +60,8 @@ void main(){
   vUv = uv; vObj = position;
   vec4 wp = modelMatrix * vec4(position, 1.0);
   vWorld = wp.xyz;
-  vN = normalize(mat3(modelMatrix) * normal);
+  // inverse transpose, so normals stay right on a squashed globe
+  vN = normalize(transpose(inverse(mat3(modelMatrix))) * normal);
   gl_Position = projectionMatrix * viewMatrix * wp;
   #include <logdepthbuf_vertex>
 }`;
@@ -65,9 +73,10 @@ uniform sampler2D map; uniform sampler2D nightMap; uniform sampler2D waterMap; u
 uniform float hasNight, hasWater, hasClouds, cloudShift;
 uniform vec3 sunDir; uniform vec3 air; uniform float airDensity; uniform vec3 dusk;
 uniform float grain, relief, craters, ambient, limbDark, texRes, time, exposure, saturation;
-uniform int kind;
+uniform int kind; uniform float hasRings, flatten, bandStretch;
 varying vec3 vObj; varying vec3 vWorld; varying vec3 vN; varying vec2 vUv;
 ${SIMPLEX3}
+${RING_GLSL}
 
 // fade an octave in as it grows past a few pixels
 float octW(float f, float fp){ return smoothstep(0.55, 0.14, f * fp); }
@@ -129,7 +138,7 @@ void main(){
     if (vis > 0.0) {
       float l0 = floor(-log2(fp * 220.0));
       float fr = fract(-log2(fp * 220.0));
-      float stretch = kind == 1 ? 2.4 : 2.0;
+      float stretch = kind == 1 ? bandStretch : 2.0;
       float acc = 0.0;
       for (int k = 0; k < 2; k++) {
         float F = exp2(l0 + float(k));
@@ -199,6 +208,15 @@ void main(){
     col += nl * vec3(1.0, 0.78, 0.5) * 1.25 * (1.0 - smoothstep(-0.12, 0.04, ndlG));
   }
 
+  // the rings' shadow: follow the light back from this point to the ring plane
+  if (hasRings > 0.5 && abs(L.y) > 1e-3) {
+    vec3 P = vObj * vec3(1.0, 1.0 - flatten, 1.0);
+    float t = -P.y / L.y;
+    if (t > 0.0) {
+      vec4 rg = ringAt(length((P + L * t).xz));
+      col *= 1.0 - rg.a * 0.9;
+    }
+  }
   col += albedo * ambient;
 
   // looking down through the air: more of it towards the limb, lit only where the sun reaches
@@ -321,7 +339,13 @@ export function createPlanet(look: PlanetLook, maxTex: number, wantHi: boolean):
     texRes: { value: 4096 },
     time: { value: 0 },
     kind: { value: kind },
+    hasRings: { value: look.rings ? 1 : 0 },
+    flatten: { value: look.flattening ?? 0 },
+    bandStretch: { value: look.stretch ?? 2.4 },
+    ringTex: { value: blank as THREE.Texture },
   };
+  const ringTex = look.rings ? createRingTexture() : null;
+  if (ringTex) uni.ringTex.value = ringTex;
   if (look.mapHi && wantHi && maxTex >= 8192) {
     load(look.mapHi, true, (t) => { uni.map.value = t; uni.texRes.value = 8192; });
   }
@@ -332,6 +356,8 @@ export function createPlanet(look: PlanetLook, maxTex: number, wantHi: boolean):
     new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader: FRAG, uniforms: uni }),
   );
   group.add(surface);
+  if (look.flattening) group.scale.y = 1 - look.flattening;
+  if (ringTex) group.add(createRingMesh(ringTex, sun));
 
   let cloudMesh: THREE.Mesh | null = null;
   const cloudUni = {

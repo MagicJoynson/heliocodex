@@ -29,7 +29,11 @@ export interface OrbitConfig {
   startYaw: number;
   startTilt: number;
   /** how the end of the descent is lit and framed, matching the lower scene */
-  landing: { sunElev: number; sunYaw: number; faceYaw: number; pitch: number };
+  landing: {
+    sunElev: number; sunYaw: number; faceYaw: number; pitch: number;
+    /** instead: the Sun's direction in the planet's own frame (y = north pole), and face due south */
+    sun?: [number, number, number]; faceSouth?: boolean;
+  };
   moons: Moon[];
 }
 

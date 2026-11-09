@@ -52,10 +52,12 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
 
   // the Sun: o.landing.sunElev above the landing horizon, sitting o.landing.sunYaw to the right of where we end up facing
   const L = o.landing;
-  const faceDir = travel.clone().applyAxisAngle(target, THREE.MathUtils.degToRad(L.faceYaw)).normalize();
+  const faceDir = L.faceSouth
+    ? new THREE.Vector3(0, -1, 0).addScaledVector(target, target.y).normalize()
+    : travel.clone().applyAxisAngle(target, THREE.MathUtils.degToRad(L.faceYaw)).normalize();
   const faceRight = new THREE.Vector3().crossVectors(faceDir, target).normalize();
   const el = THREE.MathUtils.degToRad(L.sunElev), az = THREE.MathUtils.degToRad(L.sunYaw);
-  const sunDir = new THREE.Vector3()
+  const sunDir = L.sun ? new THREE.Vector3(...L.sun).normalize() : new THREE.Vector3()
     .addScaledVector(faceDir, Math.cos(el) * Math.cos(az))
     .addScaledVector(faceRight, Math.cos(el) * Math.sin(az))
     .addScaledVector(target, Math.sin(el))
@@ -117,7 +119,10 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       // ground track: most of the sideways travel happens high up
       const k = 1 - Math.pow(1 - ease(Math.min(1, e * 1.08)), 2.2);
       dir.copy(startDir).lerp(target, k).normalize();
-      pos.copy(dir).multiplyScalar(1 + h);
+      // the surface radius under us (a squashed globe is lower towards the poles)
+      const fl = 1 - (o.look.flattening ?? 0);
+      const rs = 1 / Math.sqrt(dir.x * dir.x + dir.z * dir.z + (dir.y / fl) * (dir.y / fl));
+      pos.copy(dir).multiplyScalar(rs + h);
       camA.position.copy(pos);
       camA.near = Math.max(h * 0.25, 1e-6);
       camA.far = 600;

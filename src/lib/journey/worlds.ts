@@ -2,9 +2,11 @@ import { createTerrain } from './terrain';
 import { fbm, hash } from './noise';
 import { createOcean } from './ocean';
 import { createClouds } from './clouds';
+import { createSaturnSky } from './saturn';
 import type { World } from './types';
 
 const fmtM = (m: number) => `${m.toFixed(1)} m`;
+const SATURN_SUN: [number, number, number] = [0.2312, 0.4493, 0.8629];
 
 export const worlds: Record<string, World> = {
   mars: {
@@ -141,6 +143,28 @@ export const worlds: Record<string, World> = {
     buildLower: () => createClouds({
       sunDir: [-0.85, 0.42, 0.31],
       readout: (g) => `${(0.25 + g * 0.45).toFixed(2)} bar`,
+    }),
+  },
+
+  saturn: {
+    slug: 'saturn',
+    hazeCss: 'radial-gradient(120% 90% at 50% 100%, #f1e2bf 0%, #c9ad7c 45%, #3c3226 100%)',
+    orbit: {
+      look: {
+        map: '4k_saturn.webp', detail: 'bands', grain: 0.16, stretch: 7, relief: 0, craters: 0, exposure: 0.95, saturation: 1.05,
+        air: [0.86, 0.8, 0.66], airDensity: 0.14, airHeight: 0.01, dusk: [1, 0.78, 0.55],
+        skyZenith: [0.035, 0.07, 0.16], skyHorizon: [0.78, 0.68, 0.5], skyTop: 0.004, ambient: 0.02, limbDark: 0.5,
+        rings: true, flattening: 0.098,
+      },
+      radiusKm: 60268, startAltRadii: 5.2, handoverAlt: 0.0016,
+      target: { lat: 40, lon: 0 }, startYaw: 0.5, startTilt: -0.15,
+      // northern summer, late afternoon: the Sun 26.7° north of the ring plane, low in the west
+      landing: { sunElev: 0, sunYaw: 0, faceYaw: 0, pitch: 7, sun: SATURN_SUN, faceSouth: true },
+      moons: [],
+    },
+    buildLower: () => createSaturnSky({
+      lat: 40, lon: 0, sun: SATURN_SUN, flattening: 0.098,
+      readout: (g) => `${(0.2 + g * 0.35).toFixed(2)} bar`,
     }),
   },
 };
