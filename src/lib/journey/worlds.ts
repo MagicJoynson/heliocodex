@@ -83,9 +83,8 @@ export const worlds: Record<string, World> = {
       moons: [{ orbitR: 7.5, size: 0.27, color: 0xb9b4ac, seed: 4, speed: 0.04, phase: 0.6 }],
     },
     buildLower: () => createOcean({
-      horizon: '#f3c797', zenith: '#3f6fa8',
-      sunDir: [0.42, 0.13, -0.9], water: '#1c5e7a', deep: '#0c2b45',
-      readout: () => '2.4 m',
+      sunDir: [0.42, 0.13, -0.9],
+      readout: () => '3 m',
     }),
   },
 
@@ -100,7 +99,7 @@ export const worlds: Record<string, World> = {
       },
       radiusKm: 69911, startAltRadii: 2.4, handoverAlt: 0.0015,
       target: { lat: -20.5, lon: -44 }, startYaw: 1.1, startTilt: 0.15,
-      landing: { sunElev: 20, sunYaw: -20, faceYaw: 90, pitch: 4 },
+      landing: { sunElev: 25, sunYaw: -110, faceYaw: 90, pitch: 4 },
       moons: [
         { orbitR: 5.9, size: 0.05, color: 0xd9c46a, seed: 2, speed: 0.34, phase: 0.4 },
         { orbitR: 9.4, size: 0.045, color: 0xcfc4b4, seed: 6, speed: 0.17, phase: 2.2 },
@@ -109,11 +108,8 @@ export const worlds: Record<string, World> = {
       ],
     },
     buildLower: () => createClouds({
-      horizon: '#c9a880', zenith: '#161b26',
-      palette: ['#f1e6cf', '#c99a66', '#9a5a3c', '#efe0c6', '#6f4630', '#d9b98a'],
-      stormColor: '#b4472c',
-      heightStart: 170, heightEnd: 26,
-      readout: (g) => `${(0.1 + g * 1.9).toFixed(1)} bar`,
+      sunDir: [-0.85, 0.42, 0.31],
+      readout: (g) => `${(0.25 + g * 0.45).toFixed(2)} bar`,
     }),
   },
 };
