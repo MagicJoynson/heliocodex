@@ -2,6 +2,7 @@
 import '@fontsource/young-serif';
 import '@fontsource-variable/literata';
 import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 
@@ -19,33 +20,7 @@ const rows: [string, string][] = [
   ['Moons', `${p.moons}`],
 ];
 ---
-<!doctype html>
-<html lang="en-GB">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mars · Heliocodex</title>
-    <meta name="description" content="Fall from orbit to the surface of Mars. Real NASA data and photographs, and a model you can scroll through." />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  </head>
-  <body>
-    <canvas id="journey" aria-hidden="true"></canvas>
-    <div id="haze" aria-hidden="true"></div>
-    <div id="shade" aria-hidden="true"></div>
-    <div id="topfade" aria-hidden="true"></div>
-
-    <header class="top">
-      <a class="mark" href="/">Heliocodex</a>
-      <a class="back" href="/">Back out to the solar system</a>
-    </header>
-
-    <aside class="altitude" aria-hidden="true">
-      <span class="alt-label">Altitude</span>
-      <span class="alt-value" id="alt">7,470 km</span>
-      <span class="ruler"><i id="tick"></i></span>
-    </aside>
-
-    <main>
+<World world="mars" title="Mars" description="Fall from orbit to the surface of Mars. Real NASA data and photographs.">
       <section class="beat" data-p="0">
         <div class="copy">
           <p class="kicker">Fourth planet · 1.52 au from the Sun</p>
@@ -132,131 +107,27 @@ const rows: [string, string][] = [
             <a href="/earth">← Earth</a>
             <a href="/jupiter">Jupiter →</a>
           </nav>
-          <p class="aside">This is the first page of the redesign. The others are still the first draft. Surface scene is illustrative: the ground and sky are generated, not a map of a real place.</p>
+          <p class="aside">The ground and sky here are generated to look like Gale Crater at dusk, not a map of a real place.</p>
         </div>
       </section>
-    </main>
-
-    <script>
-      import { createMarsJourney } from '../lib/mars-scene';
-      const canvas = document.getElementById('journey') as HTMLCanvasElement;
-      const haze = document.getElementById('haze')!;
-      const alt = document.getElementById('alt')!;
-      const tick = document.getElementById('tick')!;
-      const journey = createMarsJourney(canvas, haze);
-
-      const beats = [...document.querySelectorAll<HTMLElement>('.beat')];
-      const anchors = beats.map((b) => ({ el: b, p: Number(b.dataset.p) }));
-
-      function progress() {
-        const mid = scrollY + innerHeight / 2;
-        const pts = anchors.map((a) => ({ y: a.el.offsetTop + a.el.offsetHeight / 2, p: a.p }));
-        if (mid <= pts[0].y) return pts[0].p;
-        for (let i = 1; i < pts.length; i++) {
-          if (mid <= pts[i].y) {
-            const t = (mid - pts[i - 1].y) / (pts[i].y - pts[i - 1].y);
-            return pts[i - 1].p + t * (pts[i].p - pts[i - 1].p);
-          }
-        }
-        return 1;
-      }
-
-      function fmtAlt(km: number) {
-        if (km >= 1000) return `${Math.round(km).toLocaleString('en-GB')} km`;
-        if (km >= 1) return `${km.toFixed(km >= 100 ? 0 : 1)} km`;
-        return `${Math.max(1.7, km * 1000).toFixed(1)} m`;
-      }
-
-      let last = -1;
-      function update() {
-        const p = progress();
-        journey.setProgress(p);
-        tick.style.top = `${p * 100}%`;
-        const a = journey.altitudeKm();
-        const txt = fmtAlt(a);
-        if (txt !== last) { alt.textContent = txt; last = txt as any; }
-      }
-      addEventListener('scroll', update, { passive: true });
-      addEventListener('resize', update);
-      addEventListener('pointermove', (e) => journey.setPointer((e.clientX / innerWidth) * 2 - 1, (e.clientY / innerHeight) * 2 - 1));
-      setInterval(update, 100);
-      update();
-    </script>
+    </World>
 
     <style is:global>
       :root {
-        --ink: #f2e3d3;
-        --ink-soft: #d9c1ab;
-        --ink-faint: #a58b78;
-        --rust: #e08a5a;
-        --night: #120a08;
-        --display: 'Young Serif', Georgia, serif;
-        --text: 'Literata Variable', Georgia, serif;
-        --mono: 'IBM Plex Mono', ui-monospace, monospace;
-        --pad: clamp(20px, 6vw, 88px);
+        --ink: #f2e3d3; --ink-soft: #d9c1ab; --ink-faint: #a58b78; --accent: #e08a5a; --night: #120a08; --night-a: rgba(14,7,5,.82);
+        --display: 'Young Serif', Georgia, serif; --text: 'Literata Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+        --shade: linear-gradient(90deg, rgba(14,7,5,.72) 0%, rgba(14,7,5,.4) 38%, rgba(14,7,5,0) 66%);
+        --tshadow: 0 1px 14px rgba(10,5,4,.6);
       }
-      * { box-sizing: border-box; }
-      html { background: var(--night); }
-      body { margin: 0; color: var(--ink); font: 400 clamp(1.02rem, 0.96rem + 0.3vw, 1.2rem)/1.62 var(--text); -webkit-font-smoothing: antialiased; }
-      #journey { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
-      #haze { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
-        background: radial-gradient(120% 90% at 50% 100%, #f0b283 0%, #d58a5e 40%, #8e4d33 100%); }
-      #shade { position: fixed; inset: 0; z-index: 2; pointer-events: none;
-        background: linear-gradient(90deg, rgba(14,7,5,.72) 0%, rgba(14,7,5,.4) 38%, rgba(14,7,5,0) 66%); }
-      #topfade { position: fixed; z-index: 9; left: 0; right: 0; top: 0; height: 96px; pointer-events: none; background: linear-gradient(to bottom, rgba(14,7,5,.82), rgba(14,7,5,0)); }
-      .top { position: fixed; z-index: 10; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; gap: 16px; padding: 18px var(--pad); font: 400 .78rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
-      .top a { color: var(--ink); text-decoration: none; text-shadow: 0 1px 10px rgba(0,0,0,.55); }
-      .top .back { color: var(--ink-soft); }
-      .top a:hover { text-decoration: underline; text-underline-offset: 4px; }
-
-      .altitude { position: fixed; z-index: 10; right: var(--pad); top: 50%; transform: translateY(-50%); display: grid; justify-items: end; gap: 4px; font: 400 .72rem/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); text-shadow: 0 1px 8px rgba(0,0,0,.6); }
-      .alt-value { font-size: .95rem; color: var(--ink); letter-spacing: .02em; font-variant-numeric: tabular-nums; }
-      .ruler { position: relative; display: block; width: 1px; height: 38vh; margin-top: 10px; margin-right: 3px; background: repeating-linear-gradient(to bottom, var(--ink-faint) 0 1px, transparent 1px 12px); box-shadow: 0 0 0 0 transparent; }
-      .ruler::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 7px; background: repeating-linear-gradient(to bottom, var(--ink-soft) 0 1px, transparent 1px 12px); }
-      .ruler i { position: absolute; right: -2px; width: 17px; height: 2px; background: var(--rust); top: 0; transition: top .12s linear; }
-      @media (max-width: 760px) { .altitude { display: none; } .top .back { display: none; } }
-
-      main { position: relative; z-index: 5; }
-      .beat { min-height: 120svh; display: grid; align-content: center; gap: 56px; padding: 18svh var(--pad); }
-      .beat:first-child { min-height: 100svh; align-content: end; padding-bottom: 12svh; }
-      .copy { max-width: 31rem; }
-      .beat.wide .copy { max-width: 36rem; }
-      h1, h2 { font-family: var(--display); font-weight: 400; margin: 0 0 .5em; line-height: 1.04; letter-spacing: -.01em; text-wrap: balance; }
-      h1 { font-size: clamp(4.5rem, 17vw, 12rem); margin-bottom: .12em; color: var(--ink); }
-      h2 { font-size: clamp(1.9rem, 4.4vw, 3rem); }
-      .copy p { margin: 0 0 1em; color: var(--ink); text-shadow: 0 1px 14px rgba(10,5,4,.6); text-wrap: pretty; }
-      .lead { font-size: 1.28em; line-height: 1.45; color: var(--ink); max-width: 22em; }
-      .kicker { font: 400 .8rem/1.2 var(--mono) !important; letter-spacing: .1em; text-transform: uppercase; color: var(--rust) !important; margin-bottom: 1.2em !important; }
-      .aside { font-size: .84em; color: var(--ink-faint) !important; }
-
+      h1 { font-size: clamp(4.5rem, 17vw, 12rem); margin-bottom: .12em; letter-spacing: -.01em; }
+      h2 { font-size: clamp(1.9rem, 4.4vw, 3rem); letter-spacing: -.01em; }
+      .lead { font-size: 1.28em; line-height: 1.45; max-width: 22em; }
       .ground .copy p, .ground h2 { text-shadow: 0 1px 2px rgba(20,8,4,.55), 0 2px 24px rgba(20,8,4,.7); }
-
-      .profile { margin: 0; max-width: 62rem; color: var(--ink); }
-      .profile { overflow-x: auto; }
+      .profile { margin: 0; max-width: 62rem; color: var(--ink); overflow-x: auto; }
       .profile svg { min-width: 620px; width: 100%; height: auto; display: block; filter: drop-shadow(0 1px 8px rgba(20,8,4,.7)); }
-      .profile figcaption, .plates figcaption { font: 400 .74rem/1.5 var(--mono); letter-spacing: .03em; color: var(--ink-soft); margin-top: 8px; max-width: 46em; text-shadow: 0 1px 10px rgba(10,5,4,.8); }
-
       .plates { display: grid; gap: 40px; max-width: 64rem; }
       .plates figure { margin: 0; }
       .plates img { display: block; width: 100%; height: auto; box-shadow: 0 18px 50px rgba(8,3,2,.55); }
-      @media (min-width: 900px) {
-        .plates { grid-template-columns: 1.5fr 1fr; align-items: start; }
-        .plates .second { margin-top: 90px; }
-      }
-
-      .numbers { margin: 0 0 1.6em; display: grid; gap: 0; max-width: 29rem; }
-      .numbers div { display: flex; align-items: baseline; gap: 8px; padding: .32em 0; }
-      .numbers div::after { content: ''; order: 1; flex: 1; border-bottom: 1px dotted var(--ink-faint); transform: translateY(-.28em); }
-      .numbers dt { order: 0; color: var(--ink-soft); }
-      .numbers dd { order: 2; margin: 0; font: 400 .95rem var(--mono); font-variant-numeric: tabular-nums; }
-      .onward { display: flex; justify-content: space-between; gap: 20px; max-width: 29rem; margin: 2.2em 0 2em; font: 400 1.15rem var(--display); }
-      .onward a { color: var(--ink); text-underline-offset: 5px; }
-      .onward a:hover { color: var(--rust); }
-      .beat.last { min-height: 100svh; align-content: end; padding-bottom: 12svh; padding-top: 22svh; }
-
-      a:focus-visible { outline: 2px solid var(--rust); outline-offset: 4px; }
-      @media (prefers-reduced-motion: reduce) { .ruler i { transition: none; } }
-      @media (max-width: 760px) { #shade { background: linear-gradient(180deg, rgba(14,7,5,.2) 0%, rgba(14,7,5,.6) 55%, rgba(14,7,5,.75) 100%); } }
+      @media (min-width: 900px) { .plates { grid-template-columns: 1.5fr 1fr; align-items: start; } .plates .second { margin-top: 90px; } }
+      @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(14,7,5,.2) 0%, rgba(14,7,5,.6) 55%, rgba(14,7,5,.75) 100%); } }
     </style>
-  </body>
-</html>

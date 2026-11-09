@@ -4,6 +4,7 @@ import { bodies, planets } from '../data/bodies';
 import { phys, fmt, hoursToDay, daysToYear } from '../lib/format';
 import facts from '../data/facts.json';
 
+const worldSlugs = ['mars', 'venus', 'earth', 'jupiter'];
 const sceneBodies = bodies.map((b) => ({ slug: b.slug, name: b.name, color: b.color, tiltDeg: b.tiltDeg, retrograde: b.retrograde }));
 const panelData = Object.fromEntries(
   bodies.map((b) => {
@@ -15,6 +16,7 @@ const panelData = Object.fromEntries(
         name: b.name,
         kind: b.kind,
         tagline: b.tagline,
+        world: worldSlugs.includes(b.slug),
         rows: b.slug === 'sun'
           ? [['Radius', '695,700 km'], ['Surface', '5,772 K'], ['Spectral type', 'G2 V']]
           : [
@@ -30,6 +32,7 @@ const panelData = Object.fromEntries(
 );
 ---
 <Base title="Heliocodex" path="/">
+  <div id="veil" aria-hidden="true"></div>
   <section class="stage" id="stage">
     <canvas id="sky" aria-label="Interactive 3D model of the solar system. Drag to rotate, scroll to zoom, click a planet for details."></canvas>
     <div class="stage-title">
@@ -121,7 +124,8 @@ const panelData = Object.fromEntries(
         $('p-tag').textContent = d.tagline;
         $('p-rows').innerHTML = d.rows.map((r: string[]) => `<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
         ($('p-go') as HTMLAnchorElement).href = `/${slug}`;
-        $('p-go').textContent = `Read the full page on ${d.name}`;
+        $('p-go').textContent = d.world ? `Fall to the surface of ${d.name}` : `Read the full page on ${d.name}`;
+        $('p-go').dataset.world = d.world ? '1' : '';
         panel.classList.add('open');
       },
       onTick({ date, selected, distAU }) {
@@ -135,6 +139,16 @@ const panelData = Object.fromEntries(
     });
 
     $('panel-close').addEventListener('click', () => sys.select(null));
+    // Falling into a world: go dark while the camera closes in, then arrive in orbit on the other side.
+    $('p-go').addEventListener('click', (ev) => {
+      const a = ev.currentTarget as HTMLAnchorElement;
+      if (!a.dataset.world || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      ev.preventDefault();
+      const veil = $('veil');
+      sys.dive();
+      veil.classList.add('on');
+      setTimeout(() => { location.href = `${a.getAttribute('href')}?from=sys`; }, 1100);
+    });
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') sys.select(null); });
 
     const play = $('play');
@@ -159,3 +173,8 @@ const panelData = Object.fromEntries(
     });
   </script>
 </Base>
+
+<style is:global>
+  #veil { position: fixed; inset: 0; z-index: 60; background: #000; opacity: 0; pointer-events: none; transition: opacity 1.1s ease-in; }
+  #veil.on { opacity: 1; pointer-events: all; }
+</style>

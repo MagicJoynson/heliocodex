@@ -1,0 +1,101 @@
+---
+import '@fontsource/libre-caslon-display';
+import '@fontsource-variable/newsreader';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear, hoursToDay } from '../lib/format';
+
+const p = facts.planets.earth.physical as Record<string, number>;
+const rows: [string, string][] = [
+  ['Radius', `${fmt(p.radius_mean_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 4)} × 10²⁴ kg`],
+  ['Gravity at the surface', `${p.gravity_ms2} m/s²`],
+  ['Distance from the Sun', '1 au (149.6 million km)'],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['A day', '23 h 56 min (24 h from noon to noon)'],
+  ['Axial tilt', `${p.obliquity_deg}°`],
+  ['Average temperature', '15 °C'],
+  ['Moons', '1'],
+];
+---
+<World world="earth" title="Earth" description="Come in from the Moon's distance to the sea. Real NASA data and the Apollo 17 photograph of Earth." readout="Altitude">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Third planet · 1 au from the Sun</p>
+      <h1>Earth</h1>
+      <p class="lead">You already know this place. Here it is from the outside, with everything you can’t see from the ground.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>One big moon</h2>
+      <p>The Moon is a quarter of Earth’s width, which is huge for a moon. The best explanation is that a planet the size of Mars hit the young Earth and the debris pulled together into the Moon.</p>
+      <p>It pulls the tides, and it holds Earth’s tilt steady, so the seasons have stayed regular for billions of years.</p>
+      <p class="aside">The Moon is brought about six times closer than real so you can see it. Its true distance is around 384,000 km, which is thirty Earths side by side.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>A thin skin</h2>
+      <p>Half of the air is below 5.5 km, lower than the top of the Himalayas. The usual edge of space, 100 km up, is about an hour’s drive on a motorway if you could point the road upwards.</p>
+      <p>Within that skin are weather, oxygen made by life, and a layer of ozone that blocks the worst of the Sun’s ultraviolet. Take any of it away and the surface is a different place.</p>
+    </div>
+  </section>
+
+  <section class="beat ground" data-p="0.7">
+    <div class="copy">
+      <h2>Mostly water</h2>
+      <p>Seven tenths of the surface is ocean. The average depth is about 3.7 km. Gather all the water on Earth, oceans, ice, rivers and everything underground, into one ball and it would be about 1,400 km across, smaller than you might expect.</p>
+      <p>That much liquid water on the surface, for that long, is what makes Earth unusual among the planets we know.</p>
+      <p class="aside">The sea and sky here are generated: golden hour over open water, with an island in the distance.</p>
+    </div>
+  </section>
+
+  <section class="beat wide ground" data-p="0.9">
+    <div class="copy">
+      <h2>The photograph</h2>
+      <p>In December 1972 the crew of Apollo 17, on the way to the Moon, took what became one of the most reproduced photographs in history. Africa and the Antarctic ice are both in frame, because the Sun was behind the camera and lit the whole disc.</p>
+      <p>Eighteen years later Voyager 1, six billion kilometres away, turned its camera back on request and took Earth as a speck less than a pixel wide.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/earth-blue-marble.jpg" width="1100" height="1100" alt="The whole Earth against black space, with Africa and white Antarctic ice and swirls of cloud." loading="lazy" />
+      <figcaption>The whole Earth, photographed by the crew of Apollo 17, December 1972. Image: NASA.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last ground" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+      <p class="aside">NASA NSSDC Earth Fact Sheet and JPL orbital elements. Water-volume figure from the US Geological Survey.</p>
+      <nav class="onward"><a href="/venus">← Venus</a><a href="/mars">Mars →</a></nav>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #fff3e0; --ink-soft: #f0d9b8; --ink-faint: #c2a57f; --accent: #ffb46b; --night: #0b1522; --night-a: rgba(8,16,28,.78);
+    --display: 'Libre Caslon Display', Georgia, serif; --text: 'Newsreader Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: linear-gradient(0deg, rgba(8,14,24,.82) 0%, rgba(8,14,24,.35) 40%, rgba(8,14,24,0) 70%);
+    --tshadow: 0 1px 12px rgba(6,12,22,.7);
+  }
+  /* Earth: copy hangs at the bottom of each screen under a hairline, like a caption under a photograph */
+  .beat { align-content: end; padding-bottom: 12svh; gap: 40px; }
+  .beat:first-child { padding-bottom: 12svh; }
+  .copy { max-width: 36rem; border-top: 1px solid rgba(255,243,224,.4); padding-top: 1.1em; }
+  .beat:first-child .copy { border-top: 0; padding-top: 0; }
+  h1 { font-size: clamp(5rem, 19vw, 14rem); letter-spacing: -.03em; line-height: .9; margin-bottom: .12em; }
+  h2 { font-size: clamp(2.2rem, 4.8vw, 3.6rem); letter-spacing: -.02em; }
+  .lead { font-size: 1.3em; line-height: 1.45; max-width: 20em; }
+  .copy p { font-weight: 400; }
+  .plate { margin: 0; max-width: 34rem; }
+  .plate img { display: block; width: 100%; height: auto; box-shadow: 0 24px 70px rgba(2,6,12,.7); }
+  @media (min-width: 900px) { .beat.wide { grid-template-columns: minmax(0, 36rem) minmax(0, 34rem); align-items: end; column-gap: 8vw; } }
+  .ground .copy p, .ground h2 { text-shadow: 0 1px 2px rgba(6,12,22,.6), 0 2px 26px rgba(6,12,22,.75); }
+  body .altitude { top: 38%; text-shadow: 0 0 10px rgba(5,10,20,.95), 0 0 3px rgba(5,10,20,.9); }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(0deg, rgba(8,14,24,.85) 0%, rgba(8,14,24,.5) 55%, rgba(8,14,24,.1) 100%); } }
+</style>

@@ -261,6 +261,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
   controls.maxDistance = 1200;
   const followOffset = new THREE.Vector3();
   let flying = 0; // seconds remaining on a fly-to
+  let flyDur = 1.2;
   let flyFrom = new THREE.Vector3();
 
   function select(slug: string | null) {
@@ -273,7 +274,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       followOffset.copy(camera.position).sub(controls.target);
       followOffset.setLength(dist);
       flyFrom.copy(camera.position);
-      flying = 1.2;
+      flying = flyDur = 1.2;
       controls.minDistance = e.radius * 1.6;
       controls.target.copy(target);
     } else {
@@ -281,7 +282,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       followOffset.set(0, 55, 85);
       flyFrom.copy(camera.position);
       controls.target.set(0, 0, 0);
-      flying = 1.4;
+      flying = flyDur = 1.4;
     }
     opts.onSelect?.(slug);
   }
@@ -348,7 +349,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
     }
     if (flying > 0) {
       flying -= dt;
-      const k = 1 - Math.max(flying, 0) / (selected ? 1.2 : 1.4);
+      const k = 1 - Math.max(flying, 0) / flyDur;
       const ease = k * k * (3 - 2 * k);
       const dest = controls.target.clone().add(followOffset);
       camera.position.lerpVectors(flyFrom, dest, ease);
@@ -390,6 +391,14 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       rebuildOrbits();
       if (!selected) { camera.position.set(0, v ? 120 : 55, v ? 200 : 85); }
       controls.maxDistance = v ? 2500 : 1200;
+    },
+    dive() {
+      if (!selected) return;
+      const e = entries.get(selected)!;
+      controls.minDistance = 0.01;
+      followOffset.setLength(e.radius * 1.35);
+      flyFrom.copy(camera.position);
+      flying = flyDur = 1.1;
     },
     stepDays(d: number) { simTime += d * 86400000; T = centuriesSinceJ2000(simTime); rebuildOrbits(); },
   };

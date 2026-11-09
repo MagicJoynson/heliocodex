@@ -5,7 +5,8 @@ import { physicalRows, orbitRows, sunFacts, phys, fmt, hoursToDay, daysToYear } 
 import facts from '../data/facts.json';
 
 export function getStaticPaths() {
-  return bodies.map((b) => ({ params: { slug: b.slug } }));
+  const done = new Set(['mars', 'venus', 'earth', 'jupiter']);
+  return bodies.filter((b) => !done.has(b.slug)).map((b) => ({ params: { slug: b.slug } }));
 }
 const { slug } = Astro.params;
 const body = getBody(slug!)!;
