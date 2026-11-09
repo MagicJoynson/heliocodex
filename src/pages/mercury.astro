@@ -30,7 +30,6 @@ const rows: [string, string][] = [
 
   <section class="beat" data-p="0.17">
     <div class="copy">
-      <span class="no">01</span>
       <h2>A day longer than a year</h2>
       <p>Mercury goes round the Sun in 88 days and turns on its axis once every 59. The two fit together so that it turns exactly three times for every two trips round the Sun. Put them together and one sunrise to the next takes 176 days, two whole Mercury years.</p>
       <p>Its orbit is the most stretched of any planet. At the closest point the Sun looks more than three times as wide as it does from Earth. From some places on the surface the Sun rises, stops, slips back a little, then carries on.</p>
@@ -39,7 +38,6 @@ const rows: [string, string][] = [
 
   <section class="beat" data-p="0.4">
     <div class="copy">
-      <span class="no">02</span>
       <h2>Mostly iron</h2>
       <p>Mercury is only a little bigger than our Moon, but it is far heavier for its size. Its iron core reaches out to about 85 per cent of the way to the surface, which leaves a thin shell of rock on top. Nobody is sure why. One idea is that a huge collision early on stripped most of the rock away.</p>
       <p>That core still makes a weak magnetic field, about one per cent as strong as Earth’s.</p>
@@ -48,7 +46,6 @@ const rows: [string, string][] = [
 
   <section class="beat ground" data-p="0.7">
     <div class="copy">
-      <span class="no">03</span>
       <h2>No sky to speak of</h2>
       <p>Without air there is nothing to scatter sunlight, so the sky stays black even with the Sun up. Shadows are black too. There is no blue haze on the hills, so the far rim of this crater, twelve kilometres away, looks as sharp as the rocks at your feet.</p>
       <p>The Sun here is two and a half times as wide as from home. Mercury’s axis is almost exactly upright, so near the poles the Sun just circles round the horizon and never climbs far.</p>
@@ -57,7 +54,6 @@ const rows: [string, string][] = [
 
   <section class="beat wide ground" data-p="0.86">
     <div class="copy">
-      <span class="no">04</span>
       <h2>Ice, on the planet next to the Sun</h2>
       <p>The floors of many polar craters never see the Sun at all, not for a moment, and they stay at around −170 °C or colder. In 1991 radar from Earth picked up something bright inside them. MESSENGER, which orbited Mercury from 2011 to 2015, confirmed in 2012 that it is water ice.</p>
     </div>
@@ -69,7 +65,6 @@ const rows: [string, string][] = [
 
   <section class="beat wide ground" data-p="0.95">
     <div class="copy">
-      <span class="no">05</span>
       <h2>Wrinkled as it shrank</h2>
       <p>As the inside of Mercury cooled, the whole planet contracted. Its radius has shrunk by as much as seven kilometres. The crust had to go somewhere. It pushed up into long cliffs, some of them hundreds of kilometres long and more than a kilometre high. There is one beyond the far side of the crater.</p>
     </div>
@@ -81,7 +76,6 @@ const rows: [string, string][] = [
 
   <section class="beat last ground" data-p="1">
     <div class="copy">
-      <span class="no">06</span>
       <h2>In numbers</h2>
       <dl class="numbers">
         {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
@@ -104,14 +98,13 @@ const rows: [string, string][] = [
     --tshadow: 0 1px 10px rgba(0,0,0,.75);
     --scrim: rgba(0,0,0,.35);
   }
-  /* Mercury: hard light. Wide, light capitals, a single hairline down the side of the text, numbered like a field log */
+  /* Mercury: hard light. Wide, light capitals, a single hairline down the side of the text, nothing else */
   body { font-stretch: 100%; font-weight: 380; letter-spacing: .005em; }
   h1, h2 { font-stretch: 125%; text-transform: uppercase; }
   h1 { font-size: clamp(3.6rem, 13.5vw, 10rem); font-weight: 200; letter-spacing: .02em; line-height: .92; margin-bottom: .16em; }
   h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 300; letter-spacing: .03em; line-height: 1.1; }
   .lead { font-size: 1.2em; line-height: 1.5; max-width: 23em; font-weight: 340; }
   .beat:not(:first-child) .copy { border-left: 1px solid rgba(238,236,231,.38); padding-left: 1.4em; }
-  .no { display: block; font: 400 .72rem/1 var(--mono); letter-spacing: .14em; color: var(--accent); margin: 0 0 1.1em; }
   .copy p { line-height: 1.66; }
   .plate { margin: 0; max-width: 44rem; }
   .plate.tall { max-width: 30rem; }
