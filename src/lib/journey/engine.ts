@@ -78,8 +78,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
 
   // ---- lower scene --------------------------------------------------------
   const lower = world.buildLower();
-  (window as unknown as { __lower: unknown; __r: unknown }).__lower = lower;
-  (window as unknown as { __r: unknown }).__r = renderer;
+  const lowerFov = lower.camera.fov;
 
   // ---- driver -------------------------------------------------------------
   let progress = 0;
@@ -89,7 +88,12 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
   function resize() {
     const w = innerWidth, h = innerHeight;
     renderer.setSize(w, h, false);
-    for (const c of [camA, lower.camera]) { c.aspect = w / h; c.updateProjectionMatrix(); }
+    for (const c of [camA, lower.camera]) { c.aspect = w / h; }
+    // on a tall phone screen the lower scene would be a narrow slot; open it up so at least ~36 degrees fit across
+    const minH = THREE.MathUtils.degToRad(36);
+    const need = THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(minH / 2) / (w / h)));
+    lower.camera.fov = Math.min(Math.max(lowerFov, need), 72);
+    for (const c of [camA, lower.camera]) c.updateProjectionMatrix();
   }
   addEventListener('resize', resize);
   resize();

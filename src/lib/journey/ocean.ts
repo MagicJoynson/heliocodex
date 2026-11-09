@@ -88,9 +88,9 @@ export function createOcean(p: OceanParams): LowerScene {
 
   // ---- sky dome -----------------------------------------------------------
   const sky = new THREE.Mesh(
-    new THREE.SphereGeometry(80000, 64, 32),
+    new THREE.SphereGeometry(10, 64, 32),
     new THREE.ShaderMaterial({
-      side: THREE.BackSide, depthWrite: false, uniforms: U,
+      side: THREE.DoubleSide, depthWrite: false, depthTest: false, uniforms: U,
       vertexShader: `varying vec3 vD; void main(){ vD = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
       fragmentShader: `${SKY} varying vec3 vD;
         void main(){ vec3 d = normalize(vD); vec3 c = d.y > 0.0 ? skyCol(d) : skyCol(vec3(d.x, 0.0, d.z)) * 0.7; gl_FragColor = vec4(c, 1.0);
@@ -100,6 +100,7 @@ export function createOcean(p: OceanParams): LowerScene {
     }),
   );
   sky.frustumCulled = false;
+  sky.renderOrder = -1000;
   scene.add(sky);
 
   // ---- the sea: radial grid that follows the camera ----------------------
@@ -266,7 +267,8 @@ export function createOcean(p: OceanParams): LowerScene {
       const y = 3.2 + (reduce ? 0 : swellAt(0, z, t) * 0.55);
       camera.position.set(0, y, z);
       camera.rotation.order = 'YXZ';
-      camera.rotation.y = -pointer.sx * 0.1 + 0.06 * (1 - g);
+      // on a narrow screen turn a little towards the Sun so its glitter path stays in view
+      camera.rotation.y = -pointer.sx * 0.1 + 0.06 * (1 - g) - (camera.aspect < 0.8 ? 0.36 : 0);
       camera.rotation.x = -pointer.sy * 0.04 + 0.015 + (reduce ? 0 : Math.sin(t * 0.6) * 0.006);
       camera.rotation.z = reduce ? 0 : Math.sin(t * 0.45) * 0.008;
       U.camPos.value.copy(camera.position);

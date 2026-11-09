@@ -67,8 +67,20 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
         }
         return 1;
       }
+      // copy fades out as it reaches the header, rather than sliding underneath it
+      const fadeEls = [...document.querySelectorAll<HTMLElement>('main .copy > *, main figure')];
+      function fadeCopy() {
+        const top = innerWidth < 760 ? 46 : 64;
+        for (const el of fadeEls) {
+          const r = el.getBoundingClientRect();
+          const edge = r.top + Math.min(r.height * 0.5, 60);
+          const o = Math.min(1, Math.max(0, (edge - top) / 80));
+          el.style.opacity = o >= 0.999 ? '' : o.toFixed(3);
+        }
+      }
       let last = '';
       function update() {
+        fadeCopy();
         const p = progress();
         journey.setProgress(p);
         tick.style.top = `${p * 100}%`;
@@ -106,7 +118,9 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
       .beat { min-height: 120svh; display: grid; align-content: center; gap: 56px; padding: 18svh var(--pad); }
       .beat:first-child { min-height: 100svh; align-content: end; padding-bottom: 12svh; }
       .beat.last { min-height: 100svh; align-content: end; padding-bottom: 12svh; padding-top: 22svh; }
-      .copy { max-width: 31rem; }
+      .copy { max-width: 31rem; position: relative; }
+      /* a soft pool of shade behind copy that sits over bright sky */
+      .ground .copy::before, .sky .copy::before { content: ''; position: absolute; inset: -12% -18%; z-index: -1; pointer-events: none; background: radial-gradient(closest-side, var(--scrim, rgba(0,0,0,.3)), transparent); }
       .beat.wide .copy { max-width: 36rem; }
       h1, h2 { font-family: var(--display); font-weight: 400; margin: 0 0 .5em; line-height: 1.04; text-wrap: balance; }
       .copy p { margin: 0 0 1em; color: var(--ink); text-shadow: var(--tshadow); text-wrap: pretty; }

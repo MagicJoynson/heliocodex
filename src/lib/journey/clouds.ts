@@ -93,9 +93,9 @@ export function createClouds(p: CloudParams): LowerScene {
 
   // ---- sky with Io ---------------------------------------------------------
   const sky = new THREE.Mesh(
-    new THREE.SphereGeometry(8000, 64, 32),
+    new THREE.SphereGeometry(1, 64, 32),
     new THREE.ShaderMaterial({
-      side: THREE.BackSide, depthWrite: false, uniforms: U,
+      side: THREE.DoubleSide, depthWrite: false, depthTest: false, uniforms: U,
       vertexShader: `varying vec3 vD; void main(){ vD = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
       fragmentShader: /* glsl */ `${COMMON} ${SKY}
         uniform vec3 ioDir; uniform float flash; varying vec3 vD;
@@ -127,6 +127,7 @@ export function createClouds(p: CloudParams): LowerScene {
     }),
   );
   sky.frustumCulled = false;
+  sky.renderOrder = -1000;
   scene.add(sky);
 
   // ---- cloud deck ----------------------------------------------------------

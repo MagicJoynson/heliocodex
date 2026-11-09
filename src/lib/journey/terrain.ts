@@ -106,9 +106,9 @@ export function createTerrain(p: TerrainParams): LowerScene {
 
   // ---- sky ----------------------------------------------------------------
   const sky = new THREE.Mesh(
-    new THREE.SphereGeometry(150000, 64, 32),
+    new THREE.SphereGeometry(10, 64, 32),
     new THREE.ShaderMaterial({
-      side: THREE.BackSide, depthWrite: false,
+      side: THREE.DoubleSide, depthWrite: false, depthTest: false,
       uniforms: {
         zenith: { value: new THREE.Color(p.sky.zenith) }, horizon: { value: new THREE.Color(p.sky.horizon) },
         aureole: { value: new THREE.Color(p.sky.aureole) }, groundGlow: { value: new THREE.Color(p.sky.groundGlow) },
@@ -118,7 +118,8 @@ export function createTerrain(p: TerrainParams): LowerScene {
       fragmentShader: SKY_FRAG,
     }),
   );
-  sky.frustumCulled = false;
+  sky.frustumCulled = false; // a small dome drawn first with no depth test: it always sits behind everything and never clips
+  sky.renderOrder = -1000;
   scene.add(sky);
 
   // ---- terrain: radial grid ---------------------------------------------
