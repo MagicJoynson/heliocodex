@@ -4,6 +4,8 @@ import { createOcean } from './ocean';
 import { createClouds } from './clouds';
 import { createSaturnSky } from './saturn';
 import { createIceGiant } from './icegiant';
+import { createPhotosphere } from './photosphere';
+import type { Spot } from './star';
 import type { World } from './types';
 
 const fmtM = (m: number) => `${m.toFixed(1)} m`;
@@ -52,7 +54,39 @@ const URANUS_MOONS = ([
 const NEPTUNE_SUN = sunPlanet(-19.5, 65, 0);
 
 
+/**
+ * Sunspots on the Sun's face, [lat, lon, umbra km, penumbra km]. The first is the one the lower
+ * scene flies towards: 25,000 km due south of the landing point at 14° N.
+ */
+const SUN_SPOTS: Spot[] = [
+  [14 - 25000 / 12142, 0, 7000, 16000], [12.9, -3.4, 2600, 6200], [13.6, -4.9, 1500, 3600], [11.2, 2.6, 1200, 2800],
+  [-17, 24, 5200, 12000], [-16.2, 20.5, 2400, 5600], [-18.1, 27.4, 1300, 3000],
+  [21, -38, 3200, 8000],
+  [-9, -66, 5800, 13500], [-8.1, -62, 1800, 4200],
+];
+
 export const worlds: Record<string, World> = {
+  sun: {
+    slug: 'sun',
+    hazeCss: 'radial-gradient(120% 90% at 50% 100%, #fff1d6 0%, #f3a04a 40%, #3a0d02 100%)',
+    orbit: {
+      look: {
+        map: '', detail: 'bands', grain: 0, relief: 0, craters: 0,
+        air: [1, 0.7, 0.4], airDensity: 0, airHeight: 0, dusk: [1, 1, 1],
+        skyZenith: [0, 0, 0], skyHorizon: [0, 0, 0], skyTop: 0, ambient: 0, limbDark: 0,
+        star: SUN_SPOTS,
+      },
+      radiusKm: 695700, startAltRadii: 2.6, handoverAlt: 0.0046,
+      target: { lat: 14, lon: 0 }, startYaw: 0.35, startTilt: 0.12,
+      landing: { sunElev: 0, sunYaw: 0, faceYaw: 0, pitch: 4, sun: [1, 0, 0], faceSouth: true },
+      moons: [],
+    },
+    buildLower: () => createPhotosphere({
+      spot: { z: -250, umbra: 70, penumbra: 160 },
+      readout: (g) => `${Math.round((32 - 20 * g) * 100).toLocaleString('en-GB')} km`,
+    }),
+  },
+
   mars: {
     slug: 'mars',
     hazeCss: 'radial-gradient(120% 90% at 50% 100%, #f0b283 0%, #d58a5e 40%, #8e4d33 100%)',

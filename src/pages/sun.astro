@@ -1,0 +1,116 @@
+---
+import '@fontsource-variable/fraunces/full';
+import '@fontsource-variable/fraunces/full-italic';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+
+const rows: [string, string][] = [
+  ['Radius', '695,700 km, 109 Earths'],
+  ['Mass', '1,988,400 × 10²⁴ kg'],
+  ['Share of the solar system’s mass', '99.86 per cent'],
+  ['Surface (photosphere)', 'about 5,500 °C'],
+  ['Core', 'about 15 million °C'],
+  ['Corona', '1 to 2 million °C'],
+  ['One turn', '25 days (equator) to 35 (poles)'],
+  ['Light to Earth', '8 min 20 s'],
+  ['Age', 'about 4.6 billion years'],
+];
+---
+<World world="sun" title="The Sun" description="Fall from space towards the Sun and drift a few thousand kilometres above its boiling surface, towards a sunspot. Real NASA data and images." readout="Altitude">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Our star · 1 au away</p>
+      <h1>The Sun</h1>
+      <p class="lead">A ball of hot gas 109 times as wide as the Earth, holding almost everything in the solar system. Keep scrolling and you will drop to a few thousand kilometres above its surface, drifting towards a sunspot.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>Where the light starts</h2>
+      <p>In the core, at about 15 million °C, hydrogen is squeezed into helium. Every second around 600 million tonnes of hydrogen are used up, and about four million tonnes of it turns straight into energy.</p>
+      <p>That energy takes a very long time to get out. It is absorbed and given off again so many times on the way that it spends tens of thousands of years, possibly far longer, crossing the Sun. The last part of the trip, from the surface to your eyes, takes eight minutes and twenty seconds.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>No ground to stand on</h2>
+      <p>What looks like a surface is the photosphere, the layer where the gas finally becomes clear enough for light to escape. It is about 5,500 °C. There is nothing solid there, so the Sun does not even turn all in one piece: about 25 days at the equator and nearer 35 close to the poles.</p>
+      <p>Notice how the edge of the disc is darker and more orange. Looking at the edge you see into higher, cooler gas, and blue light fades there faster than red.</p>
+    </div>
+  </section>
+
+  <section class="beat surface" data-p="0.7">
+    <div class="copy">
+      <h2>Boiling</h2>
+      <p>The ground here is made of granules. Each bright cell is a column of hot gas welling up from below, around 1,500 km across, wider than Britain is long. At the top it cools, spreads out and sinks again down the dark lanes in between. A granule lasts about ten minutes before another takes its place, and the whole Sun is covered in them.</p>
+      <p>Ahead is a sunspot. A knot of magnetic field there chokes off the heat rising from below, so the middle is about 2,000 °C cooler than the rest and sits a few hundred kilometres lower. It only looks black by comparison. On its own it would still outshine the full Moon.</p>
+    </div>
+  </section>
+
+  <section class="beat wide surface" data-p="0.86">
+    <div class="copy">
+      <h2>Ten Earths wide</h2>
+      <p>In October 2014 the biggest sunspot group for a quarter of a century turned into view. NASA’s Solar Dynamics Observatory measured it at about 130,000 km across, wide enough to line up ten Earths. It threw out several large flares while it crossed the Sun’s face.</p>
+      <p>Sunspots come and go in a cycle of about eleven years. The latest peak came in late 2024, so there are still plenty about.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/sun/giant-sunspot-2014.jpg" width="952" height="952" alt="The Sun as an orange disc, darker towards the edge, with a large cluster of dark sunspots below the middle and a few small spots elsewhere." loading="lazy" />
+      <figcaption>Active region 2192, the largest sunspot group since 1990, on 23 October 2014. Solar Dynamics Observatory, visible light. Image: NASA/SDO/HMI.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat wide surface" data-p="0.95">
+    <div class="copy">
+      <h2>Touching the Sun</h2>
+      <p>Parker Solar Probe left Florida on 12 August 2018. On 24 December 2024 it passed 6.1 million km from the Sun’s surface, inside the corona, moving at about 690,000 km/h. No spacecraft has been closer, and nothing people have built has gone faster. A heat shield 11.5 cm thick keeps the instruments behind it near room temperature.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/sun/parker-launch.jpg" width="1920" height="1787" alt="A tall orange rocket with three cores lifting off at night between two launch towers, lit from below by its engines in a cloud of smoke." loading="lazy" />
+      <figcaption>A Delta IV Heavy carrying Parker Solar Probe lifts off from Cape Canaveral, 12 August 2018. Image: NASA/Bill Ingalls.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last surface" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">
+        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <p class="aside">NASA NSSDC Sun Fact Sheet and NASA Science. Never look at the Sun directly, through binoculars or a telescope without a proper solar filter: it can blind you in seconds.</p>
+      <nav class="onward">
+        <a href="/">← The solar system</a>
+        <a href="/mercury">Mercury →</a>
+      </nav>
+      <p class="aside">The surface here is generated, from what solar telescopes show: granules at their real size, the larger supergranule network, sunspots with their umbra, penumbra and Wilson depression, and the darkening towards the edge of the disc. It is shown in visible light, as your eyes would see it through a filter.</p>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #fff6ea; --ink-soft: #f1d9bd; --ink-faint: #c39a74; --accent: #ffc777; --night: #0a0503; --night-a: rgba(10,5,3,.86);
+    --display: 'Fraunces Variable', Georgia, serif; --text: 'Fraunces Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: linear-gradient(90deg, rgba(10,4,2,.82) 0%, rgba(10,4,2,.5) 38%, rgba(10,4,2,0) 66%);
+    --tshadow: 0 1px 10px rgba(10,4,2,.8);
+    --scrim: rgba(12,4,2,.55);
+  }
+  /* The Sun: a soft, heavy serif, and headings that glow as if lit from inside */
+  body { font-variation-settings: 'opsz' 14, 'SOFT' 50, 'WONK' 0; font-weight: 360; }
+  h1, h2 { font-weight: 640; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; letter-spacing: -.012em; }
+  h1 { font-size: clamp(4.4rem, 15vw, 11.5rem); line-height: .88; margin-bottom: .14em; text-shadow: 0 0 .35em rgba(255,170,80,.45), 0 0 1.2em rgba(255,120,40,.25); }
+  h2 { font-size: clamp(2.2rem, 4.6vw, 3.4rem); line-height: 1.02; text-shadow: 0 0 .5em rgba(255,160,70,.5), 0 0 1.4em rgba(255,110,30,.3); }
+  .lead { font-size: 1.2em; line-height: 1.5; max-width: 24em; }
+  .copy p { line-height: 1.62; }
+  .plate { margin: 0; max-width: 40rem; }
+  .plate img { display: block; width: 100%; height: auto; }
+  .plate img[src*='sunspot'] { border-radius: 50%; max-width: 32rem; margin-inline: auto; box-shadow: 0 0 80px rgba(255,140,40,.35); }
+  .surface .copy p, .surface h2 { text-shadow: 0 1px 2px rgba(10,3,1,.75), 0 2px 24px rgba(10,3,1,.85); }
+  .surface h2 { text-shadow: 0 0 .5em rgba(255,160,70,.45), 0 1px 2px rgba(10,3,1,.7), 0 2px 24px rgba(10,3,1,.8); }
+  .surface .aside { color: var(--ink-soft) !important; text-shadow: 0 1px 2px rgba(10,3,1,.9), 0 2px 18px rgba(10,3,1,.9); }
+  .surface figcaption { background: rgba(12,5,2,.62); padding: .5em .7em; border-radius: 2px; }
+  .onward { font: italic 500 1.25rem var(--display); }
+  @media (min-width: 900px) { .beat.wide { grid-template-columns: minmax(0, 32rem) minmax(0, 38rem); align-items: center; column-gap: 6vw; } }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(10,4,2,.2) 0%, rgba(10,4,2,.62) 55%, rgba(10,4,2,.82) 100%); } }
+</style>

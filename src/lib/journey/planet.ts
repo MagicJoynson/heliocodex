@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { SIMPLEX3 } from './shaders';
 import { createRingTexture, createRingMesh, RING_GLSL } from './rings';
+import { createStar, type Spot } from './star';
 
 /**
  * A planet seen from orbit and all the way down to a few kilometres up.
@@ -52,6 +53,8 @@ export interface PlanetLook {
   flattening?: number;
   /** how far cloud detail is drawn out along lines of latitude (default 2.4 for bands) */
   stretch?: number;
+  /** this is the Sun: a glowing photosphere with these sunspots instead of a lit globe */
+  star?: Spot[];
 }
 
 const VERT = /* glsl */ `
@@ -305,6 +308,7 @@ export interface Planet {
 }
 
 export function createPlanet(look: PlanetLook, maxTex: number, wantHi: boolean): Planet {
+  if (look.star) return createStar(look.star);
   const loader = new THREE.TextureLoader();
   const blank = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
   blank.needsUpdate = true;
