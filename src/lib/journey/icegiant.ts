@@ -33,6 +33,8 @@ export interface IceGiantParams {
   yaw?: number;
   /** camera pitch, radians (+ up) */
   pitch: number;
+  /** vertical field of view, degrees (56 by default) */
+  fov?: number;
   /** camera height at the start and end of the descent, km */
   heights: [number, number];
   /**
@@ -48,7 +50,7 @@ const v3 = (c: [number, number, number]) => `vec3(${c.map((x) => x.toFixed(3)).j
 
 export function createIceGiant(p: IceGiantParams): LowerScene {
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(56, 1, 0.05, 9000);
+  const camera = new THREE.PerspectiveCamera(p.fov ?? 56, 1, 0.05, 9000);
   const small = innerWidth < 760;
   const sunDir = new THREE.Vector3(...p.sunDir).normalize();
   // yaw that faces the Sun (camera looks down -z; +yaw turns left)
@@ -89,7 +91,7 @@ export function createIceGiant(p: IceGiantParams): LowerScene {
   }
   vec3 skyBase(vec3 d, vec3 L){
     float y = max(d.y, 0.0);
-    vec3 c = mix(${v3(p.horizon)}, ${v3(p.zenith)}, pow(y, 0.45));
+    vec3 c = mix(${v3(p.horizon)}, ${v3(p.zenith)}, 1.0 - exp(-y * 4.5));
     float s = max(dot(d, L), 0.0);
     // light scattered forward by the haze: a broad glow round the Sun, brightest near the horizon
     c += ${v3(p.horizon)} * (pow(s, 5.0) * 0.45 + pow(s, 40.0) * 0.5) * (1.0 - y * 0.6);
@@ -199,7 +201,7 @@ export function createIceGiant(p: IceGiantParams): LowerScene {
         vec3 lit = col * (diff * shade * 1.35 + amb * (0.55 + 0.45 * N.y));
         // thin edges of the billows catch light when you look towards the Sun
         lit += col * pow(max(dot(-V, L), 0.0), 6.0) * (1.0 - N.y) * 1.2 * shade;
-        vec3 hz = skyBase(normalize(vec3(V.x, 0.02, V.z)), L);
+        vec3 hz = skyBase(normalize(vec3(V.x, 0.0, V.z)), L);
         lit = mix(lit, hz, 1.0 - exp(-dist / ${p.haze.toFixed(1)}));
         gl_FragColor = vec4(lit, 1.0);
         #include <tonemapping_fragment>
@@ -233,7 +235,7 @@ export function createIceGiant(p: IceGiantParams): LowerScene {
           // bright on top, and glowing when the Sun is behind it
           float fwd = pow(max(dot(V, L), 0.0), 8.0);
           vec3 c = vec3(1.0, 0.99, 0.97) * (0.75 + 0.5 * smoothstep(0.0, 0.4, L.y) + fwd * 1.4);
-          vec3 hz = skyBase(normalize(vec3(V.x, 0.02, V.z)), L);
+          vec3 hz = skyBase(normalize(vec3(V.x, 0.0, V.z)), L);
           c = mix(c, hz, 1.0 - exp(-dist / ${(p.haze * 1.25).toFixed(1)}));
           a *= 1.0 - smoothstep(2600.0, 3400.0, dist);
           gl_FragColor = vec4(c, a * 0.92);

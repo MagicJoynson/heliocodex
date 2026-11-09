@@ -231,7 +231,7 @@ export const worlds: Record<string, World> = {
       sunDir: sunLocal(45, 0, URANUS_SUN), planetRadiusKm: 25559,
       deckDark: [0.4, 0.64, 0.68], deckLight: [0.66, 0.86, 0.87], horizon: [0.6, 0.8, 0.82], zenith: [0.04, 0.12, 0.2],
       haze: 800, cirrus: 0.3, cirrusHeight: 10, banding: 0.55,
-      yaw: 0, pitch: 0.3, heights: [70, 30],
+      yaw: 0, pitch: 0.3, fov: 70, heights: [70, 30],
       moons: URANUS_MOONS,
       exposure: 0.85,
       readout: (g) => `${(0.6 + g * 0.6).toFixed(2)} bar`,
