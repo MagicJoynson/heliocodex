@@ -44,7 +44,7 @@ export const worlds: Record<string, World> = {
     hazeCss: 'radial-gradient(120% 90% at 50% 100%, #8a847c 0%, #2c2a28 45%, #050505 100%)',
     orbit: {
       look: {
-        map: '4k_mercury.webp', mapHi: '8k_mercury.webp', detail: 'rock', grain: 0.4, relief: 1.3, craters: 1,
+        map: '4k_mercury.webp', mapHi: '8k_mercury.webp', detail: 'rock', grain: 0.22, relief: 0.9, craters: 0.9,
         air: [0, 0, 0], airDensity: 0, airHeight: 0.001, dusk: [1, 1, 1],
         skyZenith: [0, 0, 0], skyHorizon: [0, 0, 0], skyTop: 0.001, ambient: 0.008, limbDark: 0,
       },
