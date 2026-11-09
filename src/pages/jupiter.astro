@@ -6,7 +6,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 
-const p = facts.planets.jupiter.physical as Record<string, number>;
+const p = facts.planets.jupiter.physical as unknown as Record<string, number>;
 const e = facts.planets.jupiter.elements;
 const rows: [string, string][] = [
   ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],

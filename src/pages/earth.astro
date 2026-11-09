@@ -6,7 +6,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 
-const p = facts.planets.earth.physical as Record<string, number>;
+const p = facts.planets.earth.physical as unknown as Record<string, number>;
 const rows: [string, string][] = [
   ['Radius', `${fmt(p.radius_mean_km)} km`],
   ['Mass', `${fmt(p.mass_1e24kg, 4)} × 10²⁴ kg`],

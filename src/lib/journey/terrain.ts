@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { hash } from './noise';
 import { SIMPLEX3 } from './shaders';
+import { createStars } from './stars';
 import type { LowerScene } from './types';
 
 /**
@@ -13,7 +14,13 @@ import type { LowerScene } from './types';
 export interface TerrainParams {
   planetRadiusM: number;
   /** sky */
-  sky: { zenith: string; horizon: string; aureole: string; aureoleSize: number; aureoleAmount: number; sunDisc: number; groundGlow: string; toward?: number };
+  sky: { zenith: string; horizon: string; aureole: string; aureoleSize: number; aureoleAmount: number; sunDisc: number; groundGlow: string; toward?: number; sunSize?: number };
+  /** real stars over an airless sky, 0..1 */
+  stars?: number;
+  /** work out which distant ground is in the shadow of distant hills (the shadow map only covers the near field) */
+  farShadow?: boolean;
+  /** small impact craters pressed into the ground at your feet, 0..1 */
+  craterlets?: number;
   sunDir: [number, number, number];
   sunColor: string;
   sunIntensity: number;
@@ -38,6 +45,9 @@ export interface TerrainParams {
   height: (x: number, z: number) => number;
   eye: number;
   travel: number;
+  /** turn the view this far to the left of the direction of travel, and tip it down (radians) */
+  look?: number;
+  lookPitch?: number;
   dustMotes?: { color: string; count: number; opacity: number };
   exposure: number;
   readout: (g: number) => string;
@@ -45,7 +55,7 @@ export interface TerrainParams {
 }
 
 const SKY_FRAG = /* glsl */ `
-uniform vec3 zenith, horizon, aureole, groundGlow, sunDir; uniform float aureoleSize, aureoleAmount, sunDisc, toward;
+uniform vec3 zenith, horizon, aureole, groundGlow, sunDir; uniform float aureoleSize, aureoleAmount, sunDisc, toward, sunSize;
 varying vec3 vDir;
 void main(){
   vec3 d = normalize(vDir);
@@ -60,8 +70,10 @@ void main(){
   float a = acos(min(cosA, 1.0));
   c = mix(c, aureole, aureoleAmount * exp(-a * a / (aureoleSize * aureoleSize)));
   c += aureole * 0.15 * exp(-a * 3.0) * aureoleAmount;
-  float disc = smoothstep(0.0034, 0.0026, a) * sunDisc;
-  c = mix(c, vec3(1.0, 0.97, 0.92) * 4.0, disc);
+  float disc = smoothstep(sunSize * 1.13, sunSize * 0.87, a) * sunDisc;
+  // a little limb darkening across the disc
+  float mu = sqrt(max(0.0, 1.0 - pow(min(a / sunSize, 1.0), 2.0)));
+  c = mix(c, vec3(1.0, 0.97, 0.92) * 4.0 * (0.55 + 0.45 * mu) * (sunSize > 0.006 ? 2.5 : 1.0), disc);
   c = mix(c, groundGlow, smoothstep(0.0, -0.08, up));
   gl_FragColor = vec4(c, 1.0);
   #include <tonemapping_fragment>
@@ -85,9 +97,28 @@ vec2 cells(vec2 p){
   }
   return vec2(sqrt(d2) - sqrt(d1), d1);
 }
+uniform float craterlets;
+// a field of small bowl craters with raised rims, one chance per cell
+float pits(vec2 p, float seed){
+  vec2 i = floor(p), f = fract(p); float h = 0.0;
+  for (int y = -1; y <= 1; y++) for (int x = -1; x <= 1; x++) {
+    vec2 g = vec2(float(x), float(y));
+    vec3 r = hash33(vec3(i + g, seed));
+    if (r.z > 0.55) continue;
+    float rad = 0.12 + 0.36 * r.z * r.z / 0.3;
+    float d = length(g + r.xy - f) / rad;
+    // bowl and rim meet at the same height so there is no step for the lighting to catch
+    if (d < 1.0) h += (-(1.0 - d * d) * 0.14 + 0.04 * pow(d, 4.0)) * rad;
+    else h += exp(-pow((d - 1.0) / 0.35, 2.0)) * 0.04 * rad;
+  }
+  return h;
+}
 float groundH(vec2 p, float fw){
   // centimetre-to-metre roughness, faded out where it would shimmer
   float h = 0.0, a = 0.006, f = 9.0;
+  if (craterlets > 0.0) {
+    h += craterlets * pits(p / 1.4, 4.1) * 1.4 * smoothstep(0.3, 0.06, fw / 1.4);
+  }
   for (int i = 0; i < 6; i++) {
     float w = smoothstep(0.5, 0.15, f * fw);
     h += w * a * sn2(p * f + float(i) * 1.7);
@@ -112,7 +143,7 @@ export function createTerrain(p: TerrainParams): LowerScene {
       uniforms: {
         zenith: { value: new THREE.Color(p.sky.zenith) }, horizon: { value: new THREE.Color(p.sky.horizon) },
         aureole: { value: new THREE.Color(p.sky.aureole) }, groundGlow: { value: new THREE.Color(p.sky.groundGlow) },
-        sunDir: { value: sunDir }, toward: { value: p.sky.toward ?? 1 }, aureoleSize: { value: p.sky.aureoleSize }, aureoleAmount: { value: p.sky.aureoleAmount }, sunDisc: { value: p.sky.sunDisc },
+        sunDir: { value: sunDir }, toward: { value: p.sky.toward ?? 1 }, aureoleSize: { value: p.sky.aureoleSize }, aureoleAmount: { value: p.sky.aureoleAmount }, sunDisc: { value: p.sky.sunDisc }, sunSize: { value: p.sky.sunSize ?? 0.003 },
       },
       vertexShader: `varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
       fragmentShader: SKY_FRAG,
@@ -156,18 +187,80 @@ export function createTerrain(p: TerrainParams): LowerScene {
   geo.setIndex(idx);
   geo.computeVertexNormals();
 
+  // ---- distant shadows ----------------------------------------------------
+  // The shadow map only reaches ~20 m. Beyond that, march from each point towards the Sun across
+  // the terrain we have just built and see whether a ridge is in the way. Done on a coarse polar
+  // grid, then looked up per vertex and per rock.
+  const fct = small ? 1.042 : 1.028;
+  const ringOf = (r: number) => (r < 0.35 ? r / 0.35 : 1 + Math.log(r / 0.35) / Math.log(fct));
+  const heightAt = (x: number, z: number) => {
+    const dx = x - centre.x, dz = z - centre.y;
+    const r = Math.hypot(dx, dz);
+    const ri = Math.min(rings.length - 1.001, ringOf(r));
+    const i0 = Math.floor(ri), t = ri - i0;
+    let a = Math.atan2(dz, dx) / (Math.PI * 2) * ANG; if (a < 0) a += ANG;
+    const v = (i: number) => {
+      if (i === 0) return pos[1];
+      const aa = a - (i % 2) * 0.5, j0 = ((Math.floor(aa) % ANG) + ANG) % ANG, u = aa - Math.floor(aa), j1 = (j0 + 1) % ANG;
+      const b = 1 + (i - 1) * ANG;
+      return pos[(b + j0) * 3 + 1] * (1 - u) + pos[(b + j1) * 3 + 1] * u;
+    };
+    return v(i0) * (1 - t) + v(i0 + 1) * t;
+  };
+  const sunXZ = new THREE.Vector2(sunDir.x, sunDir.z);
+  const sunTan = sunDir.y / Math.max(1e-4, sunXZ.length());
+  sunXZ.normalize();
+  const VA = 192, VR = 140, vr0 = 6, vfct = Math.pow(120000 / vr0, 1 / (VR - 1));
+  let visGrid: Float32Array | null = null;
+  if (p.farShadow) {
+    visGrid = new Float32Array(VA * VR);
+    const soft = (p.sky.sunSize ?? 0.003) * 1.2;
+    for (let k = 0; k < VR; k++) {
+      const r = vr0 * Math.pow(vfct, k);
+      for (let j = 0; j < VA; j++) {
+        const a = (j / VA) * Math.PI * 2;
+        const x = centre.x + Math.cos(a) * r, z = centre.y + Math.sin(a) * r;
+        const h0 = heightAt(x, z) + 0.3;
+        let worst = -1e9;
+        for (let d = 2; d < 40000; d *= 1.09) {
+          const sx = x + sunXZ.x * d, sz = z + sunXZ.y * d;
+          if (Math.hypot(sx - centre.x, sz - centre.y) > 119000) break;
+          const e = (heightAt(sx, sz) - h0) / d;
+          if (e > worst) { worst = e; if (worst > sunTan + soft * 2) break; }
+        }
+        // soft edge across the width of the Sun's disc
+        const m = (sunTan - worst) / soft;
+        visGrid[k * VA + j] = Math.min(1, Math.max(0, 0.5 + 0.5 * m));
+      }
+    }
+  }
+  const visAt = (x: number, z: number) => {
+    if (!visGrid) return 1;
+    const dx = x - centre.x, dz = z - centre.y;
+    const r = Math.max(vr0, Math.hypot(dx, dz));
+    const kf = Math.min(VR - 1.001, Math.log(r / vr0) / Math.log(vfct));
+    let jf = Math.atan2(dz, dx) / (Math.PI * 2) * VA; if (jf < 0) jf += VA;
+    const k0 = Math.floor(kf), kt = kf - k0, j0 = Math.floor(jf) % VA, jt = jf - Math.floor(jf), j1 = (j0 + 1) % VA;
+    const g = (k: number, j: number) => visGrid![k * VA + j];
+    return (g(k0, j0) * (1 - jt) + g(k0, j1) * jt) * (1 - kt) + (g(k0 + 1, j0) * (1 - jt) + g(k0 + 1, j1) * jt) * kt;
+  };
+  const vis = new Float32Array(nV);
+  for (let i = 0; i < nV; i++) vis[i] = visAt(pos[i * 3], pos[i * 3 + 2]);
+  geo.setAttribute('aVis', new THREE.BufferAttribute(vis, 1));
+
   const groundUni = {
     cDust: { value: new THREE.Color(p.dust) }, cGravel: { value: new THREE.Color(p.gravel) }, cBed: { value: new THREE.Color(p.bedrock) },
-    cHaze: { value: new THREE.Color(p.haze) }, slabs: { value: p.slabs }, hazeDensity: { value: p.hazeDensity },
+    cHaze: { value: new THREE.Color(p.haze) }, slabs: { value: p.slabs }, hazeDensity: { value: p.hazeDensity }, craterlets: { value: p.craterlets ?? 0 },
   };
   const groundMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
   groundMat.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, groundUni);
     sh.vertexShader = sh.vertexShader
-      .replace('#include <common>', `#include <common>\n${GROUND_PARS_V}`)
-      .replace('#include <worldpos_vertex>', `#include <worldpos_vertex>\n  vW = (modelMatrix * vec4(transformed, 1.0)).xyz;`);
+      .replace('#include <common>', `#include <common>\n${GROUND_PARS_V}\nattribute float aVis; varying float vVis;`)
+      .replace('#include <worldpos_vertex>', `#include <worldpos_vertex>\n  vW = (modelMatrix * vec4(transformed, 1.0)).xyz; vVis = aVis;`);
     sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', `#include <common>\n${GROUND_PARS_F}`)
+      .replace('#include <common>', `#include <common>\n${GROUND_PARS_F}\nvarying float vVis;`)
+      .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>\n  reflectedLight.directDiffuse *= vVis;`)
       .replace('#include <map_fragment>', /* glsl */ `
         vec2 gp = vW.xz;
         float fw = length(fwidth(gp)) + 1e-4;
@@ -252,7 +345,7 @@ export function createTerrain(p: TerrainParams): LowerScene {
         q.setFromEuler(e);
         sc.set(s * (0.8 + hash(i, 17) * 0.6), s * (0.45 + hash(i, 19) * 0.4) * (p.rockFlat ?? 1), s * (0.8 + hash(i, 23) * 0.6));
         m.setMatrixAt(i, tmpM.compose(at, q, sc));
-        col.setScalar(0.7 + hash(i, 31) * 0.6);
+        col.setScalar((0.7 + hash(i, 31) * 0.6) * (0.2 + 0.8 * visAt(x, z)));
         m.setColorAt(i, col);
       }
       m.castShadow = cast;
@@ -286,6 +379,13 @@ export function createTerrain(p: TerrainParams): LowerScene {
     scene.add(motes);
   }
 
+  let starField: ReturnType<typeof createStars> | null = null;
+  if (p.stars) {
+    starField = createStars(400);
+    starField.setFade(p.stars);
+    scene.add(starField.group);
+  }
+
   const extraUpdate = p.extra?.(scene) || null;
 
   return {
@@ -298,9 +398,10 @@ export function createTerrain(p: TerrainParams): LowerScene {
       const y = hAt(0, z) + p.eye + (reduce ? 0 : Math.sin(t * 0.7) * 0.01);
       camera.position.set(0, y, z);
       camera.rotation.order = 'YXZ';
-      camera.rotation.y = -pointer.sx * 0.1 + 0.05 * (1 - g);
-      camera.rotation.x = -pointer.sy * 0.04 - 0.035 + 0.05 * (1 - g);
+      camera.rotation.y = (p.look ?? 0) - pointer.sx * 0.1 + 0.05 * (1 - g);
+      camera.rotation.x = (p.lookPitch ?? 0) - pointer.sy * 0.04 - 0.035 + 0.05 * (1 - g);
       sky.position.copy(camera.position);
+      starField?.group.position.copy(camera.position);
       sun.position.copy(camera.position).addScaledVector(sunDir, 200);
       sun.target.position.copy(camera.position).add(new THREE.Vector3(0, 0, -14));
       if (motes) {

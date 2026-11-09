@@ -26,7 +26,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
   const small = innerWidth < 760;
   renderer.setPixelRatio(Math.min(devicePixelRatio, small ? 2 : 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const o = world.orbit;
   haze.style.background = world.hazeCss;
@@ -141,7 +141,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       camA.rotateX(-pointer.sy * 0.015);
 
       stars.group.position.copy(pos);
-      stars.setFade(1 - clamp01((o.look.skyTop - h) / (o.look.skyTop * 0.6)) * (o.look.airDensity > 0.6 ? 1 : 0.6));
+      stars.setFade(o.look.airDensity <= 0 ? 1 : 1 - clamp01((o.look.skyTop - h) / (o.look.skyTop * 0.6)) * (o.look.airDensity > 0.6 ? 1 : 0.6));
       planet.update(camA, h, tSim);
       for (const { m, mesh } of moons) {
         const a = m.phase + tSim * m.speed;
