@@ -11,7 +11,7 @@ What the eye can see is a sample of the galaxy, but a very unfair one. This leve
 
 **How far.** These distances come from the same catalogue. They are worked out here from its positions.
 
-| Of the 4,940 stars to magnitude 6 | |
+| Of the 4,940 stars to magnitude 6 | How many, or how far |
 |---|---|
 | Within 100 light years | 466, fewer than one in ten |
 | Half lie within | About 350 light years |
