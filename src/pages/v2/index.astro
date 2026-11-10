@@ -3,6 +3,7 @@ import '@fontsource/spectral/200.css';
 import '@fontsource/spectral/300.css';
 import '@fontsource/spectral/300-italic.css';
 import '@fontsource/ibm-plex-mono/400.css';
+import Margin from '../../components/v2/Margin.astro';
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -49,6 +50,7 @@ import '@fontsource/ibm-plex-mono/400.css';
     <p class="tech" id="tech"></p>
     <p class="gen" id="gen"></p>
     <nav class="goto" id="goto" aria-label="Fly to"></nav>
+    <Margin />
 
     <script>
       import { createWorld } from '../../lib/v2/engine/world';
@@ -124,6 +126,8 @@ import '@fontsource/ibm-plex-mono/400.css';
           const { allBodies } = await import('../../data/bodies/index');
           world.registerLayer(createMoonsLayer(allBodies));
         });
+        // the guide: lessons, facts, glossary and atlas for wherever you are
+        import('../../lib/v2/margin/panel').then(({ mountMargin }) => mountMargin(world));
         // testing: ?debug exposes the engine to scripts
         if (params.has('debug')) (window as unknown as { __w: typeof world }).__w = world;
         // testing: ?t=2017-06-01 sets the clock

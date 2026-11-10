@@ -9,6 +9,7 @@ import { keplerPosition } from './kepler';
 import { landmarks } from './landmarks';
 import { bodyMarks, landmarkMarks, layout, readLength, RULES, spread, TOP } from './ruler';
 import { positionAU } from '../../orbit';
+import { chainFor, pick, type MarginData } from '../margin/pick';
 
 // A few lines of test harness, so the project needs no test library.
 const failed: string[] = [];
@@ -286,6 +287,46 @@ test('ruler: nothing touches, nothing is lost, and the planets and landmarks are
   const earth = marks.find((m) => m.id === 'earth-orbit')!;
   assert.ok(Math.abs(earth.metres - 1.496e11) < 1e9 && earth.value === '1.00 au');
   assert.equal(marks.find((m) => m.id === 'moon-width')!.value, '3,475 km wide');
+});
+
+// ---- the guide's choice of what to show (margin/pick.ts)
+const whoIs = (id: string) => allBodies.find((b) => b.id === id);
+const sample: MarginData = {
+  strands: { moons: 'Moons', planets: 'Planets', stars: 'Stars' },
+  lessons: [
+    { id: 'what-a-star-is', title: 'What a star is', strand: 'stars', summary: '', target: 'sun', terms: ['fusion'] },
+    { id: 'tides', title: 'Tides', strand: 'moons', summary: '', target: 'io', terms: ['tide', 'orbit'] },
+    { id: 'gas-giants', title: 'Gas giants', strand: 'planets', summary: '', target: 'jupiter', terms: ['orbit'] },
+  ],
+  facts: [
+    { id: 'f-jupiter', text: '', about: ['jupiter'], basis: 'measured', source: { label: '', url: '' } },
+    { id: 'f-io-second', text: '', about: ['jupiter', 'io'], basis: 'measured', source: { label: '', url: '' } },
+    { id: 'f-io', text: '', about: ['io'], basis: 'measured', source: { label: '', url: '' } },
+    { id: 'f-mars', text: '', about: ['mars'], basis: 'measured', source: { label: '', url: '' } },
+  ],
+  terms: [{ id: 'tide', term: 'Tide', short: '' }, { id: 'orbit', term: 'Orbit', short: '' }, { id: 'fusion', term: 'Fusion', short: '' }],
+};
+
+test('the guide: close to a moon, the moon comes first, then its planet, then the Solar System', () => {
+  assert.deepEqual(chainFor({ near: 'io', band: 'orbit', km: 500 }, whoIs), ['io', 'jupiter', 'sun', 'solar-system']);
+  assert.deepEqual(chainFor({ near: 'io', band: 'system', km: 7e8 }, whoIs)[0], 'solar-system');
+  assert.deepEqual(chainFor({ near: 'neptune', band: 'galactic', km: 1e17 }, whoIs)[0], 'milky-way');
+});
+
+test('the guide: facts about the place come first and nothing from elsewhere gets in', () => {
+  const got = pick({ near: 'io', band: 'orbit', km: 500 }, sample, whoIs);
+  assert.equal(got.subject, 'io');
+  assert.deepEqual(got.facts.map((f) => f.id), ['f-io', 'f-io-second']);
+  assert.deepEqual(got.wider.map((f) => f.id), ['f-jupiter']);
+  assert.deepEqual(got.lessons.map((l) => l.id), ['tides', 'gas-giants', 'what-a-star-is']);
+  assert.deepEqual(got.terms.map((t) => t.id), ['tide', 'orbit', 'fusion']);
+  assert.ok(![...got.facts, ...got.wider].some((f) => f.id === 'f-mars'));
+});
+
+test('the guide: a place with nothing written about it gives empty lists, not an error', () => {
+  const got = pick({ near: 'sedna', band: 'orbit', km: 900 }, { ...sample, facts: [], lessons: [] }, whoIs);
+  assert.equal(got.subject, 'sedna');
+  assert.equal(got.facts.length + got.lessons.length + got.terms.length, 0);
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');
