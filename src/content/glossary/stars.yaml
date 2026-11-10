@@ -29,8 +29,21 @@ terms:
     term: Nebula
     also: [nebulae]
     short: "A cloud of gas and dust in space. Some are where stars form and some are what dying stars throw off."
-    see: [protostar, supernova]
-    lesson: how-stars-live-and-die
+    see: [molecular-cloud, planetary-nebula, protostar, supernova]
+    lesson: nebulae-and-star-birth
+  - id: molecular-cloud
+    term: Molecular cloud
+    also: [stellar nursery]
+    short: "A cold, dark cloud of gas and dust in which stars form."
+    more: "One cloud holds from 1,000 to 10 million times the mass of the Sun and can be hundreds of light years across."
+    see: [nebula, protostar]
+    lesson: nebulae-and-star-birth
+  - id: planetary-nebula
+    term: Planetary nebula
+    short: "The glowing shell of gas blown off by a dying star like the Sun. It has nothing to do with planets."
+    more: "The name comes from early telescopes, in which some of these clouds looked like the round discs of planets."
+    see: [nebula, white-dwarf, red-giant]
+    lesson: nebulae-and-star-birth
   - id: protostar
     term: Protostar
     short: "A star in the making: a ball of gas still shrinking and heating up, before fusion has begun in its core."

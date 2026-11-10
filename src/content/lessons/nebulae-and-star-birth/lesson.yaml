@@ -1,0 +1,9 @@
+title: Nebulae and star birth
+strand: stars
+order: 7
+summary: "A nebula is a cloud of gas and dust between the stars. Some are where stars are being born, and others are what dying stars leave behind."
+scene: "The stars of Orion hang in the dark. Below the three stars of the belt, where the eye sees a faint smudge, thousands of new stars are forming inside a cloud."
+view: { target: night-sky }
+terms: [nebula, molecular-cloud, protostar, nuclear-fusion, protoplanetary-disc, planetary-nebula, supernova, ultraviolet]
+needs: [what-a-star-is]
+next: [how-stars-live-and-die, how-the-planets-formed]
