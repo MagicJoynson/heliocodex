@@ -37,3 +37,128 @@ facts:
     text: "More than 6,000 planets have been confirmed round other stars. The first round a star like the Sun was found in 1995."
     about: [neighbourhood, milky-way]
     source: { label: "NASA, exoplanets", url: "https://science.nasa.gov/exoplanets/" }
+
+  # ---- the Oort cloud
+  - id: oort-cloud-size
+    text: "The Oort cloud is thought to begin between 2,000 and 5,000 times the Earth's distance from the Sun and to end somewhere between 10,000 and 100,000 times. Its far edge may be more than a light year and a half away."
+    about: [oort-cloud]
+    basis: theory
+    source: { label: "NASA, Oort cloud facts", url: "https://science.nasa.gov/solar-system/oort-cloud/facts/" }
+  - id: oort-cloud-voyager
+    text: "Voyager 1 covers about a million miles a day. At that speed it will not reach the inner edge of the Oort cloud for about 300 years, and may take 30,000 years to come out of the far side."
+    about: [oort-cloud, voyager-1]
+    basis: worked-out
+    source: { label: "NASA, Oort cloud facts", url: "https://science.nasa.gov/solar-system/oort-cloud/facts/" }
+  - id: oort-cloud-name
+    text: "The cloud is named after the Dutch astronomer Jan Oort. In 1950 he proposed it to explain why comets on very long orbits come in from every direction, not along the flat plane the planets keep to."
+    about: [oort-cloud, comets]
+    source: { label: "NASA, Oort cloud facts", url: "https://science.nasa.gov/solar-system/oort-cloud/facts/" }
+  - id: oort-cloud-shape
+    text: "The Kuiper belt is a flat ring, but the Oort cloud is thought to be a round shell, wrapped right round the Sun in every direction. That is why it is called a cloud and not a belt."
+    about: [oort-cloud, solar-system]
+    basis: theory
+    source: { label: "NASA, Oort cloud facts", url: "https://science.nasa.gov/solar-system/oort-cloud/facts/" }
+
+  # ---- the Sun's neighbourhood
+  - id: alpha-centauri-three
+    text: "The nearest star system is three stars. Alpha Centauri A and B are a close pair, and little Proxima goes round the two of them about once in 550,000 years."
+    about: [neighbourhood]
+    source: { label: "Kervella et al. 2017, Astronomy & Astrophysics 598, L7", url: "https://doi.org/10.1051/0004-6361/201629930" }
+  - id: proxima-b
+    text: "Proxima Centauri has a planet at least 1.3 times the mass of the Earth, going round it every 11 days. It is the nearest planet known outside the Solar System."
+    about: [neighbourhood, planets-round-other-stars]
+    source: { label: "European Southern Observatory, 24 August 2016: planet found round the nearest star", url: "https://www.eso.org/public/news/eso1629/" }
+  - id: neighbours-are-dim
+    text: "Of the 108 stars this site's catalogue holds within 20 light years, 85 give out less than a thirtieth of the Sun's visible light. Only six outshine the Sun. The typical star is small, red and far too faint to see by eye."
+    about: [neighbourhood, what-a-star-is]
+    basis: worked-out
+    source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+  - id: sirius-near-and-bright
+    text: "Sirius, the brightest star in the night sky, is also one of the nearest, 8.6 light years away. It looks bright mostly because it is close. Rigel, in Orion, gives out about 2,000 times more light from a hundred times further off."
+    about: [neighbourhood, night-sky, colour-and-brightness]
+    basis: worked-out
+    source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+
+  # ---- the night sky
+  - id: orions-belt-depth
+    text: "The three stars of Orion's Belt look like neighbours, but they are not. Mintaka and Alnitak are about 700 light years away, and Alnilam, the middle one, is given as nearly 2,000. A constellation is a pattern seen from here, not a group in space."
+    about: [night-sky]
+    basis: worked-out
+    source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+  - id: deneb-old-light
+    text: "Deneb is one of the most distant stars that is easy to see, about 1,400 light years away. The light reaching your eye tonight left it around the year 600."
+    about: [night-sky, light-the-only-messenger]
+    basis: worked-out
+    source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+  - id: naked-eye-reach
+    text: "Fewer than one in ten of the stars you can see by eye are within 100 light years. Even so, the whole cloud of them is a speck beside the galaxy: nine in ten lie within 1,000 light years, and the Milky Way's disc is 100,000 across."
+    about: [night-sky, milky-way]
+    basis: worked-out
+    source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+
+  # ---- the Milky Way
+  - id: sun-from-centre
+    text: "The Sun is about 26,700 light years from the centre of the Milky Way. The figure comes from following one star for 27 years as it swung round the black hole there."
+    about: [milky-way]
+    source: { label: "GRAVITY Collaboration 2019, Astronomy & Astrophysics 625, L10", url: "https://doi.org/10.1051/0004-6361/201935656" }
+  - id: gaia-census
+    text: "The Gaia spacecraft has measured the brightness of about 1.8 billion stars, and the distance and motion of about 1.5 billion of them. The distances come from parallax: the tiny shift in a star's place in the sky as the Earth goes round the Sun."
+    about: [milky-way, measuring-distance]
+    source: { label: "ESA Gaia Data Release 3", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
+  - id: milky-way-from-inside
+    text: "The Milky Way is a spiral galaxy with a disc of stars more than 100,000 light years across. We live inside it, about half way out from the centre, so every picture of the whole galaxy, including the one here, is a model."
+    about: [milky-way, night-sky]
+    source: { label: "NASA, galaxies", url: "https://science.nasa.gov/universe/galaxies/" }
+
+  # ---- the Local Group
+  - id: andromeda-collision-uncertain
+    text: "For years the Milky Way and Andromeda were expected to collide in about five billion years. A 2025 study using the latest measurements found the chance of that within ten billion years is only about even."
+    about: [local-group]
+    basis: theory
+    source: { label: "Sawala et al. 2025, Nature Astronomy 9, 1206", url: "https://doi.org/10.1038/s41550-025-02563-1" }
+  - id: local-group-dwarfs
+    text: "The Local Group has two big galaxies, the Milky Way and Andromeda, and one middling one, Triangulum. Nearly all the rest are dwarfs, and the faintest give out only a few hundred times the light of the Sun, less than many single stars. About a hundred galaxies are known in and around it."
+    about: [local-group, kinds-of-galaxy]
+    basis: worked-out
+    source: { label: "McConnachie 2012, Astronomical Journal 144, 4", url: "https://doi.org/10.1088/0004-6256/144/1/4" }
+  - id: magellanic-clouds
+    text: "The Large and Small Magellanic Clouds are two small galaxies about 170,000 and 210,000 light years away. Both can be seen by eye from the southern half of the Earth."
+    about: [local-group, milky-way]
+    source: { label: "McConnachie 2012, Astronomical Journal 144, 4", url: "https://doi.org/10.1088/0004-6256/144/1/4" }
+
+  # ---- the cosmic web
+  - id: laniakea
+    text: "Our galaxy belongs to a gathering of about 100,000 galaxies called Laniakea, some 520 million light years across. It was mapped in 2014 by working out which way galaxies are being pulled."
+    about: [cosmic-web, local-group]
+    source: { label: "Tully et al. 2014, Nature 513, 71", url: "https://doi.org/10.1038/nature13674" }
+  - id: virgo-cluster-distance
+    text: "The nearest big cluster of galaxies is the Virgo Cluster, 16.5 megaparsecs away, which is about 54 million light years."
+    about: [cosmic-web]
+    source: { label: "Mei et al. 2007, Astrophysical Journal 655, 144", url: "https://doi.org/10.1086/509598" }
+  - id: hubble-tension
+    text: "How fast is the universe expanding? Measuring the distances of galaxies gives 73 km a second for every megaparsec. The oldest light gives 67. Each is too precise for the gap to be chance, and nobody yet knows which assumption is wrong."
+    about: [cosmic-web, cmb, the-expanding-universe]
+    source: { label: "Riess et al. 2022, Astrophysical Journal Letters 934, L7", url: "https://doi.org/10.3847/2041-8213/ac5c5b" }
+  - id: ultra-deep-field
+    text: "Over four months in 2003 and 2004 the Hubble telescope collected light from one small patch of sky for a total of 11.3 days. The picture holds about 10,000 galaxies."
+    about: [cosmic-web, telescopes]
+    source: { label: "NASA, the Hubble Ultra Deep Field", url: "https://science.nasa.gov/asset/hubble/hubble-ultra-deep-field/" }
+
+  # ---- the oldest light
+  - id: cmb-release
+    text: "For its first 380,000 years the universe was a glowing fog that light could not cross. When it cooled to about 3,000 degrees, atoms formed, the fog cleared, and that light has been travelling ever since."
+    about: [cmb, the-expanding-universe]
+    source: { label: "ESA, Planck and the cosmic microwave background", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_and_the_cosmic_microwave_background" }
+  - id: cmb-cold-now
+    text: "The oldest light set out as the orange glow of gas at 3,000 degrees. Space has stretched so much since that it now arrives as microwaves, at 2.7 degrees above absolute zero: a stretch of about 1,100 times."
+    about: [cmb, the-whole-spectrum]
+    basis: worked-out
+    source: { label: "ESA, Planck and the cosmic microwave background", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_and_the_cosmic_microwave_background" }
+  - id: cmb-smooth
+    text: "The oldest light is almost perfectly even. The warm and cool patches on the map differ by about one part in 100,000. Those faint patches are the seeds that grew into every galaxy."
+    about: [cmb, cosmic-web]
+    source: { label: "ESA, Planck and the cosmic microwave background", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_and_the_cosmic_microwave_background" }
+  - id: cmb-found-by-accident
+    text: "The oldest light was found by accident in 1964, as a microwave signal stronger than anyone expected. Arno Penzias and Robert Wilson shared a Nobel Prize for it in 1978."
+    about: [cmb]
+    source: { label: "Nobel Prize in Physics 1978, Arno Penzias", url: "https://www.nobelprize.org/prizes/physics/1978/penzias/facts/" }

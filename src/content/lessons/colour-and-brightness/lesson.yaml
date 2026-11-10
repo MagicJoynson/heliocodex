@@ -3,7 +3,7 @@ strand: stars
 order: 2
 summary: "A star's colour tells you how hot it is, and its true brightness tells you how big. Plot one against the other and the stars fall into order."
 scene: "The stars near the Sun, each shown in its true colour, sliding out of the sky and into place on a chart of temperature against brightness."
-view: { target: sun, distanceKm: 950000000000000, highlight: [stars] }
+view: { target: night-sky, highlight: [stars] }
 terms: [blackbody, kelvin, spectral-type, hr-diagram, luminosity, apparent-magnitude, absolute-magnitude, parallax]
 needs: [what-a-star-is, light-the-only-messenger]
 next: [how-stars-live-and-die]
