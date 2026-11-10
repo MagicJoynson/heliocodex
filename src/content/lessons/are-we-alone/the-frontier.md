@@ -31,7 +31,7 @@ The two ends of each range come from two extreme ways of allowing for planets Ke
 
 What this figure does not say matters as much. A planet in the habitable zone gets the right amount of starlight for liquid water. Whether it has water, air or life has not been measured for any of them.
 
-**Measured: some gases in one distant atmosphere.** K2-18 b is a temperate planet smaller than Neptune. The Webb telescope found methane in its air at 5 sigma and carbon dioxide at 3 sigma. The team that found them explains both by ordinary chemistry, with no need for life. The dispute described below is about a different gas.
+**Measured: some gases in one distant atmosphere.** K2-18 b is a temperate planet smaller than Neptune. The Webb telescope found methane in its air at 5 sigma and carbon dioxide at 3 sigma. Neither gas needs life to explain it, and the team that found them did not claim it did. The dispute described below is about a different gas.
 
 **Claimed and disputed.** Each of the following was reported in a serious journal, and each ran into trouble when others checked it.
 
@@ -57,7 +57,7 @@ A second study of the K2-18 b claim made a wider point. Whether a faint gas appe
 | 6 | Several independent lines of evidence, with rival explanations dismissed |
 | 7 | Follow-up observations, made because of the earlier steps, that find what life would predict |
 
-By the authors' own reckoning the meteorite reached step 3 and no higher. They judged in advance that a rover on Mars could reach step 3, and that only samples studied on Earth could reach step 6. They single out step 4 as especially hard for planets that can only be studied from afar. The Martian rock of 2024 has met the same limit. Its team says explanations without life cannot be ruled out, and ruling them out is step 4.
+By the authors' own reckoning the meteorite reached step 3 and no higher. They judged in advance that a rover on Mars could reach step 3, and that only samples studied on Earth could reach step 6. They single out step 4 as especially hard for planets that can only be studied from afar. NASA has not placed the Martian rock of 2024 on the scale. But its team says explanations without life cannot be ruled out, and ruling them out is step 4, so by the scale's own terms it has not passed that step.
 
 **Why one gas is never enough.** Oxygen was once thought a sure sign of life. A review of the question found it fails in both directions. Life on Earth may have gone several billion years without filling the air with oxygen, so a living planet can show none. And there are ways for a lifeless planet to build up a good deal of it. Oxygen counts as evidence only when the rest of the planet's circumstances are known well enough to rule those out.
 
@@ -72,7 +72,7 @@ $N$ is the number of civilisations in the Milky Way giving out signals that coul
 | Factor | Meaning | State of knowledge |
 | --- | --- | --- |
 | $R_*$ | Suitable stars formed each year | Measured. It was the only factor known in 1961 |
-| $f_p$ | Fraction of those stars with planets | Measured. The 1961 guess, nearly all of them, is within a factor of two or three of modern estimates |
+| $f_p$ | Fraction of those stars with planets | Measured. The 1961 guess, close to all of them, agrees with modern surveys |
 | $n_e$ | Planets in each system fit for life | Partly measured. The Kepler figure above counts planets of the right size at the right distance, not planets known to be fit for life |
 | $f_l$ | Fraction of those where life appears | Unknown. One example, the Earth |
 | $f_i$ | Fraction of those where intelligence arises | Unknown |
