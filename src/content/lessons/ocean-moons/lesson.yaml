@@ -1,0 +1,9 @@
+title: Moons with oceans
+strand: moons
+order: 2
+summary: "Several icy moons hide seas of liquid water under their crusts, kept warm by tides. They are the likeliest places to look for life."
+scene: "Enceladus from over its south pole, with the jets lit from behind, then down through the ice to the sea beneath."
+view: { target: enceladus, facing: saturn, distanceKm: 1500 }
+terms: [subsurface-ocean, tidal-heating, cryovolcanism, resonance, moon]
+needs: [what-a-moon-is, tides]
+next: [moons-in-step]

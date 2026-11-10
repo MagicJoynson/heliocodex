@@ -1,0 +1,8 @@
+title: Moons in step
+strand: moons
+order: 3
+summary: "Some moons keep time with each other, lapping their neighbours in exact whole numbers. That rhythm heats Io, carves gaps in rings and makes two moons swap places."
+scene: "Jupiter from above with Io, Europa and Ganymede going round, and a mark each time two of them line up. The marks always fall in the same places."
+view: { target: jupiter, distanceKm: 4000000, highlight: [io, europa, ganymede] }
+terms: [resonance, orbital-period, tidal-heating, shepherd-moon, eccentricity]
+needs: [what-a-moon-is, keplers-laws]
