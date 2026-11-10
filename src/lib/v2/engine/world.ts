@@ -1,12 +1,14 @@
 import * as THREE from 'three/webgpu';
-import { createSky, GLINT } from './sky';
+import { createSky, GLINT, FAR as SKY_FAR } from './sky';
+import { createDeep, PC, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
 import { createTerrain } from './terrain';
 import { loadDemSpec } from './dem';
 import type { SourceSpec } from './tilebuild';
 import { createFlight } from './flight';
 import { createSystem } from './system';
 import { POLES } from '../atlas/kepler';
-import { AU, add, len, norm, scale, sub, cross, type V3 } from './vec';
+import { positionAU, centuriesSinceJ2000 } from '../../orbit';
+import { AU, add, len, norm, scale, sub, cross, smooth, type V3 } from './vec';
 import type { Context, Engine, Layer, View } from './index';
 
 /**
@@ -26,6 +28,8 @@ export interface Readout {
   tech: string; // renderer, depth mode, tiles
   /** what on screen is generated rather than measured, when anything is */
   note?: string;
+  /** out beyond the planets, where the distance that matters is from the Sun */
+  far?: boolean;
 }
 
 export interface Quality { tier: 0 | 1 | 2 | 3; scale: number; split: number; maxTiles: number; antialias: boolean; target: number; maxPx: number }
@@ -91,7 +95,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   await terrain.ready;
 
   // ---- scenes: the space layer first, then the local scene with depth
-  const sky = createSky();
+  const sky = createSky({ catalogue: false });
+  // beyond the Solar System: stars at their real distances, our galaxy, its neighbours, the cosmic web
+  const deep = createDeep({ scene: sky.scene, far: SKY_FAR, particles: [40_000, 70_000, 110_000, 150_000][quality.tier], labelsAfter: o.canvas, pxRatio: Math.min(devicePixelRatio, 2) });
   for (const p of PLANETS) if (p !== bodySlug) sky.glint(p, GLINT[p]);
   sky.glint(bodySlug, GLINT[bodySlug]);
 
@@ -177,6 +183,30 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   }
 
   // ---- size and resolution, with a governor that trades sharpness for a steady frame rate
+  // ---- the planets' orbits, for the wide views: drawn without depth, faded in from about 3 au out
+  const PERIOD_YEARS: Record<string, number> = { mercury: 0.2408, venus: 0.6152, earth: 1, mars: 1.8809, jupiter: 11.862, saturn: 29.457, uranus: 84.011, neptune: 164.79 };
+  const orbitMat = new THREE.LineBasicNodeMaterial({ color: 0xece7dc, transparent: true, opacity: 0, depthTest: false, depthWrite: false });
+  const orbits = new THREE.Group();
+  {
+    const T0 = centuriesSinceJ2000(Date.now());
+    for (const p of PLANETS) {
+      const n = 512, pts: number[] = [];
+      for (let i = 0; i <= n; i++) {
+        const q = positionAU(p, T0 + (PERIOD_YEARS[p] * i) / n / 100);
+        pts.push(q[0] * AU, q[2] * AU, -q[1] * AU); // ecliptic to the engine frame
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+      const line = new THREE.Line(g, orbitMat);
+      line.frustumCulled = false;
+      line.renderOrder = -1;
+      orbits.add(line);
+    }
+    orbits.visible = false;
+    local.add(orbits);
+  }
+  const PLANET_NAMES: Record<string, string> = { mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
+
   const maxRatio = Math.min(devicePixelRatio, 2);
   let ratio = maxRatio * quality.scale;
   function resize() {
@@ -202,6 +232,37 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   // ---- what the camera is near, for the margin
   const contextCbs = new Set<(c: Context) => void>();
+  /**
+   * Out beyond the planets the place that matters is a rung of the scale ladder, not a body: which
+   * one, by distance from the Sun. Inside 50 au (or nearer a body than the Sun) it is the body.
+   */
+  const PLACE_NAMES: Record<string, string> = {
+    'solar-system': 'the Solar System', 'oort-cloud': 'the Oort cloud', neighbourhood: 'the Sun’s neighbourhood',
+    'night-sky': 'the stars of our night sky', 'milky-way': 'the Milky Way', 'local-group': 'the Local Group',
+    'cosmic-web': 'the cosmic web', cmb: 'the edge of what we can see',
+  };
+  /** what is drawn from a model rather than measured, out where each place is */
+  const PLACE_NOTES: Record<string, string> = {
+    'solar-system': 'The Kuiper belt is drawn from a model; its bodies are far too small to see from here',
+    'oort-cloud': 'The Oort cloud is drawn from a model; nobody has seen it, only comets that come from it',
+    'milky-way': 'Our galaxy’s shape is a model built from measurements; we cannot see it from outside',
+    'local-group': 'Andromeda, Triangulum and the Magellanic Clouds are models, placed and tilted as measured',
+    'cosmic-web': 'Each point is a measured galaxy; distances come from redshift, which stretches clusters towards us',
+    cmb: 'The oldest light’s differences, a few parts in 100,000, are shown far stronger than they are',
+  };
+  function placeAt(fromSun: number, nearId: string): { id: string; band: Context['band'] } | null {
+    const pc = fromSun / PC;
+    if (pc < 1) {
+      if (nearId !== 'sun' || fromSun < 50 * AU) return null;
+      return fromSun < 2000 * AU ? { id: 'solar-system', band: 'system' } : { id: 'oort-cloud', band: 'interstellar' };
+    }
+    if (pc < 100) return { id: 'neighbourhood', band: 'interstellar' };
+    if (pc < 3000) return { id: 'night-sky', band: 'interstellar' };
+    if (pc < 3e5) return { id: 'milky-way', band: 'galactic' };
+    if (pc < 1e7) return { id: 'local-group', band: 'galactic' };
+    if (pc < 5e9) return { id: 'cosmic-web', band: 'cosmic' };
+    return { id: 'cmb', band: 'cosmic' };
+  }
   let lastCtx: Context | null = null, ctxAt = 0, ctxClock = 0, forceCtx = false;
   // the bodies that can be "near": the Sun, the planets, every moon with a measured size
   const SPHERES = ['sun', ...PLANETS, ...allBodies.filter((b) => b.kind === 'moon' && b.meanRadiusKm).map((b) => b.id)];
@@ -293,13 +354,24 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const bodyRel = sub(bodyPos, cam);
     const dBody = len(bodyRel);
     camera.near = THREE.MathUtils.clamp(f.alt * 0.02, 0.05, 2e5);
-    camera.far = 1e13; // about 67 au: reversed-z and log depth both keep precision across it
+    // about 67 au, or more from far out so the orbits fit: reversed-z and log depth both keep precision across it
+    camera.far = Math.max(1e13, len(cam) * 3);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
 
     // the space layer
     const sunRel = sub(sunPos, cam);
     sky.update(camera, sunRel, PLANETS.map((p) => ({ slug: p, rel: sub(planetPos[p], cam), radius: RADII[p] })), o.canvas.clientHeight);
+    const fromSunPc = len(cam) / PC;
+    sky.glowGain.value = 1 - smooth(300, 3000, fromSunPc);
+    // the orbits and the planets' names, for the views from well above the Sun
+    const fromSunAU = len(cam) / AU;
+    const wide = smooth(3, 15, fromSunAU) * (1 - smooth(800, 3000, fromSunAU));
+    orbitMat.opacity = 0.22 * wide;
+    orbits.visible = wide > 0.005;
+    if (orbits.visible) orbits.position.set(-cam[0], -cam[1], -cam[2]);
+    const extra = wide > 0.005 ? PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), alpha: wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1) })) : undefined;
+    deep.update({ cam, quaternion: camera.quaternion, fovDeg: camera.fov, heightPx: o.canvas.clientHeight, widthPx: o.canvas.clientWidth, starGain: sky.starGain.value, extra });
 
     // light: from the Sun's direction (only the direction matters)
     const sd = norm(sunRel);
@@ -308,8 +380,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
     // the other planets: a globe once it is more than a pixel or so across
     const pxPerRad = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
-    // a dwarf planet you fly to gets a plain globe of its own (moons are drawn by their layer)
-    if (focusId && !globes.has(focusId) && system.body(focusId)?.kind === 'dwarf' && radOf(focusId)) makeGlobe(focusId, radOf(focusId));
+    // a dwarf planet, asteroid or comet you fly to gets a plain globe of its own (moons are drawn by their layer)
+    if (focusId && !globes.has(focusId) && ['dwarf', 'asteroid', 'comet'].includes(system.body(focusId)?.kind ?? '') && radOf(focusId)) makeGlobe(focusId, radOf(focusId));
     for (const [p, g] of globes) {
       const r = sub(posOf(p), cam);
       const d = len(r);
@@ -337,12 +409,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       // height above the ground itself where there is ground, as the readout shows
       const h = Math.max(0, id === nearId ? f.alt : d - r);
       const fromSun = len(cam);
-      const band: Context['band'] = h < 100_000 ? 'surface' : h < 30 * r ? 'orbit' : fromSun < 120 * AU ? 'system' : fromSun < 2e5 * AU ? 'interstellar' : 'galactic';
+      const far = placeAt(fromSun, id);
+      const band: Context['band'] = far ? far.band : h < 100_000 ? 'surface' : h < 30 * r ? 'orbit' : 'system';
       const km = (band === 'surface' || band === 'orbit' ? h : fromSun) / 1000;
       const t = performance.now();
       const clockMoved = Math.abs(system.timeMs - ctxClock) > 86_400_000;
-      if (forceCtx || !lastCtx || lastCtx.near !== id || lastCtx.band !== band || (t - ctxAt > 1000 && (clockMoved || Math.abs(km - lastCtx.km) > lastCtx.km * 0.05))) {
-        lastCtx = { near: id, band, km, timeIso: new Date(system.timeMs).toISOString() };
+      if (forceCtx || !lastCtx || lastCtx.near !== (far ? far.id : id) || lastCtx.band !== band || (t - ctxAt > 1000 && (clockMoved || Math.abs(km - lastCtx.km) > lastCtx.km * 0.05))) {
+        lastCtx = { near: far ? far.id : id, band, km, timeIso: new Date(system.timeMs).toISOString() };
         ctxAt = t; ctxClock = system.timeMs; forceCtx = false;
         for (const cb of contextCbs) guarded('context listener', () => cb(lastCtx!), () => contextCbs.delete(cb));
       }
@@ -350,12 +423,14 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
     const now = performance.now();
     if (now - readoutAt < 120 && f.mode === 'free') return;
+    const farNow = placeAt(len(cam), nearId);
     readoutAt = now;
     o.onReadout?.({
       alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
-      target: nearId === bodySlug ? 'the test world' : system.body(nearId)?.name ?? nearId,
+      target: farNow ? PLACE_NAMES[farNow.id] : nearId === bodySlug ? 'the test world' : system.body(nearId)?.name ?? nearId,
       dist: f.alt,
-      note: (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
+      far: !!farNow,
+      note: (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${Math.round(1000 / frameAvg)} fps · ${ratio.toFixed(2)}x`,
     });
   }
@@ -363,7 +438,32 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   function fmtRes(m: number) { return m >= 1000 ? `${(m / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km` : `${Math.round(m)} m`; }
 
-  const canFlyTo = (id: string) => id === 'sun' || !!planetPos[id] || !!system.pos(id);
+  // ---- the scale places: each is a fixed vantage, a centre, a distance and the side to see it from
+  const ly = (n: number) => pcFromLy(n) * PC;
+  const fromAbove = (deg: number): V3 => {
+    // keep the side you are already on, so the view does not swing round on the way out
+    const c = flight.pos;
+    const az = Math.hypot(c[0], c[2]) > 1 ? norm([c[0], 0, c[2]]) : ([1, 0, 0] as V3);
+    const t = (deg * Math.PI) / 180;
+    return norm(add(scale(az, Math.cos(t)), [0, Math.sin(t), 0]));
+  };
+  const galNorth = (): V3 => norm(add(scale(GAL_Z, 0.85), scale(GAL_X, -0.5)));
+  const PLACES: Record<string, { centre: () => V3; dist: number; dir: () => V3 }> = {
+    'solar-system': { centre: () => sunPos, dist: 60 * AU, dir: () => fromAbove(35) },
+    'oort-cloud': { centre: () => sunPos, dist: 100_000 * AU, dir: () => fromAbove(35) },
+    neighbourhood: { centre: () => sunPos, dist: ly(30), dir: galNorth },
+    'night-sky': { centre: () => sunPos, dist: ly(1500), dir: galNorth },
+    'milky-way': { centre: () => scale(GAL_CENTRE, PC), dist: ly(150_000), dir: () => norm(add(scale(GAL_Z, Math.sin(0.7)), scale(GAL_X, -Math.cos(0.7)))) },
+    'local-group': {
+      centre: () => scale(deep.lgCentre() ?? GAL_CENTRE, PC),
+      dist: ly(3.5e6),
+      dir: () => { const m = deep.lgCentre(); const line = m ? norm(sub(m, GAL_CENTRE)) : GAL_X; return norm(add(norm(cross(line, GAL_Z)), scale(GAL_Z, 0.6))); },
+    },
+    'cosmic-web': { centre: () => sunPos, dist: ly(500e6), dir: () => SUPERGAL_POLE },
+    // far enough out to see the whole sphere the oldest light comes from, 46 billion light years in radius
+    cmb: { centre: () => sunPos, dist: ly(110e9), dir: () => norm(add(SUPERGAL_POLE, [0, 0.4, 0])) },
+  };
+  const canFlyTo = (id: string) => id in PLACES || id === 'sun' || !!planetPos[id] || !!system.pos(id);
   const engine: Engine = {
     canFlyTo,
     flyTo(view: View, opts) {
@@ -372,6 +472,17 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       // only now, with somewhere to go, does the flight in progress give way
       if (pendingFly) { pendingFly.reject(abort('replaced by another flight')); pendingFly = null; }
       if (view.timeIso) system.setTime(view.timeIso);
+      const P = PLACES[id];
+      if (P) {
+        focusId = ''; focusHold = 0;
+        const from: V3 = [...flight.pos] as V3;
+        const endDist = view.distanceKm ? view.distanceKm * 1000 : P.dist;
+        const ratio = Math.max(1.0001, Math.max(len(sub(from, P.centre())), endDist) / Math.max(1, Math.min(len(sub(from, P.centre())), endDist)));
+        const secs = Math.max(0.01, opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3)));
+        flight.startCruise({ from, target: P.centre, endDist, endDir: P.dir(), secs, aimOffset: 0 });
+        cruising = true;
+        return new Promise<void>((resolve, reject) => { pendingFly = { resolve, reject }; });
+      }
       const target = (): V3 => (id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id) ?? sunPos);
       const measured = id === 'sun' || id === bodySlug || radiusOf(id) > 0;
       const r = radOf(id);

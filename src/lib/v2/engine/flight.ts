@@ -130,7 +130,7 @@ export function createFlight(canvas: HTMLElement) {
 
     if (mode === 'free') {
       // speed follows height: about your own height per second, so the ground always moves the same
-      const base = clamp(alt, 2, 5e9) * 0.9 * speedMul;
+      const base = clamp(alt, 2, 1e27) * 0.9 * speedMul; // from walking pace to crossing the universe
       const fast = keys.has('ShiftLeft') || keys.has('ShiftRight') ? 4 : 1;
       const f = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0) - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0) + pad;
       const s = (keys.has('KeyD') ? 1 : 0) - (keys.has('KeyA') ? 1 : 0);

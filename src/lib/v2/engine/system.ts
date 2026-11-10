@@ -35,7 +35,8 @@ export function createSystem(bodies: Body[]) {
     const c = cache.get(id);
     if (c && c.tick === tick) return c.p;
     const b = byId.get(id);
-    if (!b) return null;
+    // a moon whose orbit is known only in size and shape cannot be placed at all
+    if (!b || b.orientationUnknown) return null;
     let p: V3 | null = null;
     const o = b.orbit;
     if (o.type === 'fixed') p = [0, 0, 0];

@@ -67,14 +67,18 @@ import Margin from '../../components/v2/Margin.astro';
       }
 
       const AU = 149_597_870_700;
+      const LY = 9.4607304725808e15;
       const fmt = (m: number) => {
+        if (m > 1e9 * LY) return `${(m / LY / 1e9).toLocaleString('en-GB', { maximumFractionDigits: 1 })} billion light years`;
+        if (m > 1e6 * LY) return `${(m / LY / 1e6).toLocaleString('en-GB', { maximumFractionDigits: 1 })} million light years`;
+        if (m > 0.05 * LY) return `${(m / LY).toLocaleString('en-GB', { maximumFractionDigits: m > 100 * LY ? 0 : 2 })} light years`;
         if (m > 0.1 * AU) return `${(m / AU).toFixed(m > 10 * AU ? 1 : 2)} au`;
         if (m > 1e9) return `${(m / 1e9).toFixed(1)} million km`;
         if (m > 10_000) return `${Math.round(m / 1000).toLocaleString('en-GB')} km`;
         if (m > 1000) return `${(m / 1000).toFixed(2)} km`;
         return `${Math.max(0, Math.round(m)).toLocaleString('en-GB')} m`;
       };
-      const fmtSpeed = (v: number) => (v > 1000 ? `${(v / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km a second` : `${Math.round(v)} m a second`);
+      const fmtSpeed = (v: number) => (v > 3e9 ? `${fmt(v)} a second` : v > 1000 ? `${(v / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km a second` : `${Math.round(v)} m a second`);
 
       const params = new URLSearchParams(location.search);
       let world: Awaited<ReturnType<typeof createWorld>>;
@@ -85,11 +89,11 @@ import Margin from '../../components/v2/Margin.astro';
           forceWebGL: params.has('gl') || (() => { try { return sessionStorage.getItem('hc-gl') === '1'; } catch { return false; } })(),
           onReadout(r) {
             if (r.mode === 'free') {
-              $('r-k').textContent = 'Height above the ground';
+              $('r-k').textContent = r.far ? 'Distance from the Sun' : 'Height above the ground';
               $('r-v').textContent = fmt(r.alt);
               $('r-k2').textContent = fmtSpeed(r.speed);
             } else {
-              $('r-k').textContent = `Distance to ${r.target}`;
+              $('r-k').textContent = r.far ? 'Distance from the Sun' : `Distance to ${r.target}`;
               $('r-v').textContent = fmt(r.dist);
               $('r-k2').textContent = '';
             }
@@ -134,7 +138,7 @@ import Margin from '../../components/v2/Margin.astro';
         if (params.get('t')) world.setTime(params.get('t'));
         // testing flyTo: a row of places, shown once you have arrived
         const goto = $('goto');
-        for (const [id, name] of [['sun', 'Sun'], ['mercury', 'Mercury'], ['venus', 'Venus'], ['earth', 'Earth'], ['moon', 'Moon'], ['mars', 'Test world'], ['jupiter', 'Jupiter'], ['io', 'Io'], ['saturn', 'Saturn'], ['titan', 'Titan'], ['uranus', 'Uranus'], ['neptune', 'Neptune'], ['pluto', 'Pluto']]) {
+        for (const [id, name] of [['sun', 'Sun'], ['mercury', 'Mercury'], ['venus', 'Venus'], ['earth', 'Earth'], ['moon', 'Moon'], ['mars', 'Test world'], ['jupiter', 'Jupiter'], ['io', 'Io'], ['saturn', 'Saturn'], ['titan', 'Titan'], ['uranus', 'Uranus'], ['neptune', 'Neptune'], ['pluto', 'Pluto'], ['solar-system', 'Solar System'], ['oort-cloud', 'Oort cloud'], ['neighbourhood', 'Neighbours'], ['night-sky', 'Night sky'], ['milky-way', 'Milky Way'], ['local-group', 'Local Group'], ['cosmic-web', 'Cosmic web'], ['cmb', 'Oldest light']]) {
           const b = document.createElement('button');
           b.textContent = name;
           b.addEventListener('click', () => { world.flyTo({ target: id }).catch(() => {}); });
