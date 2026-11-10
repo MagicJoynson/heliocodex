@@ -42,6 +42,11 @@ const furthest = Math.max(...skyStars.map((p) => Math.hypot(p[0], p[1], p[2])));
 const sunLight = (absMag: number) => Math.pow(10, 0.4 * (4.83 - absMag));
 const light = (v: number) => (v >= 1 ? `${v.toLocaleString('en-GB', { maximumSignificantDigits: 2 })} times the Sun` : v >= 0.001 ? `1/${(1 / v).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} of the Sun` : `less than 1/1,000 of the Sun`);
 const named = nearStars.filter((s) => s.name);
+// two stars of one system can share a name in the catalogue: the brighter is A and the fainter B
+const listName = (s: (typeof named)[number]) => {
+  const same = named.filter((o) => o.name === s.name).sort((a, b) => a.absMag - b.absMag);
+  return same.length > 1 ? `${s.name} ${'ABC'[same.indexOf(s)]}` : s.name;
+};
 const two = (v: number) => v.toFixed(2);
 ---
 <Reading title="The stars · Atlas" path="/atlas/stars" description={`A chart of the ${nearStars.length} stars within ${limits.nearLy} light years of the Sun, and of every star you can see by eye, each at its measured distance.`}>
@@ -132,7 +137,7 @@ const two = (v: number) => v.toFixed(2);
       <tbody>
         {named.map((s) => (
           <tr>
-            <th scope="row"><span class="nm">{s.name}</span>{CALL[s.name] && <span class="fit">shown as {CALL[s.name]}</span>}</th>
+            <th scope="row"><span class="nm">{listName(s)}</span>{CALL[s.name] && <span class="fit">shown as {CALL[s.name]}</span>}</th>
             <td data-label="Distance">{s.ly.toFixed(2)} light years</td>
             <td data-label="Height above the disc">{Math.abs(s.p[2]).toFixed(1)} light years {s.p[2] >= 0 ? 'above' : 'below'}</td>
             <td data-label="Light it gives out">{light(sunLight(s.absMag))}</td>
