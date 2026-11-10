@@ -50,7 +50,7 @@ facts:
     basis: worked-out
     source: { label: "NASA, Oort cloud facts", url: "https://science.nasa.gov/solar-system/oort-cloud/facts/" }
   - id: oort-cloud-name
-    text: "The cloud is named after the Dutch astronomer Jan Oort. In 1950 he proposed it to explain why comets on very long orbits come in from every direction, not along the flat plane the planets keep to."
+    text: "The cloud is named after the Dutch astronomer Jan Oort. He proposed it to explain why comets on very long orbits come in from every direction, not along the flat plane the planets keep to."
     about: [oort-cloud, comets]
     source: { label: "NASA, Oort cloud facts", url: "https://science.nasa.gov/solar-system/oort-cloud/facts/" }
   - id: oort-cloud-shape
