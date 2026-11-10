@@ -37,13 +37,15 @@ export function testWorld(radius = 3_389_500, seed = 7): HeightSource {
       const cont = n1(x * f0, y * f0, z * f0) * 0.7 + n1(x * f0 * 2.1, y * f0 * 2.1, z * f0 * 2.1) * 0.3;
       // mountain ranges: ridged noise, only on high ground
       const f1 = 1 / 140_000;
-      let ridge = 0, amp = 1, f = f1, norm = 0;
+      // each octave only adds to the ones before (a fixed normaliser, and finer octaves centred on
+      // zero), so a tile that gains an octave keeps its shape and only gains detail
+      let ridge = 0, amp = 1, f = f1;
       for (let o = 0; o < 6 && 1 / f > detail * 2; o++) {
         const r = 1 - Math.abs(n2(x * f, y * f, z * f));
-        ridge += r * r * amp; norm += amp;
+        ridge += (r * r - (o ? 0.35 : 0)) * amp;
         amp *= 0.48; f *= 2.03;
       }
-      ridge = norm ? ridge / norm : 0;
+      ridge /= 1.899;
       const high = Math.max(0, Math.min(1, (cont + 0.1) * 2.2));
       let h = cont * TOP + ridge * RIDGE * high * high;
       // everything finer: fractal detail whose size falls off with wavelength

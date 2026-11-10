@@ -74,10 +74,11 @@ import '@fontsource/ibm-plex-mono/400.css';
 
       const params = new URLSearchParams(location.search);
       let world: Awaited<ReturnType<typeof createWorld>>;
+      const startedAt = performance.now();
       try {
         world = await createWorld({
           canvas: $('space') as HTMLCanvasElement,
-          forceWebGL: params.has('gl'),
+          forceWebGL: params.has('gl') || (() => { try { return sessionStorage.getItem('hc-gl') === '1'; } catch { return false; } })(),
           onReadout(r) {
             if (r.mode === 'free') {
               $('r-k').textContent = 'Height above the ground';
@@ -91,6 +92,15 @@ import '@fontsource/ibm-plex-mono/400.css';
             $('tech').textContent = r.tech;
           },
           onArrive() { document.body.classList.add('in', 'arrived'); },
+          onLost() {
+            // WebGPU that dies straight after starting is a driver problem: try once more on WebGL 2
+            const early = performance.now() - startedAt < 15_000;
+            let tried = false;
+            try { tried = sessionStorage.getItem('hc-gl') === '1'; sessionStorage.setItem('hc-gl', '1'); } catch {}
+            if (early && !params.has('gl') && !tried) { params.set('gl', ''); location.search = params.toString(); return; }
+            $('status').textContent = 'The graphics stopped. Reload the page to carry on.';
+            document.body.classList.remove('in', 'arrived');
+          },
         });
         $('status').textContent = `Ready · ${world.backend} · ${world.depthMode}`;
       } catch (e) {
@@ -190,6 +200,8 @@ import '@fontsource/ibm-plex-mono/400.css';
       }
 
       /* engine test additions */
+      .hud { pointer-events: none !important; } .hud .skip { pointer-events: auto; }
+      .readout { text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
       .note b { font-weight: 400; color: var(--soft); }
       .help { position: fixed; left: clamp(16px, 4vw, 40px); top: max(clamp(16px, 4vh, 36px), env(safe-area-inset-top)); width: min(24rem, calc(100% - 32px)); opacity: 0; transition: opacity 1.6s ease .8s; pointer-events: none; text-shadow: 0 1px 12px #000; }
       body.arrived .help { opacity: 1; }

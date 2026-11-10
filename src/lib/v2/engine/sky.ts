@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, uniform, texture, max, pow } from 'three/tsl';
+import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, uniform, texture, max, pow, smoothstep } from 'three/tsl';
 import { len, norm, type V3 } from './vec';
 
 /**
@@ -76,9 +76,10 @@ export function createSky() {
   {
     const d = sub(uv(), 0.5).mul(2);
     const r = d.length();
-    // limb-darkened disc, hard edged
+    // limb-darkened disc, its edge softened over about a pixel
     const mu = float(1).sub(r.div(sunDisc).pow(2)).max(0).sqrt();
-    const disc = r.lessThan(sunDisc).select(float(0.4).add(mu.mul(0.6)).mul(6), float(0));
+    const edge = float(1).sub(smoothstep(sunDisc.mul(0.92), sunDisc.mul(1.04), r));
+    const disc = float(0.4).add(mu.mul(0.6)).mul(6).mul(edge).max(edge.mul(3));
     // glare: a tight core and a wide, faint halo
     const glare = exp(r.div(sunDisc).mul(-1.1)).mul(1.4).add(pow(max(float(0), float(1).sub(r)), float(3)).mul(0.18));
     sunMat.colorNode = vec4(vec3(1, 0.96, 0.9).mul(disc.add(glare)), 1);
@@ -109,7 +110,7 @@ export function createSky() {
    * `sunRel` is the Sun's position minus the camera's (metres). `bodies` gives each other body's
    * position minus the camera's and its radius, for glints that fade once a disc can be seen.
    */
-  function update(main: THREE.PerspectiveCamera, sunRel: V3, bodies: { slug: string; rel: V3; radius: number }[], sunGlareScale = 1) {
+  function update(main: THREE.PerspectiveCamera, sunRel: V3, bodies: { slug: string; rel: V3; radius: number }[], viewH = 900, sunGlareScale = 1) {
     camera.quaternion.copy(main.quaternion);
     camera.fov = main.fov; camera.aspect = main.aspect;
     camera.updateProjectionMatrix();
@@ -121,7 +122,10 @@ export function createSky() {
     const halo = Math.min(0.9, Math.max(angR * 18, 0.035)) * sunGlareScale;
     sun.position.set(dir[0] * FAR, dir[1] * FAR, dir[2] * FAR);
     sun.scale.setScalar(2 * FAR * Math.tan(halo));
-    sunDisc.value = Math.tan(angR) / Math.tan(halo);
+    // never smaller than a couple of pixels, so from the edge of the system the Sun is still the
+    // brightest thing in the sky rather than a faint smudge
+    const spritePx = (Math.tan(halo) / Math.tan(THREE.MathUtils.degToRad(main.fov / 2))) * viewH;
+    sunDisc.value = Math.min(0.9, Math.max(Math.tan(angR) / Math.tan(halo), 1.6 / Math.max(1, spritePx)));
 
     for (const b of bodies) {
       const s = glints.get(b.slug);

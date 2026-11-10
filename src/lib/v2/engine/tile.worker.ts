@@ -9,5 +9,5 @@ const sources = new Map<string, ReturnType<typeof makeSource>>();
   let src = sources.get(key);
   if (!src) { src = makeSource(spec); sources.set(key, src); }
   const t = buildTile(src, tile);
-  (self as unknown as Worker).postMessage({ id, t }, [t.position.buffer, t.morph.buffer, t.normal.buffer, t.shade.buffer]);
+  (self as unknown as Worker).postMessage({ id, t }, [t.position.buffer, t.morph.buffer, t.normal.buffer, t.mnormal.buffer, t.shade.buffer]);
 };

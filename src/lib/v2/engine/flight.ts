@@ -54,7 +54,9 @@ export function createFlight(canvas: HTMLElement) {
   canvas.addEventListener('wheel', (e) => {
     if (mode !== 'free') return;
     e.preventDefault();
-    speedMul = clamp(speedMul * Math.pow(1.0015, -e.deltaY), 0.02, 50);
+    // Firefox reports lines, not pixels
+    const px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 600 : 1);
+    speedMul = clamp(speedMul * Math.pow(1.0015, -px), 0.02, 50);
   }, { passive: false });
   /** touch pad: -1 back, 0 still, 1 forward (set by the page's on-screen control) */
   let pad = 0;
@@ -111,12 +113,17 @@ export function createFlight(canvas: HTMLElement) {
     }
 
     // looking round: works in every mode except cruise
+    // how much the body's "up" governs the view: fully near the ground, not at all from far out
+    const height = dist - body.radius;
+    const ground = 1 - smooth(body.radius * 0.3, body.radius * 2, height);
     if (look.dx || look.dy) {
       const k = 0.0032;
-      // yaw round the local up when near a body, so the horizon stays level
-      const near = dist < body.radius * 6;
-      rotate(near ? upLocal : upv(), -look.dx * k);
+      // yaw round the local up near the ground (so the horizon stays level), round the view's own up from orbit
+      rotate(norm(add(scale(upv(), 1 - ground), scale(upLocal, ground))), -look.dx * k);
+      const before = q.clone();
       rotate(right(), -look.dy * k);
+      // near the ground, never tip over the top or bottom
+      if (ground > 0.5 && Math.abs(dot(fwd(), upLocal)) > Math.sin(THREE.MathUtils.degToRad(88))) q.copy(before);
       look = { dx: 0, dy: 0 };
     }
 
@@ -144,14 +151,14 @@ export function createFlight(canvas: HTMLElement) {
       }
 
       // level the horizon: take out any roll, gently, when near a body
-      if (dist < body.radius * 6) {
+      if (ground > 0.01) {
         const fw = fwd();
         const want = cross(fw, upLocal);
         if (len(want) > 0.05) {
           const wr = norm(want);
           const r = right();
           const ang = Math.atan2(dot(cross(r, wr), fw), dot(r, wr));
-          rotate(fw, ang * (1 - Math.exp(-dt * 3)));
+          rotate(fw, ang * (1 - Math.exp(-dt * 3)) * ground);
         }
       }
     }

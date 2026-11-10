@@ -22,23 +22,34 @@ export interface Readout {
   tech: string; // renderer, depth mode, tiles
 }
 
-export interface Quality { tier: 0 | 1 | 2 | 3; scale: number; split: number; maxTiles: number; antialias: boolean; target: number }
+export interface Quality { tier: 0 | 1 | 2 | 3; scale: number; split: number; maxTiles: number; antialias: boolean; target: number; maxPx: number }
 
 export function pickQuality(): Quality {
   const coarse = matchMedia('(pointer: coarse)').matches;
   const small = Math.min(screen.width, screen.height) < 900;
   const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
-  if (coarse && small) return { tier: mem <= 3 ? 0 : 1, scale: mem <= 3 ? 0.55 : 0.7, split: mem <= 3 ? 1.4 : 1.6, maxTiles: mem <= 3 ? 200 : 280, antialias: false, target: 33 };
-  if (coarse || mem <= 4) return { tier: 2, scale: 0.85, split: 1.8, maxTiles: 360, antialias: false, target: 17 };
-  return { tier: 3, scale: 1, split: 2.0, maxTiles: 460, antialias: true, target: 17 };
+  // Safari has no deviceMemory, so iPhones all land on tier 1, which is the safe choice
+  if (coarse && small) return { tier: mem <= 3 ? 0 : 1, scale: mem <= 3 ? 0.55 : 0.7, split: mem <= 3 ? 1.0 : 1.2, maxTiles: mem <= 3 ? 200 : 280, antialias: false, target: 33, maxPx: 1.6e6 };
+  if (coarse || mem <= 4) return { tier: 2, scale: 0.85, split: 1.4, maxTiles: 360, antialias: false, target: 17, maxPx: 2.5e6 };
+  return { tier: 3, scale: 1, split: 1.6, maxTiles: 460, antialias: devicePixelRatio <= 1.25, target: 17, maxPx: 5e6 };
 }
 
-export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; forceWebGL?: boolean; quality?: Quality }) {
+export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; forceWebGL?: boolean; quality?: Quality }) {
   const quality = o.quality ?? pickQuality();
+  // Reversed-z only gains precision with a float depth buffer, which three.js gives us on WebGPU.
+  // On WebGL 2 the canvas depth is 24-bit integer, so there a logarithmic buffer is the better choice.
   const renderer = new THREE.WebGPURenderer({ canvas: o.canvas, antialias: quality.antialias, forceWebGL: o.forceWebGL, reversedDepthBuffer: true });
   await renderer.init();
-  // three.js quietly drops reversed-z on WebGL without EXT_clip_control; use log depth then
-  if (!renderer.reversedDepthBuffer) (renderer as unknown as { logarithmicDepthBuffer: boolean }).logarithmicDepthBuffer = true;
+  if (!(renderer.backend as { isWebGPUBackend?: boolean }).isWebGPUBackend) {
+    // WebGL 2: switch reversed-z back off before anything is drawn and use log depth instead
+    const r = renderer as unknown as { reversedDepthBuffer: boolean; logarithmicDepthBuffer: boolean; backend: { state?: { setReversedDepth?(v: boolean): void } } };
+    r.reversedDepthBuffer = false;
+    r.backend.state?.setReversedDepth?.(false);
+    r.logarithmicDepthBuffer = true;
+  }
+  // phones drop the GPU when a page sits in the background; say so rather than freeze
+  (renderer as unknown as { onDeviceLost: (i: unknown) => void }).onDeviceLost = (info) => { console.warn('GPU lost', info); o.onLost?.(); };
+  o.canvas.addEventListener('webglcontextlost', () => o.onLost?.());
   renderer.autoClear = false;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NoToneMapping;
@@ -98,6 +109,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   let ratio = maxRatio * quality.scale;
   function resize() {
     const w = o.canvas.clientWidth, h = o.canvas.clientHeight;
+    // never more pixels than the tier can afford, whatever the screen
+    ratio = Math.min(ratio, Math.sqrt(quality.maxPx / Math.max(1, w * h)));
     renderer.setPixelRatio(ratio);
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
@@ -107,21 +120,26 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   resize();
   addEventListener('resize', resize);
   let frameAvg = quality.target;
-  let sinceAdjust = 0;
+  let sinceAdjust = 0, goodWindows = 0;
+  let readoutAt = 0;
 
-  const clock = new THREE.Clock();
+  const timer = new THREE.Timer();
   let arrived = false;
   let stats = { tiles: 0, live: 0, queued: 0, deepest: 0, built: 0, inflight: 0 };
 
   function frame() {
-    const wall = Math.min(clock.getDelta(), 1);
+    timer.update();
+    const wall = Math.min(timer.getDelta(), 1);
     const dt = Math.min(wall, 0.1);
-    frameAvg += (wall * 1000 - frameAvg) * 0.05;
+    // the governor ignores one-off stalls (a tab switch, a shader compiling)
+    if (wall < 0.1) frameAvg += (wall * 1000 - frameAvg) * 0.05;
     if ((sinceAdjust += dt) > 1.5) {
       sinceAdjust = 0;
       const prev = ratio;
-      if (frameAvg > quality.target * 1.2) ratio = Math.max(maxRatio * 0.45, ratio * 0.9);
-      else if (frameAvg < quality.target * 0.75) ratio = Math.min(maxRatio * quality.scale, ratio * 1.06);
+      if (frameAvg > quality.target * 1.25) { ratio = Math.max(maxRatio * 0.45, ratio * 0.9); goodWindows = 0; }
+      // on time for three windows in a row (vsync keeps 60 Hz screens at 16.7 ms, so "on time" is
+      // close to the target, not well under it): try a little sharper
+      else if (frameAvg < quality.target * 1.05 && ++goodWindows >= 3) { ratio = Math.min(maxRatio * quality.scale, ratio * 1.06); goodWindows = 0; }
       if (ratio !== prev) resize();
     }
 
@@ -141,20 +159,27 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
     // the space layer
     const sunRel = sub(sunPos, cam);
-    sky.update(camera, sunRel, PLANETS.map((p) => ({ slug: p, rel: sub(planetPos[p], cam), radius: RADII[p] })));
+    sky.update(camera, sunRel, PLANETS.map((p) => ({ slug: p, rel: sub(planetPos[p], cam), radius: RADII[p] })), o.canvas.clientHeight);
 
     // light: from the Sun's direction (only the direction matters)
     const sd = norm(sunRel);
     sunLight.position.set(sd[0], sd[1], sd[2]);
     sunLight.target.position.set(0, 0, 0);
 
-    stats = terrain.update(bodyRel, camera);
+    // too far to be more than a point of light: let the glint stand in
+    const tiny = terrain.radius / dBody < 0.0004;
+    if (!tiny) stats = terrain.update(bodyRel, camera);
 
     renderer.clear();
     renderer.render(sky.scene, sky.camera);
-    renderer.clearDepth();
-    renderer.render(local, camera);
+    if (!tiny) {
+      renderer.clearDepth();
+      renderer.render(local, camera);
+    }
 
+    const now = performance.now();
+    if (now - readoutAt < 120 && f.mode === 'free') return;
+    readoutAt = now;
     o.onReadout?.({
       alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving, target: 'the test world',
       dist: dBody - terrain.radius,
