@@ -11,6 +11,7 @@ import { bodyMarks, landmarkMarks, layout, readLength, RULES, spread, TOP } from
 import { positionAU } from '../../orbit';
 import { chainFor, LADDER, pick, PLACE_NAMES, type MarginData } from '../margin/pick';
 import { places } from './places';
+import { LY_PER_PC, R, R0_PC, armAngle, clusters, dotPath, groupGalaxies, limits, milkyWay, modelOnPage, nearStars, onPage, placeLabels, skyStars, webGalaxies } from './deep';
 import { groupOf, groups as smallGroups, inStep, offChart, shown as smallShown, smallBodiesPlate } from './plates/small-bodies';
 import { smallBodies, smallSpread } from '../../../data/bodies/index';
 
@@ -418,6 +419,75 @@ test('the places beyond the worlds: one list, in the engine’s order, each sayi
   // a place leads to the one beyond it and the one inside it
   assert.deepEqual(chainFor({ near: 'milky-way', band: 'galactic', km: 1e18 }, whoIs), ['milky-way', 'local-group', 'night-sky']);
   assert.deepEqual(chainFor({ near: 'cmb', band: 'cosmic', km: 1e24 }, whoIs), ['cmb', 'cosmic-web']);
+});
+
+const near = (got: number, want: number, within: number) => assert.ok(Math.abs(got - want) <= within, `${got} is not within ${within} of ${want}`);
+
+test('the stars: the nearest are where everyone agrees they are, and none is outside the chart', () => {
+  const by = (n: string) => nearStars.find((s) => s.name === n)!;
+  near(by('Proxima Centauri').ly, 4.25, 0.05);
+  near(by('Sirius').ly, 8.6, 0.1);
+  near(by("Barnard's Star").ly, 5.96, 0.05);
+  assert.ok(nearStars.every((s) => s.ly <= limits.nearLy && s.ly > 4));
+  assert.ok(nearStars.length > 90 && nearStars.length < 160, `${nearStars.length} stars within 20 light years`);
+  for (let i = 1; i < nearStars.length; i++) assert.ok(nearStars[i].ly >= nearStars[i - 1].ly - 0.01, 'not in order of distance');
+  // Sirius is the brightest star in our sky; in true light given out Altair and Procyon are its only rivals this close
+  assert.ok(by('Sirius').absMag < by('Procyon').absMag && by('Procyon').absMag < by('Proxima Centauri').absMag);
+});
+
+test('the stars: about five thousand can be seen by eye, and most are within a thousand light years', () => {
+  assert.ok(skyStars.length > 4500 && skyStars.length < 5500, `${skyStars.length} naked-eye stars`);
+  const d = skyStars.map((p) => Math.hypot(p[0], p[1], p[2])).sort((a, b) => a - b);
+  assert.ok(d[Math.floor(d.length / 2)] < 400, 'half the naked-eye stars are not within 400 light years');
+  assert.ok(d[Math.floor(d.length * 0.9)] < 1500);
+});
+
+test('the charts beyond: up the page is towards the centre of the galaxy, and the Sun is below the centre of the model', () => {
+  const [x, y] = onPage([10, 0, 0], 20);
+  near(x, 0, 1e-9); near(y, -R / 2, 1e-9);
+  assert.ok(onPage([0, 10, 0], 20)[0] < 0, 'the way the Sun is going should be to the left');
+  const sun = modelOnPage(R0_PC, 0, 20000);
+  near(sun[0], 0, 1e-9); assert.ok(sun[1] > 0);
+  // the two views agree: the centre is R0 above the Sun on a Sun-centred chart
+  near(onPage([R0_PC, 0, 0], 20000)[1], -sun[1], 1e-9);
+});
+
+test('the Milky Way model: the main arms leave the ends of the bar and the Local arm passes the Sun', () => {
+  const bar = (milkyWay.bar.angleDeg * Math.PI) / 180;
+  const starts = milkyWay.arms.map((a) => (a.theta0Deg * Math.PI) / 180);
+  const wrap = (t: number) => Math.abs(t - 2 * Math.PI * Math.round(t / (2 * Math.PI)));
+  assert.ok(starts.some((t) => wrap(t - bar) < 1e-6) && starts.some((t) => wrap(t - bar - Math.PI) < 1e-6));
+  assert.ok(milkyWay.arms.every((a) => a.r0 < milkyWay.bar.halfPc && a.rMax <= milkyWay.discPc));
+  // an arm winds outward: further out, further round
+  assert.ok(armAngle(0, 3400, 8000) > armAngle(0, 3400, 4000));
+  const k = Math.tan((milkyWay.pitchDeg * Math.PI) / 180), l = milkyWay.local;
+  near(l.r0 * Math.exp(k * (0 - -Math.log(l.throughPc / l.r0) / k)), l.throughPc, 1e-6);
+  assert.ok(Math.abs(l.throughPc - R0_PC) < 500);
+});
+
+test('the galaxies: Andromeda, the Magellanic Clouds and Virgo are where they should be', () => {
+  const g = (n: string) => groupGalaxies.find((x) => x.name === n)!;
+  near((g('Andromeda').kpc * 1000 * LY_PER_PC) / 1e6, 2.55, 0.1);
+  near(g('LMC').kpc, 50, 3); near(g('SMC').kpc, 62, 5);
+  assert.ok(g('LMC').p[2] < 0 && g('SMC').p[2] < 0, 'the Magellanic Clouds are south of the disc');
+  assert.equal(groupGalaxies.length, 101);
+  const virgo = clusters.find((c) => c.name === 'Virgo Cluster')!;
+  assert.ok(virgo.inSlab && Math.hypot(virgo.x, virgo.y) > 13 && Math.hypot(virgo.x, virgo.y) < 19);
+  // the Virgo Cluster is a real crowd in the data: several times more galaxies within 4 Mpc of it than in an average patch that near
+  const round = (cx: number, cy: number) => webGalaxies.filter(([x, y]) => Math.hypot(x - cx, y - cy) < 4).length;
+  const average = (webGalaxies.filter(([x, y]) => Math.hypot(x, y) < 30).length * 16) / 900;
+  assert.ok(round(virgo.x, virgo.y) > 3 * average, `${round(virgo.x, virgo.y)} near Virgo against ${average.toFixed(0)} on average`);
+  assert.ok(webGalaxies.every(([x, y]) => Math.hypot(x, y) <= limits.webMpc + 0.1));
+  assert.ok(webGalaxies.length > 8000 && webGalaxies.length < limits.webAll / 2);
+});
+
+test('the charts beyond: dots outside the frame are not drawn, and no two names overlap', () => {
+  assert.equal(dotPath([[0, 0], [R + 5, 0]]), 'M0.0 0.0h0');
+  const pts = [{ x: 0, y: 0, r: 4, text: 'Alpha' }, { x: 6, y: 0, r: 4, text: 'Beta' }, { x: 3, y: 5, r: 4, text: 'Gamma' }];
+  const { placed, dropped } = placeLabels(pts, 18);
+  assert.equal(placed.length + dropped.length, pts.length);
+  const box = (l: (typeof placed)[number]) => { const w = l.text.length * 9 + 6, x0 = l.anchor === 'start' ? l.tx : l.anchor === 'end' ? l.tx - w : l.tx - w / 2; return [x0, l.ty - 14.4, x0 + w, l.ty + 4.5]; };
+  for (const a of placed) for (const b of placed) if (a !== b) { const p = box(a), q = box(b); assert.ok(!(p[0] < q[2] && p[2] > q[0] && p[1] < q[3] && p[3] > q[1]), `${a.text} and ${b.text} overlap`); }
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');

@@ -1,0 +1,154 @@
+---
+// The chart of the stars: the ones within 20 light years, and every star you can see by eye,
+// each at its measured place. The same stars the 3D view draws, from the same file.
+import Reading from '../../layouts/Reading.astro';
+import DeepPlate from '../../components/atlas/DeepPlate.astro';
+import { HYG } from '../../lib/v2/atlas/places';
+import { R, ringLabelBox, dotPath, fmtLy, limits, nearStars, onPage, onSide, placeLabels, skyNamed, skyStars, starDot } from '../../lib/v2/atlas/deep';
+import '../../styles/atlas.css';
+
+// ---- drawing I: within 20 light years
+const NEAR_HALF = 21;
+// stars that share a point on the page are one system: the brightest carries the name
+const systems: { x: number; y: number; r: number; text: string; n: number }[] = [];
+const CALL: Record<string, string> = { 'Rigil Kentaurus': 'Alpha Centauri', Ran: 'Epsilon Eridani', Keid: '40 Eridani', Alsafi: 'Sigma Draconis', Achird: 'Eta Cassiopeiae', Guniibuu: '36 Ophiuchi', 'Struve 2398 A': 'Struve 2398' };
+for (const s of [...nearStars].sort((a, b) => a.absMag - b.absMag)) {
+  const [x, y] = onPage(s.p, NEAR_HALF);
+  const twin = systems.find((o) => Math.hypot(o.x - x, o.y - y) < 8);
+  if (twin) { twin.n++; if (!twin.text && s.name) twin.text = CALL[s.name] ?? s.name; continue; }
+  systems.push({ x, y, r: starDot(s.absMag), text: CALL[s.name] ?? s.name, n: 1 });
+}
+const nearRings = [5, 10, 15, 20].map((ly) => ({ r: (ly / NEAR_HALF) * R, label: `${ly} light years` }));
+const nearNames = placeLabels(systems.filter((s) => s.text).map((s) => ({ ...s })), 19, [...nearRings.map((g) => ringLabelBox(g.r, g.label)), [8, -28, 90, -4]]);
+
+// ---- drawings II and III: the naked-eye stars
+const SKY_HALF = 2500;
+const within = (ly: number) => skyStars.filter((p) => Math.hypot(p[0], p[1], p[2]) <= ly).length;
+const pct = (ly: number) => Math.round((within(ly) / skyStars.length) * 100);
+const plan = dotPath(skyStars.map((p) => onPage(p, SKY_HALF)));
+const side = dotPath(skyStars.map((p) => onSide(p, SKY_HALF)));
+const skyRings = [500, 1000, 2000].map((ly) => ({ r: (ly / SKY_HALF) * R, label: `${ly.toLocaleString('en-GB')} light years` }));
+const FAMOUS = ['Deneb', 'Rigel', 'Betelgeuse', 'Antares', 'Polaris', 'Canopus', 'Alnilam', 'Sadr', 'Wezen', 'Spica', 'Mirfak', 'Naos', 'Aludra', 'Almaaz'];
+const famous = FAMOUS.map((n) => skyNamed.find((s) => s.name === n)).filter((s) => !!s);
+// a name in the thick of the cloud cannot be read, so only stars clear of the middle are named
+const clear = (pts: { x: number; y: number; r: number; text: string }[]) => pts.filter((p) => Math.hypot(p.x, p.y) > 60);
+const ringBoxes = skyRings.map((g) => ringLabelBox(g.r, g.label));
+const planNames = placeLabels(clear(famous.map((s) => { const [x, y] = onPage(s.p, SKY_HALF); return { x, y, r: 3.5, text: s.name }; })), 18, ringBoxes);
+const sideNames = placeLabels(clear(famous.filter((s) => Math.hypot(...onSide(s.p, SKY_HALF)) > 110).map((s) => { const [x, y] = onSide(s.p, SKY_HALF); return { x, y, r: 3.5, text: s.name }; })), 18, ringBoxes);
+const beyond = skyStars.length - within(SKY_HALF);
+const furthest = Math.max(...skyStars.map((p) => Math.hypot(p[0], p[1], p[2])));
+
+// ---- the list
+const sunLight = (absMag: number) => Math.pow(10, 0.4 * (4.83 - absMag));
+const light = (v: number) => (v >= 1 ? `${v.toLocaleString('en-GB', { maximumSignificantDigits: 2 })} times the Sun` : v >= 0.001 ? `1/${(1 / v).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} of the Sun` : `less than 1/1,000 of the Sun`);
+const named = nearStars.filter((s) => s.name);
+const two = (v: number) => v.toFixed(2);
+---
+<Reading title="The stars · Atlas" path="/atlas/stars" description={`A chart of the ${nearStars.length} stars within ${limits.nearLy} light years of the Sun, and of every star you can see by eye, each at its measured distance.`}>
+  <header class="reading-head">
+    <p class="label">Atlas · Stars</p>
+    <h1>The stars round the Sun</h1>
+    <p class="lead">First the Sun’s nearest neighbours, then every star bright enough to see without a telescope. Each one is at its measured distance. Nothing on this page is a model.</p>
+  </header>
+
+  <section class="row figure-row" id="figure-near">
+    <div class="hang">
+      <p class="label">Drawing I</p>
+      <h2>Within {limits.nearLy} light years</h2>
+      <p class="note">The {nearStars.length} stars in the catalogue that lie within {limits.nearLy} light years of the Sun, seen from above the disc of the Milky Way. Stars that go round each other share a dot.</p>
+      <p class="note">A bigger dot is a star that gives out more light. Most of these are red dwarfs, far too faint to see by eye, and that is what most stars everywhere are like.</p>
+      <p class="note scale">The drawing is {NEAR_HALF * 2} light years across. On this scale the whole Solar System out to Neptune would be about a fortieth of the width of one of the dotted lines.</p>
+      <p class="note print-hide"><a href="/v2?go=neighbourhood">See these stars in 3D</a></p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="near" numeral="I" title={`The stars within ${limits.nearLy} light years`} rings={nearRings} up="To the centre of the Milky Way" footLeft="Seen from the north side of the galaxy’s disc" footRight="HYG star database v4.4"
+        summary={`A chart of the ${nearStars.length} catalogued stars within ${limits.nearLy} light years of the Sun, seen from above the Milky Way’s disc, with the Sun in the middle. The nearest, Alpha Centauri, is ${two(nearStars[0].ly)} light years away. The named ones are in the list below.`}>
+        <g class="stars">{systems.map((s) => <circle class:list={['star', s.r < 3 && 'dim']} cx={s.x.toFixed(1)} cy={s.y.toFixed(1)} r={s.r.toFixed(1)} />)}</g>
+        <g class="here"><circle r="7" /><circle class="pip" r="2.2" /></g>
+        <text class="name it" x="12" y="-10">The Sun</text>
+        <g class="names">{nearNames.placed.map((l) => <text class="name small" x={l.tx.toFixed(1)} y={l.ty.toFixed(1)} text-anchor={l.anchor}>{l.text}</text>)}</g>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row figure-row" id="figure-sky">
+    <div class="hang">
+      <p class="label">Drawing II</p>
+      <h2>Every star you can see</h2>
+      <p class="note">All {skyStars.length.toLocaleString('en-GB')} stars of magnitude {limits.skyMag} or brighter: the ones a good eye can pick out under a dark sky, from anywhere on the Earth. Seen from above, with the Sun in the middle.</p>
+      <p class="note">Half of them are within {fmtLy([...skyStars].map((p) => Math.hypot(p[0], p[1], p[2])).sort((a, b) => a - b)[Math.floor(skyStars.length / 2)])}, and {pct(1000)} in every 100 are within 1,000. The few far ones are giants, thousands of times brighter than the Sun.</p>
+      <p class="note">The further a star, the less sure its distance. Beyond about 1,000 light years many of these distances are rough, so a far dot may really belong some way nearer or further along its line from the Sun.</p>
+      <p class="note scale">The drawing is {(SKY_HALF * 2).toLocaleString('en-GB')} light years across. {beyond} stars lie outside it, the furthest given as {fmtLy(furthest)} away.</p>
+      <p class="note print-hide"><a href="/v2?go=night-sky">See this cloud of stars in 3D</a></p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="sky" numeral="II" title="The naked-eye stars, from above" rings={skyRings} up="To the centre of the Milky Way" footLeft={`${skyStars.length.toLocaleString('en-GB')} stars of magnitude ${limits.skyMag} or brighter`} footRight="HYG star database v4.4"
+        summary={`A chart of the ${skyStars.length.toLocaleString('en-GB')} stars visible to the naked eye, seen from above the Milky Way’s disc with the Sun in the middle. They form a cloud thickest within a few hundred light years and thinning out to about 2,000.`}>
+        <path class="dust" d={plan} stroke-width="1.8" />
+        <g class="stars">{planNames.placed.map((l) => <circle class="star" cx={l.x.toFixed(1)} cy={l.y.toFixed(1)} r="3.5" />)}</g>
+        <g class="here"><circle r="5" /></g>
+        <g class="names">{planNames.placed.map((l) => <text class="name small" x={l.tx.toFixed(1)} y={l.ty.toFixed(1)} text-anchor={l.anchor}>{l.text}</text>)}</g>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row figure-row" id="figure-sky-side">
+    <div class="hang">
+      <p class="label">Drawing III</p>
+      <h2>The same stars from the side</h2>
+      <p class="note">Turn drawing II on its edge. The centre of the Milky Way is now off to the right and the galaxy’s north is up. The pale band marks 1,000 light years either side of the Sun, which is about the depth of the layer that holds most of the Milky Way’s stars.</p>
+      <p class="note">Close in, the stars lie in every direction. Further out they keep to the disc, because that is where the galaxy’s bright young stars are.</p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="sky-side" numeral="III" title="The naked-eye stars, from the side" rings={skyRings} footLeft="The centre of the Milky Way is to the right" footRight="HYG star database v4.4"
+        summary="The same naked-eye stars seen from the side. Near the Sun they lie in all directions, and further away they keep close to the flat disc of the Milky Way.">
+        <rect class="slab" x={-R} y={((-1000 / SKY_HALF) * R).toFixed(1)} width={R * 2} height={((2000 / SKY_HALF) * R).toFixed(1)} />
+        <path class="dust" d={side} stroke-width="1.8" />
+        <g class="stars">{sideNames.placed.map((l) => <circle class="star" cx={l.x.toFixed(1)} cy={l.y.toFixed(1)} r="3.5" />)}</g>
+        <g class="here"><circle r="5" /></g>
+        <g class="names">{sideNames.placed.map((l) => <text class="name small" x={l.tx.toFixed(1)} y={l.ty.toFixed(1)} text-anchor={l.anchor}>{l.text}</text>)}</g>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row key-row">
+    <div class="hang"><h2>How to read it</h2></div>
+    <div class="prose key">
+      <p>In drawings I and II you are looking straight down on the disc of the Milky Way from its north side. The Sun is the ring in the middle and the centre of the galaxy is far off the top of the page. Distances from the Sun are to scale, and the dotted rings mark equal distances.</p>
+      <p>A flat drawing cannot show height. Two stars side by side on the page may be one well above the disc and one well below, so the list gives each star’s height as well as its distance.</p>
+      <p>The dots are far too big. On drawing I a star the size of the Sun, drawn to scale, would be about a 300-millionth of the width of the page.</p>
+      <p>A light year is how far light travels in a year: 9.46 trillion km. Magnitude is the astronomer’s scale of brightness in the sky, on which smaller numbers are brighter and 6 is about the faintest the eye can see.</p>
+      <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
+    </div>
+  </section>
+
+  <section class="row family-row" id="nearest">
+    <div class="hang">
+      <h2>The nearest stars</h2>
+      <p class="note">The {named.length} stars within {limits.nearLy} light years that have a name of their own in the catalogue, nearest first. The other {nearStars.length - named.length} are known only by catalogue numbers.</p>
+    </div>
+    <table class="moons worlds">
+      <thead><tr><th scope="col">Star</th><th scope="col">Distance</th><th scope="col">Height above the disc</th><th scope="col">Light it gives out</th></tr></thead>
+      <tbody>
+        {named.map((s) => (
+          <tr>
+            <th scope="row"><span class="nm">{s.name}</span>{CALL[s.name] && <span class="fit">shown as {CALL[s.name]}</span>}</th>
+            <td data-label="Distance">{s.ly.toFixed(2)} light years</td>
+            <td data-label="Height above the disc">{Math.abs(s.p[2]).toFixed(1)} light years {s.p[2] >= 0 ? 'above' : 'below'}</td>
+            <td data-label="Light it gives out">{light(sunLight(s.absMag))}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="row sources-row">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <ul><li><a href={HYG.url}>{HYG.label}</a>, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0</a> licence. The drawings here are made from it and are shared under the same licence.</li></ul>
+      <p>The catalogue joins the Hipparcos, Yale Bright Star and Gliese catalogues. Distances come from parallax: the tiny shift in a star’s place in the sky as the Earth goes round the Sun. It does not hold every faint star near the Sun, so a full census within {limits.nearLy} light years would show more red and brown dwarfs than are drawn here.</p>
+      <p>The light a star gives out is its visible light only, compared with the Sun’s, worked out here from its brightness in the sky and its distance. Red dwarfs give out most of their light as infrared, which this leaves out.</p>
+      <p>“Above” and “below” are measured from the plane through the Sun parallel to the Milky Way’s disc. The Sun itself sits about 70 light years above the true middle of the disc (<a href="https://doi.org/10.1093/mnras/sty2813">Bennett and Bovy 2019</a>). The band in drawing III follows the measured thickness of the disc’s main layer of stars, which thins out over about 300 parsecs, or 1,000 light years (<a href="https://doi.org/10.1086/523619">Jurić and others 2008</a>).</p>
+    </div>
+  </section>
+</Reading>

@@ -127,7 +127,7 @@ export function mountMargin(engine: Engine): void {
         ...pl.credits.flatMap((c) => [el('a', { href: c.url, target: '_blank', rel: 'noopener' }, c.label), c.licence ? ` (${c.licence})` : '', '. ']),
         el('a', { href: '/sources#beyond', target: '_blank', rel: 'noopener' }, 'All the sources')));
       const i = places.indexOf(pl);
-      kids.push(el('div', { class: 'm-acts' }, i > 0 ? flyButton(places[i - 1].id, `In to ${theName(places[i - 1].id)}`) : flyButton('sun', 'In to the Sun'), i < places.length - 1 ? flyButton(places[i + 1].id, `Out to ${theName(places[i + 1].id)}`) : null));
+      kids.push(el('div', { class: 'm-acts' }, pl.chart ? el('a', { class: 'm-act', href: pl.chart, target: '_blank', rel: 'noopener' }, 'See it on the chart') : null, i > 0 ? flyButton(places[i - 1].id, `In to ${theName(places[i - 1].id)}`) : flyButton('sun', 'In to the Sun'), i < places.length - 1 ? flyButton(places[i + 1].id, `Out to ${theName(places[i + 1].id)}`) : null));
     } else if (near) {
       kids.push(el('p', { class: 'm-what' }, `The nearest world is ${theName(near.id)}.`), el('div', { class: 'm-acts' }, flyButton(near.id, `Go to ${theName(near.id)}`)));
     }
@@ -203,7 +203,7 @@ export function mountMargin(engine: Engine): void {
       el('h3', null, 'Further out'),
       el('div', { class: 'm-fly' }, ...places.map((pl) => flyButton(pl.id, pl.name, undefined, ''))),
       el('h3', null, 'Charts'),
-      el('p', null, el('a', { href: '/atlas/solar-system', target: '_blank', rel: 'noopener' }, 'The Solar System from above'), ' and ', el('a', { href: '/atlas', target: '_blank', rel: 'noopener' }, 'all the charts'), '.'));
+      el('p', null, el('a', { href: '/atlas/solar-system', target: '_blank', rel: 'noopener' }, 'The Solar System from above'), ', ', el('a', { href: '/atlas/stars', target: '_blank', rel: 'noopener' }, 'the stars round the Sun'), ', ', el('a', { href: '/atlas/galaxies', target: '_blank', rel: 'noopener' }, 'our galaxy and the others'), ' and ', el('a', { href: '/atlas', target: '_blank', rel: 'noopener' }, 'all the charts'), '.'));
     placeYou();
   }
 

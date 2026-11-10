@@ -159,3 +159,35 @@ table.moons { width: 100%; border-collapse: collapse; font: 300 1rem/1.4 var(--r
 .spread .mark.planet path { stroke: var(--ink-soft); stroke-dasharray: none; opacity: .5; }
 .spread .mark.gap text { fill: var(--back); }
 .spread .mark.gap path { stroke: var(--back); opacity: .7; }
+
+/* ---- charts beyond the Solar System (DeepPlate.astro) */
+.deep .rings circle { fill: none; stroke: var(--ink-faint); stroke-width: .9; stroke-dasharray: 2 6; opacity: .8; }
+.deep .rings text, .deep .stamp { font: 400 14px var(--r-mono); letter-spacing: .08em; fill: var(--ink-faint); }
+.deep .rings text { paint-order: stroke; stroke: var(--paper); stroke-width: 6px; stroke-linejoin: round; }
+.deep .stamp { fill: var(--back); text-transform: uppercase; }
+.deep .dust { fill: none; stroke: var(--ink); stroke-linecap: round; }
+.deep .star { fill: var(--ink); }
+.deep .star.dim { fill: var(--ink-soft); }
+.deep .here circle { fill: var(--paper); stroke: var(--accent); stroke-width: 2; }
+.deep .here .pip { fill: var(--accent); stroke: none; }
+.deep .name.small { font-size: 18px; }
+.deep .name.it { font-style: italic; }
+.deep .arm { fill: none; stroke: var(--ink-soft); stroke-linecap: round; opacity: .3; }
+.deep .arm.local { opacity: .2; }
+.deep .bar-shape { fill: var(--ink-soft); opacity: .45; }
+.deep .disc { fill: var(--ink-soft); opacity: .07; }
+.deep .edge { fill: none; stroke: var(--ink-faint); stroke-width: 1; }
+.deep .galaxy { fill: var(--ink); }
+.deep .galaxy.unknown { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+.deep .slab { fill: var(--ink-soft); opacity: .1; }
+.deep .axis-line { fill: none; stroke: var(--ink-faint); stroke-width: 1; }
+.deep .arm.bar-line { opacity: .5; }
+.deep .disc.strong { opacity: .3; }
+.deep .here .eye { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+@media (max-width: 760px) {
+  /* a phone has no room for the foot lines: the words beside each drawing say the same */
+  .deep .when, .deep .sunward { display: none; }
+  .deep .rings text, .deep .stamp { font-size: 22px; }
+  .deep .stamp { transform: translateY(40px); }
+  .deep .name.small { font-size: 25px; stroke-width: 9px; }
+}
