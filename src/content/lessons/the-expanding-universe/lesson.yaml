@@ -6,4 +6,4 @@ scene: "The map of real galaxies slowly spreading apart, viewed from our galaxy 
 view: { target: cmb }
 terms: [redshift, hubble-constant, big-bang, cosmic-microwave-background, look-back-time, galaxy, light-year]
 needs: [kinds-of-galaxy, reading-starlight]
-next: [dark-matter-and-dark-energy]
+next: [the-first-minutes, dark-matter-and-dark-energy]
