@@ -6,6 +6,8 @@ import { plates } from './plates';
 import { groups, shown, solarSystem } from './plates/solar-system';
 import { AU_KM, fmtAu, fmtYears, isPlanet, planetOrbit } from './sun';
 import { keplerPosition } from './kepler';
+import { landmarks } from './landmarks';
+import { bodyMarks, landmarkMarks, layout, readLength, RULES, spread, TOP } from './ruler';
 import { positionAU } from '../../orbit';
 
 // A few lines of test harness, so the project needs no test library.
@@ -232,6 +234,58 @@ test('distances and years round the Sun read plainly', () => {
   assert.equal(fmtYears(60190), '165 years');
   assert.equal(fmtKm(4_498_400_000), '4.5 billion km');
   assert.equal(fmtKm(778_500_000), '779 million km');
+});
+
+test('landmarks: what the reader sees agrees with where the mark is put', () => {
+  assert.equal(new Set(landmarks.map((l) => l.id)).size, landmarks.length, 'two landmarks share an id');
+  for (const l of landmarks) {
+    const said = readLength(l.value);
+    assert.ok(said !== null, `${l.id}: no length in "${l.value}"`);
+    assert.ok(Math.abs(Math.log10(said! / l.metres)) < 0.02, `${l.id}: says ${l.value} but is put at ${l.metres.toPrecision(4)} m`);
+    assert.ok(l.metres >= 1 && Math.log10(l.metres) < TOP, `${l.id} is off the ruler`);
+    assert.match(l.source.url, /^https:\/\//, `${l.id} has no source`);
+    assert.ok(l.note.length > 30 && !/[—–]/.test(l.note + l.name + l.value), `${l.id}: note too short, or a dash crept in`);
+  }
+});
+
+test('ruler: the rules are in order and each says the length it stands at', () => {
+  for (let k = 0; k < RULES.length; k++) {
+    if (k > 0) assert.ok(RULES[k].at > RULES[k - 1].at);
+    assert.ok(Math.abs(Math.log10(readLength(RULES[k].unit)!) - RULES[k].at) < 1e-9, `${RULES[k].unit} is at ${RULES[k].at}`);
+  }
+  assert.ok(Math.abs(RULES[16].at - 15.976) < 0.001, 'a light year is 9.46e15 m');
+});
+
+test('ruler: labels spread apart by the least movement', () => {
+  assert.deepEqual(spread([1, 5], [1, 1], 0, 10), [1, 5]);
+  assert.deepEqual(spread([5, 5], [1, 1], 0, 10), [4.5, 5.5]);
+  assert.deepEqual(spread([0.2, 0.3], [1, 1], 0, 10), [0.5, 1.5]);
+  assert.deepEqual(spread([9.9, 9.95], [1, 2], 0, 10), [7.5, 9]);
+  assert.equal(spread([1, 2, 3], [1, 1, 1], 0, 2.5), null);
+});
+
+test('ruler: nothing touches, nothing is lost, and the planets and landmarks are always written', () => {
+  const marks = [...landmarkMarks(), ...bodyMarks(allBodies, JD_2026)];
+  assert.equal(new Set(marks.map((m) => m.id)).size, marks.length, 'two marks share an id');
+  for (const opt of [{ columns: 2 as const, slot: 1.65 / 16, tall: 2.6 / 16, under: 1.8 / 16, maxShift: 0.3 }, { columns: 1 as const, slot: 1.65 / 24, tall: 2.6 / 24, under: 2.9 / 24, maxShift: 0.3 }]) {
+    const out = layout(marks, RULES, opt);
+    assert.equal(out.placed.length + out.more.reduce((n, m) => n + m.count, 0), marks.length, 'every mark is written or counted');
+    for (const m of marks) if (m.rank <= 1) assert.ok(out.placed.some((p) => p.id === m.id), `${m.id} is not written with ${opt.columns} columns`);
+    const h = (lines: number) => (lines === 2 ? opt.tall : opt.slot);
+    for (let c = 0; c < opt.columns; c++) {
+      const col = [
+        ...out.placed.filter((p) => p.column === c).map((p) => ({ id: p.id, top: p.at - h(p.lines) / 2, bottom: p.at + h(p.lines) / 2 })),
+        ...out.more.filter((m) => m.column === c).map((m) => ({ id: m.text, top: m.at - opt.slot / 2, bottom: m.at + opt.slot / 2 })),
+        ...RULES.map((r) => ({ id: r.unit, top: r.at, bottom: r.at + opt.under })),
+      ].sort((a, b) => a.top - b.top);
+      for (let i = 1; i < col.length; i++) assert.ok(col[i].top >= col[i - 1].bottom - 1e-9, `${col[i - 1].id} and ${col[i].id} touch`);
+    }
+    for (const p of out.placed) if (p.rank > 1) assert.ok(Math.abs(p.at - p.y) <= opt.maxShift + 1e-9, `${p.id} is moved too far`);
+    for (const p of out.placed) assert.ok(p.rank < 4, 'unmeasured moons are counted, not written');
+  }
+  const earth = marks.find((m) => m.id === 'earth-orbit')!;
+  assert.ok(Math.abs(earth.metres - 1.496e11) < 1e9 && earth.value === '1.00 au');
+  assert.equal(marks.find((m) => m.id === 'moon-width')!.value, '3,475 km wide');
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');

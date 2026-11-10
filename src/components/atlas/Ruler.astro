@@ -1,0 +1,43 @@
+---
+// The ruler, drawn as plain positioned text so it reads, links and prints like the rest of the page.
+// Every height is a number of decades times one CSS length (--dec), set in atlas.css.
+import { RULES, TOP, type Layout } from '../../lib/v2/atlas/ruler';
+
+interface Props { layout: Layout; variant: 'wide' | 'narrow' }
+const { layout, variant } = Astro.props;
+const two = layout.columns === 2;
+// leaders are drawn in a strip 100 units wide: the spine down the middle (or down the left edge
+// on a phone), and a line from each true place to where its label is written
+const spineX = two ? 50 : 8;
+const endX = (column: number) => (two ? (column === 0 ? 0 : 100) : 100);
+const y = (decades: number) => (decades * 100).toFixed(1);
+const items = [
+  ...RULES.map((r) => ({ kind: 'rule' as const, at: r.at, r })),
+  ...layout.placed.map((p) => ({ kind: 'mark' as const, at: p.at, p })),
+  ...layout.more.map((m) => ({ kind: 'more' as const, at: m.at, m })),
+].sort((a, b) => a.at - b.at);
+const TAG = { theory: 'never seen', derived: 'worked out' } as const;
+---
+<div class:list={['ruler', variant]} style={`--top:${TOP}`}>
+  <svg class="leaders" viewBox={`0 0 100 ${TOP * 100}`} preserveAspectRatio="none" aria-hidden="true">
+    <path class="spine" d={`M${spineX} 0V${TOP * 100}`} />
+    {layout.placed.map((p) => {
+      const stub = spineX + (endX(p.column) > spineX ? 1 : -1) * (two ? 14 : 22);
+      return <path class:list={[{ theory: p.known === 'theory' }]} d={`M${spineX} ${y(p.y)}H${stub}L${endX(p.column)} ${y(p.at)}`} />;
+    })}
+  </svg>
+  <ol>
+    {items.map((it) => it.kind === 'rule' ? (
+      <li class="rule" style={`--y:${it.at.toFixed(4)}`}><span class="unit">{it.r.unit}</span><span class="plain">{it.r.name}</span></li>
+    ) : it.kind === 'mark' ? (
+      <li class:list={['mark', `c${it.p.column}`, it.p.side, { landmark: it.p.rank === 0, one: it.p.lines === 1 }]} style={`--y:${it.p.at.toFixed(4)}`}>
+        <a href={it.p.href}>
+          <span class="nm">{it.p.name}</span>
+          <span class="val">{it.p.value}{it.p.known && <span class="tag"> · {TAG[it.p.known]}</span>}</span>
+        </a>
+      </li>
+    ) : (
+      <li class:list={['more', `c${it.m.column}`]} style={`--y:${it.m.at.toFixed(4)}`}><a href={it.m.href}>{it.m.text}</a></li>
+    ))}
+  </ol>
+</div>
