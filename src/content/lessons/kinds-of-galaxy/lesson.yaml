@@ -6,4 +6,4 @@ scene: "Real examples of each kind side by side at the same scale, then the view
 view: { target: local-group }
 terms: [galaxy, spiral-galaxy, elliptical-galaxy, local-group, galaxy-cluster, milky-way, nebula]
 needs: [the-milky-way]
-next: [the-expanding-universe]
+next: [the-cosmic-web, the-expanding-universe]

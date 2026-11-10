@@ -46,4 +46,4 @@ Canopus looks only a little fainter than Sirius from more than thirty times furt
 
 The Plough is the exception that shows what a real group looks like: its five middle stars are at nearly the same distance. Orion's Belt is the usual case.
 
-**The edge of what you can see.** All of this lies in a ball a few thousand light years across, in a galaxy 100,000 light years wide. The pale band of the Milky Way is the combined glow of far more distant stars, too faint to pick out one by one. Beyond our galaxy, only a handful of things can be seen by eye at all, and the furthest is the Andromeda Galaxy, about 2.5 million light years away.
+**The edge of what you can see.** All of this lies in a ball a few thousand light years across, in a galaxy 100,000 light years wide. The pale band of the Milky Way is the combined glow of far more distant stars, too faint to pick out one by one. Beyond our galaxy, only a handful of things can be seen by eye at all, and the furthest most people can see is the Andromeda Galaxy, about 2.5 million light years away.
