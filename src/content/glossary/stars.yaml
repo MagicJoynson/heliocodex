@@ -12,6 +12,13 @@ terms:
     more: "The dividing line is at about 8 per cent of the Sun's mass, roughly 80 times the mass of Jupiter."
     see: [star, nuclear-fusion, gas-giant]
     lesson: what-a-star-is
+  - id: binary-star
+    term: Binary star
+    also: [double star, binary, multiple star]
+    short: "Two stars held together by gravity, each going round the other. Three or more together make a multiple star."
+    more: "The size of the orbit and the time for one turn give the masses of the two stars, which is how stars are weighed."
+    see: [barycentre, orbital-period, mass]
+    lesson: double-and-multiple-stars
   - id: spectral-type
     term: Spectral type
     also: [spectral class, OBAFGKM]
