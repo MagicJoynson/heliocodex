@@ -48,7 +48,7 @@ export interface MoonsLayer extends Layer {
   /** Stop drawing one moon here, because the engine is now drawing its real surface. */
   hide(id: string, hidden?: boolean): void;
   /** Tell the layer how tall the view is in CSS pixels and its vertical field of view, for sizing. */
-  setView(heightPx: number, fovDeg: number): void;
+  resize(heightPx: number, fovDeg: number): void;
   /** How many moons the layer holds. */
   readonly count: number;
 }
@@ -253,6 +253,6 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
     setMarkers(on) { markers = on; },
     setOrbits(on) { orbits = on; },
     hide(id, hidden = true) { const m = moons.find((x) => x.body.id === id); if (m) m.hidden = hidden; },
-    setView(heightPx, fovDeg) { viewH = heightPx; fov = fovDeg; },
+    resize(heightPx, fovDeg) { viewH = heightPx; fov = fovDeg; },
   };
 }
