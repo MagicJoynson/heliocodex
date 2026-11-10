@@ -32,11 +32,12 @@
      "mDegPerDay": 13.064578357
     },
     "fit": {
-     "medianDeg": 0.89,
-     "worstDeg": 2.36,
+     "medianDeg": 0.0007,
+     "worstDeg": 0.002,
      "from": 2000,
      "to": 2040
-    }
+    },
+    "theory": "moon"
    },
    "ephemeris": "DE405/LE405",
    "meanRadiusKm": 1737.4,

@@ -56,6 +56,12 @@ export interface KeplerOrbit {
    * parent: typical and worst. Present for moons, whose orbits are fitted (scripts/data/fit-moon-orbits.py).
    */
   fit?: { medianDeg: number; worstDeg: number; from: number; to: number };
+  /**
+   * Earth's Moon only. The Sun pulls it too far from any ellipse (up to two degrees), so
+   * keplerPosition() uses a full lunar theory instead (atlas/lunar.ts) and `fit` describes that.
+   * The elements above are still right for drawing the shape of the orbit.
+   */
+  theory?: 'moon';
 }
 
 export type Orbit =

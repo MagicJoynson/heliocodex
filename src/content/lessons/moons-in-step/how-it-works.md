@@ -20,7 +20,7 @@ The ratios are a shade off 4, 2 and 1, and that small difference is part of the 
 
 **What it does.** The repeated tugs stop the orbits from settling into circles. An oval orbit means a tide that rises and falls on every lap, and that means heat. This one rhythm keeps Io's volcanoes going and helps keep Europa's ocean liquid.
 
-Saturn has the same arrangement on a smaller scale. Enceladus goes round twice for each orbit of the larger moon Dione, and that is what powers its jets.
+Saturn has the same arrangement on a smaller scale. Enceladus goes round twice for each orbit of the larger moon Dione, and that helps power its jets: the pairing keeps its orbit slightly oval, and the tides that follow do the heating.
 
 **A moon that runs fast and slow.** Mimas goes round Saturn twice for each orbit of Tethys. The pull of Tethys does not hold Mimas at a steady pace. It makes Mimas run ahead of a steady clock for decades, then fall behind, swinging by tens of degrees either way over a cycle of about 70 years. Anyone drawing Saturn's moons has to allow for it, and this site does.
 

@@ -27,4 +27,4 @@ A moon on a slightly oval orbit is squeezed harder when it is near its planet an
 
 **Titan** has two kinds of sea. On the surface there are lakes and seas of liquid methane and ethane, under a thick nitrogen atmosphere. It is the only place besides the Earth known to have liquid on its surface. Far below, under the ice, there is water as well.
 
-**Why it matters.** Life as we know it needs liquid water, a source of energy and some chemistry to work with. These moons appear to have all three. None of that means anything lives there. It means they are worth a close look, and several spacecraft are on their way to take one.
+**Why it matters.** Life as we know it needs liquid water, a source of energy and some chemistry to work with. These moons appear to have all three. None of that means anything lives there. It means they are worth a close look, and two spacecraft are on their way to take one.

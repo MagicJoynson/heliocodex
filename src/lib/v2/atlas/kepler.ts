@@ -1,4 +1,5 @@
 import type { KeplerOrbit } from './types';
+import { moonPosition } from './lunar';
 
 /**
  * Where a moon (or any body with orbital elements) is, relative to its parent.
@@ -6,6 +7,7 @@ import type { KeplerOrbit } from './types';
  * Moons use orbits fitted to JPL Horizons over 2000 to 2040 (scripts/data/fit-moon-orbits.py):
  * a slowly turning ellipse. Each orbit carries `fit`, its typical and worst error in degrees as
  * seen from the planet. Good for drawing where a moon is, not for navigation.
+ * Earth's Moon is the exception: it strays too far from an ellipse, so it has its own theory (lunar.ts).
  *
  * Output: kilometres, in the ecliptic and equinox of J2000 (x to the March equinox, z north).
  */
@@ -98,6 +100,7 @@ function place(o: KeplerOrbit, B: Basis, node: number, peri: number, E: number, 
 
 /** Position relative to the parent at a Julian date (TDB), km, ecliptic J2000. */
 export function keplerPosition(o: KeplerOrbit, parent: string, jd: number, out: Vec = [0, 0, 0]): Vec {
+  if (o.theory === 'moon') return moonPosition(jd, out);
   const a = anglesAt(o, jd);
   return place(o, planeOf(o, parent), a.node, a.peri, solveKepler(a.m, o.e), out);
 }

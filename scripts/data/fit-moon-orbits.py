@@ -331,6 +331,9 @@ def main():
             failed += 1
             log(f"{m['id']:14s} no answer from Horizons; left as the JPL table has it")
             continue
+        if m["orbit"].get("theory"):
+            # Earth's Moon: the site uses a full lunar theory (src/lib/v2/atlas/lunar.ts); keep its marker and its error
+            new["theory"], new["fit"] = m["orbit"]["theory"], m["orbit"]["fit"]
         m["orbit"] = new
         done += 1
         f = new["fit"]
