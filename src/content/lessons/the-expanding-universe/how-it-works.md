@@ -1,6 +1,7 @@
 ---
 sources:
-  - { label: "NASA, The Big Bang", url: "https://science.nasa.gov/universe/the-big-bang/" }
+  - { label: "NASA, cosmic history", url: "https://science.nasa.gov/universe/overview/" }
+  - { label: "Particle Data Group, review of Big Bang nucleosynthesis (2024)", url: "https://pdg.lbl.gov/2024/reviews/rpp2024-rev-bbang-nucleosynthesis.pdf" }
   - { label: "ESA, Planck and the cosmic microwave background", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_and_the_cosmic_microwave_background" }
   - { label: "Nobel Prize in Physics 1978: discovery of the cosmic microwave background", url: "https://www.nobelprize.org/prizes/physics/1978/summary/" }
   - { label: "NASA, the James Webb Space Telescope", url: "https://science.nasa.gov/mission/webb/" }
