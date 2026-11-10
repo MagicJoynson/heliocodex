@@ -1,10 +1,20 @@
 // Run with: npm run test:atlas
-import test from 'node:test';
-import assert from 'node:assert/strict';
 import { allBodies } from '../../../data/bodies/index';
 import type { KeplerOrbit } from './types';
 import { dotAt, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView } from './chart';
 import { plates } from './plates';
+
+// A few lines of test harness, so the project needs no test library.
+const failed: string[] = [];
+function test(name: string, fn: () => void) {
+  try { fn(); console.log(`ok    ${name}`); } catch (e) { failed.push(name); console.log(`FAIL  ${name}\n      ${(e as Error).message}`); }
+}
+const assert = {
+  ok(cond: unknown, msg = 'expected a true value') { if (!cond) throw new Error(msg); },
+  equal(a: unknown, b: unknown, msg?: string) { if (a !== b) throw new Error(msg ?? `${String(a)} is not ${String(b)}`); },
+  deepEqual(a: unknown, b: unknown, msg?: string) { if (JSON.stringify(a) !== JSON.stringify(b)) throw new Error(msg ?? `${JSON.stringify(a)} is not ${JSON.stringify(b)}`); },
+  match(s: string, re: RegExp, msg?: string) { if (!re.test(s)) throw new Error(msg ?? `${s.slice(0, 60)} does not match ${re}`); },
+};
 
 const JD_2026 = 2461354.5; // 10 Nov 2026
 const moon = (id: string) => {
@@ -130,3 +140,6 @@ test('scale bars and figures read plainly', () => {
   assert.equal(fmtDays(743.6), '744 days');
   assert.ok(reachKm([moon('pasiphae')]) > 30_000_000);
 });
+
+console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');
+if (failed.length) throw new Error(`${failed.length} atlas tests failed`);

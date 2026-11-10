@@ -16,7 +16,8 @@ svg.plate { display: block; width: 100%; height: auto; font-family: var(--r-seri
 .plate .namepath { fill: none; stroke: none; }
 .plate .name { font: 400 21px var(--r-serif); letter-spacing: .04em; fill: var(--ink); paint-order: stroke; stroke: var(--paper); stroke-width: 7px; stroke-linejoin: round; }
 
-.orbit .line { fill: none; stroke: var(--ink-soft); stroke-width: 1.1; opacity: .8; vector-effect: non-scaling-stroke; }
+.plate defs path { vector-effect: non-scaling-stroke; }
+.orbit .line { fill: none; stroke: var(--ink-soft); stroke-width: 1.1; opacity: .8; pointer-events: none; }
 .orbit.back .line { stroke: var(--back); }
 .orbit.dashed .line { stroke-dasharray: 5 4; }
 .orbit .hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; }

@@ -17,6 +17,9 @@ const other = figure.marks ? spec.figures.find((f) => f.id === figure.marks) : u
 const square = other ? other.spanKm / p.kmPerUnit : 0;
 const bar = scaleBar(p.kmPerUnit, 240);
 const dotR = (b: Drawn) => (bodies.length > 40 ? 2.4 : (b.meanRadiusKm ?? 0) >= 1000 ? 6.5 : (b.meanRadiusKm ?? 0) >= 40 ? 4.4 : 3.2);
+// fewer points for the crowd of outer orbits, which are large, smooth curves
+const crowd = bodies.length > 40;
+const steps = crowd ? 96 : 180;
 const named = bodies.filter((b) => figure.names[b.id] !== undefined);
 const parentName = spec.parent[0].toUpperCase() + spec.parent.slice(1);
 const summary = `${figure.title}. ${parentName} seen from above its north pole, with the orbits of ${bodies.length} moons drawn to scale. Every moon is in the list below.`;
@@ -25,11 +28,14 @@ const summary = `${figure.title}. ${parentName} seen from above its north pole, 
   <rect class="frame" x="-494" y="-494" width="988" height="988" />
   <rect class="frame thin" x="-486" y="-486" width="972" height="972" />
 
+  <defs>
+    {bodies.map((b) => <path id={`o-${figure.id}-${b.id}`} d={orbitD(p, b.orbit, jd, steps, crowd)} />)}
+  </defs>
   <g class="orbits">
     {bodies.map((b) => (
       <a href={`#${b.id}`} tabindex="-1" data-body={b.id} class:list={['orbit', b.tilt > 90 ? 'back' : 'fwd', lineOf(b.orbit)]}>
-        <path class="hit" d={orbitD(p, b.orbit, jd)} />
-        <path class="line" d={orbitD(p, b.orbit, jd)} />
+        <use class="hit" href={`#o-${figure.id}-${b.id}`} />
+        <use class="line" href={`#o-${figure.id}-${b.id}`} />
       </a>
     ))}
   </g>

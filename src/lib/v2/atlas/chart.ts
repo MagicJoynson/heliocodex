@@ -40,8 +40,9 @@ export function orbitPoints(p: Plate, o: KeplerOrbit, jd: number, n = 180): [num
 }
 
 /** The orbit as the `d` of a closed SVG path. */
-export function orbitD(p: Plate, o: KeplerOrbit, jd: number, n = 180): string {
-  return 'M' + orbitPoints(p, o, jd, n).map(([x, y]) => `${r1(x)} ${r1(y)}`).join('L') + 'Z';
+export function orbitD(p: Plate, o: KeplerOrbit, jd: number, n = 180, whole = false): string {
+  const f = whole ? (v: number) => Math.round(v).toString() : r1;
+  return 'M' + orbitPoints(p, o, jd, n).map(([x, y]) => `${f(x)} ${f(y)}`).join('L') + 'Z';
 }
 
 /** Where the body is on the page at a date. */
