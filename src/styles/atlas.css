@@ -8,6 +8,7 @@ svg.plate { display: block; width: 100%; height: auto; font-family: var(--r-seri
 .plate .frame.thin { stroke-width: .8; }
 .plate .planet { fill: var(--ink); }
 .plate .ring { fill: none; stroke: var(--ink-soft); opacity: .32; }
+.plate .ring.faint { opacity: .1; }
 .plate .inset-mark rect { fill: none; stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 5 4; }
 .plate .inset-mark text, .plate .numeral, .plate .bar text, .plate .when, .plate .sunward text { font: 400 15px var(--r-mono); letter-spacing: .08em; fill: var(--ink-faint); }
 .plate .numeral { fill: var(--ink-soft); }

@@ -1,7 +1,7 @@
 // Run with: npm run test:atlas
 import { allBodies } from '../../../data/bodies/index';
 import type { KeplerOrbit } from './types';
-import { dotAt, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView } from './chart';
+import { dotAt, fitsOn, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView } from './chart';
 import { plates } from './plates';
 
 // A few lines of test harness, so the project needs no test library.
@@ -115,6 +115,37 @@ test('every moon of Jupiter is in exactly one family and on at least one figure'
   for (const f of spec.figures) for (const id of Object.keys(f.names)) {
     assert.ok(f.families.some((fam) => fams.get(fam)!.some((b) => b.id === id)), `${id} is named on figure ${f.id} but not drawn there`);
   }
+});
+
+test('every plate: each moon in one family, every family drawn, every orbit inside its drawing, every name on a drawn moon', () => {
+  const expected: Record<string, number> = { earth: 1, mars: 2, jupiter: 115, saturn: 292, uranus: 29, neptune: 16, pluto: 5 };
+  for (const [id, spec] of Object.entries(plates)) {
+    const moons = allBodies.filter((b) => b.parent === id && b.orbit.type === 'kepler') as { id: string; orbit: KeplerOrbit }[];
+    assert.equal(moons.length, expected[id], `${id} has ${moons.length} moons`);
+    for (const m of moons) assert.ok(m.orbit.aKm > 0 && m.orbit.e >= 0 && m.orbit.e < 1, `${m.id} has a broken orbit`);
+    const fams = sortIntoFamilies(moons, spec.families, id, JD_2026);
+    assert.equal([...fams.values()].reduce((n, l) => n + l.length, 0), moons.length);
+    const drawn = new Set(spec.figures.flatMap((f) => f.families));
+    for (const f of spec.families) { assert.ok(drawn.has(f.id), `${id}: family ${f.id} is on no drawing`); assert.ok(fams.get(f.id)!.length > 0, `${id}: family ${f.id} is empty`); }
+    const shown = new Set<string>();
+    for (const f of spec.figures) {
+      const p = topView(id, f.spanKm, 440, f.view);
+      const here = f.families.flatMap((fam) => fams.get(fam)!).filter((b) => fitsOn(p, b.orbit, JD_2026));
+      for (const b of here) shown.add(b.id);
+      for (const b of here) for (const [x, y] of orbitPoints(p, b.orbit, JD_2026, 90)) assert.ok(Math.abs(x) <= p.half && Math.abs(y) <= p.half, `${b.id} leaves ${id} drawing ${f.id}`);
+      for (const name of Object.keys(f.names)) assert.ok(here.some((b) => b.id === name), `${name} is named on ${id} drawing ${f.id} but not drawn there`);
+      if (f.marks) assert.ok(spec.figures.some((g) => g.id === f.marks), `${id} drawing ${f.id} marks a drawing that does not exist`);
+    }
+    for (const m of moons) assert.ok(shown.has(m.id), `${m.id} is on no drawing of ${id}`);
+  }
+});
+
+test('tilt: Uranus, on its side, still has flat close moons; its far moons are measured from the plane of the planets', () => {
+  assert.ok(tiltDeg(moon('titania'), 'uranus', JD_2026) < 1);
+  assert.ok(tiltDeg(moon('margaret'), 'uranus', JD_2026) < 90, 'Margaret goes the usual way');
+  assert.ok(tiltDeg(moon('sycorax'), 'uranus', JD_2026) > 90, 'Sycorax goes backwards');
+  assert.ok(tiltDeg(moon('triton'), 'neptune', JD_2026) > 150, 'Triton goes backwards');
+  assert.ok(Math.abs(tiltDeg(moon('moon'), 'earth', JD_2026) - 5.1) < 0.3, 'the Moon is tilted about 5 degrees to the plane of the planets');
 });
 
 test('names run left to right wherever they sit on the orbit', () => {

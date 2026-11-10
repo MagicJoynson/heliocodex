@@ -309,6 +309,11 @@ def fit(m: dict) -> dict | None:
         err2 = errors(swung, np.array(check), truth[:, :3])
         if np.median(err2) < np.median(err) and err2.max() < err.max():
             new, err = swung, err2
+    # A fit that lands nowhere near the positions is worse than none: Horizons has no real orbit for
+    # a few newly found moons (S/2025 U 1 came back as a = -10,778 km). Keep the table's orbit instead.
+    if new["aKm"] <= 0 or float(np.median(err)) > 45:
+        log(f"  {m['id']}: fit rejected (a {new['aKm']} km, median error {float(np.median(err)):.0f} deg)")
+        return None
     new["fit"] = {"medianDeg": round(float(np.median(err)), 2), "worstDeg": round(float(err.max()), 2), "from": 2000, "to": 2040}
     return new
 

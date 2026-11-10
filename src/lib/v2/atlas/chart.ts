@@ -20,8 +20,12 @@ export interface Plate {
   project(x: number, y: number, z: number): [number, number];
 }
 
-export function topView(parent: string, spanKm: number, half = 440): Plate {
-  const B = equatorBasis(parent);
+/** Which way is up: the planet's own north pole (for its close moons), or the north of the plane of the planets. */
+export type ViewFrom = 'equator' | 'ecliptic';
+const ECLIPTIC = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1] };
+
+export function topView(parent: string, spanKm: number, half = 440, from: ViewFrom = 'equator'): Plate {
+  const B = from === 'ecliptic' ? ECLIPTIC : equatorBasis(parent);
   const k = half / spanKm;
   return {
     parent, spanKm, half, kmPerUnit: spanKm / half,
@@ -78,16 +82,24 @@ export function labelArc(p: Plate, o: KeplerOrbit, jd: number, atDeg: number, le
   return 'M' + piece.map(([x, y]) => `${r1(x)} ${r1(y)}`).join('L');
 }
 
+/** A drawing shows the members of its families whose whole orbit, as drawn, fits inside it. */
+export function fitsOn(p: Plate, o: KeplerOrbit, jd: number): boolean {
+  return orbitPoints(p, o, jd, 90).every(([x, y]) => Math.abs(x) <= p.half && Math.abs(y) <= p.half);
+}
+
 /** The furthest any of these orbits reaches from the planet, km. */
 export function reachKm(orbits: KeplerOrbit[]): number {
   return Math.max(...orbits.map((o) => o.aKm * (1 + o.e)));
 }
 
 /**
- * The tilt of an orbit to the planet's equator, degrees, whatever plane its own angles are
- * measured from. Above 90 means the body goes round backwards.
+ * The tilt of an orbit, degrees. Close moons keep to their planet's equator, so theirs is measured
+ * from that. Far-out moons are held by the Sun's pull to the plane of the planets instead, and
+ * their orbits are given in that frame, so theirs is measured from it. (For Uranus, which lies on
+ * its side, the two differ by 98 degrees.) Above 90 means the body goes round backwards.
  */
 export function tiltDeg(o: KeplerOrbit, parent: string, jd: number): number {
+  if (o.frame === 'ecliptic-j2000') return o.iDeg;
   const B = equatorBasis(parent);
   const pts = keplerPath(o, parent, jd, 4);
   const a = [pts[0], pts[1], pts[2]], b = [pts[3], pts[4], pts[5]];
@@ -123,7 +135,9 @@ export const markOf = (seen: 'mapped' | 'partly' | 'unresolved') => (seen === 'm
 
 /** Orbits whose fitted position can be more than this far out are drawn dashed. */
 export const LOOSE_FIT_DEG = 10;
-export const lineOf = (o: KeplerOrbit) => ((o.fit?.worstDeg ?? 0) > LOOSE_FIT_DEG ? 'dashed' : 'solid');
+export const lineOf = (o: KeplerOrbit) => (!o.fit || o.fit.worstDeg > LOOSE_FIT_DEG ? 'dashed' : 'solid');
+/** Without a fit, nobody can say where on its orbit a moon is today, so it gets no dot. */
+export const canPlace = (o: KeplerOrbit) => !!o.fit;
 
 /** A family of moons on similar orbits, picked out by a rule on the orbit. */
 export interface Family {

@@ -4,25 +4,25 @@
 // because where a moon is goes out of date within hours and an old dot would be a wrong one.
 import type { KeplerOrbit, Seen } from '../../lib/v2/atlas/types';
 import type { Figure, PlateSpec } from '../../lib/v2/atlas/plates';
-import { fmtKm, labelArc, lineOf, markOf, orbitD, scaleBar, topView } from '../../lib/v2/atlas/chart';
+import { canPlace, fmtKm, labelArc, lineOf, markOf, orbitD, scaleBar, topView } from '../../lib/v2/atlas/chart';
 
 export interface Drawn { id: string; name: string; orbit: KeplerOrbit; seen: Seen; meanRadiusKm?: number; tilt: number }
 interface Props { spec: PlateSpec; figure: Figure; bodies: Drawn[]; jd: number; drawnFor: string }
 const { spec, figure, bodies, jd, drawnFor } = Astro.props;
 
-const p = topView(spec.parent, figure.spanKm);
+const p = topView(spec.parent, figure.spanKm, 440, figure.view);
 const planetR = Math.max(1.4, spec.equatorKm / p.kmPerUnit);
-const rings = spec.rings.map((r) => ({ ...r, mid: (r.innerKm + r.outerKm) / 2 / p.kmPerUnit, width: (r.outerKm - r.innerKm) / p.kmPerUnit })).filter((r) => r.mid > planetR + 2);
+const rings = spec.rings.map((r) => ({ ...r, mid: (r.innerKm + r.outerKm) / 2 / p.kmPerUnit, width: (r.outerKm - r.innerKm) / p.kmPerUnit })).filter((r) => r.mid > planetR + 2 && r.mid - r.width / 2 < 486);
 const other = figure.marks ? spec.figures.find((f) => f.id === figure.marks) : undefined;
 const square = other ? other.spanKm / p.kmPerUnit : 0;
 const bar = scaleBar(p.kmPerUnit, 240);
 const dotR = (b: Drawn) => (bodies.length > 40 ? 2.4 : (b.meanRadiusKm ?? 0) >= 1000 ? 6.5 : (b.meanRadiusKm ?? 0) >= 40 ? 4.4 : 3.2);
 // fewer points for the crowd of outer orbits, which are large, smooth curves
 const crowd = bodies.length > 40;
-const steps = crowd ? 96 : 180;
+const steps = bodies.length > 150 ? 72 : crowd ? 96 : 180;
 const named = bodies.filter((b) => figure.names[b.id] !== undefined);
 const parentName = spec.parent[0].toUpperCase() + spec.parent.slice(1);
-const summary = `${figure.title}. ${parentName} seen from above its north pole, with the orbits of ${bodies.length} moons drawn to scale. Every moon is in the list below.`;
+const summary = `${figure.title}. ${parentName} seen from above, with the ${bodies.length === 1 ? 'orbit of 1 moon' : `orbits of ${bodies.length} moons`} drawn to scale. Every moon is in the list below.`;
 ---
 <svg class="plate" data-figure={figure.id} viewBox="-500 -500 1000 1000" role="img" aria-label={summary}>
   <rect class="frame" x="-494" y="-494" width="988" height="988" />
@@ -40,7 +40,10 @@ const summary = `${figure.title}. ${parentName} seen from above its north pole, 
     ))}
   </g>
 
-  {rings.map((r) => <circle class:list={['ring', { faint: r.faint }]} r={r.mid.toFixed(1)} stroke-width={Math.max(0.8, r.width).toFixed(1)} />)}
+  <clipPath id={`clip-${spec.parent}-${figure.id}`}><rect x="-486" y="-486" width="972" height="972" /></clipPath>
+  <g clip-path={`url(#clip-${spec.parent}-${figure.id})`}>
+    {rings.map((r) => <circle class:list={['ring', { faint: r.faint }]} r={r.mid.toFixed(1)} stroke-width={Math.max(0.8, r.width).toFixed(1)} />)}
+  </g>
   <circle class="planet" r={planetR.toFixed(1)} />
   {other && (
     <g class="inset-mark">
@@ -50,7 +53,7 @@ const summary = `${figure.title}. ${parentName} seen from above its north pole, 
   )}
 
   <g class="dots" data-dots>
-    {bodies.map((b) => (
+    {bodies.filter((b) => canPlace(b.orbit)).map((b) => (
       <g data-dot={b.id} class:list={['dot', markOf(b.seen)]}>
         <circle r={dotR(b)} />
         {markOf(b.seen) === 'half' && <path d={`M0 ${-dotR(b)}A${dotR(b)} ${dotR(b)} 0 0 0 0 ${dotR(b)}Z`} />}

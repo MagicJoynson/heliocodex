@@ -35,7 +35,8 @@ export const jupiter: PlateSpec = {
     },
     {
       id: 'outer', numeral: 'III', title: 'The outer moons',
-      caption: 'All 107 outer moons. Orbits tilted steeply to Jupiter’s equator look narrower from above than they are. The small square in the middle is the whole of the first drawing.',
+      caption: 'All 107 outer moons, seen from above the plane of the planets. Steeply tilted orbits look narrower from above than they are. The small square in the middle is the whole of the first drawing.',
+      view: 'ecliptic',
       families: ['themisto', 'himalia', 'carpo', 'valetudo', 'ananke', 'carme', 'pasiphae'], spanKm: 35_500_000, marks: 'great',
       names: { themisto: 195, himalia: 330, carpo: 95, valetudo: 290, ananke: 215, carme: 120, pasiphae: 160 },
     },

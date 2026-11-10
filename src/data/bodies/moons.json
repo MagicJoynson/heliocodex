@@ -16363,34 +16363,22 @@
      "raDeg": 77.3,
      "decDeg": 15.2
     },
-    "epochJd": 2458849.5,
-    "aKm": -10777.9,
-    "e": 0.95,
-    "iDeg": 92.4397,
-    "nodeDeg": 136.4616,
-    "periDeg": 169.5369,
-    "mDeg": 27.051,
-    "periodDays": 0.4229188,
-    "periodJpl": 0.4201,
-    "retrograde": true,
-    "rates": {
-     "nodeDegPerDay": 0.250233281,
-     "periDegPerDay": 7.41266635,
-     "mDegPerDay": 844.064720344
-    },
-    "fit": {
-     "medianDeg": 91.83,
-     "worstDeg": 168.43,
-     "from": 2000,
-     "to": 2040
-    }
+    "epochJd": 2451545.0,
+    "aKm": 56000.0,
+    "e": 0.0,
+    "iDeg": 0.0,
+    "nodeDeg": 0.0,
+    "periDeg": 0.0,
+    "mDeg": 0.0,
+    "periodDays": 0.4201
    },
    "ephemeris": "URA184",
    "discovered": {
     "year": 2025,
     "by": "M. El Moutamid, M. Hedman, M. Showalter, M. Tiscareno, I. de Pater, J. Lissauer, D. Souami"
    },
-   "iauNumber": "XXVIII"
+   "iauNumber": "XXVIII",
+   "orbitNote": "Size of orbit from the discovery report (NASA, August 2025). JPL Horizons has no usable positions yet, so where the moon is along its orbit is not known."
   },
   {
    "id": "caliban",

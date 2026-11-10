@@ -2,11 +2,11 @@
 // pointing to the Sun, and lighting an orbit when its row in the list is touched.
 // Without this the page still shows every orbit and the whole list.
 import type { KeplerOrbit } from './types';
-import { dotAt, topView } from './chart';
-import { julianDate } from './kepler';
-import { centuriesSinceJ2000, positionAU } from '../../orbit';
+import { dotAt, topView, type ViewFrom } from './chart';
+import { julianDate, keplerPosition } from './kepler';
+import { centuriesSinceJ2000, elements, positionAU } from '../../orbit';
 
-interface Data { parent: string; figures: { id: string; spanKm: number; ids: string[] }[]; orbits: Record<string, KeplerOrbit> }
+interface Data { parent: string; parentOrbit?: KeplerOrbit; figures: { id: string; spanKm: number; view?: ViewFrom; ids: string[] }[]; orbits: Record<string, KeplerOrbit> }
 
 const holder = document.getElementById('plate-data');
 if (holder) {
@@ -15,21 +15,22 @@ if (holder) {
 
   const place = () => {
     const now = new Date(), jd = julianDate(now);
-    const s = positionAU(data.parent, centuriesSinceJ2000(now)); // the planet from the Sun, so the Sun lies the other way
+    // the planet from the Sun, so the Sun lies the other way. Dwarf planets carry their own orbit.
+    const s = elements[data.parent] ? positionAU(data.parent, centuriesSinceJ2000(now)) : data.parentOrbit ? keplerPosition(data.parentOrbit, 'sun', jd) : null;
     for (const f of data.figures) {
       const svg = document.querySelector<SVGSVGElement>(`svg.plate[data-figure="${f.id}"]`);
       if (!svg) continue;
-      const p = topView(data.parent, f.spanKm);
+      const p = topView(data.parent, f.spanKm, 440, f.view);
       for (const id of f.ids) {
         const g = svg.querySelector<SVGGElement>(`[data-dot="${id}"]`);
         if (!g) continue;
         const [x, y] = dotAt(p, data.orbits[id], jd);
         g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
       }
-      const [sx, sy] = p.project(-s[0], -s[1], -s[2]);
+      const [sx, sy] = s ? p.project(-s[0], -s[1], -s[2]) : [0, 0];
       const len = Math.hypot(sx, sy) || 1, r = p.half + 30;
       const arrow = svg.querySelector<SVGGElement>('[data-sunward]');
-      if (arrow) {
+      if (arrow && s) {
         arrow.setAttribute('transform', `translate(${((sx / len) * r).toFixed(1)} ${((sy / len) * r).toFixed(1)})`);
         arrow.querySelector('path')?.setAttribute('transform', `rotate(${((Math.atan2(sy, sx) * 180) / Math.PI).toFixed(1)})`);
         const label = arrow.querySelector('text');
