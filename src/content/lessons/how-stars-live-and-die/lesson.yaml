@@ -6,4 +6,4 @@ scene: "One star followed from a cloud of gas to its end, twice: once with the S
 view: { target: sun, distanceKm: 300000000 }
 terms: [nebula, protostar, main-sequence, red-giant, white-dwarf, supernova, nuclear-fusion]
 needs: [what-a-star-is, colour-and-brightness]
-next: []
+next: [neutron-stars-and-pulsars, what-a-black-hole-is]
