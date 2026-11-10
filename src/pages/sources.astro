@@ -17,7 +17,7 @@ const plates = bodies.flatMap((b) => {
   return out;
 });
 const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.name, url: `https://nssdc.gsfc.nasa.gov/planetary/factsheet/${b.slug}fact.html` }));
-import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places } from '../lib/v2/atlas/places';
+import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places, D3_CELESTIAL } from '../lib/v2/atlas/places';
 ---
 <Base title="Sources" path="/sources" description="Where every number, map and photograph on Heliocodex comes from, and which parts are drawn rather than photographed.">
   <article class="ledger">
@@ -70,6 +70,7 @@ import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places } from '../lib/v2/atlas/places'
           <li><span>The cosmic web</span> About 43,000 galaxies from the <a href={TWO_MRS.url}>2MASS Redshift Survey</a> (Huchra and others 2012, Astrophysical Journal Supplement 199, 26). Where each one is on the sky is measured. How far away it is has been worked out here from how fast it is moving away, taking 70 km a second for every megaparsec. Inside a cluster that smears galaxies into streaks pointing at us, which are not real.</li>
           <li><span>The oldest light</span> the nine-year map of the cosmic microwave background from NASA’s WMAP spacecraft (<a href={WMAP.url}>NASA / WMAP Science Team</a>).</li>
         </ul>
+        <p>The lines that join stars into constellation figures are not measurements. They are one modern convention for drawing the figures, taken from <a href={D3_CELESTIAL.url}>d3-celestial</a> by Olaf Frohn (copyright 2015, shared under the <a href="/data/deep/constellations.LICENSE.txt">BSD 3-Clause licence</a>). Each end of a line was matched here to a star in the catalogue above.</p>
         <p>Some of what you fly past out there is a model and not a map, because nobody has seen it from outside or, for the Oort cloud, at all:</p>
         <ul class="drawn-list">
           {places.filter((p) => p.model).map((p) => <li><span>{p.name}</span> {p.drawn}</li>)}
