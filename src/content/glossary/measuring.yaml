@@ -137,3 +137,16 @@ terms:
     short: "How bright a star would look if it were moved to a standard distance of 10 parsecs."
     more: "It lets stars be compared fairly. The Sun's is 4.83: from 10 parsecs it would be a faint, ordinary star."
     see: [apparent-magnitude, luminosity, parsec]
+  - id: standard-candle
+    term: Standard candle
+    also: [standard candles]
+    short: "Something whose true brightness is known, so that its distance can be worked out from how faint it looks."
+    more: "Cepheids and Type Ia supernovae are the two most used."
+    see: [cepheid, inverse-square-law, luminosity, distance-ladder]
+    lesson: the-distance-ladder
+  - id: distance-ladder
+    term: Distance ladder
+    short: "The chain of methods used to measure distances in space, each one set by the one that reaches less far."
+    more: "Parallax sets the Cepheids, Cepheids set the Type Ia supernovae, and the supernovae set the Hubble constant."
+    see: [parallax, cepheid, standard-candle, hubble-constant]
+    lesson: the-distance-ladder
