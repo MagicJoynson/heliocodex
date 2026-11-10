@@ -55,6 +55,8 @@ body:has(.reading) { background: #0b0b0c; }
 /* A long equation scrolls sideways inside its own line and leaves the page still. */
 .prose .katex-display { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; margin: 1.4em 0; padding: .3em 0; }
 .prose .katex-display > .katex { white-space: nowrap; }
+/* a heading set in capitals must not turn a small g in an equation into a capital G */
+.katex { text-transform: none; letter-spacing: normal; }
 
 .plain-list { list-style: none; margin: 0; padding: 0; }
 
