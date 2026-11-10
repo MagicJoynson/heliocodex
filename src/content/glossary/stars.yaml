@@ -121,5 +121,5 @@ terms:
     term: Gravitational wave
     short: "A ripple in space itself, sent out when very heavy things move violently."
     more: "The first to be detected, in 2015, came from two black holes merging about 1.3 billion light years away."
-    see: [black-hole, neutron-star, gravity]
-    lesson: what-a-black-hole-is
+    see: [black-hole, neutron-star, gravity, interferometer]
+    lesson: gravitational-waves
