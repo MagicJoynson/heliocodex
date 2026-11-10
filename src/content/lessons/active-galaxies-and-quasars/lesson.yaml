@@ -1,0 +1,9 @@
+title: Active galaxies and quasars
+strand: galaxies
+order: 5
+summary: "In about one galaxy in ten, the centre outshines all the stars put together. The light comes from gas heating up as it falls towards a giant black hole."
+scene: "The map of real galaxies. About one in ten of these points has a centre brighter than all its stars, and the brightest of that kind lie far beyond the map's edge."
+view: { target: cosmic-web }
+terms: [active-galaxy, quasar, blazar, seyfert-galaxy, supermassive-black-hole, accretion-disc, black-hole, look-back-time]
+needs: [what-a-black-hole-is, kinds-of-galaxy]
+next: [the-event-horizon, the-expanding-universe]
