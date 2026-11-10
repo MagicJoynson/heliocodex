@@ -1,0 +1,9 @@
+title: The Milky Way
+strand: the-galaxy
+order: 1
+summary: "Our galaxy is a flat, turning disc of a few hundred billion stars. We live inside it, about half way out, and have never seen it from outside."
+scene: "The view pulls back from the Sun until the whole disc is in sight, with the Sun's place marked. The disc is a model built from measurements."
+view: { target: milky-way }
+terms: [milky-way, galaxy, spiral-galaxy, light-year, black-hole, parallax, dark-matter]
+needs: [how-big-is-space, what-a-star-is]
+next: [kinds-of-galaxy]
