@@ -126,7 +126,8 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
     for (const m of moons) {
       if (m.parent !== parent) continue;
       // an orbit turns slowly; redraw it when the clock has moved a month (sooner for the fastest moons)
-      const stale = !(Math.abs(jd - m.lineJd) < Math.min(30, Math.max(0.5, m.orbit.periodDays * 20)));
+      // (Earth's Moon is drawn from its real track, which is only true near the date: every three days)
+      const stale = !(Math.abs(jd - m.lineJd) < (m.orbit.theory ? 3 : Math.min(30, Math.max(0.5, m.orbit.periodDays * 20))));
       if (m.line && !stale) continue;
       const path = keplerPath(m.orbit, parent, jd, SEGMENTS);
       // one extra point, back at the start, closes the ring (this renderer has no line loop)

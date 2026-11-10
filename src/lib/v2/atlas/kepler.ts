@@ -105,10 +105,28 @@ export function keplerPosition(o: KeplerOrbit, parent: string, jd: number, out: 
   return place(o, planeOf(o, parent), a.node, a.peri, solveKepler(a.m, o.e), out);
 }
 
-/** The whole orbit as it lies at a date: `n` points round the ellipse, km, ecliptic J2000, flat xyz. */
+/**
+ * The whole orbit as it lies at a date: `n` points round it, km, ecliptic J2000, flat xyz.
+ * For Earth's Moon the points are its real track around the date; redraw it every few days.
+ */
 export function keplerPath(o: KeplerOrbit, parent: string, jd: number, n = 128): Float64Array {
-  const a = anglesAt(o, jd), B = planeOf(o, parent);
   const out = new Float64Array(n * 3), p: Vec = [0, 0, 0];
+  if (o.theory === 'moon') {
+    // the Moon's real track for the half month either side of the date, so the Moon always sits on
+    // its own line. A month later it is not quite back where it began (by up to 20,000 km), so the
+    // far third of the ring, opposite the Moon, is eased over to make the two ends meet.
+    const a: Vec = [0, 0, 0], b: Vec = [0, 0, 0];
+    moonPosition(jd - 0.5 * o.periodDays, a);
+    moonPosition(jd + 0.5 * o.periodDays, b);
+    for (let k = 0; k < n; k++) {
+      const u = k / n - 0.5;
+      moonPosition(jd + u * o.periodDays, p);
+      const x = Math.max(0, (Math.abs(u) - 0.35) / 0.15), w = -Math.sign(u) * 0.5 * x * x * (3 - 2 * x);
+      out[k * 3] = p[0] + w * (b[0] - a[0]); out[k * 3 + 1] = p[1] + w * (b[1] - a[1]); out[k * 3 + 2] = p[2] + w * (b[2] - a[2]);
+    }
+    return out;
+  }
+  const a = anglesAt(o, jd), B = planeOf(o, parent);
   for (let k = 0; k < n; k++) {
     place(o, B, a.node, a.peri, (k / n) * 2 * Math.PI, p);
     out[k * 3] = p[0]; out[k * 3 + 1] = p[1]; out[k * 3 + 2] = p[2];
