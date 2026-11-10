@@ -1,0 +1,9 @@
+title: Double and multiple stars
+strand: stars
+order: 6
+summary: "Many stars come in pairs, threes or more, circling one another. Their orbits are the only direct way to weigh a star."
+scene: "Among the Sun's neighbours, two bright points turn out to be families: Alpha Centauri, three stars held together, and Sirius, with a white dwarf circling it."
+view: { target: neighbourhood }
+terms: [binary-star, barycentre, orbital-period, mass, doppler-shift, white-dwarf, red-dwarf, exoplanet]
+needs: [the-nearest-stars, what-an-orbit-is]
+next: [how-stars-live-and-die, planets-round-other-stars]
