@@ -1,0 +1,30 @@
+---
+// The frame shared by the charts of what lies beyond the Solar System: a title, rings of equal
+// distance round the middle, a foot line, and a plain stamp when what is drawn is a model.
+// The drawing itself comes in through the slot, in the same -500 to 500 square.
+import { R } from '../../lib/v2/atlas/deep';
+interface Props {
+  id: string; numeral: string; title: string; summary: string;
+  /** rings of equal distance: radius in page units and the words for it */
+  rings?: { r: number; label: string }[];
+  footLeft?: string; footRight?: string;
+  /** set when the drawing, or part of it, is a model and not a map */
+  model?: string;
+  /** words for the arrow at the top */
+  up?: string;
+}
+const { id, numeral, title, summary, rings = [], footLeft, footRight, model, up } = Astro.props;
+---
+<svg class="plate deep" data-deep={id} viewBox="-500 -500 1000 1000" role="img" aria-label={summary}>
+  <rect class="frame" x="-494" y="-494" width="988" height="988" />
+  <rect class="frame thin" x="-486" y="-486" width="972" height="972" />
+  <text x="-462" y="-446"><tspan class="numeral">{numeral}</tspan><tspan class="title" dx="16">{title}</tspan></text>
+  {model && <text class="stamp" x="462" y="-446" text-anchor="end">{model}</text>}
+  <g class="rings">
+    {rings.filter((g) => g.r <= R + 1).map((g) => <g><circle r={g.r.toFixed(1)} /><text x="0" y={(g.r + 18).toFixed(1)} text-anchor="middle">{g.label}</text></g>)}
+  </g>
+  <slot />
+  {up && <g class="sunward"><path d="M0 -476v20M-5 -469l5 -7l5 7" /><text x="12" y="-460">{up}</text></g>}
+  {footLeft && <text class="when left" x="-462" y="466">{footLeft}</text>}
+  {footRight && <text class="when" x="462" y="466" text-anchor="end">{footRight}</text>}
+</svg>
