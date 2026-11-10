@@ -6,7 +6,7 @@ import { dotAt, topView, type ViewFrom } from './chart';
 import { julianDate, keplerPosition } from './kepler';
 import { centuriesSinceJ2000, elements, positionAU } from '../../orbit';
 
-interface Data { parent: string; dots?: string; parentOrbit?: KeplerOrbit; figures: { id: string; spanKm: number; view?: ViewFrom; centreKm?: [number, number]; ids: string[] }[]; orbits: Record<string, KeplerOrbit> }
+interface Data { parent: string; dots?: string; parentOrbit?: KeplerOrbit; figures: { id: string; spanKm: number; view?: ViewFrom; centreKm?: [number, number]; ids: string[]; adrift?: boolean }[]; orbits: Record<string, KeplerOrbit> }
 
 const holder = document.getElementById('plate-data');
 if (holder) {
@@ -30,7 +30,8 @@ if (holder) {
       const [sx, sy] = s ? p.project(-s[0], -s[1], -s[2]) : [0, 0];
       const len = Math.hypot(sx, sy) || 1, r = p.half + 30;
       const arrow = svg.querySelector<SVGGElement>('[data-sunward]');
-      if (arrow && s) {
+      // a drawing whose direction in space is not known cannot say which way the Sun lies, and has nothing placed
+      if (arrow && s && !f.adrift) {
         arrow.setAttribute('transform', `translate(${((sx / len) * r).toFixed(1)} ${((sy / len) * r).toFixed(1)})`);
         arrow.querySelector('path')?.setAttribute('transform', `rotate(${((Math.atan2(sy, sx) * 180) / Math.PI).toFixed(1)})`);
         const label = arrow.querySelector('text');
@@ -39,7 +40,7 @@ if (holder) {
         arrow.style.display = '';
       }
       const when = svg.querySelector('[data-when]');
-      if (when) when.textContent = `${data.dots ?? 'Moons'} placed for ${fmt.format(now)} UTC`;
+      if (when) when.textContent = f.adrift ? 'The orbit only: its direction is not known' : `${data.dots ?? 'Moons'} placed for ${fmt.format(now)} UTC`;
       svg.classList.add('live');
     }
   };

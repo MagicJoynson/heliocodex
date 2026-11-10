@@ -18,7 +18,7 @@ const narrow = layout(marks, RULES, { columns: 1, slot: 1.65 / 24, tall: 2.6 / 2
 const count = (id: string) => allBodies.filter((b) => b.parent === id).length;
 const charts = [
   { href: '/atlas/solar-system', name: 'The Solar System from above', what: 'Eight planets and nine dwarf planets on their real orbits, in three drawings.' },
-  ...Object.entries(plates).map(([id, spec]) => ({ href: `/atlas/${id}`, name: spec.title, what: count(id) === 1 ? 'One moon, and the path it really follows.' : count(id) === 2 ? 'Both of its moons, each on its own orbit.' : `All ${count(id)} known moons, each on its own orbit.` })),
+  ...Object.entries(plates).map(([id, spec]) => ({ href: `/atlas/${id}`, name: spec.title, what: id === 'earth' ? 'One moon, and the path it really follows.' : count(id) === 1 ? 'Its one known moon, on its orbit.' : count(id) === 2 ? 'Both of its moons, each on its own orbit.' : `All ${count(id)} known moons, each on its own orbit.` })),
 ];
 const bySize = [...landmarks].sort((a, b) => a.metres - b.metres);
 const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked out here from a measured figure.' } as const;

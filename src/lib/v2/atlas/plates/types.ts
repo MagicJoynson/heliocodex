@@ -46,6 +46,10 @@ export interface PlateSpec {
   families: Family[];
   figures: Figure[];
   sources: Source[];
+  /** Says where the drawing is seen from, when it is neither the parent's pole nor the plane of the planets. */
+  viewNote?: string;
+  /** Says what tilt is measured from, when that is not the parent's equator. */
+  tiltNote?: string;
   /** What the dots are, for the line under each drawing. Moons unless said. */
   dots?: string;
 }

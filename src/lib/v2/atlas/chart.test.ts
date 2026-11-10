@@ -1,7 +1,7 @@
 // Run with: npm run test:atlas
 import { allBodies } from '../../../data/bodies/index';
 import type { KeplerOrbit } from './types';
-import { dotAt, fitsOn, pointAt, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView } from './chart';
+import { dotAt, fitsOn, pointAt, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView, viewAbove } from './chart';
 import { plates } from './plates';
 import { groups, shown, solarSystem } from './plates/solar-system';
 import { AU_KM, fmtAu, fmtYears, isPlanet, planetOrbit } from './sun';
@@ -125,7 +125,7 @@ test('every moon of Jupiter is in exactly one family and on at least one figure'
 });
 
 test('every plate: each moon in one family, every family drawn, every orbit inside its drawing, every name on a drawn moon', () => {
-  const expected: Record<string, number> = { earth: 1, mars: 2, jupiter: 115, saturn: 292, uranus: 29, neptune: 16, pluto: 5 };
+  const expected: Record<string, number> = { earth: 1, mars: 2, jupiter: 115, saturn: 292, uranus: 29, neptune: 16, pluto: 5, orcus: 1, haumea: 2, quaoar: 1, makemake: 1, gonggong: 1, eris: 1 };
   for (const [id, spec] of Object.entries(plates)) {
     const moons = allBodies.filter((b) => b.parent === id && b.orbit.type === 'kepler') as { id: string; orbit: KeplerOrbit }[];
     assert.equal(moons.length, expected[id], `${id} has ${moons.length} moons`);
@@ -287,6 +287,29 @@ test('ruler: nothing touches, nothing is lost, and the planets and landmarks are
   const earth = marks.find((m) => m.id === 'earth-orbit')!;
   assert.ok(Math.abs(earth.metres - 1.496e11) < 1e9 && earth.value === '1.00 au');
   assert.equal(marks.find((m) => m.id === 'moon-width')!.value, '3,475 km wide');
+});
+
+test('dwarf-planet moons: seen from above its own orbit a moon keeps its true distance, and the usual way round is anticlockwise', () => {
+  for (const id of ['dysnomia', 'vanth', 'hiiaka', 'weywot']) {
+    const b = allBodies.find((x) => x.id === id)!, o = b.orbit as KeplerOrbit;
+    const p = topView(b.parent!, o.aKm * 1.4, 440, viewAbove(o));
+    const pts = orbitPoints(p, o, JD_2026, 90);
+    for (const [x, y] of pts) {
+      const km = Math.hypot(x, y) * p.kmPerUnit;
+      assert.ok(km > o.aKm * (1 - o.e) * 0.995 && km < o.aKm * (1 + o.e) * 1.005, `${id} drawn ${Math.round(km)} km out`);
+    }
+    const [x0, y0] = dotAt(p, o, JD_2026), [x1, y1] = dotAt(p, o, JD_2026 + o.periodDays / 50);
+    const turn = x0 * y1 - y0 * x1; // page y runs downwards, so anticlockwise is negative
+    assert.ok(o.iDeg > 90 ? turn > 0 : turn < 0, `${id} goes round the wrong way on the page`);
+  }
+});
+
+test('dwarf-planet moons: five are placed from JPL positions, and the two with no known direction are not', () => {
+  const far = allBodies.filter((b) => b.kind === 'moon' && ['orcus', 'haumea', 'quaoar', 'makemake', 'gonggong', 'eris'].includes(b.parent!));
+  assert.equal(far.length, 7);
+  assert.deepEqual(far.filter((b) => (b.orbit as KeplerOrbit).fit).map((b) => b.id).sort(), ['dysnomia', 'hiiaka', 'namaka', 'vanth', 'weywot']);
+  for (const b of far.filter((x) => !(x.orbit as KeplerOrbit).fit)) assert.ok(b.orientationUnknown && b.orbitNote, `${b.id} must say its direction is unknown`);
+  for (const b of far) assert.ok(b.sources.length > 0 && !b.sources.some((s) => s.url.includes('/sats/')), `${b.id} must not cite the planetary satellite tables`);
 });
 
 // ---- the guide's choice of what to show (margin/pick.ts)

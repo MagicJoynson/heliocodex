@@ -61,6 +61,8 @@ type Raw = {
   id: string; name: string; parent: string; orbit: KeplerOrbit; naifId?: number;
   meanRadiusKm?: number; gmKm3S2?: number; densityGcm3?: number; rotationHours?: number;
   discovered?: { year: number; by: string }; radiusSource?: Source;
+  /** Where the orbit comes from when it is not JPL's satellite tables: the moons of the far dwarf planets. */
+  orbitSource?: Source; orbitNote?: string; orientationUnknown?: boolean;
 };
 
 const moons: Body[] = (moonFile.moons as Raw[]).map((m) => {
@@ -69,7 +71,8 @@ const moons: Body[] = (moonFile.moons as Raw[]).map((m) => {
     id: m.id, name: m.name, kind: 'moon', parent: m.parent, orbit: m.orbit,
     meanRadiusKm: m.meanRadiusKm, gmKm3S2: m.gmKm3S2, densityGcm3: m.densityGcm3,
     look: lookFor(m.id, seen), seen, discovered: m.discovered, naifId: m.naifId,
-    sources: m.radiusSource ? [JPL_SATS, m.radiusSource] : [JPL_SATS],
+    orbitNote: m.orbitNote, orientationUnknown: m.orientationUnknown,
+    sources: [m.orbitSource ?? JPL_SATS, ...(m.radiusSource && m.radiusSource.label !== m.orbitSource?.label ? [m.radiusSource] : [])],
   };
 });
 

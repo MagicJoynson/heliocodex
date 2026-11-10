@@ -5,7 +5,12 @@
   "physical": "https://ssd.jpl.nasa.gov/sats/phys_par/",
   "discovery": "https://ssd.jpl.nasa.gov/sats/discovery.html",
   "note": "Size, shape and reference plane of each orbit: JPL mean elements. Where the moon is along it: fitted to JPL Horizons over 2000 to 2040 by scripts/data/fit-moon-orbits.py; orbit.fit gives the error in degrees as seen from the planet. Good for drawing where a moon is, not for navigation. Radii and masses exist only for moons a spacecraft or a good telescope has measured.",
-  "positions": "https://ssd.jpl.nasa.gov/horizons/"
+  "positions": "https://ssd.jpl.nasa.gov/horizons/",
+  "dwarfPlanetMoons": {
+   "fetched": "2026-11-10",
+   "positions": "https://ssd.jpl.nasa.gov/horizons/",
+   "note": "Moons of the dwarf planets beyond Pluto are not in JPL's satellite tables. Five have orbit solutions in JPL Horizons; two are known only from the papers named on each."
+  }
  },
  "moons": [
   {
@@ -17588,6 +17593,305 @@
     "by": "H.A. Weaver, S.A. Stern, M.J. Mutchler, A.J. Steffl, M.W. Buie, W.J. Merline, J.R. Spencer, E.F. Young, L.A. Young"
    },
    "iauNumber": "III"
+  },
+  {
+   "id": "dysnomia",
+   "name": "Dysnomia",
+   "kind": "moon",
+   "parent": "eris",
+   "naifId": 120136199,
+   "primaryNaifId": 920136199,
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 37274.5,
+    "e": 0.0061,
+    "iDeg": 61.6097,
+    "nodeDeg": 139.0976,
+    "periDeg": 155.5629,
+    "mDeg": 15.1623,
+    "periodDays": 15.7859029,
+    "periodJpl": 15.787162,
+    "rates": {
+     "nodeDegPerDay": -2.82e-07,
+     "periDegPerDay": -9.95e-07,
+     "mDegPerDay": 22.805158605
+    },
+    "fit": {
+     "medianDeg": 0.0,
+     "worstDeg": 0.0,
+     "from": 2000,
+     "to": 2030
+    }
+   },
+   "ephemeris": "tnosat_v001_20136199_jpl080_20220908",
+   "discovered": {
+    "year": 2005,
+    "by": "M. E. Brown and others, Keck Observatory"
+   },
+   "orbitSource": {
+    "label": "NASA/JPL Horizons, solution for this moon's orbit",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   },
+   "positionUncertainty": {
+    "year": 2025,
+    "km": 110.0
+   },
+   "orbitNote": "The orbit is JPL Horizons' solution, which runs from 2000 to 2030. Later dates run it forward. JPL puts its solution within about 110 km of the truth in 2025, a small fraction of a degree round the orbit.",
+   "meanRadiusKm": 350.0,
+   "radiusSource": {
+    "label": "NASA/JPL Horizons, physical data for this moon",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   }
+  },
+  {
+   "id": "hiiaka",
+   "name": "Hiʻiaka",
+   "kind": "moon",
+   "parent": "haumea",
+   "naifId": 120136108,
+   "primaryNaifId": 920136108,
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 49447.6,
+    "e": 0.06,
+    "iDeg": 126.3185,
+    "nodeDeg": 206.5609,
+    "periDeg": 144.3288,
+    "mDeg": 293.0628,
+    "periodDays": 49.0340206,
+    "periodJpl": 49.068176,
+    "retrograde": true,
+    "rates": {
+     "nodeDegPerDay": -7.1669e-05,
+     "periDegPerDay": 1.119e-05,
+     "mDegPerDay": 7.341758498
+    },
+    "fit": {
+     "medianDeg": 0.25,
+     "worstDeg": 0.61,
+     "from": 2000,
+     "to": 2030
+    }
+   },
+   "ephemeris": "tnosat_v001b_20136108_jpl110_20221014",
+   "discovered": {
+    "year": 2005,
+    "by": "M. E. Brown and others, Keck Observatory"
+   },
+   "orbitSource": {
+    "label": "NASA/JPL Horizons, solution for this moon's orbit",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   },
+   "positionUncertainty": {
+    "year": 2025,
+    "km": 900.0
+   },
+   "orbitNote": "The orbit is JPL Horizons' solution, which runs from 2000 to 2030. Later dates run it forward. JPL puts its solution within about 900 km of the truth in 2025, which is about 1° round the orbit."
+  },
+  {
+   "id": "namaka",
+   "name": "Namaka",
+   "kind": "moon",
+   "parent": "haumea",
+   "naifId": 220136108,
+   "primaryNaifId": 920136108,
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 25674.6,
+    "e": 0.1973,
+    "iDeg": 121.1105,
+    "nodeDeg": 218.2725,
+    "periDeg": 256.7538,
+    "mDeg": 199.1567,
+    "periodDays": 18.3138903,
+    "periodJpl": 18.397135,
+    "retrograde": true,
+    "rates": {
+     "nodeDegPerDay": 0.002850035,
+     "periDegPerDay": 0.018889515,
+     "mDegPerDay": 19.641171208
+    },
+    "fit": {
+     "medianDeg": 8.07,
+     "worstDeg": 21.11,
+     "from": 2000,
+     "to": 2030
+    }
+   },
+   "ephemeris": "tnosat_v001b_20136108_jpl110_20221014",
+   "discovered": {
+    "year": 2005,
+    "by": "M. E. Brown and others, Keck Observatory"
+   },
+   "orbitSource": {
+    "label": "NASA/JPL Horizons, solution for this moon's orbit",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   },
+   "positionUncertainty": {
+    "year": 2025,
+    "km": 1570.0
+   },
+   "orbitNote": "The orbit is JPL Horizons' solution, which runs from 2000 to 2030. Later dates run it forward. JPL puts its solution within about 1,570 km of the truth in 2025, which is about 4° round the orbit."
+  },
+  {
+   "id": "vanth",
+   "name": "Vanth",
+   "kind": "moon",
+   "parent": "orcus",
+   "naifId": 120090482,
+   "primaryNaifId": 920090482,
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 8975.2,
+    "e": 0.0015,
+    "iDeg": 89.783,
+    "nodeDeg": 51.0405,
+    "periDeg": 0.0,
+    "mDeg": 252.583,
+    "periodDays": 9.539156,
+    "periodJpl": 9.537915,
+    "rates": {
+     "nodeDegPerDay": 1.02e-07,
+     "periDegPerDay": 0.0,
+     "mDegPerDay": 37.739187815
+    },
+    "fit": {
+     "medianDeg": 0.22,
+     "worstDeg": 0.28,
+     "from": 2000,
+     "to": 2030
+    }
+   },
+   "ephemeris": "tnosat_v001_20090482_jpl043_20220908",
+   "discovered": {
+    "year": 2005,
+    "by": "M. E. Brown and T.-A. Suer, Hubble Space Telescope"
+   },
+   "orbitSource": {
+    "label": "NASA/JPL Horizons, solution for this moon's orbit",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   },
+   "positionUncertainty": {
+    "year": 2025,
+    "km": 67.0
+   },
+   "orbitNote": "The orbit is JPL Horizons' solution, which runs from 2000 to 2030. Later dates run it forward. JPL puts its solution within about 67 km of the truth in 2025, a small fraction of a degree round the orbit.",
+   "meanRadiusKm": 221.5,
+   "radiusSource": {
+    "label": "NASA/JPL Horizons, physical data for this moon",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   }
+  },
+  {
+   "id": "weywot",
+   "name": "Weywot",
+   "kind": "moon",
+   "parent": "quaoar",
+   "naifId": 120050000,
+   "primaryNaifId": 920050000,
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 13517.7,
+    "e": 0.2527,
+    "iDeg": 154.322,
+    "nodeDeg": 330.9958,
+    "periDeg": 36.2988,
+    "mDeg": 198.5635,
+    "periodDays": 11.6866501,
+    "periodJpl": 11.686378,
+    "retrograde": true,
+    "rates": {
+     "nodeDegPerDay": 6.48e-07,
+     "periDegPerDay": 1.821e-06,
+     "mDegPerDay": 30.804377873
+    },
+    "fit": {
+     "medianDeg": 0.0,
+     "worstDeg": 0.0,
+     "from": 2000,
+     "to": 2030
+    }
+   },
+   "ephemeris": "tnosat_v001_20050000_jpl043_20220908",
+   "discovered": {
+    "year": 2006,
+    "by": "M. E. Brown and T.-A. Suer, Hubble Space Telescope"
+   },
+   "orbitSource": {
+    "label": "NASA/JPL Horizons, solution for this moon's orbit",
+    "url": "https://ssd.jpl.nasa.gov/horizons/"
+   },
+   "positionUncertainty": {
+    "year": 2025,
+    "km": 3600.0
+   },
+   "orbitNote": "The orbit is JPL Horizons' solution, which runs from 2000 to 2030. Later dates run it forward. JPL puts its solution within about 3,600 km of the truth in 2025, which is about 15° round the orbit. It rests on only a few sightings from 2006 to 2011, and JPL warns that it may be poor outside those years."
+  },
+  {
+   "id": "xiangliu",
+   "name": "Xiangliu",
+   "kind": "moon",
+   "parent": "gonggong",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 24021.0,
+    "e": 0.2908,
+    "iDeg": 0.0,
+    "nodeDeg": 0.0,
+    "periDeg": 0.0,
+    "mDeg": 0.0,
+    "periodDays": 25.22073
+   },
+   "orientationUnknown": true,
+   "orbitNote": "Size and shape of the orbit from Kiss et al. 2019. The Hubble pictures fit two mirror-image orbits equally well, tilted opposite ways, so which way this one faces is not known and the moon cannot be placed along it. The figures are for the solution that goes round the usual way.",
+   "discovered": {
+    "year": 2016,
+    "by": "C. Kiss, G. Marton and others, from Hubble Space Telescope images of 2009 and 2010"
+   },
+   "orbitSource": {
+    "label": "Kiss et al. 2019, Icarus 334, 3",
+    "url": "https://doi.org/10.1016/j.icarus.2019.03.013"
+   }
+  },
+  {
+   "id": "s-2015-136472-1",
+   "name": "S/2015 (136472) 1",
+   "kind": "moon",
+   "parent": "makemake",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2458849.5,
+    "aKm": 22250.0,
+    "e": 0.0,
+    "iDeg": 0.0,
+    "nodeDeg": 0.0,
+    "periDeg": 0.0,
+    "mDeg": 0.0,
+    "periodDays": 18.023
+   },
+   "orientationUnknown": true,
+   "orbitNote": "A first orbit from twelve Hubble sightings (Bamberger 2025), taken as a circle 22,250 km in radius, give or take 780 km. It is seen almost edge-on from Earth. Which way it faces in space has not been published, so the moon cannot be placed along it.",
+   "discovered": {
+    "year": 2016,
+    "by": "A. H. Parker and others, from Hubble Space Telescope images of 2015"
+   },
+   "orbitSource": {
+    "label": "Bamberger 2025, arXiv:2509.05880 (a first orbit; not yet in a journal)",
+    "url": "https://arxiv.org/abs/2509.05880"
+   }
   }
  ]
 }
