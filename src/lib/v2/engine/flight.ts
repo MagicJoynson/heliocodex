@@ -16,6 +16,7 @@ export interface Cruise {
   endDir: V3; // which side of the body to arrive on (unit, from its centre)
   secs: number;
   aimOffset?: number; // radians: how far the body sits off-centre on arrival
+  avoid?: () => { c: V3; r: number }[]; // bodies to go round, not through (never the target itself)
 }
 
 export function createFlight(canvas: HTMLElement) {
@@ -83,7 +84,20 @@ export function createFlight(canvas: HTMLElement) {
     const d0 = len(off);
     const e = ease(u);
     const d = Math.exp(Math.log(d0) + (Math.log(c.endDist) - Math.log(d0)) * e);
-    return add(tgt, scale(slerp(norm(off), c.endDir, smooth(0.15, 0.97, e)), d));
+    let p = add(tgt, scale(slerp(norm(off), c.endDir, smooth(0.15, 0.97, e)), d));
+    // go round any body in the way: inside 1.7 of its radii the path is pushed out smoothly to clear
+    // 1.06 of them, and beyond that nothing moves, so arrivals near a moon's planet are untouched
+    // eased in over the first moments, so a flight that starts close to the ground does not jump
+    const k = smooth(0, 0.08, u);
+    for (const a of k > 0 ? c.avoid?.() ?? [] : []) {
+      const m = a.r * 1.06;
+      const rel = sub(p, a.c);
+      const dd = len(rel);
+      const x = dd / m;
+      if (x >= 1.6 || dd === 0) continue;
+      p = add(a.c, scale(rel, (dd + k * m * (1.6 - x) ** 2 / 2.56) / dd));
+    }
+    return p;
   }
 
   /**

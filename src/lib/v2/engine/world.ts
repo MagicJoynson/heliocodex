@@ -573,7 +573,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       // longer trips take longer, but never more than half a minute
       const ratio = Math.max(1.0001, len(sub(from, tg)) / endDist);
       const secs = Math.max(0.01, opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3)));
-      flight.startCruise({ from, target, endDist, endDir: dir, secs, aimOffset: 0 });
+      const avoid = () => ['sun', ...PLANETS].filter((b) => b !== id).map((b) => ({ c: posOf(b), r: radOf(b) }));
+      flight.startCruise({ from, target, endDist, endDir: dir, secs, aimOffset: 0, avoid });
       cruising = true;
       return new Promise<void>((resolve, reject) => { pendingFly = { resolve, reject }; });
     },
