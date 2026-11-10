@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { instancedBufferAttribute, uv, vec4, vec3, float, exp, exp2, log2, dot, sub, uniform, max, min, clamp, sqrt, smoothstep, length, varying, texture } from 'three/tsl';
+import { instancedBufferAttribute, uv, vec4, vec3, float, exp, exp2, log2, dot, sub, uniform, max, min, clamp, sqrt, smoothstep, length, varying, texture, positionGeometry } from 'three/tsl';
 import { add, cross, len, norm, scale, type V3 } from './vec';
 
 /**
@@ -334,7 +334,8 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   let stars: THREE.Sprite | null = null;
   let starNames: { i: number; name: string; p: V3; M: number }[] = [];
   const ready: Promise<unknown>[] = [];
-  ready.push(Promise.all([fetch('/data/deep/stars.bin').then((r) => r.arrayBuffer()), fetch('/data/deep/stars.json').then((r) => r.json())]).then(([buf, names]: [ArrayBuffer, [number, string][]]) => {
+  const starsBuf = fetch('/data/deep/stars.bin').then((r) => r.arrayBuffer());
+  ready.push(Promise.all([starsBuf, fetch('/data/deep/stars.json').then((r) => r.json())]).then(([buf, names]: [ArrayBuffer, [number, string][]]) => {
     const f = new Float32Array(buf);
     const n = f.length / 5;
     const pos = new Float32Array(n * 4), col = new Float32Array(n * 3);
@@ -345,6 +346,40 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     }
     stars = points(n, starMaterial(pos, col, starsGain), -10);
     starNames = names.map(([i, name]) => ({ i, name, p: [f[i * 5], f[i * 5 + 1], f[i * 5 + 2]] as V3, M: f[i * 5 + 3] }));
+  }));
+
+  // ---- the constellation figures (d3-celestial's lines, BSD 3-Clause), drawn between the stars' real places,
+  // so from the Earth they are the familiar figures and from anywhere else they come apart
+  const figGain = u1(0);
+  let figures: THREE.LineSegments | null = null;
+  let figNames: { name: string; stars: V3[] }[] = [];
+  ready.push(Promise.all([starsBuf, fetch('/data/deep/constellations.json').then((r) => r.json())]).then(([buf, cons]: [ArrayBuffer, { id: string; name: string; lines: [number, number][] }[]]) => {
+    const f = new Float32Array(buf);
+    const at = (i: number): V3 => [f[i * 5], f[i * 5 + 1], f[i * 5 + 2]];
+    let n = 0;
+    for (const c of cons) n += c.lines.length;
+    const pos = new Float32Array(n * 6);
+    let k = 0;
+    for (const c of cons) {
+      const seen = new Set<number>();
+      for (const [i, j] of c.lines) {
+        const a = at(i), b = at(j);
+        pos.set(a, k); pos.set(b, k + 3); k += 6;
+        seen.add(i); seen.add(j);
+      }
+      figNames.push({ name: c.name, stars: [...seen].map(at) });
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const mat = new THREE.LineBasicNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending });
+    const rel = (positionGeometry as unknown as N3).sub(camPc);
+    mat.positionNode = rel.div(max(length(rel), float(2e-5))).mul(FAR);
+    mat.colorNode = vec4(vec3(0.42, 0.55, 0.72).mul(figGain).mul(starGain), 1);
+    figures = new THREE.LineSegments(g, mat);
+    figures.frustumCulled = false;
+    figures.renderOrder = -11;
+    figures.visible = false;
+    root.add(figures);
   }));
 
   // ---- soft clouds of light (galaxy models): surface brightness stays the same with distance once
@@ -523,6 +558,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   const pool: HTMLSpanElement[] = [];
   const tagStyle = 'position:absolute;left:0;top:0;white-space:nowrap;font:400 .62rem/1 var(--mono, monospace);letter-spacing:.08em;color:rgba(236,231,220,.72);padding-left:12px;will-change:transform;text-shadow:0 0 3px #000,0 0 6px #000;background:radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px) no-repeat;';
 
+  const ringBg = 'radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px)';
   const v = new THREE.Vector3();
   const invQ = new THREE.Quaternion();
   let shown = 0;
@@ -532,11 +568,12 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     v.set(dir[0], dir[1], dir[2]).applyQuaternion(invQ);
     if (v.z >= -1e-6) return; // behind the camera
     const t = Math.tan(THREE.MathUtils.degToRad(view.fovDeg / 2));
-    const x = (v.x / -v.z / (t * (view.widthPx / view.heightPx)) + 1) / 2 * view.widthPx;
+    let x = (v.x / -v.z / (t * (view.widthPx / view.heightPx)) + 1) / 2 * view.widthPx;
     const y = (1 - v.y / -v.z / t) / 2 * view.heightPx;
     if (x < -50 || x > view.widthPx + 10 || y < -10 || y > view.heightPx + 10) return;
     // never let two names touch: the earlier (more important) one wins
-    const w = text.length * 6.4 + 14;
+    const w = text.length * (kind === 'constellation' ? 7.6 : 6.4) + 14;
+    if (kind === 'constellation') x -= w / 2;
     for (const r of placed) if (x < r[0] + r[2] && x + w > r[0] && Math.abs(y - r[1]) < 13) return;
     placed.push([x, y, w]);
     let el = pool[shown];
@@ -545,6 +582,15 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     el.style.opacity = String(Math.min(1, alpha));
     el.style.transform = `translate(${(x - 4).toFixed(1)}px, ${(y - 5).toFixed(1)}px)`;
     el.style.display = '';
+    if (el.dataset.kind !== kind) {
+      // a constellation is an area, not a point: no ring, and a cooler, spaced-out name
+      const fig = kind === 'constellation';
+      el.style.backgroundImage = fig ? 'none' : ringBg;
+      el.style.color = fig ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)';
+      el.style.letterSpacing = fig ? '.22em' : '.08em';
+      el.style.textTransform = fig ? 'uppercase' : 'none';
+      el.style.paddingLeft = fig ? '0' : '12px';
+    }
     el.dataset.kind = kind;
     shown++;
   }
@@ -582,6 +628,9 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       cmbMat.side = dS > CMB_PC ? THREE.FrontSide : THREE.BackSide;
     }
     if (stars) stars.visible = dS < 2e5;
+    // the figures from beyond the planets, fading as they come apart and gone once the stars around you are a cloud
+    figGain.value = smooth(150 * AUpc, 2000 * AUpc, dS) * (0.04 + 0.13 * (1 - smooth(1, 12, dS))) * (1 - smooth(60, 250, dS));
+    if (figures) figures.visible = figGain.value > 0.002;
     for (const x of gated) x.s.visible = x.g.value > 0.002;
 
     // ---- names
@@ -611,6 +660,15 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       }
       scored.sort((a, b) => a.m - b.m);
       for (const s of scored.slice(0, 12)) tag(s.name, s.d, starsOn * (1 - smooth(0.5, 2.2, s.m)) + 0.25 * starsOn, view, 'star');
+    }
+    // the constellations' names, while the figures still look like themselves
+    const figOn = smooth(150 * AUpc, 2000 * AUpc, dS) * (1 - smooth(1, 4, dS));
+    if (figOn > 0.02 && figNames.length) {
+      for (const fg of figNames) {
+        let x = 0, y = 0, z = 0;
+        for (const p of fg.stars) { const r = norm(rel(p)); x += r[0]; y += r[1]; z += r[2]; }
+        tag(fg.name, [x, y, z], figOn * 0.8, view, 'constellation');
+      }
     }
     // our galaxy and its neighbours
     tag('The Milky Way', rel(mwCentreLabel), smooth(1.2e4, 3e4, dS) * (1 - smooth(4e6, 2e7, dS)), view, 'galaxy');
