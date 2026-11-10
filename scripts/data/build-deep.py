@@ -45,6 +45,25 @@ def radec(ra_deg, dec_deg, d=1.0):
 
 
 # ---- stars
+# Stars near the Sun with no proper name get their Bayer or Flamsteed name, spelt out (Tau Ceti, 61 Cygni)
+GREEK = dict(Alp='Alpha', Bet='Beta', Gam='Gamma', Del='Delta', Eps='Epsilon', Zet='Zeta', Eta='Eta', The='Theta', Iot='Iota', Kap='Kappa', Lam='Lambda', Mu='Mu', Nu='Nu', Xi='Xi', Omi='Omicron', Pi='Pi', Rho='Rho', Sig='Sigma', Tau='Tau', Ups='Upsilon', Phi='Phi', Chi='Chi', Psi='Psi', Ome='Omega')
+GEN = dict(And='Andromedae', Ant='Antliae', Aps='Apodis', Aqr='Aquarii', Aql='Aquilae', Ara='Arae', Ari='Arietis', Aur='Aurigae', Boo='Boötis', Cae='Caeli', Cam='Camelopardalis', Cnc='Cancri', CVn='Canum Venaticorum', CMa='Canis Majoris', CMi='Canis Minoris', Cap='Capricorni', Car='Carinae', Cas='Cassiopeiae', Cen='Centauri', Cep='Cephei', Cet='Ceti', Cha='Chamaeleontis', Cir='Circini', Col='Columbae', Com='Comae Berenices', CrA='Coronae Australis', CrB='Coronae Borealis', Crv='Corvi', Crt='Crateris', Cru='Crucis', Cyg='Cygni', Del='Delphini', Dor='Doradus', Dra='Draconis', Equ='Equulei', Eri='Eridani', For='Fornacis', Gem='Geminorum', Gru='Gruis', Her='Herculis', Hor='Horologii', Hya='Hydrae', Hyi='Hydri', Ind='Indi', Lac='Lacertae', Leo='Leonis', LMi='Leonis Minoris', Lep='Leporis', Lib='Librae', Lup='Lupi', Lyn='Lyncis', Lyr='Lyrae', Men='Mensae', Mic='Microscopii', Mon='Monocerotis', Mus='Muscae', Nor='Normae', Oct='Octantis', Oph='Ophiuchi', Ori='Orionis', Pav='Pavonis', Peg='Pegasi', Per='Persei', Phe='Phoenicis', Pic='Pictoris', Psc='Piscium', PsA='Piscis Austrini', Pup='Puppis', Pyx='Pyxidis', Ret='Reticuli', Sge='Sagittae', Sgr='Sagittarii', Sco='Scorpii', Scl='Sculptoris', Sct='Scuti', Ser='Serpentis', Sex='Sextantis', Tau='Tauri', Tel='Telescopii', Tri='Trianguli', TrA='Trianguli Australis', Tuc='Tucanae', UMa='Ursae Majoris', UMi='Ursae Minoris', Vel='Velorum', Vir='Virginis', Vol='Volantis', Vul='Vulpeculae')
+
+
+def catalogue_name(r):
+    con = GEN.get(r['con'].strip())
+    if not con:
+        return ''
+    b = r['bayer'].strip()
+    if b:
+        g = GREEK.get(b.split('-')[0])
+        if g:
+            return f"{g}{'-' + b.split('-')[1] if '-' in b else ''} {con}"
+    if r['flam'].strip():
+        return f"{r['flam'].strip()} {con}"
+    return ''
+
+
 rows = []
 names = []
 with gzip.open(os.path.join(src, 'hyg_v44.csv.gz'), 'rt') as f:
@@ -65,7 +84,8 @@ with gzip.open(os.path.join(src, 'hyg_v44.csv.gz'), 'rt') as f:
             ci = 0.6
         x, y, z = eq_to_engine(float(r['x']), float(r['y']), float(r['z']))
         app = absmag + 5 * math.log10(dist / 10)
-        rows.append((app, x, y, z, absmag, ci, r['proper'].strip()))
+        name = r['proper'].strip() or (catalogue_name(r) if dist < 7.7 else '')  # within 25 light years
+        rows.append((app, x, y, z, absmag, ci, name))
 rows.sort(key=lambda s: s[0])
 with open(os.path.join(out, 'stars.bin'), 'wb') as f:
     for i, s in enumerate(rows):
