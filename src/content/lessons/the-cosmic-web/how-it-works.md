@@ -26,7 +26,7 @@ A cluster is more than its galaxies. It also holds a great deal of gas at tens o
 
 speed = Hubble constant × distance
 
-The speed can be read from the galaxy's light, which is shifted towards red by an amount that depends on it. The 3D view takes the Hubble constant as 70 km a second for every megaparsec, so a galaxy moving away at 7,000 km/s is placed 100 megaparsecs away, about 330 million light years. The survey drawn here measured that shift for more than 43,000 galaxies over 91% of the sky. The missing strip lies behind the disc of our own galaxy, which is why the web has an empty wedge in it. The flat chart in the atlas reaches out to 310 megaparsecs, about a billion light years.
+The speed can be read from the galaxy's light, which is shifted towards red by an amount that depends on it. The 3D view takes the Hubble constant as 70 km a second for every megaparsec, so a galaxy moving away at 7,000 km/s is placed 100 megaparsecs away, about 330 million light years. The survey drawn here measured that shift for more than 43,000 galaxies over 91% of the sky. The missing strip, called the Zone of Avoidance, lies behind the disc of our own galaxy, which is why the web has an empty wedge in it. The flat chart in the atlas reaches out to 310 megaparsecs, about a billion light years.
 
 **The clusters the view names.** These distances are worked out that way from each cluster's speed.
 

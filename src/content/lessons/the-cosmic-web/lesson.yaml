@@ -4,6 +4,6 @@ order: 2
 summary: "Galaxies are not scattered evenly. They gather into groups, clusters and long threads, with huge empty spaces between, like the walls of a foam."
 scene: "The Milky Way shrinks to one point among tens of thousands, and the points turn out to lie in knots and strands round dark empty regions."
 view: { target: cosmic-web }
-terms: [galaxy, local-group, galaxy-cluster, redshift, hubble-constant, dark-matter, light-year]
+terms: [cosmic-web, local-group, galaxy-cluster, supercluster, void, zone-of-avoidance, redshift, hubble-constant]
 needs: [kinds-of-galaxy]
 next: [the-expanding-universe, dark-matter-and-dark-energy]
