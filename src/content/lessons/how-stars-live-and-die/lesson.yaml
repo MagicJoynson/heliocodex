@@ -5,5 +5,5 @@ summary: "Stars form in clouds of gas, shine steadily for most of their lives, a
 scene: "One star followed from a cloud of gas to its end, twice: once with the Sun's mass and once with twenty times as much."
 view: { target: sun, distanceKm: 300000000 }
 terms: [nebula, protostar, main-sequence, red-giant, white-dwarf, supernova, nuclear-fusion]
-needs: [what-a-star-is, colour-and-brightness]
-next: [neutron-stars-and-pulsars, what-a-black-hole-is]
+needs: [what-a-star-is, colour-and-brightness, nebulae-and-star-birth]
+next: [neutron-stars-and-pulsars, what-a-black-hole-is, double-and-multiple-stars]
