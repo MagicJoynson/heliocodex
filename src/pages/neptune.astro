@@ -1,0 +1,117 @@
+---
+import '@fontsource-variable/big-shoulders-display/wght';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear } from '../lib/format';
+
+const p = facts.planets.neptune.physical as unknown as Record<string, number>;
+const e = facts.planets.neptune.elements;
+const rows: [string, string][] = [
+  ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
+  ['Radius at the poles', `${fmt(p.radius_polar_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 3)} × 10²⁴ kg`],
+  ['Average density', `${fmt(p.density_kgm3)} kg/m³`],
+  ['Distance from the Sun', `${fmt(e.a_au, 2)} au`],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['A day', '16 h 7 min'],
+  ['Axial tilt', `${p.obliquity_deg}°`],
+  ['Strongest winds', 'about 2,000 km/h'],
+  ['Known moons (NASA)', `${p.moons}`],
+];
+---
+<World world="neptune" title="Neptune" description="Fall into the deep blue of Neptune and come out above streaks of high cloud. Real NASA data and Voyager 2 images." readout="Pressure">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Eighth planet · 30 au from the Sun</p>
+      <h1>Neptune</h1>
+      <p class="lead">The farthest planet, thirty times as far from the Sun as we are, and the windiest. Fall in and you will come out above the clouds at 29° north, the same latitude where Voyager 2 photographed long white streaks throwing shadows on the cloud below.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>Found with a pen</h2>
+      <p>By the 1840s Uranus was drifting from where it should have been, as if something unseen was pulling on it. In France, Urbain Le Verrier worked out where that something had to be and wrote to Johann Galle at the Berlin Observatory. Galle looked on 23 September 1846 and found the planet the same night, within about a degree of the spot.</p>
+      <p>John Couch Adams in Cambridge had done much the same sums a little earlier, though nobody in England found it in time.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>Wind on almost no sunlight</h2>
+      <p>Neptune gets about a 900th of the sunlight we do, yet its winds are the fastest measured on any planet, up to about 2,000 km/h. That is quicker than sound travels through air on Earth.</p>
+      <p>Part of the answer is heat from inside. Neptune gives off more than twice as much energy as it takes in from the Sun, left over from when it formed. With so little friction near the top of the atmosphere, once the wind gets going not much slows it down.</p>
+    </div>
+  </section>
+
+  <section class="beat deep" data-p="0.7">
+    <div class="copy">
+      <h2>Clouds with shadows</h2>
+      <p>It is late afternoon at 29° north, and the Sun is a single hard point low in the west-south-west. The white streaks are methane ice, high above the main cloud deck. With the light coming in so low, each one lays a dark shadow across the deck beside it. Voyager 2 saw exactly this, two hours before its closest pass.</p>
+      <p>The blue is deeper than on Uranus, with less haze in the way. Somewhere above it is Triton, the largest moon, which goes round Neptune the wrong way, against the planet’s spin. That almost certainly means it was caught from somewhere further out rather than formed here.</p>
+    </div>
+  </section>
+
+  <section class="beat wide deep" data-p="0.86">
+    <div class="copy">
+      <h2>A storm that went away</h2>
+      <p>In August 1989 Voyager 2 found a dark oval in the southern half of the planet, about as wide as the Earth, with bright cloud riding along its edge. It was named the Great Dark Spot. When the Hubble Space Telescope looked in 1994, it had gone. Other dark spots have come and gone since.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/neptune/great-dark-spot.jpg" width="1000" height="1000" alt="Neptune as a deep blue globe with a large dark oval storm left of centre, bright white clouds beside it, and fainter bands and a smaller dark spot further south." loading="lazy" />
+      <figcaption>Neptune with the Great Dark Spot, left of centre. Voyager 2, August 1989. Image: NASA/JPL.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat wide deep" data-p="0.95">
+    <div class="copy">
+      <h2>Closest of all</h2>
+      <p>On 25 August 1989 Voyager 2 passed about 4,950 km above Neptune’s north pole, the nearest it came to anything in its whole journey. Twelve years after launch it was still on time to within minutes. This was the last planet on its route, and nothing has been back to Neptune since.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/neptune/cirrus-relief.jpg" width="682" height="596" alt="Close view of Neptune's limb: a blue cloud deck with long white streaks of cloud, each with a dark shadow line beside it." loading="lazy" />
+      <figcaption>Streaks of high cloud at 29° north, each with its shadow on the deck below. The Sun is to the lower left. Voyager 2, 25 August 1989. Image: NASA/JPL.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last deep" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">
+        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <p class="aside">NASA NSSDC Neptune Fact Sheet and JPL orbital elements. A year on Neptune is so long that it only finished its first lap round the Sun since being found in July 2011.</p>
+      <nav class="onward">
+        <a href="/uranus">← Uranus</a>
+        <a href="/sun">The Sun →</a>
+      </nav>
+      <p class="aside">The clouds here are generated. The Sun’s place in the sky is worked out from JPL Horizons for 29° north on the afternoon of 9 November 2026.</p>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #eef3ff; --ink-soft: #c3d0f2; --ink-faint: #8597c6; --accent: #9fc0ff; --night: #030817; --night-a: rgba(3,8,23,.86);
+    --display: 'Big Shoulders Display Variable', 'Arial Narrow', sans-serif; --text: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: linear-gradient(90deg, rgba(3,8,24,.8) 0%, rgba(3,8,24,.5) 38%, rgba(3,8,24,0) 68%);
+    --tshadow: 0 1px 12px rgba(2,6,20,.8);
+    --scrim: rgba(3,8,24,.45);
+  }
+  /* Neptune: tall narrow capitals, and every heading trails a wind streak off to the right */
+  body { font-size: clamp(1rem, .96rem + .25vw, 1.15rem); }
+  .copy { max-width: 32rem; }
+  h1 { font-size: clamp(4.6rem, 19vw, 15rem); font-weight: 800; text-transform: uppercase; letter-spacing: .01em; line-height: .82; margin-bottom: .12em; }
+  h2 { font-size: clamp(2.2rem, 4.8vw, 3.6rem); font-weight: 700; text-transform: uppercase; letter-spacing: .015em; line-height: .95; display: flex; align-items: center; gap: .4em; }
+  h2::after { content: ''; flex: 1 1 auto; min-width: 2em; height: 2px; margin-top: .1em; background: linear-gradient(90deg, rgba(159,192,255,.85), rgba(159,192,255,0)); }
+  .lead { font-size: 1.12em; line-height: 1.6; max-width: 26em; }
+  .copy p { line-height: 1.68; }
+  .plate { margin: 0; max-width: 38rem; }
+  .plate img { display: block; width: 100%; height: auto; }
+  .deep .copy p, .deep h2 { text-shadow: 0 1px 2px rgba(2,6,22,.7), 0 2px 22px rgba(2,6,22,.8); }
+  .onward { font: 700 1.25rem var(--display); text-transform: uppercase; letter-spacing: .05em; }
+  @media (min-width: 900px) { .beat.wide { grid-template-columns: minmax(0, 32rem) minmax(0, 36rem); align-items: start; column-gap: 6vw; } }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(3,8,24,.2) 0%, rgba(3,8,24,.6) 55%, rgba(3,8,24,.8) 100%); } }
+</style>

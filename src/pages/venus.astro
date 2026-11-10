@@ -1,0 +1,107 @@
+---
+import '@fontsource/bodoni-moda/400.css';
+import '@fontsource/bodoni-moda/400-italic.css';
+import '@fontsource-variable/source-serif-4';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear, hoursToDay } from '../lib/format';
+
+const p = facts.planets.venus.physical as unknown as Record<string, number>;
+const e = facts.planets.venus.elements;
+const rows: [string, string][] = [
+  ['Radius', `${fmt(p.radius_mean_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 3)} × 10²⁴ kg`],
+  ['Gravity at the surface', `${p.gravity_ms2} m/s²`],
+  ['Distance from the Sun', `${fmt(e.a_au, 3)} au`],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['One turn on its axis', '243 days, backwards'],
+  ['Sunrise to sunrise', '117 days'],
+  ['Surface temperature', '464 °C'],
+  ['Surface pressure', '92 bar'],
+  ['Moons', `${p.moons}`],
+];
+---
+<World world="venus" title="Venus" description="Fall through the acid clouds of Venus to its surface. Real NASA data and Magellan radar imagery." readout="Altitude">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Second planet · 0.72 au from the Sun</p>
+      <h1>Venus</h1>
+      <p class="lead">Nearly the same size as Earth, and the hottest planet there is. Almost everything we know about the ground comes from machines that lasted a couple of hours.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>Backwards, and slowly</h2>
+      <p>Venus turns the opposite way to most planets, and so slowly that one turn takes 243 Earth days. Its year is only 225. From one sunrise to the next is about 117 days, and the Sun comes up in the west.</p>
+      <p>The clouds do not wait. They race around the whole planet in roughly four days, much faster than the ground beneath them turns.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>A sky of acid</h2>
+      <p>The cloud deck is sulphuric acid, a thick yellow-white layer between about 50 and 70 km up. Around 50 km, where you would first dip below it, the pressure is close to one Earth atmosphere and the temperature is about that of a warm room. It is the most Earth-like place anywhere else in the solar system, which is why people have drawn up plans for floating habitats there.</p>
+      <p>Go lower and the air clears, and keeps getting heavier.</p>
+    </div>
+  </section>
+
+  <section class="beat ground" data-p="0.7">
+    <div class="copy">
+      <h2>Down there</h2>
+      <p>At the surface it is 464 °C, day and night, everywhere. That is hot enough to melt lead. The pressure is 92 times Earth’s, the same as being about 900 metres under the sea.</p>
+      <p>The light is dim and orange, a bit like a heavy overcast day, because the thick clouds and air strip out most of the blue. The wind is slow, about a metre a second. But the air is so dense that even that pushes like a gentle river.</p>
+      <p class="aside">The ground and sky here are generated, modelled on the photographs the Venera landers sent back: flat plates of rock under a dim orange sky.</p>
+    </div>
+  </section>
+
+  <section class="beat wide ground" data-p="0.9">
+    <div class="copy">
+      <h2>What the radar saw</h2>
+      <p>Soviet landers sent back the only photographs from the surface, in the 1970s and early 1980s. The longest-lived, Venera 13, worked for 127 minutes. To see the rest we use radar, which goes through cloud. NASA’s Magellan spacecraft mapped almost the whole planet that way between 1990 and 1994.</p>
+      <p>It found a young surface of lava plains and thousands of volcanoes, with far fewer craters than the Moon or Mars. Much of the planet seems to have been resurfaced a few hundred million years ago.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/venus-maat-mons.jpg" width="1400" height="820" alt="A computer-generated view across orange lava plains toward the broad dome of the volcano Maat Mons under a black sky." loading="lazy" />
+      <figcaption>Maat Mons, one of the largest volcanoes on Venus. Computer-generated from Magellan radar data, with the height exaggerated and colour added. Image: NASA/JPL.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last ground" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+      <p class="aside">NASA NSSDC Venus Fact Sheet and JPL orbital elements. Magellan image from NASA/JPL.</p>
+      <nav class="onward"><a href="/mercury">← Mercury</a><a href="/earth">Earth →</a></nav>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #fbefd2; --ink-soft: #e8d3a5; --ink-faint: #b69a68; --accent: #f6c453; --night: #140b04; --night-a: rgba(20,11,4,.8);
+    --display: 'Bodoni Moda', Georgia, serif; --text: 'Source Serif 4 Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: linear-gradient(270deg, rgba(20,11,4,.78) 0%, rgba(20,11,4,.45) 38%, rgba(20,11,4,0) 66%);
+    --tshadow: 0 1px 12px rgba(20,10,2,.7);
+  }
+  /* Venus: the copy sits on the right, the ruler on the left, headings in a high-contrast display face */
+  .copy { margin-left: auto; text-align: left; }
+  body .altitude { right: auto; left: var(--pad); justify-items: start; }
+  body .ruler { margin-right: 0; margin-left: 3px; }
+  body .ruler::before { right: auto; left: 0; }
+  body .ruler i { right: auto; left: -2px; }
+  h1 { font-size: clamp(4.4rem, 18vw, 13rem); font-weight: 400; font-style: italic; letter-spacing: -.02em; margin-bottom: .1em; }
+  h2 { font-size: clamp(2rem, 4.6vw, 3.2rem); font-weight: 400; font-style: italic; letter-spacing: -.01em; }
+  .lead { font-size: 1.26em; line-height: 1.5; max-width: 21em; }
+  .beat { justify-items: end; }
+  .beat.wide { justify-items: end; }
+  .beat.wide .copy { max-width: 34rem; }
+  .plate { margin: 0; max-width: 46rem; margin-left: auto; }
+  .plate img { display: block; width: 100%; height: auto; border: 1px solid rgba(251,239,210,.3); box-shadow: 0 18px 60px rgba(10,4,0,.6); }
+  .ground .copy p, .ground h2 { text-shadow: 0 1px 2px rgba(20,8,2,.6), 0 2px 28px rgba(20,8,2,.75); }
+  .onward { margin-left: auto; }
+  .numbers { margin-left: auto; }
+  .top { flex-direction: row-reverse; }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(20,11,4,.2) 0%, rgba(20,11,4,.6) 55%, rgba(20,11,4,.78) 100%); } .copy { margin-left: 0; } .beat { justify-items: start; } }
+</style>

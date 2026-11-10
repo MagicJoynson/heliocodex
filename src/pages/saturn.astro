@@ -1,0 +1,120 @@
+---
+import '@fontsource/italiana';
+import '@fontsource-variable/eb-garamond';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear } from '../lib/format';
+
+const p = facts.planets.saturn.physical as unknown as Record<string, number>;
+const e = facts.planets.saturn.elements;
+const rows: [string, string][] = [
+  ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
+  ['Radius at the poles', `${fmt(p.radius_polar_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 4)} × 10²⁴ kg`],
+  ['Average density', `${fmt(p.density_kgm3)} kg/m³`],
+  ['Distance from the Sun', `${fmt(e.a_au, 3)} au`],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['A day', '10 h 33 min'],
+  ['Axial tilt', `${p.obliquity_deg}°`],
+  ['Known moons (NASA)', `${p.moons}`],
+];
+---
+<World world="saturn" title="Saturn" description="Fall into the haze of Saturn and look up at the rings. Real NASA data and Cassini images." readout="Pressure">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Sixth planet · 9.5 au from the Sun</p>
+      <h1>Saturn</h1>
+      <p class="lead">Nine times as wide as Earth and so light for its size that it would float, given a big enough bath. Fall towards it and the rings stop being a picture and become a roof.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>Wide and very thin</h2>
+      <p>The bright rings stretch about 270,000 km from edge to edge, two-thirds of the way from Earth to the Moon. Most of them are only around ten metres thick. Scale them down to the width of a football pitch and they would be far thinner than a sheet of paper.</p>
+      <p>They are almost all water ice, in pieces from grains of dust up to lumps the size of a house, each one going round Saturn on its own orbit.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>Squashed by its own spin</h2>
+      <p>A day on Saturn lasts about ten and a half hours. Spinning that fast, a planet made mostly of hydrogen and helium bulges at the middle. It is about a tenth wider at the equator than from pole to pole, enough to see by eye in a photograph.</p>
+      <p>The gaps in the rings are real gaps. The widest, the Cassini Division, is about 4,500 km across and is kept fairly clear by the pull of the moon Mimas.</p>
+    </div>
+  </section>
+
+  <section class="beat sky" data-p="0.7">
+    <div class="copy">
+      <h2>Under the rings</h2>
+      <p>From the cloud tops at 40° north, the rings are a bright arch from one side of the sky to the other. It is northern summer here, so the Sun lights the side of the rings you are looking at. The dark band between the two bright ones is the Cassini Division.</p>
+      <p>The light is weak. Saturn is nearly ten times as far from the Sun as we are, so a summer afternoon here gets about a hundredth of the sunlight of one at home.</p>
+    </div>
+  </section>
+
+  <section class="beat wide sky" data-p="0.86">
+    <div class="copy">
+      <h2>The day the Earth smiled</h2>
+      <p>On 19 July 2013 Cassini passed into Saturn’s shadow and looked back towards the Sun. With the planet blocking the glare, the faint outer rings lit up, and so did a small pale dot below them: Earth, about 1.4 billion km away. People had been told in advance and went outside to wave.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/saturn/earth-smiled.jpg" width="1920" height="746" alt="Saturn seen from its night side as a dark disc, ringed by glowing bands of the rings and fainter haze rings around them." loading="lazy" />
+      <figcaption>Saturn backlit by the Sun, 19 July 2013. Earth is the faint dot below the rings at lower right. Cassini. Image: NASA/JPL-Caltech/Space Science Institute.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat wide sky" data-p="0.95">
+    <div class="copy">
+      <h2>A six-sided storm</h2>
+      <p>Around the north pole a jet stream runs in a hexagon about 29,000 km across, more than twice the width of Earth. It has been there since Voyager first photographed it in 1981, and nobody has seen anything quite like it elsewhere. As summer came on, its colour changed from blue to gold.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/saturn/hexagon.jpg" width="1400" height="700" alt="Two views of Saturn's north pole side by side, each showing a six-sided band of cloud around a small central vortex. The left one is blue-green, the right one golden." loading="lazy" />
+      <figcaption>The north polar hexagon in June 2013 and April 2017. Cassini. Image: NASA/JPL-Caltech/Space Science Institute/Hampton University.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last sky" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">
+        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+      </dl>
+      <p class="aside">NASA NSSDC Saturn Fact Sheet and JPL orbital elements. Ring edges from the NASA Saturnian Rings Fact Sheet. Cassini orbited Saturn from 2004 until 15 September 2017, when it was steered into the planet. In 2025 the rings were edge-on to Earth and almost vanished in small telescopes.</p>
+      <nav class="onward">
+        <a href="/jupiter">← Jupiter</a>
+        <a href="/uranus">Uranus →</a>
+      </nav>
+      <p class="aside">The clouds here are generated. The rings in the sky are worked out from the real ring edges and Saturn’s real shape, for 40° north on a late summer afternoon.</p>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #f7f0e1; --ink-soft: #e2d4b6; --ink-faint: #b3a07e; --accent: #e9cf95; --night: #0b0a0d; --night-a: rgba(10,9,12,.82);
+    --display: 'Italiana', 'Didot', Georgia, serif; --text: 'EB Garamond Variable', Garamond, Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: radial-gradient(60% 65% at 50% 55%, rgba(14,11,8,.62) 0%, rgba(14,11,8,.32) 60%, rgba(14,11,8,.08) 100%);
+    --tshadow: 0 1px 12px rgba(8,6,4,.75);
+    --scrim: rgba(16,12,8,.5);
+  }
+  /* Saturn: a centred column, a classical face, and a thin ring drawn round each heading */
+  body { font-size: clamp(1.1rem, 1.02rem + .35vw, 1.3rem); }
+  .beat { justify-items: center; text-align: center; }
+  .copy { max-width: 33rem; }
+  .copy p { text-wrap: balance; }
+  h1 { font-size: clamp(4.6rem, 18vw, 13rem); letter-spacing: .06em; line-height: .95; margin-bottom: .2em; position: relative; }
+  h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); letter-spacing: .04em; position: relative; display: inline-block; padding: .1em .4em; }
+  h2::before { content: ''; position: absolute; left: -12%; right: -12%; top: 38%; height: 44%; border: 1px solid rgba(233,207,149,.55); border-radius: 50%; transform: rotate(-4deg); pointer-events: none; }
+  .lead { font-size: 1.22em; line-height: 1.5; max-width: 24em; margin-inline: auto; }
+  .kicker { text-align: center; }
+  .plate { margin: 0; max-width: 52rem; }
+  .plate img { display: block; width: 100%; height: auto; border-radius: 2px; box-shadow: 0 24px 70px rgba(0,0,0,.6); }
+  .plate figcaption { margin-inline: auto; text-align: center; }
+  .numbers { margin-inline: auto; text-align: left; }
+  .onward { margin-inline: auto; }
+  .aside { max-width: 30em; margin-inline: auto !important; }
+  .sky .copy p, .sky h2 { text-shadow: 0 1px 2px rgba(20,14,6,.65), 0 2px 26px rgba(20,14,6,.75); }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(10,9,12,.2) 0%, rgba(10,9,12,.55) 55%, rgba(10,9,12,.75) 100%); } h2::before { left: -4%; right: -4%; } }
+</style>

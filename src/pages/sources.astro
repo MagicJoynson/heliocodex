@@ -1,0 +1,151 @@
+---
+import '@fontsource/spectral/300.css';
+import '@fontsource/spectral/300-italic.css';
+import '@fontsource/spectral/400.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import Base from '../layouts/Base.astro';
+import { bodies } from '../data/bodies';
+
+// Every photograph on the site, read straight from the pages so this list can never fall out of step
+const pages = import.meta.glob('./*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const plates = bodies.flatMap((b) => {
+  const src = pages[`./${b.slug}.astro`];
+  if (!src) return [];
+  const out: { world: string; slug: string; img: string; alt: string; caption: string }[] = [];
+  const re = /<img src="(\/img\/[^"]+)"[^>]*?alt="([^"]*)"[\s\S]*?<figcaption>([\s\S]*?)<\/figcaption>/g;
+  for (const m of src.matchAll(re)) out.push({ world: b.slug === 'sun' ? 'The Sun' : b.name, slug: b.slug, img: m[1], alt: m[2], caption: m[3].replace(/<[^>]+>/g, '').trim() });
+  return out;
+});
+const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.name, url: `https://nssdc.gsfc.nasa.gov/planetary/factsheet/${b.slug}fact.html` }));
+---
+<Base title="Sources" path="/sources" description="Where every number, map and photograph on Heliocodex comes from, and which parts are drawn rather than photographed.">
+  <article class="ledger">
+    <header class="ledger-head">
+      <p class="ledger-kicker">Sources</p>
+      <h1>Where it all comes from</h1>
+      <p class="ledger-lead">Every number, map and photograph here, and who made it. The words are written for this site. Where something is drawn by the computer rather than measured or photographed, it says so below. If you find a mistake, it is ours, not theirs.</p>
+    </header>
+
+    <section class="entry">
+      <h2>Numbers</h2>
+      <div class="entry-body">
+        <p>Sizes, masses, densities, gravity, temperatures, the length of each day and year, and the moon counts come from the <a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/">NASA Space Science Data Coordinated Archive fact sheets</a>, one for each body.</p>
+        <ul class="sheets">
+          {factSheets.map((f) => <li><a href={f.url}>{f.name}</a></li>)}
+        </ul>
+        <p>Moon counts change as new moons are confirmed, so they are only as current as NASA’s sheet.</p>
+      </div>
+    </section>
+
+    <section class="entry">
+      <h2>Where the planets are</h2>
+      <div class="entry-body">
+        <p>The model on the <a href="/">front page</a> places each planet from the mean orbital elements in <a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">Keplerian Elements for Approximate Positions of the Major Planets</a> (NASA/JPL Solar System Dynamics, Table 1, good from 1800 to 2050). That puts each planet within a fraction of a degree of where it really is, plenty for a picture, though it is not a full ephemeris.</p>
+        <p>Where a page says where the Sun stands in another world’s sky, the angle comes from <a href="https://ssd.jpl.nasa.gov/horizons/">JPL Horizons</a>: the sub-solar latitude on 9 November 2026 was 74.3° north on Uranus and 19.5° south on Neptune.</p>
+      </div>
+    </section>
+
+    <section class="entry">
+      <h2>Maps of the surfaces</h2>
+      <div class="entry-body">
+        <p>The global colour maps wrapped round each world are from <a href="https://www.solarsystemscope.com/textures/">Solar System Scope</a>, under a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0</a> licence. They are built from NASA mission imagery: MESSENGER for Mercury, Viking and later orbiters for Mars, Cassini for Jupiter and Saturn, and NASA’s Blue Marble and Black Marble for the Earth by day and night. Heliocodex only resizes them to 4k and 8k and saves them smaller, with Mercury and the Earth’s clouds in greyscale.</p>
+      </div>
+    </section>
+
+    <section class="entry">
+      <h2>The stars</h2>
+      <div class="entry-body">
+        <p>The 9,000 or so stars behind every scene are the <a href="https://heasarc.gsfc.nasa.gov/w3browse/star-catalog/bsc5p.html">Yale Bright Star Catalogue</a> (5th revised edition, Hoffleit and Warren, via NASA HEASARC): every star you could see from a dark site on Earth, placed where it really is, sized by brightness and coloured by its measured colour index.</p>
+      </div>
+    </section>
+
+    <section class="entry">
+      <h2>Saturn’s rings</h2>
+      <div class="entry-body">
+        <p>The rings are drawn from the measured edges of each ring and gap in the <a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/satringfact.html">NASA Saturnian Rings Fact Sheet</a>, from the faint D ring to the F ring, with each ring as see-through as it really is. The fine ringlets inside them are added by hand.</p>
+      </div>
+    </section>
+
+    <section class="entry drawn">
+      <h2>What is drawn, not photographed</h2>
+      <div class="entry-body">
+        <p>No spacecraft has stood where most of these pages take you, so the close-up scenes are generated as you watch. They follow what the missions saw and measured, but they are not photographs:</p>
+        <ul class="drawn-list">
+          <li><span>The Sun</span> granules at their real size of about 1,500 km, the supergranule network, a sunspot with its umbra, penumbra and the dip in the middle, and the darkening towards the edge of the disc.</li>
+          <li><span>Mercury and Mars</span> the ground, rocks and small craters below the resolution of the maps.</li>
+          <li><span>Venus</span> the surface under the cloud, modelled on the photographs the Venera landers sent back.</li>
+          <li><span>Earth</span> the sea and clouds close up.</li>
+          <li><span>Jupiter, Saturn, Uranus and Neptune</span> the cloud decks and hazes, and where they sit relative to the Sun and moons.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="plates-sec" aria-labelledby="plates-h">
+      <h2 id="plates-h">Every photograph</h2>
+      <p class="plates-lead">{plates.length} pictures, all from NASA missions and photographers. NASA material is free to use for this kind of purpose, but NASA does not endorse this site.</p>
+      <ol class="plates">
+        {plates.map((p) => (
+          <li>
+            <a href={`/${p.slug}`} class="plate-img"><img src={p.img} alt={p.alt} loading="lazy" decoding="async" /></a>
+            <p class="plate-world">{p.world}</p>
+            <p class="plate-cap">{p.caption}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="entry small">
+      <h2>Type and code</h2>
+      <div class="entry-body">
+        <p>Each page has its own typeface, all free under the SIL Open Font Licence and served from this site through <a href="https://fontsource.org/">Fontsource</a>: Spectral, IBM Plex, Fraunces, Archivo, Bodoni Moda, Source Serif, Libre Caslon, Newsreader, Young Serif, Literata, Bevan, Libre Franklin, Italiana, EB Garamond, Instrument Serif and Big Shoulders. The site is built with <a href="https://astro.build/">Astro</a> and draws in 3D with <a href="https://threejs.org/">three.js</a>, both under the MIT licence.</p>
+        <p>Heliocodex is an independent project. It is not connected to NASA, JPL, Solar System Scope or any of the missions named here.</p>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style is:global>
+  :root {
+    --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a;
+    --s-serif: 'Spectral', Georgia, serif; --s-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --rule: rgba(236,231,220,.14);
+  }
+  body { background: #0b0b0c; }
+  /* a ledger: titles hang in the left margin, entries run down the right, ruled between */
+  .ledger { max-width: 74rem; margin: 0 auto; padding: clamp(56px, 9vw, 120px) var(--gutter) clamp(64px, 9vw, 120px); font-family: var(--s-serif); color: var(--ink); }
+  .ledger a { color: var(--ink); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+  .ledger a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+  .ledger-head { max-width: 46rem; margin: 0 0 clamp(48px, 7vw, 88px); }
+  .ledger-kicker { font: 400 .74rem/1.4 var(--s-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.2rem; }
+  .ledger h1 { font: 300 clamp(2.8rem, 7vw, 5.6rem)/.96 var(--s-serif); letter-spacing: -.02em; margin: 0 0 1.4rem; }
+  .ledger-lead { font: 300 clamp(1.1rem, 1rem + .4vw, 1.3rem)/1.55 var(--s-serif); color: var(--ink-soft); margin: 0; }
+
+  .entry { display: grid; grid-template-columns: minmax(0, 17rem) minmax(0, 40rem); gap: 1rem 4rem; padding: 2.2rem 0 2.4rem; border-top: 1px solid var(--rule); }
+  .entry h2 { font: italic 300 clamp(1.5rem, 2.4vw, 1.9rem)/1.15 var(--s-serif); margin: 0; color: var(--ink); }
+  .entry-body p { font: 300 1.1rem/1.65 var(--s-serif); color: var(--ink-soft); margin: 0 0 1em; }
+  .entry-body p:last-child { margin-bottom: 0; }
+  .sheets { list-style: none; margin: .2rem 0 1.2rem; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem 1.3rem; font: 400 .8rem/1.6 var(--s-mono); letter-spacing: .02em; }
+  .drawn h2 { color: var(--accent); }
+  .drawn-list { list-style: none; margin: 1.2rem 0 0; padding: 0; display: grid; gap: .9rem; }
+  .drawn-list li { font: 300 1.05rem/1.55 var(--s-serif); color: var(--ink-soft); display: grid; grid-template-columns: 11rem 1fr; gap: 1.4rem; }
+  .drawn-list span { font: 400 .74rem/1.9 var(--s-mono); letter-spacing: .04em; color: var(--ink); }
+
+  .plates-sec { border-top: 1px solid var(--rule); padding: 2.4rem 0 3rem; }
+  .plates-sec h2 { font: 300 clamp(2rem, 4vw, 3rem)/1 var(--s-serif); letter-spacing: -.015em; margin: 0 0 .9rem; }
+  .plates-lead { font: 300 1.1rem/1.55 var(--s-serif); color: var(--ink-soft); max-width: 36em; margin: 0 0 2.4rem; }
+  .plates { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr)); gap: 2.4rem 1.8rem; }
+  .plate-img { display: block; aspect-ratio: 4 / 3; overflow: hidden; background: #000; }
+  .plate-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease, filter .6s; filter: saturate(.92); }
+  .plate-img:hover img { transform: scale(1.03); filter: none; }
+  .plate-world { font: 400 .7rem/1.4 var(--s-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: .85rem 0 .35rem; }
+  .plate-cap { font: 300 .95rem/1.5 var(--s-serif); color: var(--ink-soft); margin: 0; }
+
+  .entry.small .entry-body p { font-size: 1rem; }
+
+  @media (max-width: 760px) {
+    .entry { grid-template-columns: 1fr; gap: .9rem; padding: 1.8rem 0 2rem; }
+    .drawn-list li { grid-template-columns: 1fr; gap: .2rem; }
+    .plates { grid-template-columns: 1fr 1fr; gap: 1.8rem 1rem; }
+    .plate-cap { font-size: .86rem; }
+  }
+</style>

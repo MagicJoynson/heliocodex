@@ -1,0 +1,169 @@
+---
+import Base from '../layouts/Base.astro';
+import { bodies, getBody } from '../data/bodies';
+import { physicalRows, orbitRows, sunFacts, phys, fmt, hoursToDay, daysToYear } from '../lib/format';
+import facts from '../data/facts.json';
+
+export function getStaticPaths() {
+  const done = new Set(['sun', 'mercury', 'mars', 'venus', 'earth', 'jupiter', 'saturn', 'uranus', 'neptune']);
+  return bodies.filter((b) => !done.has(b.slug)).map((b) => ({ params: { slug: b.slug } }));
+}
+const { slug } = Astro.params;
+const body = getBody(slug!)!;
+const idx = bodies.indexOf(body);
+const prev = bodies[idx - 1];
+const next = bodies[idx + 1];
+const isSun = body.slug === 'sun';
+const p = phys(body.slug) as Record<string, number> | undefined;
+const e = (facts.planets as any)[body.slug]?.elements;
+
+const strip = isSun
+  ? [['Radius', '695,700 km'], ['Surface', '5,772 K'], ['Age', '~4.6 billion years'], ['Light to Earth', '8 min 20 s']]
+  : [
+      ['Distance', `${fmt(e.a_au, 3)} au`],
+      ['Radius', `${fmt(p!.radius_mean_km)} km`],
+      ['Year', daysToYear(p!.orbit_period_days)],
+      ['Day', hoursToDay(p!.day_hours)],
+      ['Moons', `${p!.moons}`],
+      ['Gravity', `${p!.gravity_ms2} m/s²`],
+    ];
+
+// size comparison: radii relative to Earth
+const cmp = bodies.filter((b) => b.slug !== 'sun').map((b) => ({ b, r: (facts.planets as any)[b.slug].physical.radius_mean_km as number }));
+const maxPx = 84;
+const maxR = Math.max(...cmp.map((c) => c.r));
+const px = (r: number) => Math.max(4, Math.round((r / maxR) * maxPx));
+const title = `${body.name}`;
+const desc = `${body.name}: ${body.tagline} Key data from NASA and JPL, with a 3D model.`;
+const sceneBody = { slug: body.slug, name: body.name, color: body.color, tiltDeg: body.tiltDeg, retrograde: body.retrograde };
+---
+<Base title={title} description={desc} path={`/${body.slug}`} accent={body.color}>
+  <section class="hero">
+    <div class="hero-viewer">
+      <canvas id="viewer" aria-label={`Interactive 3D model of ${body.name}. Drag to rotate.`}></canvas>
+      <span class="hint">Drag to rotate, scroll to zoom. Surface maps: Solar System Scope, CC BY 4.0.</span>
+    </div>
+    <div class="hero-text">
+      <p class="eyebrow">{body.kind}</p>
+      <h1>{body.name}</h1>
+      <p class="tagline">{body.tagline}</p>
+      <div class="facts-strip">
+        {strip.map(([k, v]) => <div><span>{k}</span><b>{v}</b></div>)}
+      </div>
+    </div>
+  </section>
+
+  <div class="cols">
+    <article class="prose">
+      <div class="lede">{body.summary.map((t) => <p>{t}</p>)}</div>
+      {body.sections.map((s) => (
+        <>
+          <h2>{s.title}</h2>
+          {s.paragraphs.map((t) => <p>{t}</p>)}
+        </>
+      ))}
+
+      {body.keyMoons && (
+        <>
+          <h2>Notable moons</h2>
+          <ul class="moons">{body.keyMoons.map((m) => <li><b>{m.name}</b>. {m.note}</li>)}</ul>
+          {p && <p class="note">NASA lists {p.moons} confirmed moon{p.moons === 1 ? '' : 's'} for {body.name}. Counts change as new moons are confirmed.</p>}
+        </>
+      )}
+      {body.rings && (<><h2>Rings</h2><p>{body.rings}</p></>)}
+
+      <h2>Missions</h2>
+      <ul class="missions">
+        {body.missions.map((m) => (
+          <li><span class="yr">{m.year}</span><b>{m.name}</b> <span class="who">· {m.agency}</span><br />{m.note}</li>
+        ))}
+      </ul>
+
+      <h2>Quick facts</h2>
+      <ul class="quick">{body.quickFacts.map((f) => <li>{f}</li>)}</ul>
+    </article>
+
+    <aside class="side">
+      <h3>Physical data</h3>
+      <table class="facts-table">
+        {!isSun && <thead><tr><th>{body.name}</th><th></th><th>vs Earth</th></tr></thead>}
+        <tbody>
+          {(isSun ? sunFacts : physicalRows(body.slug)).map((r) => (
+            <tr><th scope="row">{r.label}</th><td>{r.value}</td><td class="vs">{r.vs ?? ''}</td></tr>
+          ))}
+        </tbody>
+      </table>
+
+      {!isSun && (
+        <>
+          <h3>Orbit and rotation</h3>
+          <table class="facts-table">
+            <tbody>
+              {orbitRows(body.slug).map((r) => (
+                <tr><th scope="row">{r.label}</th><td>{r.value}</td><td class="vs">{r.vs ?? ''}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      )}
+
+      {body.temps && (
+        <>
+          <h3>Temperature</h3>
+          <table class="facts-table"><tbody>{body.temps.map((t) => <tr><th scope="row">{t.label}</th><td>{t.value}</td><td class="vs"></td></tr>)}</tbody></table>
+        </>
+      )}
+
+      {body.atmosphere && (
+        <>
+          <h3>{isSun ? 'Composition' : 'Atmosphere'}</h3>
+          <div class="bars">
+            {body.atmosphere.map((a) => (
+              <div class="bar-row">
+                <span>{a.gas}</span>
+                <div class="bar-track"><div class="bar-fill" style={`width:${Math.min(100, Math.max(a.share, 0.8))}%`}></div></div>
+                <span class="mono">{a.share}%</span>
+              </div>
+            ))}
+          </div>
+          {body.atmosphereNote && <p class="note">{body.atmosphereNote}</p>}
+        </>
+      )}
+      {!body.atmosphere && body.atmosphereNote && (<><h3>Atmosphere</h3><p class="note" style="margin-top:0">{body.atmosphereNote}</p></>)}
+
+      {!isSun && (
+        <>
+          <h3>Size compared (radius)</h3>
+          <div class="compare" role="img" aria-label="Relative sizes of the planets">
+            {cmp.map(({ b, r }) => (
+              <figure class={b.slug === body.slug ? 'me' : ''}>
+                <div class="dot" style={`width:${px(r)}px;height:${px(r)}px;background:${b.color};opacity:${b.slug === body.slug ? 1 : 0.55}`}></div>
+                {b.name.slice(0, 3)}
+              </figure>
+            ))}
+          </div>
+        </>
+      )}
+
+      <h3>Discovery</h3>
+      <p class="note" style="margin-top:0;color:var(--ink-soft)">{body.discovery}</p>
+
+      <h3>Data</h3>
+      <p class="note" style="margin-top:0">
+        {isSun ? 'NASA NSSDC Sun Fact Sheet.' : 'NASA NSSDC planetary fact sheet and NASA/JPL Solar System Dynamics orbital elements.'}
+        {' '}<a href="/sources">All sources</a>.
+      </p>
+    </aside>
+  </div>
+
+  <nav class="pager" aria-label="Previous and next body">
+    {prev ? <a href={`/${prev.slug}`}><small>Inwards</small>{prev.name}</a> : <span></span>}
+    {next ? <a href={`/${next.slug}`} style="text-align:right"><small>Outwards</small>{next.name}</a> : <span></span>}
+  </nav>
+
+  <script define:vars={{ sceneBody }} is:inline>window.__body = sceneBody;</script>
+  <script>
+    import { createBodyViewer } from '../lib/scene';
+    createBodyViewer(document.getElementById('viewer') as HTMLCanvasElement, (window as any).__body);
+  </script>
+</Base>

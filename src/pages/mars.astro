@@ -1,0 +1,133 @@
+---
+import '@fontsource/young-serif';
+import '@fontsource-variable/literata';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear, hoursToDay } from '../lib/format';
+
+const p = facts.planets.mars.physical as unknown as Record<string, number>;
+const e = facts.planets.mars.elements;
+const rows: [string, string][] = [
+  ['Radius', `${fmt(p.radius_mean_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 3)} × 10²⁴ kg`],
+  ['Gravity at the surface', `${p.gravity_ms2} m/s²`],
+  ['Distance from the Sun', `${fmt(e.a_au, 3)} au`],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['A day', hoursToDay(p.day_hours)],
+  ['Axial tilt', `${p.obliquity_deg}°`],
+  ['Average temperature', '−59 °C'],
+  ['Moons', `${p.moons}`],
+];
+---
+<World world="mars" title="Mars" description="Fall from orbit to the surface of Mars. Real NASA data and photographs.">
+      <section class="beat" data-p="0">
+        <div class="copy">
+          <p class="kicker">Fourth planet · 1.52 au from the Sun</p>
+          <h1>Mars</h1>
+          <p class="lead">Half the width of Earth, cold, dry and very quiet. Keep scrolling and you will fall all the way to the ground.</p>
+        </div>
+      </section>
+
+      <section class="beat" data-p="0.17">
+        <div class="copy">
+          <h2>Two small moons</h2>
+          <p>Phobos is about 27 km long and shaped like a potato someone sat on. It goes round Mars in under eight hours, faster than Mars turns, so from the ground it rises in the west and sets in the east, more than twice a day.</p>
+          <p>It is also falling inwards, by around two metres a century. In some tens of millions of years it will break apart or hit the surface. Deimos, the other moon, is smaller and much farther out.</p>
+          <p class="aside">Moons drawn larger than life so you can see them. Their orbits are to scale.</p>
+        </div>
+      </section>
+
+      <section class="beat" data-p="0.4">
+        <div class="copy">
+          <h2>Going down is the hard part</h2>
+          <p>Mars has an atmosphere, but only just. At the surface the pressure is about 0.6 per cent of Earth’s. That is too much air to ignore and far too little to land on parachutes alone, which is why most missions to the surface have failed or nearly did.</p>
+        </div>
+      </section>
+
+      <section class="beat ground" data-p="0.7">
+        <div class="copy">
+          <h2>The sky is the wrong colour</h2>
+          <p>Fine dust hangs in the air all year, and it turns the daytime sky a pale butterscotch. Near the Sun it goes the other way: the dust scatters light so that sunsets are blue.</p>
+          <p>The Sun is two-thirds the width it is from Earth. The air is 95 per cent carbon dioxide and so thin that a fast Martian wind pushes on you about as hard as a breeze at home.</p>
+        </div>
+      </section>
+
+      <section class="beat wide ground" data-p="0.86">
+        <div class="copy">
+          <h2>Big, but not how it looks in pictures</h2>
+          <p>Olympus Mons is the tallest volcano we know of, about 22 km high and about 600 km across. Drawn to scale, it is a long, low swell. Its slopes climb at roughly five degrees, so if you stood on one you would not know you were on a mountain.</p>
+        </div>
+        <figure class="profile">
+          <svg viewBox="0 0 1000 150" role="img" aria-label="Profile of Olympus Mons drawn at true scale, 600 kilometres wide and 22 kilometres high, with Mount Everest beside it for comparison.">
+            <g fill="none" stroke="currentColor" stroke-width="1.2" vector-effect="non-scaling-stroke">
+              <path d="M20 110 H980" stroke-opacity=".5" />
+              <path d="M130 110 C 210 108, 260 86, 330 80 C 420 72, 580 72, 670 80 C 740 86, 790 108, 870 110" />
+              <path d="M928 110 l9 -15 l9 15" stroke-opacity=".9" />
+              <path d="M130 110 v6 M870 110 v6" stroke-opacity=".7" />
+            </g>
+            <g fill="currentColor" font-family="IBM Plex Mono, monospace" font-size="11" letter-spacing=".04em">
+              <text x="500" y="64" text-anchor="middle">OLYMPUS MONS · 22 km</text>
+              <text x="500" y="134" text-anchor="middle" opacity=".75">about 600 km across</text>
+              <text x="937" y="82" text-anchor="middle" opacity=".75">Everest</text>
+            </g>
+          </svg>
+          <figcaption>True horizontal and vertical scale. Simplified profile, with Everest (8.8 km) at the same scale on the right.</figcaption>
+        </figure>
+        <div class="copy">
+          <p>Valles Marineris, the great canyon, runs for about 4,000 km and goes down as far as 7 km. Fly the length of it and you cross a distance like London to Kabul.</p>
+        </div>
+      </section>
+
+      <section class="beat ground" data-p="0.95">
+        <div class="copy">
+          <h2>It was wet here once</h2>
+          <p>Curiosity has been driving across Gale Crater since 2012. The rock under its wheels is mudstone, laid down in the silt of a lake that existed some 3.5 billion years ago. Most of Mars’s water is now ice at the poles and underground.</p>
+        </div>
+        <div class="plates">
+          <figure>
+            <img src="/img/mars/murray-buttes.jpg" width="850" height="254" alt="A wide stretch of fractured, pale-brown bedrock under a hazy sky." loading="lazy" />
+            <figcaption>Fractured bedrock near the Murray Buttes, Gale Crater. Curiosity’s Mastcam, 5 August 2016. Image: NASA/JPL-Caltech/MSSS.</figcaption>
+          </figure>
+          <figure class="second">
+            <img src="/img/mars/mount-sharp.jpg" width="672" height="242" alt="A smooth rust-coloured slope, Mount Sharp, rising over a flat plain of dark gravel." loading="lazy" />
+            <figcaption>Mount Sharp, 5 km high, rising from the crater floor. Curiosity, 2012. Image: NASA/JPL-Caltech/MSSS.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="beat last ground" data-p="1">
+        <div class="copy">
+          <h2>In numbers</h2>
+          <dl class="numbers">
+            {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
+          <p class="aside">NASA NSSDC Mars Fact Sheet and JPL orbital elements. Missions to Mars so far include Viking, Pathfinder, Spirit, Opportunity, Curiosity, Perseverance, Tianwen-1 and Hope.</p>
+          <nav class="onward">
+            <a href="/earth">← Earth</a>
+            <a href="/jupiter">Jupiter →</a>
+          </nav>
+          <p class="aside">The ground and sky here are generated, modelled on Curiosity’s view in Gale Crater at dusk: Mount Sharp to the left, low flat-topped buttes in front, the crater rim on the far horizon.</p>
+        </div>
+      </section>
+    </World>
+
+    <style is:global>
+      :root {
+        --ink: #f2e3d3; --ink-soft: #d9c1ab; --ink-faint: #a58b78; --accent: #e08a5a; --night: #120a08; --night-a: rgba(14,7,5,.82);
+        --display: 'Young Serif', Georgia, serif; --text: 'Literata Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+        --shade: linear-gradient(90deg, rgba(14,7,5,.72) 0%, rgba(14,7,5,.4) 38%, rgba(14,7,5,0) 66%);
+        --tshadow: 0 1px 14px rgba(10,5,4,.6);
+      }
+      h1 { font-size: clamp(4.5rem, 17vw, 12rem); margin-bottom: .12em; letter-spacing: -.01em; }
+      h2 { font-size: clamp(1.9rem, 4.4vw, 3rem); letter-spacing: -.01em; }
+      .lead { font-size: 1.28em; line-height: 1.45; max-width: 22em; }
+      .ground .copy p, .ground h2 { text-shadow: 0 1px 2px rgba(20,8,4,.55), 0 2px 24px rgba(20,8,4,.7); }
+      .profile { margin: 0; max-width: 62rem; color: var(--ink); overflow-x: auto; }
+      .profile svg { min-width: 620px; width: 100%; height: auto; display: block; filter: drop-shadow(0 1px 8px rgba(20,8,4,.7)); }
+      .plates { display: grid; gap: 40px; max-width: 64rem; }
+      .plates figure { margin: 0; }
+      .plates img { display: block; width: 100%; height: auto; box-shadow: 0 18px 50px rgba(8,3,2,.55); }
+      @media (min-width: 900px) { .plates { grid-template-columns: 1.5fr 1fr; align-items: start; } .plates .second { margin-top: 90px; } }
+      @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(14,7,5,.2) 0%, rgba(14,7,5,.6) 55%, rgba(14,7,5,.75) 100%); } }
+    </style>

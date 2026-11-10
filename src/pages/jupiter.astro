@@ -1,0 +1,102 @@
+---
+import '@fontsource/bevan';
+import '@fontsource-variable/libre-franklin';
+import '@fontsource/ibm-plex-mono/400.css';
+import World from '../layouts/World.astro';
+import facts from '../data/facts.json';
+import { fmt, daysToYear, hoursToDay } from '../lib/format';
+
+const p = facts.planets.jupiter.physical as unknown as Record<string, number>;
+const e = facts.planets.jupiter.elements;
+const rows: [string, string][] = [
+  ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
+  ['Mass', `${fmt(p.mass_1e24kg, 4)} × 10²⁴ kg`],
+  ['Gravity at the cloud tops', `${p.gravity_ms2} m/s²`],
+  ['Distance from the Sun', `${fmt(e.a_au, 3)} au`],
+  ['A year', daysToYear(p.orbit_period_days)],
+  ['A day', hoursToDay(p.day_hours)],
+  ['Temperature at 1 bar', '−108 °C'],
+  ['Known moons (NASA)', `${p.moons}`],
+];
+---
+<World world="jupiter" title="Jupiter" description="Fall into the clouds of Jupiter. Real NASA data and Juno photographs." readout="Pressure">
+  <section class="beat" data-p="0">
+    <div class="copy">
+      <p class="kicker">Fifth planet · 5.2 au from the Sun</p>
+      <h1>Jupiter</h1>
+      <p class="lead">Two and a half times heavier than everything else that orbits the Sun, put together. There is no ground to land on, so this time you will fall into the sky.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.17">
+    <div class="copy">
+      <h2>Four moons, found in 1610</h2>
+      <p>Galileo pointed a telescope at Jupiter and saw four small lights that changed place from night to night. They were moons going round it, the first proof that not everything in the sky goes round Earth.</p>
+      <p>Io is the most volcanic place we know. Europa hides an ocean under its ice. Ganymede is the biggest moon in the solar system, bigger than Mercury. Callisto is old and cratered.</p>
+      <p class="aside">Their orbits are to scale. Their sizes are not.</p>
+    </div>
+  </section>
+
+  <section class="beat" data-p="0.4">
+    <div class="copy">
+      <h2>Nothing to land on</h2>
+      <p>Jupiter is almost all hydrogen and helium. The deeper you go, the thicker the gas gets, until it is hard to say where gas ends and liquid begins. There is no moment of touching down.</p>
+      <p>Far below the clouds, the pressure turns hydrogen into something like a liquid metal. Its swirling is thought to make Jupiter’s magnetic field, the strongest of any planet.</p>
+    </div>
+  </section>
+
+  <section class="beat sky" data-p="0.7">
+    <div class="copy">
+      <h2>Belts, zones and lightning</h2>
+      <p>The light stripes are zones where gas rises. The dark ones are belts where it sinks. Neighbouring stripes blow in opposite directions at up to 150 metres a second, which is about 540 km/h.</p>
+      <p>Lightning is real here. Voyager 1 saw flashes in 1979, and Juno has recorded them since, mostly near the poles.</p>
+      <p class="aside">The clouds here are generated. You are over the northern edge of the Great Red Spot, with its pale rim ahead. The small moon is Io, drawn at its true size: about as big as our Moon looks from Earth. Pressure is counted in bars, and one bar is the air pressure at sea level on Earth.</p>
+    </div>
+  </section>
+
+  <section class="beat wide sky" data-p="0.9">
+    <div class="copy">
+      <h2>The storm</h2>
+      <p>The Great Red Spot is a storm now about one and a third times as wide as Earth. People have watched it for well over a century, and it has been shrinking for most of that time.</p>
+      <p>Nobody is sure why it is red. The colour comes from something deep that gets carried up and bleached or reddened by sunlight.</p>
+    </div>
+    <figure class="plate">
+      <img src="/img/jupiter-great-red-spot.jpg" width="1280" height="538" alt="A close view of the swirling rust-red Great Red Spot, surrounded by pale blue-green cloud bands." loading="lazy" />
+      <figcaption>The Great Red Spot, 10 July 2017. Enhanced colour image by Gerald Eichstädt from JunoCam data. Image: NASA/JPL-Caltech/SwRI/MSSS.</figcaption>
+    </figure>
+  </section>
+
+  <section class="beat last sky" data-p="1">
+    <div class="copy">
+      <h2>In numbers</h2>
+      <dl class="numbers">{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+      <p class="aside">NASA NSSDC Jupiter Fact Sheet and JPL orbital elements. Moon counts change as new moons are confirmed. Juno has been orbiting since 2016.</p>
+      <nav class="onward"><a href="/mars">← Mars</a><a href="/saturn">Saturn →</a></nav>
+    </div>
+  </section>
+</World>
+
+<style is:global>
+  :root {
+    --ink: #f6e6cf; --ink-soft: #e1c8a4; --ink-faint: #a98c68; --accent: #e9a35a; --night: #110a06; --night-a: rgba(17,10,6,.82);
+    --display: 'Bevan', Georgia, serif; --text: 'Libre Franklin Variable', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --shade: linear-gradient(90deg, rgba(17,10,6,.8) 0%, rgba(17,10,6,.5) 36%, rgba(17,10,6,0) 66%);
+    --tshadow: 0 1px 12px rgba(12,6,2,.7);
+    --scrim: rgba(17,10,6,.35);
+  }
+  /* Jupiter: a heavy slab face, with belts of colour ruled above every heading */
+  body { font-weight: 400; }
+  h1 { font-size: clamp(4rem, 15.5vw, 11rem); letter-spacing: -.01em; line-height: .95; margin-bottom: .14em; }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.7rem); line-height: 1.12; }
+  h2::before, h1::before {
+    content: ''; display: block; width: min(15rem, 60%); height: 15px; margin-bottom: .55em;
+    background: linear-gradient(to bottom, #e9d9bd 0 3px, transparent 3px 5px, #c99a66 5px 8px, transparent 8px 10px, #a96a46 10px 15px);
+  }
+  h1::before { display: none; }
+  .lead { font-size: 1.2em; line-height: 1.5; max-width: 22em; }
+  .copy p { font-size: .98em; line-height: 1.65; }
+  .plate { margin: 0; max-width: 40rem; }
+  .plate img { display: block; width: 100%; height: auto; box-shadow: 0 20px 60px rgba(8,3,0,.65); }
+  .sky .copy p, .sky h2 { text-shadow: 0 1px 2px rgba(12,5,2,.7), 0 2px 26px rgba(12,5,2,.8); }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(17,10,6,.25) 0%, rgba(17,10,6,.62) 55%, rgba(17,10,6,.8) 100%); } }
+</style>
