@@ -120,3 +120,21 @@ terms:
     more: "The universe then was hydrogen and helium gas, slowly gathering under gravity."
     see: [recombination, star, big-bang]
     lesson: the-first-minutes
+  - id: galaxy-merger
+    term: Galaxy merger
+    short: "Two galaxies falling together under gravity and settling into one."
+    more: "Hardly any stars hit one another, but the shapes of both galaxies are changed. Two spirals of similar size usually leave an elliptical."
+    see: [galaxy, elliptical-galaxy, tidal-tail, starburst]
+    lesson: when-galaxies-collide
+  - id: tidal-tail
+    term: Tidal tail
+    short: "A long curved streamer of stars pulled out of a galaxy by the gravity of another."
+    more: "It forms because the near side of a galaxy is pulled harder than the far side, the same uneven pull that raises tides."
+    see: [galaxy-merger, tide]
+    lesson: when-galaxies-collide
+  - id: starburst
+    term: Starburst
+    short: "A spell in which a galaxy makes new stars far faster than usual."
+    more: "Collisions between galaxies set them off by squeezing clouds of gas. The Antennae galaxies have more than a thousand young star clusters made this way."
+    see: [galaxy-merger, molecular-cloud, star-cluster]
+    lesson: when-galaxies-collide
