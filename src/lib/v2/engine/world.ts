@@ -334,7 +334,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const id = nearId;
       const d = len(sub(posOf(id), cam));
       const r = radOf(id);
-      const h = Math.max(0, d - r);
+      // height above the ground itself where there is ground, as the readout shows
+      const h = Math.max(0, id === nearId ? f.alt : d - r);
       const fromSun = len(cam);
       const band: Context['band'] = h < 100_000 ? 'surface' : h < 30 * r ? 'orbit' : fromSun < 120 * AU ? 'system' : fromSun < 2e5 * AU ? 'interstellar' : 'galactic';
       const km = (band === 'surface' || band === 'orbit' ? h : fromSun) / 1000;
