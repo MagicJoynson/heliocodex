@@ -1,26 +1,27 @@
 ---
-// The guide in the 3D view: a panel that stays out of sight until asked for. It shows what is
+// The Codex in the 3D view: a panel that stays out of sight until asked for. It shows what is
 // worth knowing about wherever the camera is, the lessons and the glossary, and the atlas.
 // The markup here is the empty shell; lib/v2/margin/panel.ts fills it once the engine is running.
 ---
 <button type="button" class="margin-tab" id="margin-tab" aria-expanded="false" aria-controls="margin" hidden>
-  <span>Guide</span><kbd aria-hidden="true">M</kbd>
+  <span>Codex</span><kbd aria-hidden="true">M</kbd>
 </button>
-<aside class="margin" id="margin" aria-label="Guide" inert>
+<aside class="margin" id="margin" aria-label="Codex" inert>
   <header class="margin-head">
-    <div class="margin-tabs" role="tablist" aria-label="Parts of the guide">
+    <div class="margin-tabs" role="tablist" aria-label="Parts of the Codex">
       <button type="button" role="tab" id="mt-here" aria-controls="mp-here" aria-selected="true">Here</button>
       <button type="button" role="tab" id="mt-lessons" aria-controls="mp-lessons" aria-selected="false" tabindex="-1">Lessons</button>
       <button type="button" role="tab" id="mt-words" aria-controls="mp-words" aria-selected="false" tabindex="-1">Words</button>
       <button type="button" role="tab" id="mt-atlas" aria-controls="mp-atlas" aria-selected="false" tabindex="-1">Atlas</button>
     </div>
-    <button type="button" class="margin-close" id="margin-close" aria-label="Close the guide">Close</button>
+    <button type="button" class="margin-close" id="margin-close" aria-label="Close the Codex">Close</button>
   </header>
   <div class="margin-body" id="margin-body">
     <section role="tabpanel" id="mp-here" aria-labelledby="mt-here" tabindex="0"><p class="m-wait">Finding out where you are…</p></section>
     <section role="tabpanel" id="mp-lessons" aria-labelledby="mt-lessons" tabindex="0" hidden></section>
     <section role="tabpanel" id="mp-words" aria-labelledby="mt-words" tabindex="0" hidden></section>
     <section role="tabpanel" id="mp-atlas" aria-labelledby="mt-atlas" tabindex="0" hidden></section>
+    <article id="mp-read" class="m-read" tabindex="-1" hidden></article>
   </div>
   <p class="margin-said" id="margin-said" role="status"></p>
 </aside>
@@ -99,5 +100,24 @@
     .margin-tabs { gap: 1rem; }
     .margin h2 { font-size: 1.9rem; }
   }
+  /* a lesson read inside the panel */
+  .margin .m-back { font: 400 .68rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); background: none; border: 0; border-bottom: 1px solid rgba(236, 231, 220, .3); padding: .5rem 0 .4rem; margin: 0 0 1.6rem; cursor: pointer; }
+  .margin .m-back:hover { color: var(--warm); border-color: var(--warm); }
+  .m-read h2 { font-size: 1.9rem; line-height: 1.1; }
+  .m-read .m-lead { color: var(--ink); font-size: 1.1rem; }
+  .m-read h3 small { display: block; font: italic 300 .92rem/1.4 var(--serif); letter-spacing: 0; text-transform: none; color: var(--faint); margin-top: .25rem; }
+  .m-read .m-prose p { color: var(--soft); margin: 0 0 .9rem; }
+  .m-read .m-prose strong { font-weight: 400; color: var(--ink); }
+  .m-read .m-prose ul, .m-read .m-prose ol { padding-left: 1.1em; margin: 0 0 .9rem; }
+  .m-read .m-prose li { display: list-item; border: 0; padding: 0; margin: 0 0 .35rem; font: 300 1.02rem/1.55 var(--serif); color: var(--soft); }
+  .m-read .m-scroll { overflow-x: auto; margin: 0 0 1rem; }
+  .m-read table { border-collapse: collapse; font: 400 .72rem/1.45 var(--mono); color: var(--soft); min-width: 100%; }
+  .m-read th, .m-read td { text-align: left; padding: .4rem .9rem .4rem 0; border-bottom: 1px solid rgba(236, 231, 220, .14); vertical-align: top; }
+  .m-read th { font-weight: 400; color: var(--faint); }
+
+  /* the panel never sits on the engine's debug line, and on a phone the sheet takes the touch pad's place */
+  body.margin-open .tech { visibility: hidden; }
+  @media (max-width: 760px) { body.margin-open .pad { display: none !important; } }
+
   @media (prefers-reduced-motion: reduce) { .margin, .margin-tab, .m-ruler .m-you { transition: none !important; } }
 </style>

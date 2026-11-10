@@ -36,9 +36,9 @@ facts:
     about: [venus]
     source: { label: "NASA NSSDC Venus fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html" }
   - id: mars-olympus-mons
-    text: "Olympus Mons on Mars is the largest volcano known on any planet. It stands about 22 km above the plains around it, two and a half times the height of Everest above the sea."
+    text: "Olympus Mons on Mars is the largest volcano known on any planet. Its summit is about 21 km above the average level of Mars's surface, nearly two and a half times the height of Everest above the sea."
     about: [mars]
-    source: { label: "NASA, Mars facts", url: "https://science.nasa.gov/mars/facts/" }
+    source: { label: "Plescia 2004, Journal of Geophysical Research 109, E03003 (heights from the laser altimeter on Mars Global Surveyor)", url: "https://doi.org/10.1029/2002JE002031" }
   - id: mars-valles-marineris
     text: "Valles Marineris on Mars is a canyon system more than 4,000 km long and up to 7 km deep. On Earth it would stretch across the United States."
     about: [mars]
