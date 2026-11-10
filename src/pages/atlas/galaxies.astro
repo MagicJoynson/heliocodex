@@ -56,8 +56,8 @@ const webNames = placeLabels(named, 18, webRings.map((g) => ringLabelBox(g.r, g.
 const offSlab = clusters.filter((c) => !c.inSlab);
 
 // ---- the list
-// millions cut to one decimal, not rounded up, so Andromeda's 2.55 reads 2.5 as it does everywhere else on the site; the catalogue's kiloparsecs sit beside it
-const millions = (ly: number) => (ly >= 1e6 ? `${(Math.floor(ly / 1e5) / 10).toLocaleString('en-GB')} million light years` : fmtLy(ly));
+// two decimals below 10 million, so Andromeda's 783 kpc reads 2.55 million and sits with the "about 2.5 million" used in the facts
+const millions = (ly: number) => (ly >= 1e6 && ly < 1e7 ? `${(Math.round(ly / 1e4) / 100).toLocaleString('en-GB', { minimumFractionDigits: 2 })} million light years` : fmtLy(ly));
 const kpcText = (kpc: number) => `${Math.round(kpc).toLocaleString('en-GB')} kpc`;
 const sunLight = (absMag: number) => Math.pow(10, 0.4 * (4.83 - absMag));
 const light = (m: number | null) => { if (m === null) return null; const v = sunLight(m); return v >= 1e9 ? `${(v / 1e9).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} billion Suns` : `${(v / 1e6).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} million Suns`; };
