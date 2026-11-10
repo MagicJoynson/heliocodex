@@ -121,11 +121,38 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const ye = y * Math.cos(e) + z * Math.sin(e), ze = -y * Math.sin(e) + z * Math.cos(e); // to the ecliptic
     return new THREE.Vector3(x, ze, -ye).normalize(); // to the engine frame
   };
+  /** where the equator crosses the Earth's equator (the IAU node), in the engine frame: longitudes are counted from here */
+  const nodeOf = (id: string) => {
+    const P = POLES[id];
+    if (!P) return new THREE.Vector3(1, 0, 0);
+    const ra = THREE.MathUtils.degToRad(P.raDeg), e = THREE.MathUtils.degToRad(23.4392911);
+    const x = -Math.sin(ra), y = Math.cos(ra), z = 0;
+    const ye = y * Math.cos(e) + z * Math.sin(e), ze = -y * Math.sin(e) + z * Math.cos(e);
+    return new THREE.Vector3(x, ze, -ye).normalize();
+  };
+  // equatorial and polar radii (NASA planetary fact sheets) and, for Haumea, its three axes (Ortiz et al. 2017), in km
+  const SHAPE: Record<string, [number, number, number]> = {
+    mercury: [2440.5, 2438.3, 2440.5], venus: [6051.8, 6051.8, 6051.8], earth: [6378.137, 6356.752, 6378.137], mars: [3396.2, 3376.2, 3396.2],
+    jupiter: [71_492, 66_854, 71_492], saturn: [60_268, 54_364, 60_268], uranus: [25_559, 24_973, 25_559], neptune: [24_764, 24_341, 24_764],
+    haumea: [1161, 513, 852],
+  };
+  // the prime meridian, W = W0 + rate × days from J2000 (IAU WGCCRE 2015, Archinal et al. 2018): how far round each globe has turned
+  const SPIN: Record<string, [number, number]> = {
+    mercury: [329.5988, 6.1385108], venus: [160.2, -1.4813688], earth: [190.147, 360.9856235], mars: [176.049863, 350.891982443297],
+    jupiter: [284.95, 870.536], saturn: [38.9, 810.7939024], uranus: [203.81, -501.1600928], neptune: [249.978, 541.1397757], pluto: [302.695, 56.3625225],
+  };
+  const spinning: { id: string; mesh: THREE.Mesh }[] = [];
   function makeGlobe(id: string, radius: number, map?: THREE.Texture) {
     const holder = new THREE.Group();
-    holder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), poleOf(id));
+    // y along the spin pole and x towards the node, so turning about y by W puts longitude 0 where the IAU says
+    const Y = poleOf(id), X0 = nodeOf(id);
+    const X = X0.sub(Y.clone().multiplyScalar(X0.dot(Y))).normalize();
+    holder.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, Y, new THREE.Vector3().crossVectors(X, Y)));
     const g = new THREE.Mesh(globeGeo, new THREE.MeshStandardNodeMaterial(map ? { map, roughness: 1, metalness: 0 } : { color: 0x8a8580, roughness: 1, metalness: 0 }));
-    g.scale.setScalar(radius);
+    const sh = SHAPE[id];
+    if (sh) g.scale.set(sh[0] * 1000, sh[1] * 1000, sh[2] * 1000);
+    else g.scale.setScalar(radius);
+    if (SPIN[id]) spinning.push({ id, mesh: g });
     g.frustumCulled = false;
     holder.add(g);
     holder.visible = false;
@@ -389,6 +416,11 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (g.visible) g.position.set(r[0], r[1], r[2]);
     }
     const jd = system.jd();
+    for (const { id, mesh } of spinning) {
+      const [w0, rate] = SPIN[id];
+      // texture longitude 0 sits on +x of the sphere and east runs towards -z, which is a turn about +y
+      mesh.rotation.y = THREE.MathUtils.degToRad((w0 + rate * (jd - 2451545)) % 360);
+    }
     for (const l of layers) guarded(`layer ${l.name}`, () => l.update?.(rel, jd), () => { layers.delete(l); guarded('detach', () => l.detach?.(), () => {}); });
 
     // too far to be more than a point of light: let the glint stand in
