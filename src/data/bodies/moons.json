@@ -5585,17 +5585,29 @@
    "orbit": {
     "type": "kepler",
     "frame": "laplace",
-    "epochJd": 2451545.0,
+    "framePole": {
+     "raDeg": 40.6,
+     "decDeg": 83.5
+    },
+    "epochJd": 2454840.25,
     "aKm": 136500.0,
     "e": 0.0,
     "iDeg": 0.0,
     "nodeDeg": 0.0,
     "periDeg": 0.0,
-    "mDeg": 153.6,
-    "periodDays": 0.59408,
-    "framePole": {
-     "raDeg": 40.6,
-     "decDeg": 83.5
+    "mDeg": 86.1878,
+    "periodDays": 0.5940801,
+    "periodJpl": 0.59408,
+    "rates": {
+     "nodeDegPerDay": 0.0,
+     "periDegPerDay": 0.0,
+     "mDegPerDay": 605.978910961
+    },
+    "fit": {
+     "medianDeg": 0.25,
+     "worstDeg": 0.71,
+     "from": 2000,
+     "to": 2018
     }
    },
    "ephemeris": "SAT415",
@@ -5603,7 +5615,8 @@
     "year": 2005,
     "by": "Cassini Imaging Science Team"
    },
-   "iauNumber": "XXXV"
+   "iauNumber": "XXXV",
+   "orbitNote": "Fitted to JPL Horizons positions for 2000 to 2018, where JPL's record of this moon ends with the Cassini mission. Later dates run that orbit forward."
   },
   {
    "id": "anthe",

@@ -45,6 +45,10 @@ API = "https://ssd.jpl.nasa.gov/api/horizons.api"
 
 EPOCH = 2458849.5  # 2020-01-01 00:00 TDB
 SPAN = (2451545.0, 2466154.5)  # 2000-01-01.5 to 2040-01-01
+# Moons whose JPL ephemeris stops short. Daphnis was tracked by Cassini, and Horizons carries it only
+# to January 2018. Its fit is made on those years; later dates are that orbit run forward.
+SPANS = {"daphnis": (2451545.0, 2458134.5)}
+YEARS = {"daphnis": (2000, 2018)}
 OBLIQUITY = math.radians(23.4392911)
 
 # planet centre codes, and GM of the planet (plus its big moons where they matter), km^3/s^2
@@ -109,7 +113,7 @@ def horizons(code: int, centre: int, jds: list[float]) -> np.ndarray | None:
     return np.array(rows, dtype=float)
 
 
-def sample_times(period: float) -> list[float]:
+def sample_times(period: float, EPOCH: float = EPOCH, SPAN: tuple = SPAN) -> list[float]:
     """Tight bursts at growing distances from the epoch, plus an even spread."""
     ts = set()
     step = period / 7.3
@@ -198,7 +202,9 @@ def fit(m: dict) -> dict | None:
     parent = m["parent"]
     B = basis(o, parent)
     P0 = o.get("periodJpl", o["periodDays"])
-    jds = sample_times(P0)
+    SPAN = SPANS.get(m["id"], globals()["SPAN"])
+    EPOCH = globals()["EPOCH"] if SPAN[0] < globals()["EPOCH"] < SPAN[1] else (SPAN[0] + SPAN[1]) / 2 + 0.5
+    jds = sample_times(P0, EPOCH, SPAN)
     st = horizons(m["naifId"], CENTRE[parent], jds)
     if st is None:
         return None
@@ -299,7 +305,7 @@ def fit(m: dict) -> dict | None:
 
     # check against dates the fit has not seen
     rng = np.random.default_rng(m["naifId"])
-    check = sorted([float(x) for x in rng.uniform(SPAN[0] + 5, SPAN[1] - 5, 24)] + [2461354.5])  # one of them is 10 Nov 2026
+    check = sorted([float(x) for x in rng.uniform(SPAN[0] + 5, SPAN[1] - 5, 24)] + ([2461354.5] if SPAN[1] > 2461354.5 else []))  # one of them is 10 Nov 2026
     truth = horizons(m["naifId"], CENTRE[parent], check)
     if truth is None:
         return None
@@ -314,7 +320,7 @@ def fit(m: dict) -> dict | None:
     if new["aKm"] <= 0 or float(np.median(err)) > 45:
         log(f"  {m['id']}: fit rejected (a {new['aKm']} km, median error {float(np.median(err)):.0f} deg)")
         return None
-    new["fit"] = {"medianDeg": round(float(np.median(err)), 2), "worstDeg": round(float(err.max()), 2), "from": 2000, "to": 2040}
+    new["fit"] = {"medianDeg": round(float(np.median(err)), 2), "worstDeg": round(float(err.max()), 2), "from": YEARS.get(m["id"], (2000, 2040))[0], "to": YEARS.get(m["id"], (2000, 2040))[1]}
     return new
 
 
