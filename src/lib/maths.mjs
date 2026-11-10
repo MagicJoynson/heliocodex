@@ -2,6 +2,7 @@
 // Write $...$ inside a sentence. For an equation set out on its own, put the opening $$ and the closing $$
 // each on a line by themselves, with the equation on the lines between. Written as $$...$$ on one line it
 // comes out small and inline instead of centred. A mistake in an equation stops the build.
+// Astro's content cache does not notice a change to this file: delete .astro/data-store.json before a local build.
 import { defineMdastPlugin } from 'satteri';
 import katex from 'katex';
 
