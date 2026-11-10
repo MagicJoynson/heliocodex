@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import Reading from '../../layouts/Reading.astro';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
+import equationStyles from 'katex/dist/katex.min.css?url';
 
 export async function getStaticPaths() {
   const lessons = await allLessons();
@@ -11,6 +12,8 @@ export async function getStaticPaths() {
 const { lesson } = Astro.props as { lesson: Lesson };
 const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
 const levels = await Promise.all(lesson.levels.map(async (entry) => ({ id: levelOf(entry), entry, ...(await render(entry)) })));
+// The stylesheet for equations is only sent with lessons that have one. The guide in the 3D view picks it up from here too.
+const hasEquations = levels.some((l) => l.entry.rendered?.html.includes('class="katex'));
 const words = lesson.data.terms.map((id) => terms.find((t) => t.id === id)!);
 const worthKnowing = facts.filter((f) => f.about.includes(lesson.id)).slice(0, 5);
 const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
@@ -20,6 +23,7 @@ const sources = [...new Map(levels.flatMap((l) => l.entry.data.sources).map((s) 
 const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
 ---
 <Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary}>
+  {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
   <header class="reading-head">
     <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
     <h1>{lesson.data.title}</h1>

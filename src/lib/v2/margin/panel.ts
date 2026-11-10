@@ -249,6 +249,9 @@ export function mountMargin(engine: Engine): void {
     reader.focus({ preventScroll: true });
     page(id).then((doc) => {
       if (reading !== id) return;
+      // a lesson with equations names their stylesheet, which this page does not carry until one is read
+      const sheet = doc.querySelector('link[data-equations]')?.getAttribute('href');
+      if (sheet && !document.querySelector('link[data-equations]')) document.head.append(el('link', { rel: 'stylesheet', href: sheet, 'data-equations': '' }));
       const parts: Node[] = [];
       for (const sec of doc.querySelectorAll('section.row[id]')) {
         const prose = sec.querySelector('.prose');

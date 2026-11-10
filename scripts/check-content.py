@@ -52,7 +52,10 @@ for lid, l in lessons.items():
             if x not in pool: bad.append(f'lesson {lid}: {key} has "{x}", which is not a {what}')
         if key != 'terms' and lid in (l.get(key) or []): bad.append(f'lesson {lid}: {key} points at itself')
     for level in ('first-look', 'how-it-works'):
-        if not os.path.exists(path('src/content/lessons', lid, level + '.md')): bad.append(f'lesson {lid}: no {level}.md')
+        f = path('src/content/lessons', lid, level + '.md')
+        if not os.path.exists(f): bad.append(f'lesson {lid}: no {level}.md')
+        # a dollar sign starts an equation, and equations belong in The physics and The frontier
+        elif '$' in open(f, encoding='utf-8').read(): bad.append(f'lesson {lid}: {level}.md has a $ in it, which would be set as an equation')
 
 for tid, t in terms.items():
     for x in t.get('see') or []:
