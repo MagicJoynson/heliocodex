@@ -1,0 +1,9 @@
+title: Variable stars and the distance ladder
+strand: galaxies
+order: 3
+summary: "Some stars brighten and fade on a steady beat, and the beat gives away how bright they truly are. That is how the distances to other galaxies were first measured."
+scene: "Our galaxy and its neighbours from outside, with Andromeda marked: the first galaxy to have its distance measured from a single pulsing star."
+view: { target: local-group, highlight: [andromeda] }
+terms: [variable-star, cepheid, standard-candle, distance-ladder, parallax, inverse-square-law, supernova, hubble-constant]
+needs: [measuring-distance, kinds-of-galaxy]
+next: [the-expanding-universe]

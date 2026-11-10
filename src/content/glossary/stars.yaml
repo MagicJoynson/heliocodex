@@ -140,3 +140,17 @@ terms:
     more: "The first to be detected, in 2015, came from two black holes merging about 1.3 billion light years away."
     see: [black-hole, neutron-star, gravity, interferometer]
     lesson: gravitational-waves
+  - id: variable-star
+    term: Variable star
+    also: [variable stars]
+    short: "A star whose brightness changes, either because it swells and shrinks or because something passes in front of it."
+    more: "Mira, a red giant, takes 331 days over each cycle. Delta Cephei takes 5.366 days."
+    see: [cepheid, binary-star, red-giant]
+    lesson: the-distance-ladder
+  - id: cepheid
+    term: Cepheid
+    also: [Cepheids, Cepheid variable]
+    short: "A supergiant star that pulses on a steady beat of days or weeks. The longer the beat, the more luminous the star, which makes Cepheids markers of distance."
+    more: "The rule was found by Henrietta Leavitt in the Magellanic Clouds. Polaris is the nearest Cepheid."
+    see: [variable-star, standard-candle, distance-ladder, luminosity]
+    lesson: the-distance-ladder

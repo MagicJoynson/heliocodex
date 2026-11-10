@@ -6,4 +6,4 @@ scene: "One gap shown in each unit in turn, with a pulse of light crossing it in
 view: { target: earth, facing: sun, distanceKm: 2000000 }
 terms: [astronomical-unit, light-year, parsec, parallax, arcsecond, light-time]
 needs: [how-big-is-space]
-next: [light-the-only-messenger]
+next: [light-the-only-messenger, the-distance-ladder]
