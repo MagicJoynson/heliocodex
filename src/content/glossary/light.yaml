@@ -104,3 +104,13 @@ terms:
     short: "The temperature scale that starts at absolute zero, the coldest anything can be."
     more: "Its steps are the same size as degrees Celsius, and 0 °C is 273.15 K."
     see: [blackbody]
+  - id: gamma-rays
+    term: Gamma rays
+    short: "Light with the shortest wavelengths and the most energy of all, made by the most violent events in the universe."
+    see: [electromagnetic-spectrum, x-rays]
+    lesson: the-whole-spectrum
+  - id: aperture
+    term: Aperture
+    short: "The width of a telescope's main lens or mirror. It sets how much light the telescope collects and how fine a detail it can show."
+    see: [arcsecond, wavelength]
+    lesson: telescopes

@@ -1,0 +1,9 @@
+title: Telescopes
+strand: light
+order: 4
+summary: "A telescope's first job is to collect light, not to magnify. Bigger mirrors see fainter and sharper, and that has driven four centuries of building."
+scene: "A human eye, Galileo's telescope, Hubble's mirror, Webb's mirror and the largest mirror now being built, drawn to the same scale."
+view: { target: earth, distanceKm: 3000000, highlight: [webb, hubble] }
+terms: [aperture, arcsecond, wavelength, infrared, radio-waves, look-back-time, apparent-magnitude]
+needs: [the-whole-spectrum]
+next: []

@@ -6,3 +6,4 @@ scene: "Looking at the Andromeda Galaxy while a counter shows how long ago its l
 view: { target: local-group, highlight: [andromeda] }
 terms: [speed-of-light, look-back-time, electromagnetic-spectrum, wavelength, spectrum, spectral-line]
 needs: [measuring-distance]
+next: [the-whole-spectrum, reading-starlight]

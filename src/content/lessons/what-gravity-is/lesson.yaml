@@ -1,0 +1,9 @@
+title: What gravity is
+strand: gravity-and-orbits
+order: 3
+summary: "Everything pulls on everything else. The pull grows with mass and fades with distance, and it never quite reaches zero."
+scene: "The Earth and Moon with the strength of the Earth's pull drawn as it fades outward, and the point between them that both circle."
+view: { target: earth, distanceKm: 900000, highlight: [moon, barycentre] }
+terms: [gravity, mass, weight, free-fall, inverse-square-law, barycentre, orbit]
+needs: [what-an-orbit-is]
+next: [tides, leaving-and-arriving]

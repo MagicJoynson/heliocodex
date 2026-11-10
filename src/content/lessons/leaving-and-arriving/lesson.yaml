@@ -1,0 +1,9 @@
+title: "Leaving and arriving: how spacecraft get about"
+strand: gravity-and-orbits
+order: 5
+summary: "Getting into space is about speed, not height. After that a spacecraft mostly coasts, and borrows speed from planets on the way."
+scene: "A spacecraft leaving the Earth on a long curved path to Mars, arriving just as Mars does, then one swinging past Jupiter and leaving faster than it came."
+view: { target: sun, distanceKm: 700000000, highlight: [earth, mars] }
+terms: [escape-velocity, orbital-velocity, transfer-orbit, gravity-assist, ellipse, perihelion, aphelion, orbital-period]
+needs: [what-an-orbit-is, keplers-laws]
+next: [balance-points]
