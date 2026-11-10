@@ -1,4 +1,5 @@
 import * as THREE from 'three/webgpu';
+import { uniform, positionLocal, texture, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
 import { createSky, GLINT, FAR as SKY_FAR } from './sky';
 import { createDeep, PC, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
 import { createTerrain } from './terrain';
@@ -167,6 +168,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     map.anisotropy = 4;
     makeGlobe(p, RADII[p], map);
   }
+  let saturnShadows: { holder: THREE.Group; ball: THREE.Mesh; sunH: { value: THREE.Vector3 }; sunL: { value: THREE.Vector3 } } | null = null;
   // Saturn's rings, from the inner C ring to the F ring, mapped by distance from the centre
   {
     const IN = 74_500_000, OUT = 140_220_000;
@@ -175,10 +177,41 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     for (let k = 0; k < ps.count; k++) uvs.setXY(k, (Math.hypot(ps.getX(k), ps.getY(k)) - IN) / (OUT - IN), 0.5);
     const tex = loader.load('/textures/4k_saturn_ring.webp');
     tex.colorSpace = THREE.SRGBColorSpace;
-    const ring = new THREE.Mesh(geo, new THREE.MeshStandardNodeMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, roughness: 1, metalness: 0, depthWrite: false }));
+    const ringMat = new THREE.MeshStandardNodeMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, roughness: 1, metalness: 0, depthWrite: false });
+    const ring = new THREE.Mesh(geo, ringMat);
     ring.rotation.x = -Math.PI / 2; // into the equator plane
     ring.frustumCulled = false;
-    globes.get('saturn')?.add(ring);
+    const holder = globes.get('saturn');
+    const ball = holder?.children[0] as THREE.Mesh | undefined;
+    if (holder && ball) {
+      holder.add(ring);
+      // ---- the shadows: the planet's on the rings, and the rings' on the planet
+      const [A, C] = [SHAPE.saturn[0] * 1000, SHAPE.saturn[1] * 1000];
+      // the way to the Sun, in the holder's frame (y the pole) and in the globe's own unit-sphere frame
+      const sunH = uniform(new THREE.Vector3(0, 1, 0)) as any;
+      const sunL = uniform(new THREE.Vector3(0, 1, 0)) as any;
+      saturnShadows = { holder, ball, sunH, sunL };
+      // a point of the rings, in the holder's frame, squashed so the planet becomes a sphere of radius A
+      const pl = positionLocal as any;
+      const P = vec3(pl.x, float(0), pl.y.negate()).mul(vec3(1, A / C, 1));
+      const sq = (sunH as any).mul(vec3(1, A / C, 1)).normalize();
+      const along = dot(P, sq);
+      const miss = length(P.sub(sq.mul(along)));
+      // lit unless the ray to the Sun passes through the planet, with a soft edge for the penumbra
+      const litR = select(along.lessThan(0), smoothstep(A * 0.985, A * 1.015, miss), float(1));
+      ringMat.colorNode = (texture(tex) as any).mul(vec4(vec3(litR.mul(0.94).add(0.06)), 1));
+      // a point of the globe (unit sphere, before its scale), followed towards the Sun to the ring plane
+      const gp = positionLocal as any;
+      const t = gp.y.negate().div(select((sunL as any).y.abs().lessThan(1e-6), float(1e-6), (sunL as any).y));
+      const hit = gp.add((sunL as any).mul(t));
+      const rr = length(vec2(hit.x, hit.z)).mul(A);
+      const u = rr.sub(IN).div(OUT - IN);
+      const inRing = t.greaterThan(0).and(u.greaterThan(0)).and(u.lessThan(1));
+      const opacity = (texture(tex, vec2(u.clamp(0, 1), 0.5)) as any).a;
+      const litG = select(inRing, float(1).sub(opacity.mul(0.85)), float(1));
+      const gm = ball.material as THREE.MeshStandardNodeMaterial;
+      if (gm.map) gm.colorNode = (texture(gm.map) as any).mul(vec4(vec3(litG), 1));
+    }
   }
 
   // ---- layers other parts of the site add (moons, orbits, labels); drawn with depth, round the camera
@@ -416,6 +449,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (g.visible) g.position.set(r[0], r[1], r[2]);
     }
     const jd = system.jd();
+    if (saturnShadows?.holder.visible) {
+      // the Sun as seen from Saturn, into the holder's frame and then into the globe's unscaled one
+      const ps = sub(posOf('sun'), posOf('saturn'));
+      const w = new THREE.Vector3(ps[0], ps[1], ps[2]).normalize();
+      saturnShadows.sunH.value.copy(w).applyQuaternion(saturnShadows.holder.quaternion.clone().invert());
+      const b = saturnShadows.ball;
+      const l = saturnShadows.sunH.value.clone().applyEuler(new THREE.Euler(0, -b.rotation.y, 0));
+      saturnShadows.sunL.value.set(l.x / b.scale.x, l.y / b.scale.y, l.z / b.scale.z);
+    }
     for (const { id, mesh } of spinning) {
       const [w0, rate] = SPIN[id];
       // texture longitude 0 sits on +x of the sphere and east runs towards -z, which is a turn about +y
