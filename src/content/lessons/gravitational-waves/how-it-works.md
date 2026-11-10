@@ -5,6 +5,7 @@ sources:
   - { label: "Abbott et al. 2016, Physical Review Letters 116, 061102", url: "https://doi.org/10.1103/PhysRevLett.116.061102" }
   - { label: "Abbott et al. 2017, Physical Review Letters 119, 161101", url: "https://doi.org/10.1103/PhysRevLett.119.161101" }
   - { label: "Abbott et al. 2017, The Astrophysical Journal Letters 848, L12", url: "https://doi.org/10.3847/2041-8213/aa91c9" }
+  - { label: "NIST, CODATA 2022: the proton charge radius", url: "https://physics.nist.gov/cgi-bin/cuu/Value?rp" }
   - { label: "NASA, Multiple star systems", url: "https://science.nasa.gov/universe/stars/multiple-star-systems/" }
 lastChecked: 2026-11-10
 ---
@@ -31,7 +32,7 @@ The first sign of this came long before any wave was caught. In the 1970s Joseph
 
 The vibrations happen to fall in the range the ear can hear. Played through a speaker, the signal is a short rising note, and so it is called a chirp.
 
-**How faint it was.** Like light, the waves weaken as they spread. When this one reached the Earth, it changed lengths by one part in a thousand million million million. Over a 4 km arm that is, by our sum, 4 millionths of a millionth of a millionth of a metre, thousands of times smaller than the nucleus of an atom. The Nobel committee compared it to measuring the distance to a star ten light years away to within the width of a hair.
+**How faint it was.** Like light, the waves weaken as they spread. When this one reached the Earth, it changed lengths by one part in a thousand million million million. Over a 4 km arm that is, by our sum, 4 millionths of a millionth of a millionth of a metre, hundreds of times smaller than a proton. The Nobel committee compared it to measuring the distance to a star ten light years away to within the width of a hair.
 
 **How the detector works.** The detector, LIGO, is shaped like a letter L, with two arms each 4 km long and a mirror hanging at each end. A laser beam is split in two at the corner and sent down both arms. The beams bounce back and meet again. The lengths are set so that the two returning beams cancel each other exactly and no light comes out. A passing wave stretches one arm while it squeezes the other. The beams then no longer cancel, and a little light gets through to a sensor. An instrument that compares two beams of light like this is called an interferometer.
 
@@ -43,4 +44,4 @@ It was the first event seen both ways. The waves gave the masses and the distanc
 
 **What they are good for.** Black holes give out no light. Before 2015 nobody had direct evidence that two could orbit each other and merge, or that black holes of 30 to 60 Suns existed at all. Gravitational waves are a second sense, and most of what it will find is still ahead.
 
-**What the 3D view shows.** The view of the cosmic web draws real galaxies out to about a billion light years. The 2017 neutron stars met about 130 million light years away, well inside that map. The 2015 black holes were about ten times further off than that, at 1.3 billion light years, just beyond the edge of what is drawn. The view does not mark either place, and no wave is drawn. It is there to show how much space the ripples crossed.
+**What the 3D view shows.** The view of the cosmic web draws more than 43,000 real galaxies. Nearly all of them lie within about a billion light years, and a few of the brightest are drawn out to more than two billion. The 2017 neutron stars met about 130 million light years away, deep inside the crowded part of that map. The 2015 black holes were about ten times further off, at 1.3 billion light years, out where the map has thinned to a scattering of the brightest galaxies. The view does not mark either place, and no wave is drawn. It is there to show how much space the ripples crossed.
