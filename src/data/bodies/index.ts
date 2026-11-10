@@ -5,6 +5,7 @@ import type { Body, KeplerOrbit, Look, Seen, Source } from '../../lib/v2/atlas/t
 import facts from '../facts.json';
 import moonFile from './moons.json';
 import dwarfFile from './dwarfs.json';
+import smallFile from './small.json';
 
 const JPL_SATS: Source = { label: 'NASA/JPL Solar System Dynamics, planetary satellites', url: 'https://ssd.jpl.nasa.gov/sats/' };
 const JPL_SBDB: Source = { label: 'NASA/JPL Small-Body Database', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html' };
@@ -86,7 +87,29 @@ const dwarfs: Body[] = (dwarfFile.dwarfs as Raw[]).map((d) => {
   };
 });
 
-export const allBodies: Body[] = [sun, ...planets, ...moons, ...dwarfs];
+// A chosen few asteroids and comets (scripts/data/build-small-bodies.py). How well each has been seen
+// is set by hand there, with the reason it is on the list.
+type Small = Raw & { kind: 'asteroid' | 'comet'; seen: Seen; group: string; why: string };
+const LOOKS: Record<Seen, string> = {
+  mapped: 'A spacecraft has photographed nearly all of this body. Until its shape model is loaded, what you see is drawn to match.',
+  partly: 'A spacecraft has photographed part of this body. The rest is drawn to match.',
+  unresolved: 'No spacecraft has been here. Its shape and surface are a guess.',
+};
+const small: Body[] = (smallFile.bodies as Small[]).map((b) => ({
+  id: b.id, name: b.name, kind: b.kind, parent: 'sun', orbit: b.orbit,
+  meanRadiusKm: b.meanRadiusKm, look: { type: 'impression', note: LOOKS[b.seen] }, seen: b.seen,
+  orbitNote: b.kind === 'comet' ? 'A comet’s own jets push it about, so its timing drifts. Its place is run from its last closest approach to the Sun and is approximate.' : undefined,
+  sources: [JPL_SBDB],
+}));
+
+/** The chosen small bodies with what the chart says about each: the group it belongs to and why it is there. */
+export const smallBodies = (smallFile.bodies as Small[]).map((b) => ({ id: b.id, group: b.group, why: b.why }));
+/** How the known asteroids are spread by the size of their orbits: counts in narrow bins. */
+export const smallSpread = smallFile.spread as { counted: number; inner: Spread; outer: Spread };
+export interface Spread { fromAu: number; toAu: number; stepAu: number; counts: number[] }
+export const smallFetched = smallFile._sources.fetched;
+
+export const allBodies: Body[] = [sun, ...planets, ...moons, ...dwarfs, ...small];
 
 const byId = new Map(allBodies.map((b) => [b.id, b]));
 if (byId.size !== allBodies.length) {

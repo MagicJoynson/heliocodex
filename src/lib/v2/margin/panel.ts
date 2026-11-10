@@ -24,7 +24,7 @@ const who = (id: string) => byId.get(id);
 const nameOf = (id: string) => byId.get(id)?.name ?? PLACE_NAMES[id] ?? id;
 const theName = (id: string) => (id === 'earth' ? 'the Earth' : nameOf(id).replace(/^The /, 'the '));
 const moonsOf = (id: string) => allBodies.filter((b) => b.parent === id && b.kind === 'moon');
-const chartFor = (b: Body) => (b.id === 'sun' || b.parent === 'sun' ? `/atlas/solar-system${b.id === 'sun' ? '' : `#${b.id}`}` : `/atlas/${b.parent}#${b.id}`);
+const chartFor = (b: Body) => (b.kind === 'asteroid' || b.kind === 'comet' ? `/atlas/small-bodies#${b.id}` : b.id === 'sun' || b.parent === 'sun' ? `/atlas/solar-system${b.id === 'sun' ? '' : `#${b.id}`}` : `/atlas/${b.parent}#${b.id}`);
 
 const BAND: Record<Context['band'], string> = {
   surface: 'Just above', orbit: 'Close to', system: 'Between the worlds', interstellar: 'Beyond the planets', galactic: 'Out in the galaxy', cosmic: 'Between the galaxies',
@@ -40,6 +40,8 @@ function whatIs(b: Body): string {
   if (b.kind === 'planet') return `A planet, ${wide}.${moons || ' It has no moons.'}`;
   if (b.kind === 'dwarf') return `A dwarf planet${wide ? `, ${wide}` : ''}.${moons}`;
   if (b.kind === 'moon') return wide ? `A moon of ${theName(b.parent!)}, ${wide}.` : `A small moon of ${theName(b.parent!)}. Nobody has measured how wide it is.`;
+  if (b.kind === 'asteroid') return wide ? `An asteroid, ${wide}.` : 'An asteroid.';
+  if (b.kind === 'comet') return wide ? `A comet. Its solid core is ${wide}.` : 'A comet.';
   return '';
 }
 
