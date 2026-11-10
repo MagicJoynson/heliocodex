@@ -1,0 +1,9 @@
+title: Gravitational waves
+strand: gravity-and-orbits
+order: 7
+summary: "When very heavy things swing round each other, space itself ripples. Since 2015 those ripples can be caught, a way of studying the universe that uses no light."
+scene: "Out among the galaxies, far beyond the Milky Way. Somewhere in a view like this two black holes met, and the ripple they made crossed all of it to reach the Earth."
+view: { target: cosmic-web }
+terms: [gravitational-wave, gravity, black-hole, neutron-star, interferometer, speed-of-light, binary-star, gamma-rays]
+needs: [what-gravity-is, what-a-black-hole-is]
+next: [neutron-stars-and-pulsars, the-cosmic-web]

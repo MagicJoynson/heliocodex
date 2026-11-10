@@ -114,3 +114,9 @@ terms:
     short: "The width of a telescope's main lens or mirror. It sets how much light the telescope collects and how fine a detail it can show."
     see: [arcsecond, wavelength]
     lesson: telescopes
+  - id: interferometer
+    term: Interferometer
+    short: "An instrument that splits a beam of light in two, sends the halves along different paths and compares them when they meet again."
+    more: "The tiniest change in the length of either path shows up, which is how LIGO's 4 km arms catch gravitational waves."
+    see: [gravitational-wave, wavelength]
+    lesson: gravitational-waves
