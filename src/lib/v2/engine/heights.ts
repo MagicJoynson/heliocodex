@@ -16,6 +16,20 @@ export interface HeightSource {
    * shortest wavelength worth adding at this level of detail; finer features are left out.
    */
   height(dir: V3, detail: number): number;
+  /**
+   * The same, asked by cube face and face coordinates (see cube.ts). Sources backed by real data
+   * provide it so that tile vertices fall exactly on the data's own samples.
+   */
+  heightAt?(face: number, s: number, t: number, detail: number): number;
+  /** Fetch whatever one terrain tile needs. After it resolves, heights for that tile are final. */
+  prepare?(face: number, level: number, i: number, j: number): Promise<void>;
+  /** Resolves once the source can answer at all (its coarsest data has arrived). */
+  ready?: Promise<void>;
+  /**
+   * Metres between real measurements at the finest level. Anything finer than this is generated,
+   * and the page must say so. Undefined means the whole world is generated.
+   */
+  resolution?: number;
 }
 
 /**

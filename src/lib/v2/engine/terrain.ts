@@ -73,9 +73,10 @@ export function createTerrain(o: TerrainOptions) {
     const n = Math.max(1, Math.min(4, (navigator.hardwareConcurrency || 2) - 1));
     for (let k = 0; k < n; k++) {
       const w = new Worker(new URL('./tile.worker.ts', import.meta.url), { type: 'module' });
-      w.onmessage = (e: MessageEvent<{ id: number; t: TileData }>) => {
+      w.onmessage = (e: MessageEvent<{ id: number; t?: TileData; error?: string }>) => {
         const job = waiting.get(e.data.id);
         waiting.delete(e.data.id);
+        if (!e.data.t) { if (job) job.node.pending = false; console.warn('tile not built', e.data.error); return; }
         built++;
         // a tile nobody has wanted for a few frames is not worth uploading
         if (job && !job.node.dead && !job.node.mesh && job.node.used >= frame - 3) finish(job.node, e.data.t);
@@ -155,7 +156,13 @@ export function createTerrain(o: TerrainOptions) {
       const t0 = performance.now();
       while (queue.length && performance.now() - t0 < budgetMs) {
         const n = queue.shift()!;
-        finish(n, buildTile(src, n));
+        if (src.prepare) {
+          // real data may have to be fetched first; the tile arrives when it has
+          src.prepare(n.face, n.level, n.i, n.j).then(
+            () => { if (!n.dead && !n.mesh) finish(n, buildTile(src, n)); else n.pending = false; },
+            () => { n.pending = false; },
+          );
+        } else finish(n, buildTile(src, n));
       }
     }
   }
@@ -262,7 +269,7 @@ export function createTerrain(o: TerrainOptions) {
     group.traverse((x) => { const mm = x as THREE.Mesh; if (mm.isMesh) { mm.geometry.setIndex(null); mm.geometry.dispose(); } });
   }
 
-  return { group, update, groundAt, radius, source: src, dispose, material: mat };
+  return { group, update, groundAt, radius, source: src, ready: src.ready ?? Promise.resolve(), dispose, material: mat };
 }
 
 export type Terrain = ReturnType<typeof createTerrain>;

@@ -1,5 +1,7 @@
 import type { HeightSource } from './heights';
 import { testWorld } from './heights';
+import { faceDir } from './cube';
+import { createDem, type DemSpec } from './dem';
 
 /**
  * Builds one terrain tile of a cube-sphere quadtree. Runs in a worker (or on the main thread if
@@ -10,34 +12,12 @@ import { testWorld } from './heights';
 export const GRID = 32; // quads per tile side
 export const V = GRID + 1; // vertices per side
 
-/** cube faces: outward normal n, and in-face axes u, v with u x v = n */
-export const FACES: { n: number[]; u: number[]; v: number[] }[] = [
-  { n: [1, 0, 0], u: [0, 0, -1], v: [0, 1, 0] },
-  { n: [-1, 0, 0], u: [0, 0, 1], v: [0, 1, 0] },
-  { n: [0, 1, 0], u: [1, 0, 0], v: [0, 0, -1] },
-  { n: [0, -1, 0], u: [1, 0, 0], v: [0, 0, 1] },
-  { n: [0, 0, 1], u: [1, 0, 0], v: [0, 1, 0] },
-  { n: [0, 0, -1], u: [-1, 0, 0], v: [0, 1, 0] },
-];
+export { FACES, faceDir } from './cube';
 
-/** unit direction for face coordinates s, t in [-1, 1], with the even-area cube-to-sphere map */
-export function faceDir(face: number, s: number, t: number, out: number[] = [0, 0, 0]) {
-  const F = FACES[face];
-  const x = F.n[0] + F.u[0] * s + F.v[0] * t;
-  const y = F.n[1] + F.u[1] * s + F.v[1] * t;
-  const z = F.n[2] + F.u[2] * s + F.v[2] * t;
-  const x2 = x * x, y2 = y * y, z2 = z * z;
-  const sx = x * Math.sqrt(1 - y2 / 2 - z2 / 2 + (y2 * z2) / 3);
-  const sy = y * Math.sqrt(1 - z2 / 2 - x2 / 2 + (z2 * x2) / 3);
-  const sz = z * Math.sqrt(1 - x2 / 2 - y2 / 2 + (x2 * y2) / 3);
-  const l = Math.hypot(sx, sy, sz);
-  out[0] = sx / l; out[1] = sy / l; out[2] = sz / l;
-  return out;
-}
-
-export interface SourceSpec { kind: 'test'; radius: number; seed: number }
+export interface TestSpec { kind: 'test'; radius: number; seed: number }
+export type SourceSpec = TestSpec | DemSpec;
 export function makeSource(spec: SourceSpec): HeightSource {
-  return testWorld(spec.radius, spec.seed);
+  return spec.kind === 'dem' ? createDem(spec) : testWorld(spec.radius, spec.seed);
 }
 
 export interface TileRequest { face: number; level: number; i: number; j: number }
@@ -55,6 +35,13 @@ export interface TileData {
 /** arc length across a tile at this level, metres */
 export const tileSize = (radius: number, level: number) => (radius * Math.PI * 0.5) / 2 ** level;
 
+/** Build a tile, first letting the source fetch whatever data the tile needs. */
+export async function buildTileWhenReady(src: HeightSource, r: TileRequest): Promise<TileData> {
+  if (src.prepare) await src.prepare(r.face, r.level, r.i, r.j);
+  return buildTile(src, r);
+}
+
+/** Build a tile now. A source with `prepare` must have been prepared for this tile first. */
 export function buildTile(src: HeightSource, r: TileRequest): TileData {
   const R = src.radius;
   const n = 2 ** r.level;
@@ -71,6 +58,8 @@ export function buildTile(src: HeightSource, r: TileRequest): TileData {
   const Q = new Float64Array(B * B * 3);
   const D = new Float64Array(B * B * 3);
   const dir = [0, 0, 0];
+  // a source backed by real data answers by face coordinates, so tile vertices land exactly on its samples
+  const exact = !!src.heightAt;
   let minH = Infinity, maxH = -Infinity;
   for (let b = 0; b < B; b++) {
     for (let a = 0; a < B; a++) {
@@ -79,11 +68,11 @@ export function buildTile(src: HeightSource, r: TileRequest): TileData {
       faceDir(r.face, s, t, dir);
       const k = (b * B + a) * 3;
       D[k] = dir[0]; D[k + 1] = dir[1]; D[k + 2] = dir[2];
-      const h = src.height(dir as [number, number, number], detail);
+      const h = exact ? src.heightAt!(r.face, s, t, detail) : src.height(dir as [number, number, number], detail);
       if (ga >= 0 && gb >= 0 && ga <= GRID && gb <= GRID) { if (h < minH) minH = h; if (h > maxH) maxH = h; }
       P[k] = dir[0] * (R + h); P[k + 1] = dir[1] * (R + h); P[k + 2] = dir[2] * (R + h);
       if (!(ga & 1) && !(gb & 1)) {
-        const hp = src.height(dir as [number, number, number], detail * 2);
+        const hp = exact ? src.heightAt!(r.face, s, t, detail * 2) : src.height(dir as [number, number, number], detail * 2);
         Q[k] = dir[0] * (R + hp); Q[k + 1] = dir[1] * (R + hp); Q[k + 2] = dir[2] * (R + hp);
       }
     }

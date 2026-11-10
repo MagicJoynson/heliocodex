@@ -2,6 +2,8 @@ import * as THREE from 'three/webgpu';
 import { positionAU, centuriesSinceJ2000 } from '../../orbit';
 import { createSky, GLINT } from './sky';
 import { createTerrain } from './terrain';
+import { loadDemSpec } from './dem';
+import type { SourceSpec } from './tilebuild';
 import { createFlight } from './flight';
 import { AU, add, eclToWorld, len, norm, scale, sub, cross, type V3 } from './vec';
 
@@ -69,7 +71,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // ---- the test world sits where Mars is
   const bodySlug = 'mars';
   const bodyPos = planetPos[bodySlug];
-  const terrain = createTerrain({ spec: { kind: 'test', radius: RADII.mars, seed: 7 }, split: quality.split, maxTiles: quality.maxTiles });
+  // testing real ground: ?dem=<tile base url>&body=moon|mars puts that body's measured heights in Mars's place
+  const params = new URLSearchParams(location.search);
+  const spec: SourceSpec = params.get('dem')
+    ? await loadDemSpec(params.get('dem')!, params.get('body') ?? 'moon')
+    : { kind: 'test', radius: RADII.mars, seed: 7 };
+  const terrain = createTerrain({ spec, split: quality.split, maxTiles: quality.maxTiles });
+  await terrain.ready;
 
   // ---- scenes: the space layer first, then the local scene with depth
   const sky = createSky();
@@ -95,7 +103,6 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const endDir = norm(add(add(scale(toSun, 0.7), scale(side, 0.6)), scale(north, 0.3)));
 
   flight.place(start, sub(bodyPos, start));
-  const params = new URLSearchParams(location.search);
   if (params.has('low')) {
     // testing: start low over the ground, already flying yourself
     // late afternoon: the Sun low, so the ground shows its shape
