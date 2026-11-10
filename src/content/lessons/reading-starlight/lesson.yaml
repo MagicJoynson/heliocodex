@@ -1,0 +1,9 @@
+title: Reading starlight
+strand: light
+order: 3
+summary: "Spread a star's light into a rainbow and it is crossed by dark lines. They tell you what the star is made of, how hot it is and how it is moving."
+scene: "A beam of sunlight spread into a band of colour crossed by dark lines, with each set of lines lighting up as the element that makes it is named."
+view: { target: sun, distanceKm: 3000000 }
+terms: [spectrum, spectral-line, doppler-shift, redshift, wavelength, hydrogen, helium, exoplanet]
+needs: [the-whole-spectrum]
+next: [telescopes]

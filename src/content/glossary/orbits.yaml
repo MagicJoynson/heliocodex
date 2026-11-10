@@ -219,3 +219,16 @@ terms:
     short: "The line between day and night on a planet or moon."
     more: "Shadows are longest there, so it is where craters and mountains show best."
     see: [phase]
+  - id: transfer-orbit
+    term: Transfer orbit
+    also: [Hohmann transfer]
+    short: "The path a spacecraft coasts along to get from one orbit to another, most cheaply half of an oval that touches both."
+    see: [ellipse, orbital-period, gravity-assist]
+    lesson: leaving-and-arriving
+  - id: gravity-assist
+    term: Gravity assist
+    also: [slingshot, flyby, swing-by]
+    short: "Passing close to a moving planet to gain or lose speed without using fuel."
+    more: "Voyager 2 used four in a row to reach Neptune in twelve years."
+    see: [transfer-orbit, gravity]
+    lesson: leaving-and-arriving
