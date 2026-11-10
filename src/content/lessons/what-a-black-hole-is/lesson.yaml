@@ -1,6 +1,6 @@
 title: What a black hole is
 strand: stellar-remnants
-order: 1
+order: 3
 summary: "A black hole is what is left when gravity wins completely. We cannot see one, but we can see what it does to everything near it."
 scene: "A star shrinking while its mass stays the same, with the speed needed to escape from its surface climbing until it reaches the speed of light."
 view: { target: milky-way }
