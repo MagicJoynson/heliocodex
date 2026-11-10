@@ -23,10 +23,16 @@ export interface Picked {
 }
 
 const STRAND_FOR: Record<string, string> = { star: 'the-sun', planet: 'planets', moon: 'moons', dwarf: 'small-bodies', asteroid: 'small-bodies', comet: 'small-bodies' };
-const PLACE_STRAND: Record<string, string> = { 'solar-system': 'finding-your-way', 'oort-cloud': 'small-bodies', neighbourhood: 'stars', 'milky-way': 'the-galaxy', 'local-group': 'galaxies', 'cosmic-web': 'the-universe' };
+const PLACE_STRAND: Record<string, string> = { 'solar-system': 'finding-your-way', 'oort-cloud': 'small-bodies', neighbourhood: 'stars', 'night-sky': 'stars', 'milky-way': 'the-galaxy', 'local-group': 'galaxies', 'cosmic-web': 'the-universe', cmb: 'the-universe' };
+
+/** The scale places, going outwards. */
+export const LADDER = ['solar-system', 'oort-cloud', 'neighbourhood', 'night-sky', 'milky-way', 'local-group', 'cosmic-web', 'cmb'];
 
 /** The subjects that apply at a place, nearest first. Out between the worlds the nearest body comes second. */
 export function chainFor(w: Where, who: (id: string) => Who | undefined): string[] {
+  // far out the engine names a scale place itself: that place first, then the one beyond it and the one inside it
+  const at = LADDER.indexOf(w.near);
+  if (at >= 0) return [LADDER[at], LADDER[at + 1], LADDER[at - 1]].filter(Boolean);
   const body = who(w.near);
   const up: string[] = [];
   for (let b = body; b; b = b.parent ? who(b.parent) : undefined) up.push(b.id);
