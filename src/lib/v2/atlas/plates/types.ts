@@ -17,11 +17,21 @@ export interface Figure {
   names: Record<string, number>;
   /** Looking down on the planet's own pole (the default) or on the plane of the planets. */
   view?: ViewFrom;
+  /**
+   * Names for orbits too small to set a name along: body id to a bearing on the orbit where a
+   * short line starts, and the place on the page where the name is written.
+   */
+  leaders?: Record<string, { at: number; to: [number, number] }>;
+  /** The middle of the drawing, km to the right of and below the parent. The parent, unless said. */
+  centreKm?: [number, number];
+  /** Give the scale bar in astronomical units instead of kilometres. */
+  unit?: 'au';
   /** Another figure whose whole extent is marked on this one as a small square. */
   marks?: string;
 }
 
-export interface Ring { name: string; innerKm: number; outerKm: number; faint?: boolean }
+/** `only` keeps a ring to the one drawing whose id it names. */
+export interface Ring { name: string; innerKm: number; outerKm: number; faint?: boolean; only?: string }
 
 /** Everything that is decided by hand for one planet's family of moons. */
 export interface PlateSpec {
@@ -36,4 +46,6 @@ export interface PlateSpec {
   families: Family[];
   figures: Figure[];
   sources: Source[];
+  /** What the dots are, for the line under each drawing. Moons unless said. */
+  dots?: string;
 }

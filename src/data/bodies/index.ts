@@ -68,7 +68,8 @@ const moons: Body[] = (moonFile.moons as Raw[]).map((m) => {
   return {
     id: m.id, name: m.name, kind: 'moon', parent: m.parent, orbit: m.orbit,
     meanRadiusKm: m.meanRadiusKm, gmKm3S2: m.gmKm3S2, densityGcm3: m.densityGcm3,
-    look: lookFor(m.id, seen), seen, discovered: m.discovered, naifId: m.naifId, sources: [JPL_SATS],
+    look: lookFor(m.id, seen), seen, discovered: m.discovered, naifId: m.naifId,
+    sources: m.radiusSource ? [JPL_SATS, m.radiusSource] : [JPL_SATS],
   };
 });
 

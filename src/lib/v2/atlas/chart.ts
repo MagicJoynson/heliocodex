@@ -18,18 +18,24 @@ export interface Plate {
   kmPerUnit: number;
   /** Ecliptic J2000 kilometres from the planet's centre to a place on the page. */
   project(x: number, y: number, z: number): [number, number];
+  /** Where the planet (or the Sun) itself is on the page: the middle, unless the drawing is off-centre. */
+  origin: [number, number];
 }
 
 /** Which way is up: the planet's own north pole (for its close moons), or the north of the plane of the planets. */
 export type ViewFrom = 'equator' | 'ecliptic';
 const ECLIPTIC = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1] };
 
-export function topView(parent: string, spanKm: number, half = 440, from: ViewFrom = 'equator'): Plate {
+/**
+ * `centreKm` moves the middle of the drawing away from the parent, for lopsided families: how far
+ * to the right and how far down the page the middle lies, in km.
+ */
+export function topView(parent: string, spanKm: number, half = 440, from: ViewFrom = 'equator', centreKm: [number, number] = [0, 0]): Plate {
   const B = from === 'ecliptic' ? ECLIPTIC : equatorBasis(parent);
-  const k = half / spanKm;
+  const k = half / spanKm, ox = -centreKm[0] * k, oy = -centreKm[1] * k;
   return {
-    parent, spanKm, half, kmPerUnit: spanKm / half,
-    project: (x, y, z) => [(B.x[0] * x + B.x[1] * y + B.x[2] * z) * k, -(B.y[0] * x + B.y[1] * y + B.y[2] * z) * k],
+    parent, spanKm, half, kmPerUnit: spanKm / half, origin: [ox, oy],
+    project: (x, y, z) => [ox + (B.x[0] * x + B.x[1] * y + B.x[2] * z) * k, oy - (B.y[0] * x + B.y[1] * y + B.y[2] * z) * k],
   };
 }
 
@@ -58,7 +64,7 @@ export function dotAt(p: Plate, o: KeplerOrbit, jd: number): [number, number] {
 /**
  * A short piece of the orbit to set a name along, as an open SVG path that always runs left to
  * right so the name is never upside down. `atDeg` is where on the orbit the name sits, as a
- * bearing on the page: 0 at the top, 90 at the right. `lengthUnits` is how long a piece to cut.
+ * bearing from the planet: 0 up the page, 90 to the right. `lengthUnits` is how long a piece to cut.
  */
 export function labelArc(p: Plate, o: KeplerOrbit, jd: number, atDeg: number, lengthUnits: number): string {
   const n = 360;
@@ -66,7 +72,7 @@ export function labelArc(p: Plate, o: KeplerOrbit, jd: number, atDeg: number, le
   const want = ((atDeg % 360) + 360) % 360;
   let best = 0, gap = Infinity;
   for (let k = 0; k < n; k++) {
-    const b = ((Math.atan2(pts[k][0], -pts[k][1]) * 180) / Math.PI + 360) % 360;
+    const b = ((Math.atan2(pts[k][0] - p.origin[0], -(pts[k][1] - p.origin[1])) * 180) / Math.PI + 360) % 360;
     const d = Math.min(Math.abs(b - want), 360 - Math.abs(b - want));
     if (d < gap) { gap = d; best = k; }
   }
@@ -80,6 +86,18 @@ export function labelArc(p: Plate, o: KeplerOrbit, jd: number, atDeg: number, le
   for (let k = lo; k <= hi; k++) piece.push(pts[(k + n * 2) % n]);
   if (piece[0][0] > piece[piece.length - 1][0]) piece.reverse();
   return 'M' + piece.map(([x, y]) => `${r1(x)} ${r1(y)}`).join('L');
+}
+
+/** The place on an orbit that lies at a bearing from the planet (0 up the page, 90 to the right). */
+export function pointAt(p: Plate, o: KeplerOrbit, jd: number, atDeg: number): [number, number] {
+  const pts = orbitPoints(p, o, jd, 360), want = ((atDeg % 360) + 360) % 360;
+  let best = pts[0], gap = Infinity;
+  for (const pt of pts) {
+    const b = ((Math.atan2(pt[0] - p.origin[0], -(pt[1] - p.origin[1])) * 180) / Math.PI + 360) % 360;
+    const d = Math.min(Math.abs(b - want), 360 - Math.abs(b - want));
+    if (d < gap) { gap = d; best = pt; }
+  }
+  return best;
 }
 
 /** A drawing shows the members of its families whose whole orbit, as drawn, fits inside it. */
@@ -116,8 +134,9 @@ export function scaleBar(kmPerUnit: number, maxUnits: number): { km: number; uni
   return { km, units: km / kmPerUnit };
 }
 
-/** Kilometres in plain words: "421,800 km", "1.07 million km". */
+/** Kilometres in plain words: "421,800 km", "1.07 million km", "4.5 billion km". */
 export function fmtKm(km: number): string {
+  if (km >= 1e9) return `${(km / 1e9).toLocaleString('en-GB', { maximumSignificantDigits: 3 })} billion km`;
   if (km >= 1e6) return `${(km / 1e6).toLocaleString('en-GB', { maximumSignificantDigits: 3 })} million km`;
   const round = km >= 1e4 ? Math.round(km / 100) * 100 : km >= 100 ? Math.round(km) : Math.round(km * 10) / 10;
   return `${round.toLocaleString('en-GB')} km`;

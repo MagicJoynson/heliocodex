@@ -6,7 +6,7 @@ import { dotAt, topView, type ViewFrom } from './chart';
 import { julianDate, keplerPosition } from './kepler';
 import { centuriesSinceJ2000, elements, positionAU } from '../../orbit';
 
-interface Data { parent: string; parentOrbit?: KeplerOrbit; figures: { id: string; spanKm: number; view?: ViewFrom; ids: string[] }[]; orbits: Record<string, KeplerOrbit> }
+interface Data { parent: string; dots?: string; parentOrbit?: KeplerOrbit; figures: { id: string; spanKm: number; view?: ViewFrom; centreKm?: [number, number]; ids: string[] }[]; orbits: Record<string, KeplerOrbit> }
 
 const holder = document.getElementById('plate-data');
 if (holder) {
@@ -20,7 +20,7 @@ if (holder) {
     for (const f of data.figures) {
       const svg = document.querySelector<SVGSVGElement>(`svg.plate[data-figure="${f.id}"]`);
       if (!svg) continue;
-      const p = topView(data.parent, f.spanKm, 440, f.view);
+      const p = topView(data.parent, f.spanKm, 440, f.view, f.centreKm);
       for (const id of f.ids) {
         const g = svg.querySelector<SVGGElement>(`[data-dot="${id}"]`);
         if (!g) continue;
@@ -39,7 +39,7 @@ if (holder) {
         arrow.style.display = '';
       }
       const when = svg.querySelector('[data-when]');
-      if (when) when.textContent = `Moons placed for ${fmt.format(now)} UTC`;
+      if (when) when.textContent = `${data.dots ?? 'Moons'} placed for ${fmt.format(now)} UTC`;
       svg.classList.add('live');
     }
   };

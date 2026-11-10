@@ -1,8 +1,12 @@
 // Run with: npm run test:atlas
 import { allBodies } from '../../../data/bodies/index';
 import type { KeplerOrbit } from './types';
-import { dotAt, fitsOn, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView } from './chart';
+import { dotAt, fitsOn, pointAt, fmtDays, fmtKm, labelArc, orbitD, orbitPoints, reachKm, scaleBar, sortIntoFamilies, tiltDeg, topView } from './chart';
 import { plates } from './plates';
+import { groups, shown, solarSystem } from './plates/solar-system';
+import { AU_KM, fmtAu, fmtYears, isPlanet, planetOrbit } from './sun';
+import { keplerPosition } from './kepler';
+import { positionAU } from '../../orbit';
 
 // A few lines of test harness, so the project needs no test library.
 const failed: string[] = [];
@@ -170,6 +174,64 @@ test('scale bars and figures read plainly', () => {
   assert.equal(fmtDays(16.69), '16.69 days');
   assert.equal(fmtDays(743.6), '744 days');
   assert.ok(reachKm([moon('pasiphae')]) > 30_000_000);
+});
+
+test('planets: the atlas orbit follows the site\'s own planet positions for twenty years either way', () => {
+  for (const id of ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']) {
+    const o = planetOrbit(id, JD_2026);
+    for (const days of [0, 400, -400, 7305, -7305]) {
+      const k = keplerPosition(o, 'sun', JD_2026 + days), a = positionAU(id, (JD_2026 + days - 2451545) / 36525);
+      const off = Math.hypot(k[0] - a[0] * AU_KM, k[1] - a[1] * AU_KM, k[2] - a[2] * AU_KM) / o.aKm;
+      assert.ok(off < 2e-4, `${id} is ${(off * 57.3).toFixed(3)} degrees out after ${days} days`);
+    }
+  }
+});
+
+test('planets: on 10 November the Earth is where the calendar says, with the Sun at longitude 228', () => {
+  const k = keplerPosition(planetOrbit('earth', JD_2026), 'sun', JD_2026);
+  const lon = ((Math.atan2(k[1], k[0]) * 180) / Math.PI + 360) % 360;
+  assert.ok(Math.abs(lon - 48) < 1.5, `Earth at longitude ${lon.toFixed(1)}`);
+  assert.ok(Math.abs(Math.hypot(k[0], k[1], k[2]) / AU_KM - 0.990) < 0.004, 'and a little inside one au, as it is in November');
+});
+
+test('Solar System plates: every world is in one list and on a drawing, and nothing leaves a frame', () => {
+  const worlds = allBodies.filter((b) => b.parent === 'sun');
+  assert.equal(worlds.length, 17);
+  const orbitOf = (id: string) => (isPlanet(id) ? planetOrbit(id, JD_2026) : moon(id));
+  for (const w of worlds) {
+    assert.equal(groups.filter((g) => g.ids.includes(w.id)).length, 1, `${w.id} should be in exactly one list`);
+    assert.ok(Object.values(shown).some((ids) => ids.includes(w.id)), `${w.id} is on no drawing`);
+  }
+  assert.equal(groups.flatMap((g) => g.ids).length, 17, 'no list names a world that is not in the data');
+  for (const f of solarSystem.figures) {
+    const p = topView('sun', f.spanKm, 440, f.view, f.centreKm);
+    for (const id of shown[f.id]) assert.ok(fitsOn(p, orbitOf(id), JD_2026), `${id} leaves drawing ${f.id}`);
+    for (const id of [...Object.keys(f.names), ...Object.keys(f.leaders ?? {})]) assert.ok(shown[f.id].includes(id), `${id} is named on drawing ${f.id} but not drawn there`);
+    for (const id of shown[f.id]) if (id !== 'neptune' || f.id !== 'sedna') assert.ok(f.names[id] !== undefined || f.leaders?.[id], `${id} has no name on drawing ${f.id}`);
+    if (f.marks) assert.ok(solarSystem.figures.some((g) => g.id === f.marks));
+  }
+});
+
+test('an off-centre drawing moves everything together', () => {
+  const o = planetOrbit('neptune', JD_2026);
+  const a = topView('sun', 76 * AU_KM, 440, 'ecliptic'), b = topView('sun', 76 * AU_KM, 440, 'ecliptic', [19 * AU_KM, -38 * AU_KM]);
+  assert.deepEqual(b.origin.map(Math.round), [-110, 220]);
+  const [ax, ay] = dotAt(a, o, JD_2026), [bx, by] = dotAt(b, o, JD_2026);
+  assert.ok(Math.abs(bx - ax + 110) < 1e-6 && Math.abs(by - ay - 220) < 1e-6);
+  // a bearing is measured from the Sun, not from the middle of the page
+  const [px, py] = pointAt(b, o, JD_2026, 90);
+  assert.ok(px > b.origin[0] && Math.abs(py - b.origin[1]) < 4, 'bearing 90 is straight to the right of the Sun');
+});
+
+test('distances and years round the Sun read plainly', () => {
+  assert.equal(fmtAu(0.387098 * AU_KM), '0.387 au');
+  assert.equal(fmtAu(5.2 * AU_KM), '5.20 au');
+  assert.equal(fmtAu(543.7 * AU_KM), '544 au');
+  assert.equal(fmtYears(87.97), '88 days');
+  assert.equal(fmtYears(4332.6), '11.9 years');
+  assert.equal(fmtYears(60190), '165 years');
+  assert.equal(fmtKm(4_498_400_000), '4.5 billion km');
+  assert.equal(fmtKm(778_500_000), '779 million km');
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');

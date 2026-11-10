@@ -29,6 +29,7 @@ const parentName = spec.parent[0].toUpperCase() + spec.parent.slice(1);
 const unmeasured = moons.filter((m) => !m.meanRadiusKm).length;
 const backwards = moons.filter((m) => m.tilt > 90).length;
 const loose = moons.filter((m) => lineOf(m.orbit) === 'dashed').length;
+const stale = moons.filter((m) => m.orbit.fit && m.orbit.fit.to < built.getUTCFullYear());
 const unplaced = moons.filter((m) => !canPlace(m.orbit)).length;
 const parentBody = allBodies.find((b) => b.id === spec.parent);
 const views = new Set(spec.figures.map((f) => f.view ?? 'equator'));
@@ -75,9 +76,9 @@ const data = {
         <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot open"><circle r="5" /></g></svg><span><strong>Ring.</strong> Never seen as more than a point of light.</span></li>
         <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Pale line.</strong> Goes round the usual way, the way the planets go round the Sun: anticlockwise on these drawings.</span></li>
         {backwards > 0 && <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit back solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Amber line.</strong> Goes round backwards. {count(backwards, 'moon does', 'moons do')}.</span></li>}
-        {loose > 0 && <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd dashed"><path class="line" d="M2 8H42" /></g></svg><span><strong>Broken line.</strong> The moon can be more than {LOOSE_FIT_DEG}° from where we draw it. {count(loose, 'orbit is', 'orbits are')} like this. The pull of the Sun and of other moons keeps changing these paths, and a simple orbit cannot follow them exactly.{unplaced > 0 && ` For ${count(unplaced, 'moon', 'moons')} nobody can yet say where on its orbit it is today, so it has a line and no dot.`}</span></li>}
+        {loose > 0 && <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd dashed"><path class="line" d="M2 8H42" /></g></svg><span><strong>Broken line.</strong> The moon can be more than {LOOSE_FIT_DEG}° from where we draw it. {count(loose, 'orbit is', 'orbits are')} like this. The pull of the Sun and of other moons keeps changing these paths, and a simple orbit cannot follow them exactly.{unplaced > 0 && ` For ${count(unplaced, 'moon', 'moons')} we have no run of positions to fit an orbit to, so ${unplaced === 1 ? 'it has' : 'they have'} a line and no dot.`}</span></li>}
       </ul>
-      <p>{unmeasured > 0 && `Nobody has measured the size of ${unmeasured} of the ${moons.length}. `}Each orbit is a slowly turning ellipse fitted to positions from NASA’s Jet Propulsion Laboratory for the years 2000 to 2040. The list gives how far out each fit can be. Touch a row to pick out its orbit.</p>
+      <p>{unmeasured > 0 && `Nobody has measured the size of ${unmeasured} of the ${moons.length}. `}Each orbit is a slowly turning ellipse fitted to positions from NASA’s Jet Propulsion Laboratory for the years 2000 to 2040.{stale.length > 0 && ` JPL’s record of ${stale.map((m) => m.name).join(' and ')} ends in ${stale[0].orbit.fit!.to}, so its place today is that orbit run forward, and nothing can yet check it.`} The list gives how far out each fit can be. Touch a row to pick out its orbit.</p>
       <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
     </div>
   </section>
@@ -102,7 +103,7 @@ const data = {
                   <svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class:list={['dot', markOf(m.seen)]}><circle r="5" />{markOf(m.seen) === 'half' && <path d="M0 -5A5 5 0 0 0 0 5Z" />}</g></svg>
                   <span class="nm">{m.name}</span>
                   <span class="vh">. {SEEN[markOf(m.seen)]}.</span>
-                  {m.orbit.fit ? <span class="fit">drawn to within {m.orbit.fit.worstDeg < 1 ? Math.max(0.01, m.orbit.fit.worstDeg).toFixed(2) : Math.round(m.orbit.fit.worstDeg)}°</span> : <span class="fit">place on its orbit not known</span>}
+                  {m.orbit.fit ? <span class="fit">drawn to within {m.orbit.fit.worstDeg < 1 ? Math.max(0.01, m.orbit.fit.worstDeg).toFixed(2) : Math.round(m.orbit.fit.worstDeg)}°{m.orbit.fit.to < built.getUTCFullYear() && ` up to ${m.orbit.fit.to}, run forward since`}</span> : <span class="fit">no positions to place it by yet</span>}
                 </th>
                 <td data-label="Orbit size">{fmtKm(m.orbit.aKm)}</td>
                 <td data-label="One orbit">{fmtDays(m.orbit.periodDays)}</td>

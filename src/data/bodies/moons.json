@@ -5611,6 +5611,11 @@
     }
    },
    "ephemeris": "SAT415",
+   "meanRadiusKm": 3.8,
+   "radiusSource": {
+    "label": "Thomas 2010, Icarus 208, 395 (Cassini images)",
+    "url": "https://doi.org/10.1016/j.icarus.2010.01.025"
+   },
    "discovered": {
     "year": 2005,
     "by": "Cassini Imaging Science Team"

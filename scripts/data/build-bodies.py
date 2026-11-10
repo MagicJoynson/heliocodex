@@ -36,6 +36,17 @@ NAME_FIXES = {"Magaclite": "Megaclite", "Philophrosyn": "Philophrosyne"}
 DWARF_RADII = {
     "pluto": (1188.3, "Nimmo et al. 2017, Icarus 287, 12 (New Horizons)", "https://doi.org/10.1016/j.icarus.2016.06.027"),
     "eris": (1163.0, "Sicardy et al. 2011, Nature 478, 493 (stellar occultation)", "https://doi.org/10.1038/nature10550"),
+    "haumea": (798.0, "Ortiz et al. 2017, Nature 550, 219 (stellar occultation; the mean of three unequal axes)", "https://doi.org/10.1038/nature24051"),
+    "makemake": (715.0, "Ortiz et al. 2012, Nature 491, 566 (stellar occultation)", "https://doi.org/10.1038/nature11597"),
+    "gonggong": (615.0, "Kiss et al. 2019, Icarus 334, 3 (heat measured by the Herschel telescope)", "https://doi.org/10.1016/j.icarus.2019.03.013"),
+    "quaoar": (555.0, "Braga-Ribas et al. 2013, Astrophysical Journal 773, 26 (stellar occultation)", "https://doi.org/10.1088/0004-637X/773/1/26"),
+    "sedna": (497.5, "Pál et al. 2012, Astronomy & Astrophysics 541, L6 (heat measured by the Herschel telescope)", "https://doi.org/10.1051/0004-6361/201218874"),
+    "orcus": (458.5, "Fornasier et al. 2013, Astronomy & Astrophysics 555, A15 (heat measured by the Herschel telescope)", "https://doi.org/10.1051/0004-6361/201321329"),
+}
+
+# Moon sizes that JPL's table leaves out, from the papers that measured them.
+MOON_RADII = {
+    "daphnis": (3.8, "Thomas 2010, Icarus 208, 395 (Cassini images)", "https://doi.org/10.1016/j.icarus.2010.01.025"),
 }
 
 def get(url):
@@ -116,6 +127,9 @@ def moons():
                 body["gmKm3S2"] = gm
             if den:
                 body["densityGcm3"] = den
+        if body["id"] in MOON_RADII and "meanRadiusKm" not in body:
+            body["meanRadiusKm"], label, url = MOON_RADII[body["id"]]
+            body["radiusSource"] = {"label": label, "url": url}
         if d:
             body["discovered"] = {"year": int(d[3][:4]), "by": d[4]}
             if d[0]:

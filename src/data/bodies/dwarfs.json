@@ -103,6 +103,11 @@
     "mDeg": 223.2104118812299,
     "periodDays": 103208.1173403618
    },
+   "meanRadiusKm": 798.0,
+   "radiusSource": {
+    "label": "Ortiz et al. 2017, Nature 550, 219 (stellar occultation; the mean of three unequal axes)",
+    "url": "https://doi.org/10.1038/nature24051"
+   },
    "rotationHours": 3.9154
   },
   {
@@ -124,6 +129,11 @@
     "periDeg": 297.0922733397207,
     "mDeg": 169.9379962048232,
     "periodDays": 112364.8068762869
+   },
+   "meanRadiusKm": 715.0,
+   "radiusSource": {
+    "label": "Ortiz et al. 2012, Nature 491, 566 (stellar occultation)",
+    "url": "https://doi.org/10.1038/nature11597"
    },
    "rotationHours": 22.8266
   },
@@ -147,6 +157,11 @@
     "mDeg": 111.664541568459,
     "periodDays": 199716.0317096358
    },
+   "meanRadiusKm": 615.0,
+   "radiusSource": {
+    "label": "Kiss et al. 2019, Icarus 334, 3 (heat measured by the Herschel telescope)",
+    "url": "https://doi.org/10.1016/j.icarus.2019.03.013"
+   },
    "rotationHours": 22.4
   },
   {
@@ -168,6 +183,11 @@
     "periDeg": 163.209046106457,
     "mDeg": 292.8487574842713,
     "periodDays": 103553.0425468722
+   },
+   "meanRadiusKm": 555.0,
+   "radiusSource": {
+    "label": "Braga-Ribas et al. 2013, Astrophysical Journal 773, 26 (stellar occultation)",
+    "url": "https://doi.org/10.1088/0004-637X/773/1/26"
    },
    "rotationHours": 8.84
   },
@@ -191,6 +211,11 @@
     "mDeg": 358.5956944005428,
     "periodDays": 4630851.183590915
    },
+   "meanRadiusKm": 497.5,
+   "radiusSource": {
+    "label": "Pál et al. 2012, Astronomy & Astrophysics 541, L6 (heat measured by the Herschel telescope)",
+    "url": "https://doi.org/10.1051/0004-6361/201218874"
+   },
    "rotationHours": 10.273
   },
   {
@@ -212,6 +237,11 @@
     "periDeg": 73.56848606705262,
     "mDeg": 189.0972913554275,
     "periodDays": 90252.68650688507
+   },
+   "meanRadiusKm": 458.5,
+   "radiusSource": {
+    "label": "Fornasier et al. 2013, Astronomy & Astrophysics 555, A15 (heat measured by the Herschel telescope)",
+    "url": "https://doi.org/10.1051/0004-6361/201321329"
    },
    "rotationHours": 13.188
   }
