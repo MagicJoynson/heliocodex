@@ -52,6 +52,7 @@ p { margin: 0 0 1em; max-width: 66ch; }
 .site-nav { display: flex; gap: 20px; font-size: 0.9rem; }
 .site-nav a { text-decoration: none; color: var(--ink-soft); }
 .site-nav a:hover, .site-nav a[aria-current] { color: var(--ink); }
+@media (max-width: 460px) { .site-nav { gap: 14px; font-size: 0.84rem; } .wordmark { font-size: 1.12rem; } }
 
 /* footer */
 .site-footer { border-top: 1px solid var(--line); padding: 40px var(--gutter) 56px; color: var(--ink-faint); font-size: 0.85rem; }

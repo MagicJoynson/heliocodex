@@ -1,0 +1,9 @@
+title: "Measuring distance: kilometres, au, light years and parsecs"
+strand: finding-your-way
+order: 2
+summary: "Why astronomers keep four different rulers, and when each one is used."
+scene: "One gap shown in each unit in turn, with a pulse of light crossing it in real time."
+view: { target: earth, facing: sun, distanceKm: 2000000 }
+terms: [astronomical-unit, light-year, parsec, parallax, arcsecond, light-time]
+needs: [how-big-is-space]
+next: [light-the-only-messenger]

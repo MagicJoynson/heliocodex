@@ -1,0 +1,62 @@
+---
+import Reading from '../../layouts/Reading.astro';
+import { allLessons, allTerms, allFacts, STRAND_NAMES, STRAND_ORDER, LEVEL_NAMES, levelOf } from '../../lib/v2/margin/content';
+
+const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
+const strands = STRAND_ORDER.map((id) => ({ id, name: STRAND_NAMES[id], lessons: lessons.filter((l) => l.data.strand === id) }));
+const written = strands.filter((s) => s.lessons.length);
+const toCome = strands.filter((s) => !s.lessons.length).map((s) => s.name);
+const levelCount = Math.max(...lessons.map((l) => l.levels.length));
+---
+<Reading title="Learn" path="/learn" description="Short lessons on how space works, from why there are seasons to what the Sun is made of. Each one can be read at more than one depth.">
+  <header class="reading-head">
+    <p class="label">Learn</p>
+    <h1>How it all works</h1>
+    <p class="lead">Short lessons, each written more than once. Start with the first look, which needs nothing but curiosity. If you want the numbers and the reasons, the next level down is on the same page.</p>
+  </header>
+
+  {written.map((s) => (
+    <section class="row">
+      <div class="hang">
+        <h2>{s.name}</h2>
+      </div>
+      <ol class="plain-list lessons">
+        {s.lessons.map((l) => (
+          <li>
+            <a href={`/learn/${l.id}`}>{l.data.title}</a>
+            <p>{l.data.summary}</p>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+
+  <section class="row quiet">
+    <div class="hang">
+      <h2>Still being written</h2>
+    </div>
+    <div>
+      <p class="coming">{toCome.join(', ')}. There are {lessons.length} lessons so far, at {levelCount} levels each, with two deeper levels to follow.</p>
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="hang">
+      <h2>Look something up</h2>
+    </div>
+    <ul class="plain-list lookups">
+      <li><a href="/glossary">Glossary</a><p>{terms.length} terms, each explained in one plain sentence.</p></li>
+      <li><a href="/learn/facts">Facts</a><p>{facts.length} short facts with a number in them, and where each one comes from.</p></li>
+    </ul>
+  </section>
+</Reading>
+
+<style>
+  .lessons, .lookups { display: grid; gap: 1.5rem; }
+  .lessons a, .lookups a { font: 400 1.32rem/1.25 var(--r-serif); color: var(--ink); text-decoration: none; background: linear-gradient(rgba(233,196,138,.5), rgba(233,196,138,.5)) 0 100% / 0 1px no-repeat; transition: background-size .3s ease; }
+  .lessons a:hover, .lookups a:hover { background-size: 100% 1px; }
+  .lessons p, .lookups p, .coming { font: 300 1.06rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .25rem 0 0; }
+  .coming { margin: 0; color: var(--ink-faint); }
+  .quiet h2 { color: var(--ink-faint); }
+  @media (prefers-reduced-motion: reduce) { .lessons a, .lookups a { transition: none; } }
+</style>

@@ -1,0 +1,8 @@
+title: Seasons
+strand: finding-your-way
+order: 3
+summary: "Why it is the tilt of the Earth, and not its distance from the Sun, that makes summer and winter."
+scene: "The Earth's tilted axis holding the same direction all the way round its orbit, with the day side lit."
+view: { target: earth, facing: sun, distanceKm: 60000, timeIso: "2027-06-21T12:00:00Z" }
+terms: [axial-tilt, solstice, equinox, perihelion, aphelion]
+next: [phases-and-eclipses]
