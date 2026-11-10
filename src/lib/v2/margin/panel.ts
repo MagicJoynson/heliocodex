@@ -1,4 +1,4 @@
-// The guide in the 3D view. It listens to the engine for where the camera is and shows what is
+// The Codex in the 3D view. It listens to the engine for where the camera is and shows what is
 // worth knowing there, with the lessons, the glossary and the atlas one tab away.
 //
 // It talks to the engine only through engine/index.ts. Everything it shows is built with
@@ -83,24 +83,32 @@ export function mountMargin(engine: Engine): void {
   const lessonItem = (l: MLesson) => el('li', null,
     el('p', { class: 'm-title' }, l.title),
     el('p', null, l.summary),
-    el('div', { class: 'm-acts' }, l.target ? flyButton(l.target, 'Show me', l.distanceKm) : null, el('a', { class: 'm-act', href: `/learn/${l.id}`, target: '_blank', rel: 'noopener' }, 'Read the lesson')));
+    el('div', { class: 'm-acts' }, l.target ? flyButton(l.target, 'Show me', l.distanceKm) : null, readButton(l)));
+  function readButton(l: MLesson): HTMLAnchorElement {
+    // a real link, so it still works if the script that follows fails, and opens in a new tab on a modified click
+    const a = el('a', { class: 'm-act', href: `/learn/${l.id}` }, 'Read the lesson');
+    a.addEventListener('click', (e) => { if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return; e.preventDefault(); read(l.id); });
+    return a;
+  }
   const termItem = (t: MTerm) => el('div', null, el('dt', null, t.term), el('dd', null, t.short, t.more ? el('span', { class: 'm-more' }, t.more) : null));
 
   // ---- Here
   function renderHere(): void {
     const p = pane('here');
-    if (!ctx || !data) { p.replaceChildren(el('p', { class: 'm-wait' }, ctx ? 'Fetching the guide…' : 'Finding out where you are…')); return; }
+    if (!ctx || !data) { p.replaceChildren(el('p', { class: 'm-wait' }, ctx ? 'Fetching the Codex…' : 'Finding out where you are…')); return; }
     const got = pick(ctx, data, who);
-    const key = `${got.subject}|${ctx.band}|${ctx.near}`;
+    // While real heights are missing the engine stands a generated world in for the real one and says so in the readout.
+    const standIn = /^This ground is generated/.test(document.getElementById('gen')?.textContent ?? '');
+    const key = `${got.subject}|${ctx.band}|${ctx.near}|${standIn}`;
     if (key === shownFor) { const d = p.querySelector('.m-dist'); if (d) d.textContent = howFar(ctx); return; }
     shownFor = key;
     const b = who(got.subject), near = who(ctx.near);
     const kids: Kids = [
       el('p', { class: 'm-kicker' }, BAND[ctx.band]),
-      el('h2', null, nameOf(got.subject)),
-      // on the ground the readout already gives the height, measured from the terrain; a second figure would only disagree with it
-      ctx.band === 'surface' ? null : el('p', { class: 'm-dist' }, howFar(ctx)),
+      el('h2', null, standIn ? 'The test world' : nameOf(got.subject)),
+      el('p', { class: 'm-dist' }, howFar(ctx)),
     ];
+    if (standIn) kids.push(el('p', { class: 'm-drawn' }, `Standing in for ${theName(got.subject)}. This ground is generated, not measured. What follows is about the real ${nameOf(got.subject)}.`));
     if (b) {
       kids.push(el('p', { class: 'm-what' }, whatIs(b)));
       if (b.look.type === 'impression') kids.push(el('p', { class: 'm-drawn' }, b.look.note));
@@ -114,7 +122,7 @@ export function mountMargin(engine: Engine): void {
     if (got.lessons.length) kids.push(el('h3', null, 'Lessons for here'), el('ul', null, ...got.lessons.map(lessonItem)));
     if (got.terms.length) kids.push(el('h3', null, 'Words you will meet'), el('dl', null, ...got.terms.map(termItem)));
     p.replaceChildren(...(kids.filter(Boolean) as Node[]));
-    if (open && current === 'here') { scroller.scrollTop = 0; said.textContent = `The guide now shows ${nameOf(got.subject)}.`; }
+    if (open && current === 'here' && !reading) { scroller.scrollTop = 0; said.textContent = `The Codex now shows ${nameOf(got.subject)}.`; }
   }
 
   // ---- Lessons
@@ -124,7 +132,7 @@ export function mountMargin(engine: Engine): void {
     const groups = Object.keys(d.strands).map((s) => ({ s, list: d.lessons.filter((l) => l.strand === s) })).filter((g) => g.list.length);
     pane('lessons').replaceChildren(
       el('p', { class: 'm-kicker' }, `${d.lessons.length} lessons`),
-      el('p', null, 'Each one starts in plain words and goes as deep as you like. They open in a new tab, so your place here is kept.'),
+      el('p', null, 'Each one starts in plain words and goes as deep as you like.'),
       ...groups.map((g) => el('details', null, el('summary', null, d.strands[g.s], el('span', null, `${g.list.length}`)), el('ul', null, ...g.list.map(lessonItem)))));
   }
 
@@ -182,16 +190,83 @@ export function mountMargin(engine: Engine): void {
     placeYou();
   }
 
+  // ---- reading a lesson
+  // The lesson's words are taken from its own page, so the panel and the page can never differ.
+  const reader = $('mp-read'), pages = new Map<string, Promise<Document>>();
+  let reading: string | null = null, cameFrom = 0;
+  const page = (id: string) => {
+    let got = pages.get(id);
+    if (!got) {
+      got = fetch(`/learn/${id}`).then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.text(); }).then((t) => new DOMParser().parseFromString(t, 'text/html'));
+      got.catch(() => pages.delete(id));
+      pages.set(id, got);
+    }
+    return got;
+  };
+  function back(): void {
+    if (!reading) return;
+    reading = null;
+    reader.hidden = true; reader.replaceChildren();
+    pane(current).hidden = false;
+    scroller.scrollTop = cameFrom;
+    tabs.find((t) => t.id === `mt-${current}`)?.focus({ preventScroll: true });
+  }
+  function read(id: string): void {
+    const l = data?.lessons.find((x) => x.id === id);
+    if (!l) return;
+    if (!reading) cameFrom = scroller.scrollTop;
+    reading = id;
+    const tabName = tabs.find((t) => t.id === `mt-${current}`)?.textContent ?? '';
+    const backBtn = el('button', { type: 'button', class: 'm-back' }, `Back to ${tabName}`);
+    backBtn.addEventListener('click', back);
+    const body = el('div', null, el('p', { class: 'm-wait' }, 'Fetching the lesson…'));
+    reader.replaceChildren(backBtn,
+      el('p', { class: 'm-kicker' }, data!.strands[l.strand] ?? ''),
+      el('h2', null, l.title),
+      el('p', { class: 'm-lead' }, l.summary),
+      el('div', { class: 'm-acts' }, l.target ? flyButton(l.target, 'Show me', l.distanceKm) : null, el('a', { class: 'm-act', href: `/learn/${id}`, target: '_blank', rel: 'noopener' }, 'Open the full page')),
+      body);
+    for (const t of tabs) pane(t.id.slice(3)).hidden = true;
+    reader.hidden = false;
+    scroller.scrollTop = 0;
+    reader.focus({ preventScroll: true });
+    page(id).then((doc) => {
+      if (reading !== id) return;
+      const parts: Node[] = [];
+      for (const sec of doc.querySelectorAll('section.row[id]')) {
+        const prose = sec.querySelector('.prose');
+        if (!prose) continue;
+        const copy = document.importNode(prose, true) as HTMLElement;
+        copy.className = 'm-prose';
+        copy.querySelectorAll('script, style, iframe, object, embed').forEach((n) => n.remove());
+        copy.querySelectorAll('table').forEach((t) => { const w = el('div', { class: 'm-scroll', tabindex: '0' }); t.replaceWith(w); w.append(t); });
+        copy.querySelectorAll('a[href]').forEach((a) => {
+          const m = /^\/learn\/([a-z0-9-]+)$/.exec(a.getAttribute('href') ?? '');
+          if (m && data!.lessons.some((x) => x.id === m[1])) a.addEventListener('click', (e) => { const me = e as MouseEvent; if (me.ctrlKey || me.metaKey || me.shiftKey) return; e.preventDefault(); read(m[1]); });
+          else { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); }
+        });
+        const note = sec.querySelector('.hang .note')?.textContent ?? '';
+        parts.push(el('h3', null, sec.querySelector('.hang h2')?.textContent ?? '', note ? el('small', null, note) : null), copy);
+      }
+      const words = l.terms.map((t) => data!.terms.find((x) => x.id === t)).filter((t): t is MTerm => !!t);
+      if (words.length) parts.push(el('h3', null, 'Words used here'), el('dl', null, ...words.map(termItem)));
+      const sources = [...doc.querySelectorAll('.sources a[href]')].map((a) => el('li', null, el('a', { href: a.getAttribute('href')!, target: '_blank', rel: 'noopener', class: 'm-src' }, a.textContent ?? '')));
+      if (sources.length) parts.push(el('h3', null, 'Where this comes from'), el('ul', null, ...sources));
+      body.replaceChildren(...parts);
+    }).catch(() => { if (reading === id) body.replaceChildren(el('p', { class: 'm-none' }, 'The lesson could not be fetched. Check your connection, or open the full page.')); });
+  }
+
   // ---- showing and hiding
   function render(name: string): void {
     if (name === 'here') { renderHere(); return; }
     if (built.has(name)) return;
     if (name === 'atlas') { renderAtlas(); built.add(name); return; }
-    if (!data) { pane(name).replaceChildren(el('p', { class: 'm-wait' }, 'Fetching the guide…')); return; }
+    if (!data) { pane(name).replaceChildren(el('p', { class: 'm-wait' }, 'Fetching the Codex…')); return; }
     if (name === 'lessons') renderLessons(); else renderWords();
     built.add(name);
   }
   function select(name: string, focus = false): void {
+    if (reading) { reading = null; reader.hidden = true; reader.replaceChildren(); }
     current = name;
     for (const t of tabs) {
       const on = t.id === `mt-${name}`;
@@ -210,7 +285,7 @@ export function mountMargin(engine: Engine): void {
     tab.setAttribute('aria-expanded', String(open));
     if (open) {
       render(current);
-      load().then(() => { if (open) render(current); }, () => { pane(current).replaceChildren(el('p', { class: 'm-none' }, 'The guide could not be fetched. Check your connection and open it again.')); });
+      load().then(() => { if (open) render(current); }, () => { pane(current).replaceChildren(el('p', { class: 'm-none' }, 'The Codex could not be fetched. Check your connection and open it again.')); });
       tabs.find((t) => t.getAttribute('aria-selected') === 'true')?.focus({ preventScroll: true });
     } else if (panel.contains(document.activeElement)) tab.focus({ preventScroll: true });
   }
