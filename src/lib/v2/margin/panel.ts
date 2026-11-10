@@ -9,6 +9,7 @@ import { allBodies } from '../../../data/bodies/index';
 import { fmtKm } from '../atlas/chart';
 import { fmtAu } from '../atlas/sun';
 import { LIGHT_YEAR_M, RULES, TOP } from '../atlas/ruler';
+import { places, placeById } from '../atlas/places';
 import { pick, PLACE_NAMES, type MarginData, type MFact, type MLesson, type MTerm } from './pick';
 
 type Kids = (Node | string | null | undefined | false)[];
@@ -29,6 +30,8 @@ const chartFor = (b: Body) => (b.kind === 'asteroid' || b.kind === 'comet' ? `/a
 const BAND: Record<Context['band'], string> = {
   surface: 'Just above', orbit: 'Close to', system: 'Between the worlds', interstellar: 'Beyond the planets', galactic: 'Out in the galaxy', cosmic: 'Between the galaxies',
 };
+// the band's words are wrong for these two: the Local Group is not in the galaxy, and the oldest light is past every galaxy
+const KICKER: Record<string, string> = { 'local-group': 'Among the nearest galaxies', cmb: 'As far as light has come' };
 const BASIS = { measured: '', 'worked-out': 'Worked out', theory: 'From a model' } as const;
 
 /** One plain sentence on what a body is, from the data. */
@@ -48,7 +51,9 @@ function whatIs(b: Body): string {
 function howFar(c: Context): string {
   if (c.band === 'surface' || c.band === 'orbit') return `${fmtKm(c.km)} above ${c.near === 'sun' ? 'the surface' : 'the ground'}`;
   const ly = (c.km * 1000) / LIGHT_YEAR_M;
-  return ly > 0.1 ? `${ly.toLocaleString('en-GB', { maximumSignificantDigits: 3 })} light years from the Sun` : `${fmtAu(c.km)} from the Sun`;
+  if (ly <= 0.1) return `${fmtAu(c.km)} from the Sun`;
+  const big = ly >= 1e9 ? [1e9, ' billion'] as const : ly >= 1e6 ? [1e6, ' million'] as const : [1, ''] as const;
+  return `${(ly / big[0]).toLocaleString('en-GB', { maximumSignificantDigits: 3 })}${big[1]} light years from the Sun`;
 }
 
 export function mountMargin(engine: Engine): void {
@@ -106,7 +111,7 @@ export function mountMargin(engine: Engine): void {
     shownFor = key;
     const b = who(got.subject), near = who(ctx.near);
     const kids: Kids = [
-      el('p', { class: 'm-kicker' }, BAND[ctx.band]),
+      el('p', { class: 'm-kicker' }, KICKER[got.subject] ?? BAND[ctx.band]),
       el('h2', null, standIn ? 'The test world' : nameOf(got.subject)),
       el('p', { class: 'm-dist' }, howFar(ctx)),
     ];
@@ -115,6 +120,14 @@ export function mountMargin(engine: Engine): void {
       kids.push(el('p', { class: 'm-what' }, whatIs(b)));
       if (b.look.type === 'impression') kids.push(el('p', { class: 'm-drawn' }, b.look.note));
       kids.push(el('div', { class: 'm-acts' }, el('a', { class: 'm-act', href: chartFor(b), target: '_blank', rel: 'noopener' }, 'See it on the chart')));
+    } else if (placeById.has(got.subject)) {
+      const pl = placeById.get(got.subject)!;
+      kids.push(el('p', { class: 'm-what' }, pl.what));
+      kids.push(el('p', { class: 'm-drawn' }, pl.model ? el('b', null, 'Partly a model. ') : null, pl.drawn, ' ',
+        ...pl.credits.flatMap((c) => [el('a', { href: c.url, target: '_blank', rel: 'noopener' }, c.label), c.licence ? ` (${c.licence})` : '', '. ']),
+        el('a', { href: '/sources#beyond', target: '_blank', rel: 'noopener' }, 'All the sources')));
+      const i = places.indexOf(pl);
+      kids.push(el('div', { class: 'm-acts' }, i > 0 ? flyButton(places[i - 1].id, `In to ${theName(places[i - 1].id)}`) : flyButton('sun', 'In to the Sun'), i < places.length - 1 ? flyButton(places[i + 1].id, `Out to ${theName(places[i + 1].id)}`) : null));
     } else if (near) {
       kids.push(el('p', { class: 'm-what' }, `The nearest world is ${theName(near.id)}.`), el('div', { class: 'm-acts' }, flyButton(near.id, `Go to ${theName(near.id)}`)));
     }
@@ -187,6 +200,8 @@ export function mountMargin(engine: Engine): void {
       ...sunRound.filter((b) => b.kind === 'planet').map(group),
       el('h3', null, 'Dwarf planets'),
       ...sunRound.filter((b) => b.kind === 'dwarf').map(group),
+      el('h3', null, 'Further out'),
+      el('div', { class: 'm-fly' }, ...places.map((pl) => flyButton(pl.id, pl.name, undefined, ''))),
       el('h3', null, 'Charts'),
       el('p', null, el('a', { href: '/atlas/solar-system', target: '_blank', rel: 'noopener' }, 'The Solar System from above'), ' and ', el('a', { href: '/atlas', target: '_blank', rel: 'noopener' }, 'all the charts'), '.'));
     placeYou();

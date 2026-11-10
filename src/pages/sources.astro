@@ -17,6 +17,7 @@ const plates = bodies.flatMap((b) => {
   return out;
 });
 const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.name, url: `https://nssdc.gsfc.nasa.gov/planetary/factsheet/${b.slug}fact.html` }));
+import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places } from '../lib/v2/atlas/places';
 ---
 <Base title="Sources" path="/sources" description="Where every number, map and photograph on Heliocodex comes from, and which parts are drawn rather than photographed.">
   <article class="ledger">
@@ -56,6 +57,24 @@ const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.n
       <h2>The stars</h2>
       <div class="entry-body">
         <p>The 9,000 or so stars behind every scene are the <a href="https://heasarc.gsfc.nasa.gov/w3browse/star-catalog/bsc5p.html">Yale Bright Star Catalogue</a> (5th revised edition, Hoffleit and Warren, via NASA HEASARC): every star you could see from a dark site on Earth, placed where it really is, sized by brightness and coloured by its measured colour index.</p>
+      </div>
+    </section>
+
+    <section class="entry" id="beyond">
+      <h2>Beyond the Solar System</h2>
+      <div class="entry-body">
+        <p>The <a href="/v2">3D view</a> can leave the planets behind and go out as far as the oldest light. What it shows on the way is built from four sets of measurements:</p>
+        <ul class="drawn-list">
+          <li><span>The stars</span> About 109,000 stars, each at its measured distance, from the <a href={HYG.url}>HYG star database, version 4.4</a>, put together by David Nash from the Hipparcos, Yale and Gliese catalogues. It is shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0</a> licence. Our star file, <a href="/data/deep/stars.bin">stars.bin</a>, is made from it and is shared under the same licence. It keeps each star’s place, brightness and colour and leaves out the stars whose distance is unknown or too great to trust.</li>
+          <li><span>Nearby galaxies</span> About a hundred galaxies in and around the Local Group, with their places, distances and brightness, from <a href={MCCONNACHIE.url}>McConnachie 2012</a>, “The observed properties of dwarf galaxies in and around the Local Group”, Astronomical Journal 144, 4.</li>
+          <li><span>The cosmic web</span> About 43,000 galaxies from the <a href={TWO_MRS.url}>2MASS Redshift Survey</a> (Huchra and others 2012, Astrophysical Journal Supplement 199, 26). Where each one is on the sky is measured. How far away it is has been worked out here from how fast it is moving away, taking 70 km a second for every megaparsec. Inside a cluster that smears galaxies into streaks pointing at us, which are not real.</li>
+          <li><span>The oldest light</span> the nine-year map of the cosmic microwave background from NASA’s WMAP spacecraft (<a href={WMAP.url}>NASA / WMAP Science Team</a>).</li>
+        </ul>
+        <p>Some of what you fly past out there is a model and not a map, because nobody has seen it from outside or, for the Oort cloud, at all:</p>
+        <ul class="drawn-list">
+          {places.filter((p) => p.model).map((p) => <li><span>{p.name}</span> {p.drawn}</li>)}
+        </ul>
+        <p>The Codex in the 3D view says the same thing at each of these places.</p>
       </div>
     </section>
 

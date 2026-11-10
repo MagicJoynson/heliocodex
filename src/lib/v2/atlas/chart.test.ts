@@ -9,7 +9,8 @@ import { keplerPosition } from './kepler';
 import { landmarks } from './landmarks';
 import { bodyMarks, landmarkMarks, layout, readLength, RULES, spread, TOP } from './ruler';
 import { positionAU } from '../../orbit';
-import { chainFor, pick, PLACE_NAMES, type MarginData } from '../margin/pick';
+import { chainFor, LADDER, pick, PLACE_NAMES, type MarginData } from '../margin/pick';
+import { places } from './places';
 import { groupOf, groups as smallGroups, inStep, offChart, shown as smallShown, smallBodiesPlate } from './plates/small-bodies';
 import { smallBodies, smallSpread } from '../../../data/bodies/index';
 
@@ -397,9 +398,26 @@ test('the guide: every place the engine can name far from any world has a name a
     assert.ok(PLACE_NAMES[id], `${id} has no name`);
     for (const band of ['system', 'interstellar', 'galactic', 'cosmic'] as const) {
       const got = pick({ near: id, band, km: 1e12 }, sample, whoIs);
-      assert.ok(PLACE_NAMES[got.subject] || whoIs(got.subject), `${id} in band ${band} gives the subject ${got.subject}, which has no name`);
+      assert.equal(got.subject, id, `${id} in band ${band} is not its own subject`);
     }
   }
+});
+
+test('the places beyond the worlds: one list, in the engine’s order, each saying what is measured and crediting its data', () => {
+  assert.deepEqual(places.map((p) => p.id), LADDER);
+  for (const p of places) {
+    assert.equal(p.name, PLACE_NAMES[p.id]);
+    assert.ok(p.what.length > 20 && p.drawn.length > 40, `${p.id} does not say what is drawn there`);
+    assert.equal(p.model, /\bmodels?\b/.test(p.drawn), `${p.id}: the model flag and the words disagree`);
+    for (const c of p.credits) assert.match(c.url, /^https:\/\//);
+  }
+  // the four data sets the 3D view is built from are each credited somewhere
+  const credited = places.flatMap((p) => p.credits.map((c) => c.label)).join(' ');
+  for (const need of ['HYG', 'McConnachie 2012', 'Huchra et al. 2012', 'WMAP']) assert.ok(credited.includes(need), `${need} is not credited`);
+  assert.ok(places.find((p) => p.id === 'neighbourhood')!.credits[0].licence, 'the star catalogue’s licence is not given');
+  // a place leads to the one beyond it and the one inside it
+  assert.deepEqual(chainFor({ near: 'milky-way', band: 'galactic', km: 1e18 }, whoIs), ['milky-way', 'local-group', 'night-sky']);
+  assert.deepEqual(chainFor({ near: 'cmb', band: 'cosmic', km: 1e24 }, whoIs), ['cmb', 'cosmic-web']);
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');
