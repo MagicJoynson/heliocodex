@@ -18,7 +18,7 @@ const R = { sun: 695_700, earth: 6_371, moon: 1_737.4, jupiter: 71_492 };
 const OTHERS = ['mercury', 'venus', 'mars', 'saturn', 'uranus', 'neptune'] as const;
 const NAMES: Record<string, string> = { mercury: 'Mercury', venus: 'Venus', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune', earth: 'Earth', sun: 'Sun', moon: 'Moon' };
 // rough brightness of each planet as a point, so Jupiter and Venus stand out the way they do in our sky
-const GLINT: Record<string, number> = { mercury: 0.5, venus: 1, mars: 0.6, jupiter: 0.95, saturn: 0.75, uranus: 0.45, neptune: 0.4 };
+const GLINT: Record<string, number> = { mercury: 0.5, venus: 1, earth: 0.8, mars: 0.6, jupiter: 0.95, saturn: 0.75, uranus: 0.45, neptune: 0.4 };
 
 type V = [number, number, number];
 /** ecliptic (x to the equinox, z north) to three.js (y up) */
@@ -28,6 +28,11 @@ const len = (a: V) => Math.hypot(a[0], a[1], a[2]);
 const norm = (a: V): V => { const l = len(a); return [a[0] / l, a[1] / l, a[2] / l]; };
 const add = (a: V, b: V): V => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 const mul = (a: V, s: number): V => [a[0] * s, a[1] * s, a[2] * s];
+/** Greenwich mean sidereal time in radians (IAU 1982, good to a fraction of a second for this) */
+const gmst = (ms: number) => {
+  const d = ms / 86_400_000 + 2440587.5 - 2451545.0;
+  return ((((280.46061837 + 360.98564736629 * d) % 360) + 360) % 360) * Math.PI / 180;
+};
 
 /** the Moon's position from the Earth in km, from the leading terms of its orbit (Meeus, ch. 47 shortened) */
 function moonGeocentric(date: Date): V {
@@ -56,7 +61,7 @@ export function createEnter(o: EnterOptions) {
   const maxTex = renderer.capabilities.maxTextureSize;
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
-  const camera = new THREE.PerspectiveCamera(50, 1, 1, 60 * AU);
+  const camera = new THREE.PerspectiveCamera(50, 1, 1, 200 * AU);
   camera.rotation.order = 'YXZ';
 
   // ---- the real sky ----------------------------------------------------------
@@ -89,7 +94,8 @@ export function createEnter(o: EnterOptions) {
   earth.group.scale.setScalar(R.earth);
   // the globe's own tilt: 23.4° to the ecliptic
   const earthTilt = new THREE.Group();
-  earthTilt.rotation.z = THREE.MathUtils.degToRad(23.44);
+  // the north pole leans 23.44° towards ecliptic longitude 90°, which is -z here
+  earthTilt.rotation.x = -THREE.MathUtils.degToRad(23.44);
   earthTilt.add(earth.group);
   scene.add(earthTilt);
 
@@ -117,11 +123,13 @@ export function createEnter(o: EnterOptions) {
   scene.add(sunLight, sunLight.target);
 
   // ---- the other planets, as the points of light they are from here ---------------
-  const dots = OTHERS.map((slug) => {
+  // Earth and Jupiter get a point of light too, which fades out once their disc is big enough to see
+  const dots = [...OTHERS, 'earth', 'jupiter'].map((slug) => {
     const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture(), color: 0xfff6ea, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, sizeAttenuation: false, transparent: true }));
     s.renderOrder = 4;
     scene.add(s);
-    return { slug, pos: helio(slug), sprite: s };
+    const radius = slug === 'earth' ? R.earth : slug === 'jupiter' ? R.jupiter : 0;
+    return { slug, pos: slug === 'earth' ? earthPos : slug === 'jupiter' ? jupPos : helio(slug), sprite: s, radius };
   });
 
   // ---- name tags -------------------------------------------------------------------
@@ -239,8 +247,6 @@ export function createEnter(o: EnterOptions) {
     if (phase === 'arrived') {
       look.yaw += (look.ty - look.yaw) * Math.min(1, dt * 4);
       look.pitch += (look.tp - look.pitch) * Math.min(1, dt * 4);
-      // a very slow drift round the Earth, so it never sits dead still
-      look.ty += dt * 0.004;
     }
 
     // camera at the origin, facing along aim, then turned by any dragging
@@ -248,7 +254,9 @@ export function createEnter(o: EnterOptions) {
     camera.lookAt(aim[0], aim[1], aim[2]);
     // on arrival the Earth moves off-centre to leave room for the words: left on a wide screen, up on a phone
     const wide = camera.aspect > 1.1;
-    camera.rotateY(look.yaw + (wide ? -0.2 : 0) * c.arrive);
+    // once there, a slow sway of a degree or two so the view never sits dead still (bounded, never drifts away)
+    const sway = Math.sin(t * 0.07) * 0.025 * c.arrive;
+    camera.rotateY(look.yaw + sway + (wide ? -0.2 : 0) * c.arrive);
     camera.rotateX(look.pitch + (wide ? 0 : -0.2) * c.arrive);
 
     // ---- place everything relative to the camera
@@ -264,7 +272,8 @@ export function createEnter(o: EnterOptions) {
     place(earthTilt, earthPos);
     const toSunFromEarth = norm(sub(sunPos, earthPos));
     earth.setSun(new THREE.Vector3(...toSunFromEarth));
-    earth.group.rotation.y = -(((now.getTime() / 86_400_000) % 1) * Math.PI * 2) - t * 0.002;
+    // turn the Earth to the real time: Greenwich sidereal time puts the prime meridian east of the equinox (+x)
+    earth.group.rotation.y = gmst(Date.now());
     const dEarth = len(sub(camPos, earthPos));
     earth.update(camera, dEarth / R.earth - 1, t);
 
@@ -284,7 +293,9 @@ export function createEnter(o: EnterOptions) {
       place(d.sprite, d.pos);
       const dist = len(sub(camPos, d.pos));
       d.sprite.scale.setScalar(THREE.MathUtils.clamp(0.012 * Math.pow(5 * AU / dist, 0.35), 0.006, 0.02));
-      (d.sprite.material as THREE.SpriteMaterial).opacity = GLINT[d.slug] * THREE.MathUtils.clamp(Math.pow(6 * AU / dist, 0.5), 0.35, 1);
+      // fade as the disc grows past a few pixels (angular radius ~0.002 rad)
+      const disc = d.radius ? THREE.MathUtils.clamp(1 - (d.radius / dist - 0.0006) / 0.002, 0, 1) : 1;
+      (d.sprite.material as THREE.SpriteMaterial).opacity = GLINT[d.slug] * disc * THREE.MathUtils.clamp(Math.pow(6 * AU / dist, 0.5), 0.35, 1);
     }
 
     renderer.render(scene, camera);
@@ -304,7 +315,7 @@ export function createEnter(o: EnterOptions) {
     const placed: [number, number, number, number][] = [];
     const items: [string, V, number][] = [
       ['sun', sunPos, 1], ['earth', earthPos, 1], ['moon', moonPos, dEarth < 3e6 ? 1 : 0], ['jupiter', jupPos, 1],
-      ...dots.map((d) => [d.slug, d.pos, 1] as [string, V, number]),
+      ...dots.filter((d) => !d.radius).map((d) => [d.slug, d.pos, 1] as [string, V, number]),
     ];
     for (const [slug, p, on] of items) {
       const el = tags.get(slug)!;
@@ -341,6 +352,8 @@ export function createEnter(o: EnterOptions) {
   return {
     enter() {
       if (phase !== 'idle') return;
+      // stop further out on a tall screen so the whole Earth fits; read the shape now, not at load
+      legs[1].dEnd = camera.aspect < 0.8 ? 38_000 : 24_000;
       phase = 'flight';
       t0 = performance.now();
     },
