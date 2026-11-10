@@ -19,9 +19,13 @@ export function createSystem(bodies: Body[]) {
   const cache = new Map<string, { tick: number; p: V3 }>();
   const ecl: V3 = [0, 0, 0];
 
+  // the planets' elements are JPL's fit for 1800 to 2050 and the moons' are fitted for 2000 to 2040;
+  // the clock stays between 1800 and 2200, beyond which nothing here means anything
+  const MIN = Date.UTC(1800, 0, 1), MAX = Date.UTC(2200, 0, 1);
+  const clamp = (t: number) => Math.min(MAX, Math.max(MIN, t));
   function advance(wallSecs: number) {
     if (following && rate === 1) simMs = Date.now();
-    else simMs += wallSecs * 1000 * rate;
+    else simMs = clamp(simMs + wallSecs * 1000 * rate);
     tick++;
   }
   const jd = () => simMs / 86_400_000 + 2_440_587.5;
@@ -57,7 +61,7 @@ export function createSystem(bodies: Body[]) {
     get rate() { return rate; },
     setTime(iso: string | null) {
       if (iso === null) { following = true; simMs = Date.now(); }
-      else { const t = Date.parse(iso); if (!Number.isNaN(t)) { simMs = t; following = false; } }
+      else { const t = Date.parse(iso); if (!Number.isNaN(t)) { simMs = clamp(t); following = false; } }
       tick++;
     },
     setRate(r: number) { rate = Number.isFinite(r) ? r : 1; if (rate !== 1) following = false; },

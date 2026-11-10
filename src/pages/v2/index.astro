@@ -111,6 +111,8 @@ import '@fontsource/ibm-plex-mono/400.css';
           const { allBodies } = await import('../../data/bodies/index');
           world.registerLayer(createMoonsLayer(allBodies));
         });
+        // testing: ?debug exposes the engine to scripts
+        if (params.has('debug')) (window as unknown as { __w: typeof world }).__w = world;
         // testing: ?t=2017-06-01 sets the clock
         if (params.get('t')) world.setTime(params.get('t'));
         // testing flyTo: a row of places, shown once you have arrived

@@ -188,7 +188,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     camera.aspect = w / h;
     camera.fov = THREE.MathUtils.clamp(55 / Math.min(1, camera.aspect * 1.3), 55, 78);
     camera.updateProjectionMatrix();
-    for (const l of layers) (l as Layer & { setView?(h: number, f: number): void }).setView?.(h, camera.fov);
+    for (const l of layers) sizeLayer(l);
   }
   resize();
   addEventListener('resize', resize);
@@ -202,22 +202,41 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   // ---- what the camera is near, for the margin
   const contextCbs = new Set<(c: Context) => void>();
-  let lastCtx: Context | null = null, ctxAt = 0;
-  const SPHERES = ['sun', ...PLANETS];
-  let focusId = ''; // the last place flown to, if it is not a planet (a moon or a dwarf planet)
+  let lastCtx: Context | null = null, ctxAt = 0, ctxClock = 0, forceCtx = false;
+  // the bodies that can be "near": the Sun, the planets, every moon with a measured size
+  const SPHERES = ['sun', ...PLANETS, ...allBodies.filter((b) => b.kind === 'moon' && b.meanRadiusKm).map((b) => b.id)];
+  let focusId = ''; // the last place flown to, if it is not already in that list (a small moon, a dwarf planet)
   const posOf = (id: string): V3 => (id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id) ?? sunPos);
-  const radOf = (id: string) => (id === 'sun' ? 695_700_000 : id === bodySlug ? terrain.radius : radiusOf(id));
-  /** the body that matters most from here: the one that looks biggest */
+  // bodies nobody has measured are treated as 1 km across, so there is still a floor to stop at
+  const radOf = (id: string) => (id === 'sun' ? 695_700_000 : id === bodySlug ? terrain.radius : radiusOf(id) || 1000);
+  /**
+   * The body that matters most from here: the one that looks biggest. The current one is kept until
+   * another looks a quarter bigger, so the choice cannot flicker on the line between two.
+   */
+  let nearNow = bodySlug;
+  let focusHold = 0; // within this distance of the place flown to, it stays the near body whatever its size
   function nearest(cam: V3) {
-    let best = bodySlug, bestAng = 0;
-    for (const id of focusId ? [...SPHERES, focusId] : SPHERES) {
-      const pp = posOf(id);
-      const r = radOf(id);
-      const ang = r / Math.max(1, len(sub(pp, cam)));
-      if (ang > bestAng) { bestAng = ang; best = id; }
+    if (focusId && len(sub(posOf(focusId), cam)) < focusHold) return (nearNow = focusId);
+    const angOf = (id: string) => radOf(id) / Math.max(1, len(sub(posOf(id), cam)));
+    let best = nearNow, bestAng = angOf(nearNow) * 1.25;
+    for (const id of focusId && !SPHERES.includes(focusId) ? [...SPHERES, focusId] : SPHERES) {
+      const a = angOf(id);
+      if (a > bestAng) { bestAng = a; best = id; }
     }
+    nearNow = best;
     return best;
   }
+  // where the near body was at the end of the last frame, for keeping pace with it
+  let prevNear = { id: '', p: [0, 0, 0] as V3 };
+  /** run someone else's code without letting it stop the engine: log once and drop it */
+  function guarded<T>(what: string, fn: () => T, drop: () => void): T | undefined {
+    try { return fn(); } catch (e) { console.error(`${what} failed and was removed`, e); drop(); return undefined; }
+  }
+  const sizeLayer = (l: Layer) => {
+    const x = l as Layer & { setView?(h: number, f: number): void };
+    guarded(`layer ${l.name}`, () => (l.resize ?? x.setView)?.call(l, o.canvas.clientHeight, camera.fov), () => layers.delete(l));
+  };
+  const abort = (msg: string) => Object.assign(new Error(msg), { name: 'AbortError' });
   const rel = (id: string): V3 | null => {
     const pp = id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id);
     return pp ? sub(pp, flight.pos) : null;
@@ -226,6 +245,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // a flight in progress, so the next one can say the last was replaced
   let pendingFly: { resolve: () => void; reject: (e: Error) => void } | null = null;
   let lastMode = flight.mode;
+  let cruising = false;
 
   function frame() {
     timer.update();
@@ -245,20 +265,25 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
     // move the clock on, and everything with it. In free flight you keep pace with the body you are
     // near, so a planet doing 24 km a second does not slide out from under you.
-    const nearId = nearest(flight.pos);
-    const before: V3 = [...posOf(nearId)] as V3;
+    // the near body was chosen at the end of the last frame, when every position agreed with the
+    // camera's; choosing it now, after a setTime, would compare the camera with the new positions
+    const nearId = nearNow;
     system.advance(wall);
     for (const p of PLANETS) { const q = system.pos(p)!; planetPos[p][0] = q[0]; planetPos[p][1] = q[1]; planetPos[p][2] = q[2]; }
-    if (flight.mode === 'free' && nearId !== 'sun') {
-      const q = posOf(nearId);
-      flight.pos[0] += q[0] - before[0]; flight.pos[1] += q[1] - before[1]; flight.pos[2] += q[2] - before[2];
+    // measured against where the body was last frame, so a jump of the clock (setTime) is followed too
+    const nowNear = posOf(nearId);
+    if (flight.mode === 'free' && nearId !== 'sun' && prevNear.id === nearId) {
+      flight.pos[0] += nowNear[0] - prevNear.p[0]; flight.pos[1] += nowNear[1] - prevNear.p[1]; flight.pos[2] += nowNear[2] - prevNear.p[2];
     }
+    prevNear = { id: nearId, p: [nowNear[0], nowNear[1], nowNear[2]] };
 
     const onTerrain = nearId === bodySlug;
     const f = flight.step(dt, wall, onTerrain
       ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) }
       : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0 });
-    if (lastMode === 'cruise' && f.mode === 'free' && pendingFly) { pendingFly.resolve(); pendingFly = null; }
+    // a cruise has ended (even one so short it started and finished within this frame)
+    nearest(flight.pos); // for next frame
+    if (cruising && f.mode === 'free') { cruising = false; forceCtx = true; if (pendingFly) { pendingFly.resolve(); pendingFly = null; } }
     lastMode = f.mode;
     if (f.mode === 'free' && !arrived) { arrived = true; o.onArrive?.(); }
     const cam = flight.pos;
@@ -293,7 +318,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (g.visible) g.position.set(r[0], r[1], r[2]);
     }
     const jd = system.jd();
-    for (const l of layers) l.update?.(rel, jd);
+    for (const l of layers) guarded(`layer ${l.name}`, () => l.update?.(rel, jd), () => { layers.delete(l); guarded('detach', () => l.detach?.(), () => {}); });
 
     // too far to be more than a point of light: let the glint stand in
     const tiny = terrain.radius / dBody < 0.0004;
@@ -315,10 +340,11 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const band: Context['band'] = h < 100_000 ? 'surface' : h < 30 * r ? 'orbit' : fromSun < 120 * AU ? 'system' : fromSun < 2e5 * AU ? 'interstellar' : 'galactic';
       const km = (band === 'surface' || band === 'orbit' ? h : fromSun) / 1000;
       const t = performance.now();
-      if (!lastCtx || lastCtx.near !== id || lastCtx.band !== band || (t - ctxAt > 1000 && Math.abs(km - lastCtx.km) > lastCtx.km * 0.05)) {
+      const clockMoved = Math.abs(system.timeMs - ctxClock) > 86_400_000;
+      if (forceCtx || !lastCtx || lastCtx.near !== id || lastCtx.band !== band || (t - ctxAt > 1000 && (clockMoved || Math.abs(km - lastCtx.km) > lastCtx.km * 0.05))) {
         lastCtx = { near: id, band, km, timeIso: new Date(system.timeMs).toISOString() };
-        ctxAt = t;
-        for (const cb of contextCbs) cb(lastCtx);
+        ctxAt = t; ctxClock = system.timeMs; forceCtx = false;
+        for (const cb of contextCbs) guarded('context listener', () => cb(lastCtx!), () => contextCbs.delete(cb));
       }
     }
 
@@ -329,7 +355,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
       target: nearId === bodySlug ? 'the test world' : system.body(nearId)?.name ?? nearId,
       dist: f.alt,
-      note: onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined,
+      note: (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${Math.round(1000 / frameAvg)} fps · ${ratio.toFixed(2)}x`,
     });
   }
@@ -339,13 +365,18 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   const engine: Engine = {
     flyTo(view: View, opts) {
-      if (pendingFly) { pendingFly.reject(new Error('replaced by another flight')); pendingFly = null; }
       const id = typeof view.target === 'string' ? view.target : '';
+      if (!(id === 'sun' || planetPos[id] || system.pos(id))) return Promise.reject(new Error(`cannot fly to ${id || 'that place yet'}`));
+      // only now, with somewhere to go, does the flight in progress give way
+      if (pendingFly) { pendingFly.reject(abort('replaced by another flight')); pendingFly = null; }
+      if (view.timeIso) system.setTime(view.timeIso);
       const target = (): V3 => (id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id) ?? sunPos);
-      const r = id === 'sun' ? 695_700_000 : id === bodySlug ? terrain.radius : radiusOf(id);
-      if (!r || !(id === 'sun' || planetPos[id] || system.pos(id))) return Promise.reject(new Error(`cannot fly to ${id}`));
+      const measured = id === 'sun' || id === bodySlug || radiusOf(id) > 0;
+      const r = radOf(id);
       focusId = PLANETS.includes(id) || id === 'sun' ? '' : id;
-      const endDist = view.distanceKm ? view.distanceKm * 1000 : r * (id === 'sun' ? 8 : 3);
+      // a body with no measured size: stand off 200 km, since nobody knows how big it is
+      const endDist = view.distanceKm ? view.distanceKm * 1000 : measured ? r * (id === 'sun' ? 8 : 3) : 200_000;
+      focusHold = endDist * 4;
       const tg = target();
       const toS = norm(sub(sunPos, tg));
       // arrive on the lit side, a little above the ecliptic
@@ -354,8 +385,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const from: V3 = [...flight.pos] as V3;
       // longer trips take longer, but never more than half a minute
       const ratio = Math.max(1.0001, len(sub(from, tg)) / endDist);
-      const secs = opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3));
+      const secs = Math.max(0.01, opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3)));
       flight.startCruise({ from, target, endDist, endDir: dir, secs, aimOffset: 0 });
+      cruising = true;
       return new Promise<void>((resolve, reject) => { pendingFly = { resolve, reject }; });
     },
     registerLayer(layer: Layer) {
@@ -363,7 +395,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const holder = new THREE.Group();
       layerRoot.add(holder);
       layer.attach(holder);
-      (layer as Layer & { setView?(h: number, f: number): void }).setView?.(o.canvas.clientHeight, camera.fov);
+      sizeLayer(layer);
       return () => { layers.delete(layer); layer.detach?.(); holder.removeFromParent(); };
     },
     onContext(cb) { contextCbs.add(cb); if (lastCtx) cb(lastCtx); return () => contextCbs.delete(cb); },
@@ -374,7 +406,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   return {
     ...engine,
     enter(secs = 16) {
+      if (pendingFly) { pendingFly.reject(abort('replaced by the way in')); pendingFly = null; }
       flight.startCruise({ from: start, target: () => bodyPos, endDist: terrain.radius * 2.6, endDir, secs, aimOffset: 0 });
+      cruising = true;
     },
     skip() { flight.skipCruise(); },
     setPad: flight.setPad,

@@ -43,10 +43,18 @@ export interface Layer {
    */
   update?(rel: (id: string) => [number, number, number] | null, timeJd: number): boolean | void;
   detach?(): void;
+  /** Called when the view changes size: its height in CSS pixels and vertical field of view. */
+  resize?(heightPx: number, fovDeg: number): void;
 }
 
 export interface Engine {
-  /** Fly the camera somewhere. Resolves when it arrives, or rejects if another flight replaces it. */
+  /**
+   * Fly the camera somewhere: the Sun, a planet, a moon or a dwarf planet, by id. Honoured from View
+   * so far: target, distanceKm, timeIso (set before leaving). Not yet: place, facing, highlight.
+   * Resolves on arrival. Rejects with an error named 'AbortError' when another flight (or the way in)
+   * replaces it, or a plain Error when there is no such place, in which case the flight in progress
+   * carries on. opts.secs of 0 arrives at once.
+   */
   flyTo(view: View, opts?: { secs?: number }): Promise<void>;
   /** Add a layer. Returns a function that removes it. */
   registerLayer(layer: Layer): () => void;
@@ -54,6 +62,10 @@ export interface Engine {
   onContext(cb: (c: Context) => void): () => void;
   /** Set the clock (ISO 8601 UTC), or pass null to follow real time again. */
   setTime(iso: string | null): void;
-  /** Time runs this many times faster than real time (1 is real time; negative runs backwards). */
+  /**
+   * Time runs this many times faster than real time (1 is real time; negative runs backwards).
+   * After setTime, a rate of 1 keeps the set clock ticking; setTime(null) goes back to real time.
+   * The clock stays between 1800 and 2200.
+   */
   setRate(rate: number): void;
 }

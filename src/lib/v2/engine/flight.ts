@@ -99,7 +99,7 @@ export function createFlight(canvas: HTMLElement) {
     if (mode === 'cruise' && cruise) {
       // the cruise keeps to the clock, so a slow device still arrives on time
       cruiseT = Math.min(cruise.secs, cruiseT + wall);
-      const u = cruiseT / cruise.secs;
+      const u = cruise.secs > 0 ? cruiseT / cruise.secs : 1;
       const p = cruisePos(u);
       pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
       const tgt = cruise.target();
