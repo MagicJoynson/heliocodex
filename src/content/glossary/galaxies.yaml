@@ -100,3 +100,23 @@ terms:
     more: "Dust and crowded stars in the Milky Way block the view, so maps of distant galaxies have an empty band along it."
     see: [milky-way, cosmic-web]
     lesson: the-cosmic-web
+  - id: big-bang-nucleosynthesis
+    term: Big Bang nucleosynthesis
+    also: [nucleosynthesis]
+    short: "The making of the first elements, in the first few minutes of the universe, when all of it was hot enough for nuclear fusion."
+    more: "It left about a quarter of ordinary matter as helium and nearly all the rest as hydrogen, with traces of deuterium and lithium."
+    see: [big-bang, nuclear-fusion, hydrogen, helium]
+    lesson: the-first-minutes
+  - id: recombination
+    term: Recombination
+    short: "The time, about 380,000 years after the Big Bang, when the universe cooled enough for electrons to settle onto nuclei and make the first whole atoms."
+    more: "With the loose electrons gone the universe turned clear, and the light set free is the cosmic microwave background."
+    see: [cosmic-microwave-background, plasma, big-bang]
+    lesson: the-first-minutes
+  - id: cosmic-dark-ages
+    term: Dark ages
+    also: [cosmic dark ages]
+    short: "The stretch of about 200 million years after the oldest light was released and before the first stars lit."
+    more: "The universe then was hydrogen and helium gas, slowly gathering under gravity."
+    see: [recombination, star, big-bang]
+    lesson: the-first-minutes

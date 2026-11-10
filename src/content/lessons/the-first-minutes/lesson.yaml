@@ -1,0 +1,9 @@
+title: The first minutes and the oldest light
+strand: the-universe
+order: 2
+summary: "In its first few minutes the universe made its hydrogen and helium. After 380,000 years it turned clear, and the light set free then is still arriving."
+scene: "The sphere at the edge of everything we can see, mottled with the faint warm and cool patches that later grew into galaxies."
+view: { target: cmb }
+terms: [big-bang, big-bang-nucleosynthesis, recombination, cosmic-microwave-background, plasma, helium, blackbody, cosmic-dark-ages]
+needs: [the-expanding-universe]
+next: [dark-matter-and-dark-energy, how-stars-live-and-die]
