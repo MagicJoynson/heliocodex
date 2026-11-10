@@ -1,0 +1,9 @@
+title: The Oort cloud
+strand: small-bodies
+order: 4
+summary: "Far beyond the planets, a vast round shell of icy bodies is thought to surround the Sun. Nobody has seen it. Comets are the evidence."
+scene: "The view pulls back until the planets' orbits shrink to a dot, and a faint round shell appears all around them. The shell is a model: nothing in it has ever been seen."
+view: { target: oort-cloud }
+terms: [oort-cloud, comet, kuiper-belt, astronomical-unit, light-year, planetesimal, heliopause, orbit]
+needs: [comets]
+next: [how-big-is-space]
