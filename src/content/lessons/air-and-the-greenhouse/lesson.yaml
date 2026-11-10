@@ -1,0 +1,9 @@
+title: "Air and the greenhouse: Venus, Earth and Mars"
+strand: planets
+order: 3
+summary: "Three rocky planets began much alike and ended as a furnace, a home and a frozen desert. The difference is their air."
+scene: "Venus, Earth and Mars in a row, each with its blanket of air drawn to scale and sunlight coming in and heat trying to get out."
+view: { target: venus, distanceKm: 40000, highlight: [venus, earth, mars] }
+terms: [atmosphere, greenhouse-effect, albedo, infrared, escape-velocity, magnetic-field, habitable-zone]
+needs: [three-kinds-of-planet]
+next: [rings]

@@ -5,3 +5,4 @@ summary: "The eight planets come in three sorts, and where each one formed expla
 scene: "All eight planets side by side at their true relative sizes, cut open to show what is inside."
 view: { target: solar-system, highlight: [mercury, venus, earth, mars, jupiter, saturn, uranus, neptune] }
 terms: [terrestrial-planet, gas-giant, ice-giant, frost-line, protoplanetary-disc, differentiation, planet]
+next: [how-the-planets-formed, air-and-the-greenhouse]

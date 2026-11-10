@@ -5,3 +5,4 @@ summary: "The Sun is a star seen close up: a ball of glowing gas, layered like a
 scene: "The Sun cut open to show the core, the radiative zone and the convective zone under the surface."
 view: { target: sun, distanceKm: 2500000 }
 terms: [star, plasma, nuclear-fusion, solar-core, radiative-zone, convective-zone, photosphere]
+next: [how-the-sun-shines, the-active-sun]

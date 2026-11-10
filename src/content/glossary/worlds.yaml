@@ -201,3 +201,9 @@ terms:
     more: "More than 35,000 are known. None of the large ones is on course to hit the Earth in the next century or more."
     see: [asteroid, comet, impact-crater]
     lesson: falling-rocks
+  - id: planetesimal
+    term: Planetesimal
+    short: "One of the bodies, from about a kilometre to hundreds of kilometres across, that planets were built from."
+    more: "Asteroids and comets are planetesimals that were never used."
+    see: [accretion, protoplanetary-disc, asteroid]
+    lesson: how-the-planets-formed
