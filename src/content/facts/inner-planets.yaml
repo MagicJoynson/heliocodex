@@ -1,0 +1,62 @@
+facts:
+  - id: mercury-long-day
+    text: "Mercury spins three times for every two trips round the Sun. As a result, one day there, from sunrise to sunrise, lasts 176 Earth days: two of its own years."
+    about: [mercury]
+    source: { label: "NASA, Mercury facts", url: "https://science.nasa.gov/mercury/facts/" }
+  - id: mercury-temperature-swing
+    text: "Mercury's ground reaches about 430 °C by day and drops to about -180 °C at night, the widest swing of any planet."
+    about: [mercury]
+    source: { label: "NASA, Mercury facts", url: "https://science.nasa.gov/mercury/facts/" }
+  - id: mercury-ice
+    text: "Mercury, the planet nearest the Sun, very probably has water ice. Radar and the MESSENGER spacecraft found the signs of it in craters at the poles whose floors never see sunlight."
+    about: [mercury]
+    source: { label: "NASA, Mercury facts", url: "https://science.nasa.gov/mercury/facts/" }
+  - id: mercury-core
+    text: "Mercury is mostly core. Its metal centre fills about 85% of the planet's radius."
+    about: [mercury, three-kinds-of-planet]
+    source: { label: "NASA, Mercury facts", url: "https://science.nasa.gov/mercury/facts/" }
+  - id: mercury-fastest
+    text: "Mercury is the fastest planet, averaging 47.4 km/s, and goes round the Sun in 88 days."
+    about: [mercury, keplers-laws]
+    source: { label: "NASA NSSDC Mercury fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/mercuryfact.html" }
+  - id: venus-hottest
+    text: "Venus is the hottest planet, at about 464 °C over its whole surface, day and night. It is hotter than Mercury despite being nearly twice as far from the Sun."
+    about: [venus]
+    source: { label: "NASA NSSDC Venus fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html" }
+  - id: venus-pressure
+    text: "The air pressure on the surface of Venus is 92 times the Earth's, the same as being about 900 metres down in the sea."
+    about: [venus]
+    source: { label: "NASA NSSDC Venus fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html" }
+  - id: venus-day-longer-than-year
+    text: "Venus takes 243 Earth days to spin once and 225 to go round the Sun, so it turns more slowly than it orbits. It also spins backwards."
+    about: [venus]
+    source: { label: "NASA NSSDC Venus fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html" }
+  - id: venus-brightest
+    text: "Venus is the brightest thing in the sky after the Sun and Moon. Its unbroken cloud reflects about three quarters of the sunlight that reaches it."
+    about: [venus]
+    source: { label: "NASA NSSDC Venus fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html" }
+  - id: mars-olympus-mons
+    text: "Olympus Mons on Mars is the largest volcano known on any planet. It stands about 22 km above the plains around it, two and a half times the height of Everest above the sea."
+    about: [mars]
+    source: { label: "NASA, Mars facts", url: "https://science.nasa.gov/mars/facts/" }
+  - id: mars-valles-marineris
+    text: "Valles Marineris on Mars is a canyon system more than 4,000 km long and up to 7 km deep. On Earth it would stretch across the United States."
+    about: [mars]
+    source: { label: "NASA, Mars facts", url: "https://science.nasa.gov/mars/facts/" }
+  - id: mars-sol
+    text: "A day on Mars, called a sol, lasts 24 hours 39 minutes 35 seconds."
+    about: [mars]
+    source: { label: "NASA NSSDC Mars fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html" }
+  - id: mars-gravity
+    text: "Gravity on Mars is 3.71 m/s², 38% of the Earth's. Someone who weighs 70 kg on the bathroom scales at home would read 27 kg there."
+    about: [mars]
+    basis: worked-out
+    source: { label: "NASA NSSDC Mars fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html" }
+  - id: mars-thin-air
+    text: "The air on Mars is 95% carbon dioxide and its pressure at the ground is less than 1% of the Earth's."
+    about: [mars]
+    source: { label: "NASA NSSDC Mars fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html" }
+  - id: mars-rust
+    text: "Mars is red because the iron in its dust has rusted."
+    about: [mars]
+    source: { label: "NASA, Mars facts", url: "https://science.nasa.gov/mars/facts/" }

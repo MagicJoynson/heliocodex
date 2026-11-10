@@ -1,0 +1,39 @@
+facts:
+  - id: nearest-star
+    text: "The nearest star to the Sun is Proxima Centauri, 4.25 light years away. It is too faint to see without a telescope."
+    about: [neighbourhood, measuring-distance]
+    source: { label: "ESA Gaia Data Release 3", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
+  - id: voyager-light-day
+    text: "Voyager 1, launched in 1977, is the most distant thing people have made. It is about one light day away, after nearly fifty years of flight. The nearest star is 1,550 times further still."
+    about: [solar-system, voyager-1, how-big-is-space]
+    basis: worked-out
+    source: { label: "NASA, where the Voyagers are now", url: "https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/" }
+  - id: naked-eye-stars
+    text: "From the whole Earth, about 9,000 stars are bright enough to see without a telescope. From one dark place at one moment you can see perhaps 2,500 of them."
+    about: [night-sky]
+    basis: worked-out
+    source: { label: "Yale Bright Star Catalogue, via NASA HEASARC", url: "https://heasarc.gsfc.nasa.gov/w3browse/star-catalog/bsc5p.html" }
+  - id: stars-you-see-are-near
+    text: "Every single star you can pick out by eye belongs to our own galaxy, and nearly all are within a few thousand light years: our own small corner of it."
+    about: [night-sky, milky-way]
+    source: { label: "Yale Bright Star Catalogue, via NASA HEASARC", url: "https://heasarc.gsfc.nasa.gov/w3browse/star-catalog/bsc5p.html" }
+  - id: galactic-centre-black-hole
+    text: "At the centre of the Milky Way is a black hole with 4.3 million times the mass of the Sun. It was weighed by watching stars orbit it, one of them in only 16 years."
+    about: [milky-way, keplers-laws]
+    source: { label: "ESO, star S2 passing the Milky Way's central black hole", url: "https://www.eso.org/public/news/eso1825/" }
+  - id: andromeda-by-eye
+    text: "The Andromeda Galaxy, 2.5 million light years away, is the most distant thing most people can see without a telescope."
+    about: [local-group, light-the-only-messenger]
+    source: { label: "NASA, the Andromeda Galaxy", url: "https://science.nasa.gov/universe/galaxies/andromeda-galaxy/" }
+  - id: universe-age
+    text: "The universe is 13.8 billion years old. The figure comes from the faint glow left over from its first hot stage, mapped across the whole sky by the Planck spacecraft."
+    about: [cmb, cosmic-web]
+    source: { label: "ESA, the Planck mission", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck" }
+  - id: universe-ingredients
+    text: "Everything made of atoms, every star, planet and person, comes to about 5% of what the universe contains. About 27% is dark matter and 68% is dark energy, and nobody yet knows what either is."
+    about: [cosmic-web, cmb]
+    source: { label: "NASA, dark matter and dark energy", url: "https://science.nasa.gov/universe/dark-matter-dark-energy/" }
+  - id: exoplanet-count
+    text: "More than 6,000 planets have been confirmed round other stars. The first round a star like the Sun was found in 1995."
+    about: [neighbourhood, milky-way]
+    source: { label: "NASA, exoplanets", url: "https://science.nasa.gov/exoplanets/" }

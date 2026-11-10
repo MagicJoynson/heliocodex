@@ -1,0 +1,8 @@
+title: Light is the only messenger
+strand: light
+order: 1
+summary: "Nearly everything known about space arrived as light, and light always brings old news."
+scene: "Looking at the Andromeda Galaxy while a counter shows how long ago its light set out."
+view: { target: local-group, highlight: [andromeda] }
+terms: [speed-of-light, look-back-time, electromagnetic-spectrum, wavelength, spectrum, spectral-line]
+needs: [measuring-distance]

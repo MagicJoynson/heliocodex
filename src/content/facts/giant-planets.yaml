@@ -1,0 +1,81 @@
+facts:
+  - id: jupiter-short-day
+    text: "Jupiter has the shortest day of any planet, turning once in 9 hours 56 minutes, even though it is eleven Earths wide."
+    about: [jupiter]
+    source: { label: "NASA NSSDC Jupiter fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html" }
+  - id: jupiter-mass
+    text: "Jupiter has 318 times the mass of the Earth, more than twice that of all the other planets put together."
+    about: [jupiter, three-kinds-of-planet]
+    basis: worked-out
+    source: { label: "NASA NSSDC planetary fact sheets", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/" }
+  - id: jupiter-red-spot
+    text: "Jupiter's Great Red Spot is a storm wider than the Earth that has been watched for well over a century."
+    about: [jupiter]
+    source: { label: "NASA, Jupiter facts", url: "https://science.nasa.gov/jupiter/jupiter-facts/" }
+  - id: jupiter-magnetosphere
+    text: "Jupiter's magnetic field traps a bubble so large that its tail stretches past the orbit of Saturn."
+    about: [jupiter]
+    source: { label: "NASA, Jupiter facts", url: "https://science.nasa.gov/jupiter/jupiter-facts/" }
+  - id: jupiter-sun-balance-point
+    text: "Jupiter is heavy enough that it and the Sun circle a point just outside the Sun's surface. Seen from another star, the Sun would appear to wobble once every 11.9 years."
+    about: [jupiter, sun, what-an-orbit-is]
+    basis: worked-out
+    source: { label: "NASA NSSDC Jupiter fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html" }
+  - id: saturn-floats
+    text: "Saturn's average density is 687 kg per cubic metre, less than water. It is the only planet that light."
+    about: [saturn, three-kinds-of-planet]
+    source: { label: "NASA NSSDC Saturn fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html" }
+  - id: saturn-thin-rings
+    text: "Saturn's main rings are about 280,000 km across but mostly only about 10 metres thick. A sheet of paper with the same proportions would be nearly 3 km wide."
+    about: [saturn]
+    source: { label: "NASA, Saturn facts", url: "https://science.nasa.gov/saturn/facts/" }
+  - id: saturn-hexagon
+    text: "A six-sided jet stream about 30,000 km across circles Saturn's north pole. It was first seen by Voyager in the early 1980s and was still there when Cassini left in 2017."
+    about: [saturn]
+    source: { label: "NASA, Saturn facts", url: "https://science.nasa.gov/saturn/facts/" }
+  - id: saturn-squashed
+    text: "Saturn spins so fast, once in about 10.7 hours, that it is visibly squashed: about a tenth wider across the equator than from pole to pole."
+    about: [saturn]
+    source: { label: "NASA NSSDC Saturn fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/saturnfact.html" }
+  - id: saturn-most-moons
+    text: "Saturn has 292 known moons in NASA's list, more than all the other planets combined."
+    about: [saturn]
+    source: { label: "NASA/JPL, planetary satellites (list read November 2026)", url: "https://ssd.jpl.nasa.gov/sats/" }
+  - id: all-giants-have-rings
+    text: "All four giant planets have rings. Saturn's are the only ones bright enough to see in a small telescope."
+    about: [jupiter, saturn, uranus, neptune]
+    source: { label: "NASA, Saturn facts", url: "https://science.nasa.gov/saturn/facts/" }
+  - id: uranus-on-its-side
+    text: "Uranus is tipped over by 97.8°, so it rolls round the Sun on its side. Each pole gets about 42 years of daylight and then 42 years of night."
+    about: [uranus, seasons]
+    basis: worked-out
+    source: { label: "NASA NSSDC Uranus fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/uranusfact.html" }
+  - id: uranus-coldest
+    text: "Uranus has the coldest air measured on any planet, down to about -224 °C. It is colder than Neptune, which is much further from the Sun."
+    about: [uranus]
+    source: { label: "NASA, Uranus facts", url: "https://science.nasa.gov/uranus/facts/" }
+  - id: uranus-discovery
+    text: "Uranus was the first planet found with a telescope. William Herschel spotted it from his garden in Bath in 1781."
+    about: [uranus]
+    source: { label: "NASA, Uranus facts", url: "https://science.nasa.gov/uranus/facts/" }
+  - id: uranus-one-visitor
+    text: "Only one spacecraft has ever visited Uranus or Neptune: Voyager 2, which flew past Uranus in 1986 and Neptune in 1989."
+    about: [uranus, neptune]
+    source: { label: "NASA, the Voyager mission", url: "https://science.nasa.gov/mission/voyager/" }
+  - id: neptune-winds
+    text: "Neptune has the fastest winds measured on any planet, more than 2,000 km/h."
+    about: [neptune]
+    source: { label: "NASA, Neptune facts", url: "https://science.nasa.gov/neptune/neptune-facts/" }
+  - id: neptune-found-by-sums
+    text: "Neptune was found by arithmetic. Its position was worked out from its pull on Uranus, and in 1846 it was seen within a degree of where the sums said to look."
+    about: [neptune, keplers-laws]
+    source: { label: "NASA, Neptune facts", url: "https://science.nasa.gov/neptune/neptune-facts/" }
+  - id: neptune-first-orbit
+    text: "Neptune takes 165 years to go round the Sun. It finished its first full orbit since being discovered in 2011."
+    about: [neptune, keplers-laws]
+    source: { label: "NASA, Neptune facts", url: "https://science.nasa.gov/neptune/neptune-facts/" }
+  - id: neptune-dim-sun
+    text: "Sunlight at Neptune is about 900 times weaker than on Earth. Noon there is like a dim twilight here."
+    about: [neptune, light-the-only-messenger]
+    basis: worked-out
+    source: { label: "NASA, Neptune facts", url: "https://science.nasa.gov/neptune/neptune-facts/" }

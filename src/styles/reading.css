@@ -1,0 +1,63 @@
+/* The reading pages: lessons, glossary, facts. Same family as the Sources ledger:
+   Spectral for prose, Plex Mono for labels and figures, hairline rules, a hanging left margin. */
+@import '@fontsource/spectral/300.css';
+@import '@fontsource/spectral/300-italic.css';
+@import '@fontsource/spectral/400.css';
+@import '@fontsource/spectral/500.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+
+.reading {
+  --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a;
+  --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --rule: rgba(236, 231, 220, .14);
+  --margin-col: 15rem; --text-col: 38rem;
+  max-width: 74rem; margin: 0 auto;
+  padding: clamp(48px, 8vw, 104px) var(--gutter) clamp(64px, 9vw, 120px);
+  font-family: var(--r-serif); color: var(--ink);
+}
+body:has(.reading) { background: #0b0b0c; }
+.reading a { color: var(--ink); text-decoration-color: rgba(233, 196, 138, .5); text-underline-offset: .18em; text-decoration-thickness: 1px; }
+.reading a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+.reading p { max-width: none; }
+
+.label { font: 400 .72rem/1.5 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
+.label a { text-decoration: none; color: inherit; }
+.label a:hover { color: var(--accent); }
+
+.reading-head { max-width: 48rem; margin: 0 0 clamp(40px, 6vw, 80px); }
+.reading-head .label { margin-bottom: 1.2rem; }
+.reading-head h1 { font: 300 clamp(2.5rem, 6.4vw, 4.8rem)/1 var(--r-serif); letter-spacing: -.02em; margin: 0 0 1.3rem; text-wrap: balance; }
+.reading-head .lead { font: 300 clamp(1.12rem, 1rem + .45vw, 1.34rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; max-width: 40rem; }
+
+/* a ruled row: something short hangs in the margin, the text runs beside it */
+.row { display: grid; grid-template-columns: minmax(0, var(--margin-col)) minmax(0, var(--text-col)); gap: 1rem 4rem; padding: 2.2rem 0 2.6rem; border-top: 1px solid var(--rule); }
+.row > .hang h2 { font: italic 300 clamp(1.45rem, 2.3vw, 1.85rem)/1.15 var(--r-serif); margin: 0; }
+.row > .hang .label { margin-top: .6rem; }
+.row > .hang .note { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin: .5rem 0 0; }
+@media (min-width: 761px) { .row > .hang.sticks { position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; } }
+
+/* running prose from Markdown */
+.prose { font: 300 1.16rem/1.68 var(--r-serif); color: var(--ink-soft); }
+.prose > :first-child { margin-top: 0; }
+.prose > :last-child { margin-bottom: 0; }
+.prose p { margin: 0 0 1.05em; }
+.prose strong { font-weight: 500; color: var(--ink); }
+.prose ul { margin: 0 0 1.05em; padding: 0; list-style: none; }
+.prose li { padding-left: 1.3em; position: relative; margin-bottom: .3em; }
+.prose li::before { content: ''; position: absolute; left: .15em; top: .78em; width: .5em; height: 1px; background: var(--ink-faint); }
+.prose table { width: 100%; border-collapse: collapse; margin: 1.5em 0 1.7em; font-size: 1rem; line-height: 1.4; }
+.prose th { font: 400 .7rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); text-align: left; padding: 0 .9rem .55rem 0; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+.prose td { padding: .55rem .9rem .55rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.prose td:first-child { color: var(--ink); }
+.prose th:last-child, .prose td:last-child { padding-right: 0; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5em 0 1.7em; }
+.table-scroll table { margin: 0; min-width: 26rem; }
+
+.plain-list { list-style: none; margin: 0; padding: 0; }
+
+@media (max-width: 760px) {
+  .row { grid-template-columns: minmax(0, 1fr); gap: .9rem; padding: 1.8rem 0 2.1rem; }
+  .prose { font-size: 1.1rem; }
+  .prose > table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prose > table th, .prose > table td { white-space: nowrap; }
+}

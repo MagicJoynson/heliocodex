@@ -1,0 +1,8 @@
+title: Tides
+strand: gravity-and-orbits
+order: 4
+summary: "Why there are two high tides a day, why the Moon keeps one face to us, and what keeps Io erupting."
+scene: "The Earth's two bulges with the planet turning beneath them, then Io flexing as it rounds Jupiter."
+view: { target: io, facing: jupiter, distanceKm: 12000 }
+terms: [tide, tidal-locking, tidal-heating, resonance, roche-limit]
+needs: [what-an-orbit-is]

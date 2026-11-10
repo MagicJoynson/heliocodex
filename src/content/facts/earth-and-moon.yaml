@@ -1,0 +1,66 @@
+facts:
+  - id: moon-distance-range
+    text: "The Moon averages 384,400 km away, but swings between about 363,300 and 405,500 km."
+    about: [moon, earth, how-big-is-space]
+    source: { label: "NASA NSSDC Moon fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html" }
+  - id: moon-receding
+    text: "The Moon is moving away from the Earth by nearly 4 cm a year, about as fast as fingernails grow."
+    about: [moon, tides]
+    source: { label: "NASA, Moon facts", url: "https://science.nasa.gov/moon/facts/" }
+  - id: moon-gravity
+    text: "Gravity on the Moon is 1.62 m/s², one sixth of the Earth's."
+    about: [moon]
+    source: { label: "NASA NSSDC Moon fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html" }
+  - id: moon-size-ratio
+    text: "The Moon is 27% as wide as the Earth. No other planet has a moon so large compared with itself."
+    about: [moon, earth]
+    basis: worked-out
+    source: { label: "NASA NSSDC Moon fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html" }
+  - id: moon-far-side
+    text: "The far side of the Moon is not dark. It gets as much sunlight as the near side. It was first seen in 1959, in photographs from the Soviet probe Luna 3."
+    about: [moon, phases-and-eclipses]
+    source: { label: "NASA, Moon facts", url: "https://science.nasa.gov/moon/facts/" }
+  - id: moon-walkers
+    text: "Twelve people have walked on the Moon, all between July 1969 and December 1972. They brought back 382 kg of rock and soil."
+    about: [moon]
+    source: { label: "NASA, Moon facts", url: "https://science.nasa.gov/moon/facts/" }
+  - id: moon-temperature
+    text: "With no air to spread the heat, the Moon's surface reaches about 127 °C in full sunlight and falls to about -173 °C in the dark."
+    about: [moon]
+    source: { label: "NASA, Moon facts", url: "https://science.nasa.gov/moon/facts/" }
+  - id: moon-month
+    text: "The Moon orbits the Earth in 27.3 days but takes 29.5 days to go from one full Moon to the next, because the Earth has moved on round the Sun in the meantime."
+    about: [moon, phases-and-eclipses]
+    source: { label: "NASA NSSDC Moon fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html" }
+  - id: eclipse-coincidence
+    text: "The Sun is about 400 times wider than the Moon and about 400 times further away, so they look the same size. That match is why total eclipses of the Sun are possible."
+    about: [moon, sun, phases-and-eclipses]
+    basis: worked-out
+    source: { label: "NASA, eclipses", url: "https://science.nasa.gov/eclipses/" }
+  - id: earth-speed
+    text: "The Earth goes round the Sun at 29.8 km/s, about 107,000 km/h. You have travelled about 2.5 million km since this time yesterday."
+    about: [earth, what-an-orbit-is]
+    basis: worked-out
+    source: { label: "NASA NSSDC Earth fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html" }
+  - id: earth-true-day
+    text: "The Earth turns once in 23 hours 56 minutes 4 seconds. The other four minutes of the day are the extra turn needed to face the Sun again after moving along its orbit."
+    about: [earth]
+    source: { label: "NASA NSSDC Earth fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html" }
+  - id: earth-nearest-in-january
+    text: "The Earth is nearest the Sun in early January and furthest in early July. Seasons come from its tilt, not its distance."
+    about: [earth, seasons]
+    source: { label: "NASA NSSDC Earth fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html" }
+  - id: earth-densest
+    text: "The Earth is the densest planet in the Solar System, at 5,513 kg per cubic metre: five and a half times water."
+    about: [earth, three-kinds-of-planet]
+    source: { label: "NASA NSSDC planetary fact sheets", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/" }
+  - id: earth-bulge
+    text: "The Earth's spin makes it bulge. It is 43 km wider across the equator than from pole to pole."
+    about: [earth]
+    basis: worked-out
+    source: { label: "NASA NSSDC Earth fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html" }
+  - id: earth-moon-balance-point
+    text: "The Earth and Moon both circle a shared balance point. It lies inside the Earth, about 4,670 km from the centre, so the Earth wobbles round it once a month."
+    about: [earth, moon, what-an-orbit-is]
+    basis: worked-out
+    source: { label: "NASA NSSDC Moon fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html" }

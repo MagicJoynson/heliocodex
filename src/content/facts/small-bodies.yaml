@@ -1,0 +1,66 @@
+facts:
+  - id: ceres-size
+    text: "Ceres is the largest thing in the asteroid belt, 939 km across, and the only dwarf planet in the inner Solar System. It was the first asteroid found, on the first night of 1801."
+    about: [ceres]
+    source: { label: "NASA, Ceres", url: "https://science.nasa.gov/dwarf-planets/ceres/" }
+  - id: belt-is-empty
+    text: "The asteroid belt is nothing like the crowded field of rocks in films. All its asteroids together have less mass than the Moon, and spacecraft cross it without any need to steer."
+    about: [solar-system, ceres]
+    source: { label: "NASA, asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }
+  - id: pluto-orbit
+    text: "Pluto takes 248 years to go round the Sun on a tilted, stretched orbit that carries it from 30 to 49 au. For twenty years of each orbit, most recently 1979 to 1999, it is nearer the Sun than Neptune."
+    about: [pluto, keplers-laws]
+    source: { label: "NASA, Pluto facts", url: "https://science.nasa.gov/dwarf-planets/pluto/facts/" }
+  - id: pluto-flyby
+    text: "The only close pictures of Pluto come from a single day. New Horizons flew past on 14 July 2015 after a journey of nine and a half years."
+    about: [pluto, charon]
+    source: { label: "NASA, New Horizons", url: "https://science.nasa.gov/mission/new-horizons/" }
+  - id: pluto-and-neptune
+    text: "Pluto crosses inside Neptune's orbit but the two can never collide. Pluto goes round the Sun exactly twice for every three orbits of Neptune, which keeps them far apart."
+    about: [pluto, neptune]
+    source: { label: "NASA, Pluto facts", url: "https://science.nasa.gov/dwarf-planets/pluto/facts/" }
+  - id: eris-heavier-than-pluto
+    text: "Eris is a shade smaller than Pluto, 2,326 km across against 2,377, but about a quarter heavier. Finding it in 2005 is what forced astronomers to decide what counts as a planet."
+    about: [eris, pluto]
+    source: { label: "NASA, Eris", url: "https://science.nasa.gov/dwarf-planets/eris/" }
+  - id: haumea-spin
+    text: "Haumea spins once every four hours, faster than anything else its size, and the spin has pulled it into the shape of a rugby ball."
+    about: [haumea]
+    source: { label: "NASA, Haumea", url: "https://science.nasa.gov/dwarf-planets/haumea/" }
+  - id: sedna-orbit
+    text: "Sedna never comes nearer the Sun than 76 au, well over twice Neptune's distance, and swings out to about 1,000 au. One orbit takes more than 11,000 years."
+    about: [sedna]
+    source: { label: "NASA/JPL Small-Body Database", url: "https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=90377" }
+  - id: halley-return
+    text: "Halley's Comet comes back about every 76 years. It was last near the Sun in 1986 and is due again in 2061."
+    about: [halley, keplers-laws]
+    source: { label: "NASA, Halley's Comet", url: "https://science.nasa.gov/solar-system/comets/1p-halley/" }
+  - id: comet-tails-point-away
+    text: "A comet's tail does not trail behind it. It always points away from the Sun, so a comet heading outward travels tail first."
+    about: [halley, solar-system]
+    source: { label: "NASA, comets", url: "https://science.nasa.gov/solar-system/comets/" }
+  - id: comet-landing
+    text: "The first landing on a comet was in November 2014, when the European probe Philae came down on comet 67P/Churyumov-Gerasimenko. It bounced twice before it settled."
+    about: [solar-system]
+    source: { label: "NASA, comet 67P/Churyumov-Gerasimenko", url: "https://science.nasa.gov/solar-system/comets/67p-churyumov-gerasimenko/" }
+  - id: bennu-sample
+    text: "In September 2023 the OSIRIS-REx spacecraft brought 121.6 grams of the asteroid Bennu back to Earth, the largest asteroid sample collected so far."
+    about: [solar-system]
+    source: { label: "NASA, OSIRIS-REx", url: "https://science.nasa.gov/mission/osiris-rex/" }
+  - id: arrokoth
+    text: "The most distant world ever seen close up is Arrokoth, a 36 km body shaped like a flattened snowman. New Horizons passed it on 1 January 2019, about 6.5 billion km from the Sun."
+    about: [solar-system, pluto]
+    source: { label: "NASA, Arrokoth", url: "https://science.nasa.gov/solar-system/kuiper-belt/arrokoth-2014-mu69/" }
+  - id: interstellar-visitors
+    text: "Three objects have been caught passing through the Solar System from other stars: 'Oumuamua in 2017, comet Borisov in 2019 and comet 3I/ATLAS in 2025. All were moving too fast for the Sun to hold."
+    about: [solar-system, neighbourhood]
+    source: { label: "NASA, comet 3I/ATLAS", url: "https://science.nasa.gov/solar-system/comets/3i-atlas/" }
+  - id: shooting-stars-are-small
+    text: "Most shooting stars are made by pieces of comet dust no bigger than a grain of sand, hitting the air at tens of kilometres per second."
+    about: [earth, solar-system]
+    source: { label: "NASA, meteors and meteorites", url: "https://science.nasa.gov/solar-system/meteors-meteorites/" }
+  - id: oort-cloud-unseen
+    text: "Nobody has ever seen an object in the Oort cloud. Its existence is worked out from comets that arrive from every direction on orbits thousands of au long."
+    about: [oort-cloud, solar-system]
+    basis: theory
+    source: { label: "NASA, the Oort cloud", url: "https://science.nasa.gov/solar-system/oort-cloud/" }

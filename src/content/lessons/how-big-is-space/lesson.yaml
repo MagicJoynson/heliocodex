@@ -1,0 +1,8 @@
+title: How big is space
+strand: finding-your-way
+order: 1
+summary: "The true spacing of the Solar System and the stars, on a scale you can walk."
+scene: "The flight in from deep space replayed with a ruler alongside, naming each step of ten."
+view: { target: solar-system }
+terms: [power-of-ten, astronomical-unit, light-year, oort-cloud, heliosphere]
+next: [measuring-distance]

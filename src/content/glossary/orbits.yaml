@@ -1,0 +1,221 @@
+# Gravity, orbits and the alignments they produce.
+terms:
+  - id: gravity
+    term: Gravity
+    short: "The pull that every mass has on every other mass."
+    more: "It weakens with the square of the distance: twice as far away, a quarter of the pull."
+    see: [mass, orbit, inverse-square-law]
+    lesson: what-an-orbit-is
+  - id: mass
+    term: Mass
+    short: "How much matter a thing holds. It is the same wherever you take it."
+    see: [weight, gravity, density]
+  - id: weight
+    term: Weight
+    short: "The force of gravity on a mass. It changes from world to world while the mass stays the same."
+    more: "On the Moon you would weigh about a sixth of what you do on Earth."
+    see: [mass, gravity]
+  - id: density
+    term: Density
+    short: "Mass divided by volume: how tightly a thing is packed."
+    more: "Water is 1,000 kg per cubic metre and the Earth averages 5,513. Saturn averages 687, less than water."
+    see: [mass]
+  - id: orbit
+    term: Orbit
+    short: "The path one body follows around another, held there by gravity."
+    more: "A body in orbit is falling the whole time, but moving sideways fast enough that it keeps missing."
+    see: [gravity, free-fall, ellipse, orbital-period]
+    lesson: what-an-orbit-is
+  - id: free-fall
+    term: Free fall
+    short: "Moving under gravity alone, with nothing pushing back."
+    more: "Astronauts float because they and their spacecraft are falling together. At the height of the International Space Station gravity is still nearly 90% as strong as on the ground."
+    see: [orbit, weight]
+    lesson: what-an-orbit-is
+  - id: orbital-velocity
+    term: Orbital velocity
+    short: "The speed a body needs to stay in a given orbit."
+    more: "Close above the Earth it is about 7.8 km/s. The Earth itself goes round the Sun at 29.8 km/s."
+    see: [escape-velocity, orbit]
+    lesson: what-an-orbit-is
+  - id: escape-velocity
+    term: Escape velocity
+    short: "The speed needed to leave a body for good without any further push."
+    more: "It is 11.2 km/s from the surface of the Earth, 2.4 km/s from the Moon and about 618 km/s from the visible surface of the Sun."
+    see: [orbital-velocity, gravity]
+  - id: ellipse
+    term: Ellipse
+    short: "A stretched circle, the shape of every closed orbit."
+    more: "An ellipse has two focus points. The body being orbited sits at one of them and the other is empty."
+    see: [eccentricity, semi-major-axis, keplers-laws]
+    lesson: keplers-laws
+  - id: eccentricity
+    term: Eccentricity
+    short: "A number from 0 up to 1 that says how stretched an orbit is. 0 is a perfect circle."
+    more: "The Earth's is 0.0167, Mars's is 0.0935 and Halley's Comet's is 0.967."
+    see: [ellipse, perihelion, aphelion]
+    lesson: keplers-laws
+  - id: semi-major-axis
+    term: Semi-major axis
+    short: "Half the longest width of an elliptical orbit, which serves as its average size."
+    more: "Kepler's third law ties it to the time one orbit takes."
+    see: [ellipse, orbital-period, keplers-laws]
+    lesson: keplers-laws
+  - id: perihelion
+    term: Perihelion
+    short: "The point of an orbit nearest the Sun."
+    more: "The Earth reaches it in early January, at about 147.1 million km."
+    see: [aphelion, periapsis, eccentricity]
+    lesson: keplers-laws
+  - id: aphelion
+    term: Aphelion
+    short: "The point of an orbit furthest from the Sun."
+    more: "The Earth reaches it in early July, at about 152.1 million km."
+    see: [perihelion, apoapsis]
+    lesson: keplers-laws
+  - id: periapsis
+    term: Periapsis
+    also: [perigee, perijove, pericentre]
+    short: "The nearest point of an orbit to whatever is being orbited."
+    more: "It takes a special name for some bodies: perihelion round the Sun, perigee round the Earth, perijove round Jupiter."
+    see: [apoapsis, perihelion]
+  - id: apoapsis
+    term: Apoapsis
+    also: [apogee, apojove, apocentre]
+    short: "The furthest point of an orbit from whatever is being orbited."
+    see: [periapsis, aphelion]
+  - id: orbital-period
+    term: Orbital period
+    short: "The time taken to go once round an orbit."
+    more: "For the Earth it is 365.256 days measured against the stars."
+    see: [semi-major-axis, synodic-period, keplers-laws]
+  - id: synodic-period
+    term: Synodic period
+    short: "The time for two bodies to come back to the same line-up as seen from a third."
+    more: "The Moon orbits the Earth in 27.32 days, but its phases repeat every 29.53 days because the Earth has moved on round the Sun in the meantime."
+    see: [orbital-period, phase]
+    lesson: phases-and-eclipses
+  - id: keplers-laws
+    term: Kepler's laws
+    short: "Three rules, found by Johannes Kepler between 1609 and 1619, that describe how planets move round the Sun."
+    more: "Orbits are ellipses with the Sun at one focus; a planet sweeps out equal areas in equal times; and the square of the period goes as the cube of the orbit's size."
+    see: [ellipse, semi-major-axis, orbital-period]
+    lesson: keplers-laws
+  - id: inclination
+    term: Inclination
+    short: "The tilt of an orbit against a chosen flat plane, usually the ecliptic or the equator of the planet being orbited."
+    more: "The Moon's orbit is tilted by about 5.1° to the ecliptic, which is why there is not an eclipse every month."
+    see: [node, ecliptic]
+  - id: node
+    term: Node
+    short: "One of the two points where a tilted orbit crosses the plane it is measured against."
+    more: "Eclipses can only happen when the Moon is near one of its nodes at new or full Moon."
+    see: [inclination, solar-eclipse, lunar-eclipse]
+    lesson: phases-and-eclipses
+  - id: prograde
+    term: Prograde
+    short: "Moving or spinning the same way as most things in the system."
+    more: "In the Solar System that is anticlockwise seen from above the Sun's north pole."
+    see: [retrograde]
+  - id: retrograde
+    term: Retrograde
+    short: "Moving or spinning the opposite way to most things in the system."
+    more: "Venus spins backwards. Triton goes round Neptune backwards, the best sign that it was captured and did not form there."
+    see: [prograde, irregular-moon]
+  - id: barycentre
+    term: Barycentre
+    also: [barycenter, centre of mass]
+    short: "The balance point that two bodies both go round."
+    more: "For the Earth and Moon it lies inside the Earth, about 4,670 km from the centre. For the Sun and Jupiter it lies just outside the Sun's surface."
+    see: [orbit, mass]
+  - id: hill-sphere
+    term: Hill sphere
+    short: "The region around a planet where its own gravity wins over the Sun's, so a moon can stay."
+    more: "The Earth's reaches out about 1.5 million km, roughly four times the distance of the Moon."
+    see: [lagrange-point, irregular-moon]
+  - id: lagrange-point
+    term: Lagrange point
+    also: [L1, L2, L4, L5]
+    short: "One of five places where a small object can keep step with two larger ones."
+    more: "The James Webb Space Telescope circles the point called L2, about 1.5 million km from the Earth on the side away from the Sun."
+    see: [trojan, hill-sphere]
+  - id: tide
+    term: Tide
+    short: "The stretching of one body by another's gravity, which pulls harder on the near side than on the far side."
+    more: "The stretch raises a bulge on both sides, which is why most coasts on Earth get two high tides a day."
+    see: [tidal-locking, tidal-heating, roche-limit]
+    lesson: tides
+  - id: tidal-locking
+    term: Tidal locking
+    also: [synchronous rotation]
+    short: "When a moon turns exactly once for each orbit, so the same face always points at its planet."
+    more: "Almost every large moon in the Solar System is locked, our own included. Pluto and Charon are each locked to the other."
+    see: [tide, tidal-heating]
+    lesson: tides
+  - id: tidal-heating
+    term: Tidal heating
+    short: "Heat made inside a moon as changing tides squeeze and stretch it."
+    more: "It makes Io the most volcanic body known, and keeps water liquid under the ice of Europa and Enceladus."
+    see: [tide, resonance, subsurface-ocean]
+    lesson: tides
+  - id: resonance
+    term: Resonance
+    also: [orbital resonance]
+    short: "When the periods of two orbiting bodies are in a simple ratio, so they tug each other at the same places again and again."
+    more: "For every orbit of Ganymede, Europa makes two and Io makes four. Pluto makes two orbits for every three of Neptune."
+    see: [orbital-period, tidal-heating]
+  - id: roche-limit
+    term: Roche limit
+    short: "The distance inside which a planet's tides would pull apart a moon held together only by its own gravity."
+    more: "For a liquid moon as dense as its planet it is about 2.44 times the planet's radius. Saturn's main rings lie inside Saturn's."
+    see: [tide, ring-system]
+  - id: opposition
+    term: Opposition
+    short: "When a planet is on the opposite side of the Earth from the Sun, so it rises at sunset and is at its nearest and brightest."
+    see: [conjunction, synodic-period]
+  - id: conjunction
+    term: Conjunction
+    short: "When two bodies appear close together in the sky, or when a planet lines up with the Sun."
+    see: [opposition, transit]
+  - id: transit
+    term: Transit
+    short: "When a small body crosses the face of a larger one as we see it."
+    more: "Mercury and Venus can transit the Sun. Most known planets of other stars were found by the tiny dip in starlight as they crossed."
+    see: [occultation, exoplanet]
+  - id: occultation
+    term: Occultation
+    short: "When a nearer body passes in front of a farther one and hides it."
+    more: "Timing how long a star vanishes behind a distant world gives that world's size. This is how Eris was measured."
+    see: [transit, solar-eclipse]
+  - id: solar-eclipse
+    term: Solar eclipse
+    short: "When the Moon passes between the Earth and the Sun and its shadow falls on the Earth."
+    more: "A total one is possible only because the Sun is about 400 times wider than the Moon and about 400 times further away."
+    see: [lunar-eclipse, umbra, penumbra, node]
+    lesson: phases-and-eclipses
+  - id: lunar-eclipse
+    term: Lunar eclipse
+    short: "When the Moon passes through the Earth's shadow."
+    more: "The Moon turns a dull red, lit only by sunlight bent through the Earth's air: the light of every sunrise and sunset at once."
+    see: [solar-eclipse, umbra, node]
+    lesson: phases-and-eclipses
+  - id: umbra
+    term: Umbra
+    short: "The dark middle of a shadow, where the light source is completely hidden."
+    more: "The same word is used for the dark centre of a sunspot."
+    see: [penumbra, solar-eclipse, sunspot]
+  - id: penumbra
+    term: Penumbra
+    short: "The paler outer part of a shadow, where the light source is only partly hidden."
+    see: [umbra, solar-eclipse]
+  - id: phase
+    term: Phase
+    short: "How much of the sunlit half of a moon or planet is turned towards us."
+    more: "The Moon is always half lit. Its phases are only our changing view of that half."
+    see: [synodic-period, terminator]
+    lesson: phases-and-eclipses
+  - id: terminator
+    term: Terminator
+    short: "The line between day and night on a planet or moon."
+    more: "Shadows are longest there, so it is where craters and mountains show best."
+    see: [phase]
