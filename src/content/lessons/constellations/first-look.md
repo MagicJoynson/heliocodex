@@ -11,4 +11,4 @@ Today astronomers use 88 official constellations. They work like countries on a 
 
 Which ones you can see depends on where you live and the time of year. As the Earth goes round the Sun, the night side faces a different part of space, so the winter sky and the summer sky are not the same.
 
-In the 3D view you can leave the Earth and watch a constellation come apart.
+In the 3D view the figures are drawn as lines between the stars. Leave the Solar System and you can watch them pull out of shape.

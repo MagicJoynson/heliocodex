@@ -28,4 +28,8 @@ The nearest is about 250 light years away and the furthest several times that. C
 
 **What they are used for now.** The stars hold nearly the same positions for many lifetimes, so constellations make good landmarks. Many stars and nebulae are named after the constellation they are in, and a meteor shower is named after the constellation its meteors seem to come from. The Orionids appear to come from Orion.
 
-**What the 3D view shows.** From the Earth's position the stars fall into their familiar places. Move away and each star shifts by a different amount, the near ones most, and the figures dissolve. No drawn lines are needed to see that the patterns belong to where we stand.
+**What the 3D view shows.** The view draws each figure as lines joining its stars, and each end of a line sits at that star's real place in space, not on a painted dome. Close to the Sun, out as far as the Oort cloud, the figures look just as they do from the Earth, with their names beside them. A few light years further out they begin to change. A star that is close to us shifts a long way against the rest, and a distant one hardly moves, so every figure is pulled out of shape in its own way. Further off still the lines are faded out, because by then they are only a tangle pointing back at the Sun.
+
+A few lines are missing. Nine stars the figures use have no usable distance in the catalogue, so they have no place in space to draw to, and the lines that end on them are left out. Camelopardalis, Cepheus and Sagittarius are the figures that lose most.
+
+The lines themselves are a convention, taken from one modern set of figures that is credited on the [sources page](/sources#beyond). The official constellations are areas of sky, not line drawings.
