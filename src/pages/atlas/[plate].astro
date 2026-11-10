@@ -1,0 +1,125 @@
+---
+import Reading from '../../layouts/Reading.astro';
+import Plate, { type Drawn } from '../../components/atlas/Plate.astro';
+import { allBodies } from '../../data/bodies/index';
+import type { KeplerOrbit } from '../../lib/v2/atlas/types';
+import { plates } from '../../lib/v2/atlas/plates';
+import { fmtDays, fmtKm, lineOf, LOOSE_FIT_DEG, markOf, sortIntoFamilies, tiltDeg } from '../../lib/v2/atlas/chart';
+import { julianDate } from '../../lib/v2/atlas/kepler';
+import '../../styles/atlas.css';
+
+export function getStaticPaths() {
+  return Object.keys(plates).map((plate) => ({ params: { plate } }));
+}
+
+const spec = plates[Astro.params.plate as string];
+const built = new Date();
+const jd = julianDate(built);
+const drawnFor = `Orbits as they lie in ${built.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
+
+const moons: Drawn[] = allBodies
+  .filter((b) => b.parent === spec.parent && b.orbit.type === 'kepler')
+  .map((b) => ({ id: b.id, name: b.name, orbit: b.orbit as KeplerOrbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: tiltDeg(b.orbit as KeplerOrbit, spec.parent, jd), discovered: b.discovered }));
+const families = sortIntoFamilies(moons, spec.families, spec.parent, jd);
+const inFigure = (ids: string[]) => ids.flatMap((id) => families.get(id) ?? []);
+const year = new Map(allBodies.map((b) => [b.id, b.discovered?.year]));
+
+const SEEN = { filled: 'Mapped by spacecraft', half: 'Partly seen by spacecraft', open: 'Seen only as a point of light' } as const;
+const parentName = spec.parent[0].toUpperCase() + spec.parent.slice(1);
+const unmeasured = moons.filter((m) => !m.meanRadiusKm).length;
+const backwards = moons.filter((m) => m.tilt > 90).length;
+const loose = moons.filter((m) => lineOf(m.orbit) === 'dashed').length;
+
+// what the script needs to place the dots: orbits without the fit report
+const data = {
+  parent: spec.parent,
+  figures: spec.figures.map((f) => ({ id: f.id, spanKm: f.spanKm, ids: inFigure(f.families).map((m) => m.id) })),
+  orbits: Object.fromEntries(moons.map((m) => { const { fit: _fit, ...o } = m.orbit; return [m.id, o]; })),
+};
+---
+<Reading title={`${spec.title} · Atlas`} path={`/atlas/${spec.parent}`} description={`A chart of all ${moons.length} known moons of ${parentName}, drawn to scale from above, with where each one is today.`}>
+  <header class="reading-head">
+    <p class="label">Atlas · {parentName}</p>
+    <h1>{spec.title}</h1>
+    <p class="lead">{spec.lead}</p>
+  </header>
+
+  {spec.figures.map((f) => (
+    <section class="row figure-row" id={`figure-${f.id}`}>
+      <div class="hang">
+        <p class="label">Drawing {f.numeral}</p>
+        <h2>{f.title}</h2>
+        <p class="note">{f.caption}</p>
+        <p class="note scale">The edge of the drawing is {fmtKm(f.spanKm)} from the centre of {parentName}.</p>
+      </div>
+      <figure class="plate-holder">
+        <Plate spec={spec} figure={f} bodies={inFigure(f.families)} jd={jd} drawnFor={drawnFor} />
+      </figure>
+    </section>
+  ))}
+
+  <section class="row key-row">
+    <div class="hang"><h2>How to read it</h2></div>
+    <div class="prose key">
+      <p>You are looking straight down on {parentName}’s north pole. {parentName} is drawn to scale with the orbits. The moons are not: at this scale most would be far too small to see, so each is a dot.</p>
+      <noscript><p><strong>The dots are missing</strong> because scripts are off. The orbits and the list are complete without them.</p></noscript>
+      <ul class="plain-list key-list">
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot filled"><circle r="5" /></g></svg><span><strong>Solid dot.</strong> A spacecraft has mapped the whole surface.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot half"><circle r="5" /><path d="M0 -5A5 5 0 0 0 0 5Z" /></g></svg><span><strong>Half dot.</strong> A spacecraft has seen part of it.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot open"><circle r="5" /></g></svg><span><strong>Ring.</strong> Never seen as more than a point of light. {unmeasured} of the {moons.length} are like this, and for those nobody has measured a size.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Pale line.</strong> Goes round the same way {parentName} spins: anticlockwise on these drawings.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit back solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Amber line.</strong> Goes round backwards. {backwards} moons do.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd dashed"><path class="line" d="M2 8H42" /></g></svg><span><strong>Broken line.</strong> The moon can be more than {LOOSE_FIT_DEG}° from where we draw it. {loose} orbits are like this. The Sun’s pull keeps changing the paths of the outer moons, and a simple orbit cannot follow them exactly.</span></li>
+      </ul>
+      <p>Each orbit is a slowly turning ellipse fitted to positions from NASA’s Jet Propulsion Laboratory for the years 2000 to 2040. The list gives how far out each fit can be. Touch a row to pick out its orbit.</p>
+      <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
+    </div>
+  </section>
+
+  {spec.families.map((fam) => {
+    const list = families.get(fam.id) ?? [];
+    return (
+      <section class="row family-row" id={`family-${fam.id}`}>
+        <div class="hang">
+          <h2>{fam.name}</h2>
+          <p class="label">{list.length === 1 ? '1 moon' : `${list.length} moons`}</p>
+          <p class="note">{fam.note}</p>
+        </div>
+        <table class="moons">
+          <thead>
+            <tr><th scope="col">Moon</th><th scope="col">Orbit size</th><th scope="col">One orbit</th><th scope="col">Tilt</th><th scope="col">Width</th><th scope="col">Found</th><th scope="col"><span class="vh">See it in 3D</span></th></tr>
+          </thead>
+          <tbody>
+            {list.map((m) => (
+              <tr id={m.id} data-body={m.id}>
+                <th scope="row">
+                  <svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class:list={['dot', markOf(m.seen)]}><circle r="5" />{markOf(m.seen) === 'half' && <path d="M0 -5A5 5 0 0 0 0 5Z" />}</g></svg>
+                  <span class="nm">{m.name}</span>
+                  <span class="vh">. {SEEN[markOf(m.seen)]}.</span>
+                  {m.orbit.fit && <span class="fit">drawn to within {m.orbit.fit.worstDeg < 1 ? m.orbit.fit.worstDeg.toFixed(2) : Math.round(m.orbit.fit.worstDeg)}°</span>}
+                </th>
+                <td data-label="Orbit size">{fmtKm(m.orbit.aKm)}</td>
+                <td data-label="One orbit">{fmtDays(m.orbit.periodDays)}</td>
+                <td data-label="Tilt">{m.tilt < 10 ? m.tilt.toFixed(1) : Math.round(m.tilt)}°</td>
+                <td data-label="Width">{m.meanRadiusKm ? fmtKm(m.meanRadiusKm * 2) : <span class="unknown">not measured</span>}</td>
+                <td data-label="Found">{year.get(m.id) ?? ''}</td>
+                <td class="go"><a href={`/v2?go=${m.id}`} aria-label={`Fly to ${m.name} in 3D`}>Fly there</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    );
+  })}
+
+  <section class="row sources-row">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <ul>{spec.sources.map((s) => <li><a href={s.url}>{s.label}</a></li>)}</ul>
+      <p>Orbit size is the average distance from the centre of {parentName}. Tilt is measured from {parentName}’s equator, and above 90° means the moon goes round backwards. The families of outer moons are groups on similar orbits. Where one family ends and the next begins is not agreed, and the lines here are ours.</p>
+    </div>
+  </section>
+
+  <script type="application/json" id="plate-data" set:html={JSON.stringify(data)} />
+  <script>import '../../lib/v2/atlas/live';</script>
+</Reading>

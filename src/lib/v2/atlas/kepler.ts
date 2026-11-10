@@ -98,6 +98,19 @@ function place(o: KeplerOrbit, B: Basis, node: number, peri: number, E: number, 
   return out;
 }
 
+/**
+ * The axes of a planet's equator, in ecliptic J2000 coordinates: z along the spin pole, x and y in
+ * the equator. For looking straight down on a family of moons (the atlas plates).
+ */
+export function equatorBasis(parent: string): { x: Vec; y: Vec; z: Vec } {
+  const pole = POLES[parent];
+  if (!pole) return ECLIPTIC;
+  const key = `${pole.raDeg},${pole.decDeg}`;
+  let b = planes.get(key);
+  if (!b) { b = planeFromPole(pole.raDeg, pole.decDeg); planes.set(key, b); }
+  return b;
+}
+
 /** Position relative to the parent at a Julian date (TDB), km, ecliptic J2000. */
 export function keplerPosition(o: KeplerOrbit, parent: string, jd: number, out: Vec = [0, 0, 0]): Vec {
   if (o.theory === 'moon') return moonPosition(jd, out);
