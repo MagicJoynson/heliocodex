@@ -9,7 +9,9 @@ import { keplerPosition } from './kepler';
 import { landmarks } from './landmarks';
 import { bodyMarks, landmarkMarks, layout, readLength, RULES, spread, TOP } from './ruler';
 import { positionAU } from '../../orbit';
-import { chainFor, pick, type MarginData } from '../margin/pick';
+import { chainFor, pick, PLACE_NAMES, type MarginData } from '../margin/pick';
+import { groupOf, groups as smallGroups, inStep, offChart, shown as smallShown, smallBodiesPlate } from './plates/small-bodies';
+import { smallBodies, smallSpread } from '../../../data/bodies/index';
 
 // A few lines of test harness, so the project needs no test library.
 const failed: string[] = [];
@@ -198,7 +200,7 @@ test('planets: on 10 November the Earth is where the calendar says, with the Sun
 });
 
 test('Solar System plates: every world is in one list and on a drawing, and nothing leaves a frame', () => {
-  const worlds = allBodies.filter((b) => b.parent === 'sun');
+  const worlds = allBodies.filter((b) => b.parent === 'sun' && (b.kind === 'planet' || b.kind === 'dwarf'));
   assert.equal(worlds.length, 17);
   const orbitOf = (id: string) => (isPlanet(id) ? planetOrbit(id, JD_2026) : moon(id));
   for (const w of worlds) {
@@ -350,6 +352,54 @@ test('the guide: a place with nothing written about it gives empty lists, not an
   const got = pick({ near: 'sedna', band: 'orbit', km: 900 }, { ...sample, facts: [], lessons: [] }, whoIs);
   assert.equal(got.subject, 'sedna');
   assert.equal(got.facts.length + got.lessons.length + got.terms.length, 0);
+});
+
+test('small bodies: every one is in a list, on a drawing or excused, inside its frame and named', () => {
+  assert.equal(smallBodies.length, 26);
+  const orbitOf = (id: string) => (isPlanet(id) ? planetOrbit(id, JD_2026) : (allBodies.find((b) => b.id === id)!.orbit as KeplerOrbit));
+  for (const b of smallBodies) {
+    assert.ok(smallGroups.some((g) => g.id === groupOf(b.group)), `${b.id} is in no list`);
+    assert.ok(!!offChart[b.id] !== Object.values(smallShown).some((l) => l.includes(b.id)), `${b.id} must be on a drawing or excused, not both or neither`);
+    const o = orbitOf(b.id);
+    assert.ok(o.aKm > 0 && o.e >= 0 && o.e < 1 && o.periodDays > 0, `${b.id} has a broken orbit`);
+    // Kepler's third law: years squared is au cubed, for anything going round the Sun
+    assert.ok(Math.abs((o.periodDays / 365.25) ** 2 / (o.aKm / AU_KM) ** 3 - 1) < 0.01, `${b.id}: period and size of orbit disagree`);
+  }
+  for (const f of smallBodiesPlate.figures) {
+    const p = topView('sun', f.spanKm, 440, f.view, f.centreKm);
+    for (const id of smallShown[f.id]) assert.ok(fitsOn(p, orbitOf(id), JD_2026), `${id} leaves drawing ${f.id}`);
+    for (const id of smallShown[f.id]) assert.ok(f.names[id] !== undefined || f.leaders?.[id], `${id} has no name on drawing ${f.id}`);
+    for (const id of [...Object.keys(f.names), ...Object.keys(f.leaders ?? {})]) assert.ok(smallShown[f.id].includes(id), `${id} is named on ${f.id} but not drawn`);
+  }
+});
+
+test('small bodies: Halley was nearest the Sun in February 1986 and is far out and going backwards now', () => {
+  const o = allBodies.find((b) => b.id === 'halley')!.orbit as KeplerOrbit;
+  const at = (jd: number) => Math.hypot(...keplerPosition(o, 'sun', jd)) / AU_KM;
+  // 9 February 1986; JPL's elements for Halley date from 1968 and give 0.575 au for its nearest, against the 0.587 au of 1986
+  assert.ok(Math.abs(at(2446470.5) - (o.aKm * (1 - o.e)) / AU_KM) < 0.002 && at(2446470.5) < 0.6, `Halley at perihelion: ${at(2446470.5).toFixed(3)} au`);
+  assert.ok(at(JD_2026) > 34 && at(JD_2026) < 35.3, `Halley in 2026: ${at(JD_2026).toFixed(1)} au`);
+  assert.ok(o.iDeg > 90);
+});
+
+test('small bodies: the count has gaps where Jupiter says and a pile where Neptune says', () => {
+  const s = smallSpread.inner, at = (au: number) => s.counts[Math.round((au - s.fromAu) / s.stepAu - 0.5)];
+  const J = planetOrbit('jupiter', JD_2026).aKm / AU_KM, N = planetOrbit('neptune', JD_2026).aKm / AU_KM;
+  assert.ok(Math.abs(inStep(J, 3, 1) - 2.50) < 0.01 && Math.abs(inStep(J, 2, 1) - 3.28) < 0.01 && Math.abs(inStep(N, 2, 3) - 39.4) < 0.1);
+  for (const [p, q] of [[3, 1], [5, 2], [2, 1]]) { const g = inStep(J, p, q); assert.ok(at(g) < 0.25 * Math.max(at(g - 0.08), at(g + 0.08)), `no gap at ${p}:${q}`); }
+  const o = smallSpread.outer, k = Math.floor((inStep(N, 2, 3) - o.fromAu) / o.stepAu);
+  assert.ok(Math.max(o.counts[k - 1], o.counts[k], o.counts[k + 1]) > 3 * o.counts[k - 5], 'no pile of bodies in step with Neptune');
+  assert.ok(smallSpread.counted > 1_000_000);
+});
+
+test('the guide: every place the engine can name far from any world has a name and a subject', () => {
+  for (const id of ['solar-system', 'oort-cloud', 'neighbourhood', 'night-sky', 'milky-way', 'local-group', 'cosmic-web', 'cmb']) {
+    assert.ok(PLACE_NAMES[id], `${id} has no name`);
+    for (const band of ['system', 'interstellar', 'galactic', 'cosmic'] as const) {
+      const got = pick({ near: id, band, km: 1e12 }, sample, whoIs);
+      assert.ok(PLACE_NAMES[got.subject] || whoIs(got.subject), `${id} in band ${band} gives the subject ${got.subject}, which has no name`);
+    }
+  }
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');

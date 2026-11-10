@@ -149,3 +149,13 @@ table.moons { width: 100%; border-collapse: collapse; font: 300 1rem/1.4 var(--r
   .moons tbody tr.on, .moons tbody tr:target { background: none; }
   .prose { font-size: 10.5pt; }
 }
+
+/* the count of asteroids by orbit size (components/atlas/Spread.astro) */
+.spread .bars path { stroke: var(--ink-soft); opacity: .85; fill: none; }
+.spread .axis path { fill: none; stroke: var(--ink-faint); stroke-width: 1.4; }
+.spread .axis text, .spread .mark text { font: 400 15px var(--r-mono); letter-spacing: .06em; fill: var(--ink-faint); }
+.spread .mark path { fill: none; stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 3 5; }
+.spread .mark.planet text { fill: var(--ink); }
+.spread .mark.planet path { stroke: var(--ink-soft); stroke-dasharray: none; opacity: .5; }
+.spread .mark.gap text { fill: var(--back); }
+.spread .mark.gap path { stroke: var(--back); opacity: .7; }

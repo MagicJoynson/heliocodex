@@ -17,7 +17,7 @@ const jd = julianDate(built);
 const drawnFor = `Orbits as they lie in ${built.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
 
 interface World extends Drawn { moons: number }
-const worlds = new Map<string, World>(allBodies.filter((b) => b.parent === 'sun').map((b) => {
+const worlds = new Map<string, World>(allBodies.filter((b) => b.parent === 'sun' && (b.kind === 'planet' || b.kind === 'dwarf')).map((b) => {
   const orbit = isPlanet(b.id) ? planetOrbit(b.id, jd) : (b.orbit as KeplerOrbit);
   // these orbits are measured ones, not fits of ours, so each gets a plain line and a dot
   return [b.id, { id: b.id, name: b.name, orbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: Math.abs(orbit.iDeg), line: 'solid', placed: true, moons: allBodies.filter((m) => m.parent === b.id).length }];

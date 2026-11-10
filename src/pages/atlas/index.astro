@@ -18,6 +18,7 @@ const narrow = layout(marks, RULES, { columns: 1, slot: 1.65 / 24, tall: 2.6 / 2
 const count = (id: string) => allBodies.filter((b) => b.parent === id).length;
 const charts = [
   { href: '/atlas/solar-system', name: 'The Solar System from above', what: 'Eight planets and nine dwarf planets on their real orbits, in three drawings.' },
+  { href: '/atlas/small-bodies', name: 'Asteroids and comets', what: 'Twenty-six small bodies on their real orbits, and a count of where all the known asteroids are.' },
   ...Object.entries(plates).map(([id, spec]) => ({ href: `/atlas/${id}`, name: spec.title, what: id === 'earth' ? 'One moon, and the path it really follows.' : count(id) === 1 ? 'Its one known moon, on its orbit.' : count(id) === 2 ? 'Both of its moons, each on its own orbit.' : `All ${count(id)} known moons, each on its own orbit.` })),
 ];
 const bySize = [...landmarks].sort((a, b) => a.metres - b.metres);

@@ -1,0 +1,56 @@
+---
+// A count of the known asteroids by the size of their orbits: one thin line for each narrow bin,
+// as tall as the number found there. Drawn at build time from src/data/bodies/small.json.
+import type { Spread } from '../../data/bodies/index';
+interface Mark { au: number; label: string; note?: string; kind: 'planet' | 'gap' | 'group' }
+interface Props { id: string; numeral: string; title: string; spread: Spread; marks: Mark[]; summary: string; counted: string }
+const { id, numeral, title, spread, marks, summary, counted } = Astro.props;
+
+const L = -385, R = 440, BASE = 330, TOP = -300;
+const x = (au: number) => L + ((au - spread.fromAu) / (spread.toAu - spread.fromAu)) * (R - L);
+const peak = Math.max(...spread.counts);
+// a round number at or below the peak for the top tick
+const pow = Math.pow(10, Math.floor(Math.log10(peak)));
+const topTick = Math.floor(peak / pow) * pow;
+const y = (n: number) => BASE - (n / peak) * (BASE - TOP);
+const w = Math.max(0.6, ((R - L) / spread.counts.length) * 0.86);
+const bars = spread.counts.map((n, k) => ({ x: x(spread.fromAu + (k + 0.5) * spread.stepAu), y: y(n), n })).filter((b) => b.n > 0);
+const span = spread.toAu - spread.fromAu;
+const every = span > 10 ? 4 : 0.5;
+const ticks: number[] = [];
+for (let au = Math.ceil(spread.fromAu / every) * every; au <= spread.toAu + 1e-9; au += every) ticks.push(+au.toFixed(2));
+// labels above the count, staggered on three levels so neighbours do not touch
+const sorted = [...marks].sort((a, b) => a.au - b.au);
+---
+<svg class="plate spread" data-spread={id} viewBox="-500 -500 1000 1000" role="img" aria-label={summary}>
+  <rect class="frame" x="-494" y="-494" width="988" height="988" />
+  <rect class="frame thin" x="-486" y="-486" width="972" height="972" />
+  <text x="-462" y="-446"><tspan class="numeral">{numeral}</tspan><tspan class="title" dx="16">{title}</tspan></text>
+
+  <g class="marks">
+    {sorted.map((m, k) => {
+      const top = TOP - 34 - (k % 3) * 30;
+      return (
+        <g class:list={['mark', m.kind]}>
+          <path d={`M${x(m.au).toFixed(1)} ${BASE}V${top + 8}`} />
+          <text x={x(m.au).toFixed(1)} y={top} text-anchor="middle">{m.label}</text>
+        </g>
+      );
+    })}
+  </g>
+  <g class="bars">
+    {bars.map((b) => <path d={`M${b.x.toFixed(1)} ${BASE}V${b.y.toFixed(1)}`} stroke-width={w.toFixed(2)} />)}
+  </g>
+
+  <g class="axis">
+    <path d={`M${L} ${BASE}H${R}`} />
+    {ticks.map((au) => <g><path d={`M${x(au).toFixed(1)} ${BASE}v8`} /><text x={x(au).toFixed(1)} y={BASE + 30} text-anchor="middle">{au}</text></g>)}
+    <text x={R} y={BASE + 62} text-anchor="end">Size of orbit, au</text>
+    <path d={`M${L} ${BASE}V${TOP}`} />
+    <path d={`M${L} ${y(topTick).toFixed(1)}h-8`} />
+    <text x={L - 12} y={y(topTick) + 5} text-anchor="end">{topTick.toLocaleString('en-GB')}</text>
+    <text x={L - 12} y={BASE + 5} text-anchor="end">0</text>
+  </g>
+  <text class="when" x="462" y="454" text-anchor="end">{counted}</text>
+  <text class="when" x="-462" y="454">Each line is {spread.stepAu} au wide</text>
+</svg>
