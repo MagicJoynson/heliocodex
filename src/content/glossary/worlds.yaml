@@ -189,3 +189,15 @@ terms:
     short: "The range of distances from a star at which a planet with a suitable atmosphere could keep liquid water on its surface."
     more: "Being in it is no promise of anything. Venus sits near the inner edge of the Sun's."
     see: [exoplanet, greenhouse-effect]
+  - id: meteor-shower
+    term: Meteor shower
+    short: "A night or more with many meteors, all seeming to come from one part of the sky, as the Earth passes through dust left along a comet's orbit."
+    see: [meteor, comet, meteoroid]
+    lesson: falling-rocks
+  - id: near-earth-object
+    term: Near-Earth object
+    also: [NEO, near-Earth asteroid]
+    short: "An asteroid or comet whose orbit brings it close to the Earth's."
+    more: "More than 35,000 are known. None of the large ones is on course to hit the Earth in the next century or more."
+    see: [asteroid, comet, impact-crater]
+    lesson: falling-rocks

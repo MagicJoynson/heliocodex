@@ -1,0 +1,56 @@
+# Stars: their kinds, and how they begin and end.
+terms:
+  - id: red-dwarf
+    term: Red dwarf
+    short: "A small, cool, faint star. Red dwarfs are by far the commonest kind of star."
+    more: "They have less than about half the Sun's mass and burn so slowly that they can last for trillions of years."
+    see: [star, main-sequence, spectral-type]
+    lesson: what-a-star-is
+  - id: brown-dwarf
+    term: Brown dwarf
+    short: "A ball of gas too heavy to be a planet but too light to keep hydrogen fusion going, so it never becomes a true star."
+    more: "The dividing line is at about 8 per cent of the Sun's mass, roughly 80 times the mass of Jupiter."
+    see: [star, nuclear-fusion, gas-giant]
+    lesson: what-a-star-is
+  - id: spectral-type
+    term: Spectral type
+    also: [spectral class, OBAFGKM]
+    short: "The class a star is put in from the pattern of lines in its light. The main classes, from hottest to coolest, are O, B, A, F, G, K and M."
+    more: "The Sun is type G2."
+    see: [spectrum, spectral-line, hr-diagram]
+    lesson: colour-and-brightness
+  - id: hr-diagram
+    term: Hertzsprung-Russell diagram
+    also: [HR diagram, H-R diagram]
+    short: "A chart of stars with temperature along the bottom and true brightness up the side. Most stars fall on one band, the main sequence."
+    see: [main-sequence, luminosity, spectral-type, red-giant, white-dwarf]
+    lesson: colour-and-brightness
+  - id: nebula
+    term: Nebula
+    also: [nebulae]
+    short: "A cloud of gas and dust in space. Some are where stars form and some are what dying stars throw off."
+    see: [protostar, supernova]
+    lesson: how-stars-live-and-die
+  - id: protostar
+    term: Protostar
+    short: "A star in the making: a ball of gas still shrinking and heating up, before fusion has begun in its core."
+    see: [nebula, protoplanetary-disc, nuclear-fusion]
+    lesson: how-stars-live-and-die
+  - id: red-giant
+    term: Red giant
+    short: "A star near the end of its life that has swollen to many times its old size and cooled to a red glow."
+    more: "The Sun will become one in about 5 billion years."
+    see: [main-sequence, white-dwarf, hr-diagram]
+    lesson: how-stars-live-and-die
+  - id: white-dwarf
+    term: White dwarf
+    short: "The hot, dense core left behind when a star like the Sun dies: about the size of the Earth, and no longer making energy."
+    see: [red-giant, supernova, density]
+    lesson: how-stars-live-and-die
+  - id: supernova
+    term: Supernova
+    also: [supernovae]
+    short: "The explosion of a star. For a few weeks it can outshine a whole galaxy."
+    more: "The commonest kind happens when the core of a star of more than about 8 Suns collapses."
+    see: [nebula, white-dwarf, nuclear-fusion]
+    lesson: how-stars-live-and-die
