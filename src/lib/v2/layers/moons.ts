@@ -38,6 +38,8 @@ interface Entry {
   line?: THREE.Line;
   lineJd: number;
   hidden: boolean;
+  /** False when nobody can say where on its orbit the moon is today: it gets a line and no point. */
+  placed: boolean;
 }
 
 export interface MoonsLayer extends Layer {
@@ -58,7 +60,7 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
     .filter((b) => b.kind === 'moon' && b.parent && b.orbit.type === 'kepler')
     .map((b) => ({
       body: b, orbit: b.orbit as KeplerOrbit, parent: b.parent!, measured: b.meanRadiusKm !== undefined,
-      radiusM: (b.meanRadiusKm ?? ASSUMED_RADIUS_KM) * KM, lineJd: NaN, hidden: false,
+      radiusM: (b.meanRadiusKm ?? ASSUMED_RADIUS_KM) * KM, lineJd: NaN, hidden: false, placed: !!(b.orbit as KeplerOrbit).fit,
     }));
   const n = moons.length;
   const parents = [...new Set(moons.map((m) => m.parent))];
@@ -199,7 +201,7 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
       const pr = prel.get(m.parent);
       const o = k * 3, q = k * 4;
       const ball = balls.get(m.body.id);
-      if (!pr || m.hidden) { look[q] = look[q + 1] = look[q + 2] = 0; look[q + 3] = 0; if (ball) ball.visible = false; continue; }
+      if (!pr || m.hidden || !m.placed) { look[q] = look[q + 1] = look[q + 2] = 0; look[q + 3] = 0; if (ball) ball.visible = false; continue; }
       keplerPosition(m.orbit, m.parent, timeJd, ecl);
       eclToEngine(ecl[0], ecl[1], ecl[2], off);
       const x = pr[0] + off[0] * KM, y = pr[1] + off[1] * KM, z = pr[2] + off[2] * KM;
