@@ -98,8 +98,10 @@ const list = bodies.map((b) => {
       <button class="t" id="now" type="button">Today</button>
       <span class="sep" aria-hidden="true"></span>
       <span class="speeds" role="group" aria-label="How fast time runs">
+        <button class="t" data-speed="0.0000115741" type="button" aria-pressed="true">real time</button>
+        <span class="per">or</span>
         <button class="t" data-speed="1" type="button" aria-pressed="false">a day</button>
-        <button class="t" data-speed="10" type="button" aria-pressed="true">10 days</button>
+        <button class="t" data-speed="10" type="button" aria-pressed="false">10 days</button>
         <button class="t" data-speed="100" type="button" aria-pressed="false">100 days</button>
         <button class="t" data-speed="365.25" type="button" aria-pressed="false">a year</button>
         <span class="per">a second</span>
@@ -257,7 +259,8 @@ const list = bodies.map((b) => {
   .clock .t { color: var(--ink-soft); padding: 4px 0; border-bottom: 1px solid transparent; }
   .clock .t:hover { color: var(--ink); }
   .clock .t[aria-pressed='true'][data-speed] { color: var(--accent); border-bottom-color: rgba(243,201,139,.55); }
-  .clock .speeds { display: inline-flex; gap: .8rem; align-items: baseline; }
+  .clock .speeds { display: inline-flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline; }
+  .clock .t, .clock .per { white-space: nowrap; }
   .clock .per { color: var(--ink-faint); }
   .clock .zoom { display: inline-flex; gap: .8rem; margin-left: auto; }
   .orrery button:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }

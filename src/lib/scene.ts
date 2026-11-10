@@ -164,12 +164,18 @@ export function createSolarSystem(opts: SolarSystemOptions) {
   const stars = createStars(6000);
   scene.add(stars.group);
   const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 12000);
-  camera.position.set(0, 55, 85);
 
   // ---- scale modes -------------------------------------------------------
   let trueDistance = false;
   // Compressed: r_scene = 12 * sqrt(au). True: 1 au = 12 scene units * ... see below
   const distScale = (au: number) => (trueDistance ? au * 6 : 12 * Math.sqrt(au));
+  // the overview: far enough back that Neptune's orbit fits across the screen (on a phone, as much as is still readable)
+  const overview = () => {
+    const R = distScale(30.1) * 1.12;
+    const hf = Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect);
+    const d = Math.max(trueDistance ? 240 : 101, Math.min(R / Math.tan(hf), trueDistance ? 560 : 220));
+    return new THREE.Vector3(0, 55, 85).setLength(d);
+  };
   // Body sizes are exaggerated so planets stay visible: roughly log of radius.
   const sizeFor = (slug: string) => {
     const r = radiusKm(slug);
@@ -188,7 +194,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
   const ringSun = new THREE.Vector3(1, 0, 0);
   let saturnRing: THREE.Mesh | null = null;
 
-  const LABEL_ORDER = ['sun', 'jupiter', 'saturn', 'neptune', 'uranus', 'earth', 'venus', 'mars', 'mercury'];
+  const LABEL_ORDER = ['sun', 'earth', 'jupiter', 'saturn', 'neptune', 'uranus', 'venus', 'mars', 'mercury'];
   type Entry = { body: SceneBody; group: THREE.Group; orbit?: THREE.Line; label: HTMLElement; radius: number };
   const entries = new Map<string, Entry>();
 
@@ -238,7 +244,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
 
   // ---- time --------------------------------------------------------------
   let simTime = Date.now();
-  let daysPerSecond = 10;
+  let daysPerSecond = 1 / 86400; // real time until someone speeds it up
   let playing = true;
   let T = centuriesSinceJ2000(simTime);
 
@@ -284,7 +290,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       controls.target.copy(target);
     } else {
       controls.minDistance = 0.8;
-      followOffset.set(0, 55, 85);
+      followOffset.copy(overview());
       flyFrom.copy(camera.position);
       controls.target.set(0, 0, 0);
       flying = flyDur = 1.4;
@@ -316,7 +322,9 @@ export function createSolarSystem(opts: SolarSystemOptions) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    if (!framed) { camera.position.copy(overview()); framed = true; }
   }
+  let framed = false;
   new ResizeObserver(resize).observe(container);
   resize();
 
@@ -398,9 +406,9 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       // right of the body if there is room, otherwise left
       let x = cx + pr + 7;
       let box: [number, number, number, number] = [x, y - lh / 2, x + lw, y + lh / 2];
-      if (hits(box)) { x = cx - pr - 7 - lw; box = [x, y - lh / 2, x + lw, y + lh / 2]; }
+      if (hits(box) || box[2] > w - 8) { x = cx - pr - 7 - lw; box = [x, y - lh / 2, x + lw, y + lh / 2]; }
       const clash = hits(box);
-      const visible = v3.z < 1 && v3.z > -1 && e.body.slug !== selected && !clash && pr < h * 0.25;
+      const visible = slug !== 'sun' && v3.z < 1 && v3.z > -1 && e.body.slug !== selected && !clash && pr < h * 0.25;
       if (visible) placed.push(box);
       e.label.style.display = visible ? '' : 'none';
       e.label.style.transform = `translate(${x}px, ${y}px) translate(0, -50%)`;
@@ -428,7 +436,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
     setTrueDistance(v: boolean) {
       trueDistance = v;
       rebuildOrbits();
-      if (!selected) { camera.position.set(0, v ? 120 : 55, v ? 200 : 85); }
+      if (!selected) { followOffset.copy(overview()); flyFrom.copy(camera.position); flying = flyDur = 1.4; }
       controls.maxDistance = v ? 2500 : 1200;
     },
     dive() {
