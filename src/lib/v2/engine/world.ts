@@ -233,8 +233,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     try { return fn(); } catch (e) { console.error(`${what} failed and was removed`, e); drop(); return undefined; }
   }
   const sizeLayer = (l: Layer) => {
-    const x = l as Layer & { setView?(h: number, f: number): void };
-    guarded(`layer ${l.name}`, () => (l.resize ?? x.setView)?.call(l, o.canvas.clientHeight, camera.fov), () => layers.delete(l));
+    guarded(`layer ${l.name}`, () => l.resize?.(o.canvas.clientHeight, camera.fov), () => layers.delete(l));
   };
   const abort = (msg: string) => Object.assign(new Error(msg), { name: 'AbortError' });
   const rel = (id: string): V3 | null => {
@@ -363,10 +362,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   function fmtRes(m: number) { return m >= 1000 ? `${(m / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km` : `${Math.round(m)} m`; }
 
+  const canFlyTo = (id: string) => id === 'sun' || !!planetPos[id] || !!system.pos(id);
   const engine: Engine = {
+    canFlyTo,
     flyTo(view: View, opts) {
       const id = typeof view.target === 'string' ? view.target : '';
-      if (!(id === 'sun' || planetPos[id] || system.pos(id))) return Promise.reject(new Error(`cannot fly to ${id || 'that place yet'}`));
+      if (!canFlyTo(id)) return Promise.reject(new Error(`cannot fly to ${id || 'that place yet'}`));
       // only now, with somewhere to go, does the flight in progress give way
       if (pendingFly) { pendingFly.reject(abort('replaced by another flight')); pendingFly = null; }
       if (view.timeIso) system.setTime(view.timeIso);

@@ -56,6 +56,8 @@ export interface Engine {
    * carries on. opts.secs of 0 arrives at once.
    */
   flyTo(view: View, opts?: { secs?: number }): Promise<void>;
+  /** Whether flyTo can go there now, so nothing offers a link that goes nowhere. */
+  canFlyTo(id: string): boolean;
   /** Add a layer. Returns a function that removes it. */
   registerLayer(layer: Layer): () => void;
   /** Listen for changes of place. Returns a function that stops listening. */

@@ -94,7 +94,20 @@ import '@fontsource/ibm-plex-mono/400.css';
             $('tech').textContent = r.tech;
             $('gen').textContent = r.note ?? '';
           },
-          onArrive() { document.body.classList.add('in', 'arrived'); },
+          onArrive() {
+            document.body.classList.add('in', 'arrived');
+            // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
+            const go = params.get('go');
+            // with ?low the engine arrives on its first frame, before createWorld has returned
+            const goWhenReady = () => {
+              if (!world) { setTimeout(goWhenReady, 50); return; }
+              if (go && world.canFlyTo(go)) {
+                const d = Number(params.get('d'));
+                world.flyTo({ target: go, distanceKm: d > 0 ? d : undefined }).catch(() => {});
+              }
+            };
+            if (go) goWhenReady();
+          },
           onLost() {
             // WebGPU that dies straight after starting is a driver problem: try once more on WebGL 2
             const early = performance.now() - startedAt < 15_000;
