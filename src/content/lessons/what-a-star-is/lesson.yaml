@@ -1,0 +1,9 @@
+title: What a star is
+strand: stars
+order: 1
+summary: "A star is a ball of gas heavy enough to light its own fire. How heavy it is decides almost everything else about it."
+scene: "The Sun beside a red dwarf, a brown dwarf and Jupiter, all to the same scale, then pulled back to show the Sun beside a blue giant."
+view: { target: sun, distanceKm: 6000000 }
+terms: [star, nuclear-fusion, plasma, luminosity, brown-dwarf, red-dwarf, main-sequence]
+needs: [what-the-sun-is]
+next: [colour-and-brightness, how-stars-live-and-die]
