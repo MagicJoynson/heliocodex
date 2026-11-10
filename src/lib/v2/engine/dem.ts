@@ -1,5 +1,6 @@
 import type { HeightSource } from './heights';
 import { createNoise3 } from './noise';
+import { createCraters } from './craters';
 import { FACES, faceDir } from './cube';
 import type { V3 } from './vec';
 
@@ -12,8 +13,10 @@ import type { V3 } from './vec';
  * One data tile is 129 x 129 samples with a shared edge and a 2-sample border (133 x 133 signed
  * 16-bit values), and holds enough for terrain tiles two levels deeper than itself. Below the
  * finest data level the ground between samples is a smooth curve through the measurements, with
- * generated detail on top, scaled by how rough the measured ground is nearby. That generated part
- * is not real, and `resolution` says where it starts so the page can say so.
+ * generated detail on top: gentle bumps scaled by how rough the measured ground is nearby, and on
+ * airless bodies small craters as well (craters.ts). That generated part is not real. It only ever
+ * holds shapes narrower than the gap between measurements, so it cannot disagree with them, and
+ * `resolution` says where it starts so the page can say so.
  *
  * Body frame: +y is the north pole, +x is latitude 0 longitude 0, east is positive.
  */
@@ -33,6 +36,11 @@ export interface DemSpec {
   maxHeight: number;
   /** seed for the generated detail below the data's resolution */
   seed?: number;
+  /**
+   * What the generated detail below the data's resolution is made of: 'bumps' alone, or 'craters'
+   * as well (airless, cratered ground such as the Moon's). From meta.json, or chosen by body.
+   */
+  detail?: 'bumps' | 'craters';
 }
 
 /** Read a body's meta.json and turn it into the spec the terrain needs. */
@@ -41,7 +49,8 @@ export async function loadDemSpec(baseUrl: string, body: string): Promise<DemSpe
   const res = await fetch(`${base}/${body}/height/meta.json`);
   if (!res.ok) throw new Error(`no height data for ${body} (${res.status})`);
   const m = await res.json();
-  return { kind: 'dem', body, radius: m.radius, baseUrl: base, maxLevel: m.maxLevel, scale: m.scale, offset: m.offset, minHeight: m.minHeight, maxHeight: m.maxHeight };
+  return { kind: 'dem', body, radius: m.radius, baseUrl: base, maxLevel: m.maxLevel, scale: m.scale, offset: m.offset, minHeight: m.minHeight, maxHeight: m.maxHeight,
+    detail: m.detail === 'craters' || m.detail === 'bumps' ? m.detail : body === 'moon' ? 'craters' : 'bumps' };
 }
 
 const TILE = 128; // intervals per data tile side
@@ -98,6 +107,8 @@ export function createDem(spec: DemSpec): HeightSource {
   const quarter = (radius * Math.PI) / 2; // arc length across a cube face
   const spacing = quarter / (TILE * 2 ** maxLevel); // metres between real samples at the finest level
   const noise = createNoise3(spec.seed ?? 31);
+  // generated craters come no wider than the gap between measurements; wider ones are in the data
+  const craters = spec.detail === 'craters' ? createCraters(radius, spacing, spec.seed ?? 31) : null;
 
   const tiles = new Map<number, Int16Array>();
   const loading = new Map<number, Promise<void>>();
@@ -213,20 +224,23 @@ export function createDem(spec: DemSpec): HeightSource {
     if (detail < spacing && hit.level === maxLevel) {
       if (!dir) dir = faceDir(face, s, t, d3);
       const x = dir[0] * radius, y = dir[1] * radius, z = dir[2] * radius;
-      let amp = 0.1 * roughness(hit.u, hit.v) + 0.002 * spacing;
+      // (where craters are generated too they carry most of the shape, so the bumps are halved)
+      let amp = (0.1 * roughness(hit.u, hit.v) + 0.002 * spacing) * (craters ? 0.5 : 1);
       for (let w = spacing * 2; w > detail * 2 && w > 1.5; w *= 0.5) {
         const f = 1 / w;
         h += noise(x * f, y * f, z * f) * amp;
         amp *= 0.57;
       }
+      if (craters) h += craters(dir[0], dir[1], dir[2], detail);
     }
     return h;
   }
 
   return {
     radius,
-    minHeight: spec.minHeight,
-    maxHeight: spec.maxHeight,
+    // generated craters can dig a little below the lowest measurement and raise rims above the highest
+    minHeight: spec.minHeight - (craters ? 0.12 * spacing : 0),
+    maxHeight: spec.maxHeight + (craters ? 0.03 * spacing : 0),
     resolution: spacing,
     ready,
     height(dir: V3, detail: number) {

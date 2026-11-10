@@ -391,6 +391,8 @@ def main():
         "samples": TILE + 1,
         "border": BORDER,
         "spacingMetres": round(spacing, 1),
+        # what the site may generate between the measurements (and must label as generated)
+        "detail": "craters" if cfg.body == "moon" else "bumps",
         "encoding": "int16 little-endian, rows of t then columns of s" + (", gzip" if a.gzip else ""),
         "frame": "+y north pole, +x latitude 0 longitude 0, east positive: x = cos(lat)cos(lon), y = sin(lat), z = -cos(lat)sin(lon)",
         "tiles": total,
