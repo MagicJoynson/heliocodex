@@ -6,4 +6,4 @@ scene: "The stars of Orion hang in the dark. Below the three stars of the belt, 
 view: { target: night-sky }
 terms: [nebula, molecular-cloud, protostar, nuclear-fusion, protoplanetary-disc, planetary-nebula, supernova, ultraviolet]
 needs: [what-a-star-is]
-next: [how-stars-live-and-die, how-the-planets-formed]
+next: [star-clusters, how-stars-live-and-die, how-the-planets-formed]
