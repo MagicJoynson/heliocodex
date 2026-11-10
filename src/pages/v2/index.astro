@@ -99,6 +99,8 @@ import Margin from '../../components/v2/Margin.astro';
             }
             $('tech').textContent = r.tech;
             $('gen').textContent = r.note ?? '';
+            // the ground test means nothing among the stars
+            document.body.classList.toggle('far', !!r.far);
           },
           onArrive() {
             document.body.classList.add('in', 'arrived');
@@ -255,6 +257,7 @@ import Margin from '../../components/v2/Margin.astro';
       .help p { font: 300 1rem/1.55 var(--serif); color: var(--soft); margin: 0 0 .6rem; }
       .help b { font: 400 .74rem/1 var(--mono); letter-spacing: .08em; color: var(--ink); }
       .help .aim { font-style: italic; color: var(--faint); }
+      body.far .help .aim { display: none; }
       .coarse-only { display: none; }
       @media (pointer: coarse) { .coarse-only { display: block; } .fine-only { display: none; } }
       .pad { position: fixed; right: clamp(16px, 4vw, 40px); bottom: max(clamp(90px, 14vh, 130px), calc(env(safe-area-inset-bottom) + 80px)); width: 64px; height: 150px; border: 1px solid rgba(236,231,220,.28); border-radius: 32px; display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 0; touch-action: none; user-select: none; -webkit-user-select: none; }

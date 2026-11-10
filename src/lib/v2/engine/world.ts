@@ -248,7 +248,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     'milky-way': 'Our galaxy’s shape is a model built from measurements; we cannot see it from outside',
     'local-group': 'Andromeda, Triangulum and the Magellanic Clouds are models, placed and tilted as measured',
     'cosmic-web': 'Each point is a measured galaxy; distances come from redshift, which stretches clusters towards us',
-    cmb: 'The oldest light’s differences, a few parts in 100,000, are shown far stronger than they are',
+    cmb: 'You are outside the sphere of all we can see, 46 billion light years in radius. Nothing is really this far away, and the tiny differences in its light are shown far stronger than they are',
   };
   function placeAt(fromSun: number, nearId: string): { id: string; band: Context['band'] } | null {
     const pc = fromSun / PC;
