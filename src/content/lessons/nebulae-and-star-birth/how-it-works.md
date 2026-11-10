@@ -5,11 +5,12 @@ sources:
   - { label: "NASA, Messier 42 (the Orion Nebula)", url: "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-42/" }
   - { label: "Menten et al. 2007, Astronomy & Astrophysics 474, 515", url: "https://doi.org/10.1051/0004-6361:20078247" }
   - { label: "NASA Space Place, What is a nebula?", url: "https://spaceplace.nasa.gov/nebula/en/" }
+  - { label: "NIST, CODATA 2022: the Loschmidt constant", url: "https://physics.nist.gov/cgi-bin/cuu/Value?n0std" }
 lastChecked: 2026-11-10
 ---
 A nebula is a cloud of gas, mostly hydrogen and helium, mixed with fine dust. The word covers two very different things: clouds where stars are forming, and clouds thrown out by stars that are dying.
 
-**How thin the gas is.** The gas between the stars can be as thin as one atom in every ten cubic centimetres. The air you breathe holds about 10 million trillion molecules in a single cubic centimetre. A nebula is a place where that gas has gathered thickly enough to make a cloud.
+**How thin the gas is.** The gas between the stars can be as thin as one atom in every ten cubic centimetres. The air you breathe at sea level holds about 25 million trillion molecules in a single cubic centimetre. A nebula is a place where that gas has gathered thickly enough to make a cloud.
 
 **Five kinds.** Nebulae are sorted by how they are seen.
 
