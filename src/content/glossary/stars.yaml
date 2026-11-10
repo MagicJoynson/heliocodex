@@ -56,6 +56,23 @@ terms:
     short: "A star in the making: a ball of gas still shrinking and heating up, before fusion has begun in its core."
     see: [nebula, protoplanetary-disc, nuclear-fusion]
     lesson: how-stars-live-and-die
+  - id: star-cluster
+    term: Star cluster
+    short: "A group of stars that formed from the same cloud and are held together by gravity."
+    see: [open-cluster, globular-cluster, nebula]
+    lesson: star-clusters
+  - id: open-cluster
+    term: Open cluster
+    short: "A loose group of a few dozen to a few thousand stars, usually young, whose members slowly scatter."
+    more: "The Pleiades are one. The Milky Way has more than a thousand."
+    see: [star-cluster, globular-cluster]
+    lesson: star-clusters
+  - id: globular-cluster
+    term: Globular cluster
+    short: "A tight ball of several thousand to millions of very old stars, held firmly together by gravity."
+    more: "The Milky Way has over 150 of them, in its outskirts."
+    see: [star-cluster, open-cluster, milky-way]
+    lesson: star-clusters
   - id: red-giant
     term: Red giant
     short: "A star near the end of its life that has swollen to many times its old size and cooled to a red glow."

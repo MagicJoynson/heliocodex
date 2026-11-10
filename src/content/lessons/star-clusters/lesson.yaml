@@ -1,0 +1,9 @@
+title: Star clusters
+strand: stars
+order: 8
+summary: "Stars are born in groups. Some groups drift apart within the galaxy's disc, and some are tight balls of very old stars that have held together for most of the age of the universe."
+scene: "The stars of the night sky seen from outside. One small knot of blue-white stars, the Pleiades, keeps together while the patterns round it come apart."
+view: { target: night-sky }
+terms: [star-cluster, open-cluster, globular-cluster, nebula, gravity, milky-way, white-dwarf, infrared]
+needs: [nebulae-and-star-birth]
+next: [the-milky-way, how-stars-live-and-die]
