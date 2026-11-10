@@ -33,7 +33,7 @@ A different idea is that there is no extra matter and that gravity behaves diffe
 
 **Dark energy**
 
-**The discovery.** The gravity of everything in the universe should slow the expansion down. In 1998 two teams set out to measure by how much. They used one kind of exploding star, a white dwarf blown apart, which always reaches nearly the same true brightness and so shows its distance. The far ones were fainter than they should have been. The expansion is not slowing. It has been speeding up for roughly the last 5 to 6 billion years. The work won a Nobel Prize in 2011.
+**The discovery.** The gravity of everything in the universe should slow the expansion down. In 1998 two teams set out to measure by how much. They used one kind of exploding star, a white dwarf blown apart, which always reaches nearly the same true brightness and so shows its distance. The far ones were fainter than they should have been. The expansion is not slowing. It has been speeding up for about the last 6 billion years. The work won a Nobel Prize in 2011.
 
 **What it might be.** The simplest answer is that empty space itself has a fixed amount of energy in every cubic metre. As space grows there is more of it, so its push comes to dominate. Einstein's equations have room for exactly such a term. The trouble is that attempts to work out its size from the physics of particles give answers that are wrong by an absurd margin.
 
