@@ -156,7 +156,8 @@ void main(){
         void main(){
           vP = position.xy * scale;
           vec4 mv = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
-          mv.xy += position.xy * scale;
+          // the card is sized in units of the star's radius, whatever the star is scaled to
+          mv.xy += position.xy * scale * length(modelMatrix[0].xyz);
           gl_Position = projectionMatrix * mv;
           #include <logdepthbuf_vertex>
         }`,
@@ -177,6 +178,7 @@ void main(){
   );
   glare.frustumCulled = false;
   glare.renderOrder = 3;
+  glare.raycast = () => {};
   group.add(glare);
 
   // the engine expects a sky dome; space here stays black

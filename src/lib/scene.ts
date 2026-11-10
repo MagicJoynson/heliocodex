@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { positionAU, orbitPath, centuriesSinceJ2000 } from './orbit';
 import facts from '../data/facts.json';
+import { createStars } from './journey/stars';
+import { createStar, type Spot } from './journey/star';
+import { createRingTexture, createRingMesh } from './journey/rings';
 
 const AU_KM = 149597870.7;
 const C_KMS = 299792.458;
@@ -39,21 +42,8 @@ function radiusKm(slug: string): number {
   return (facts.planets as any)[slug].physical.radius_mean_km as number;
 }
 
-function glowTexture(color: string) {
-  const c = document.createElement('canvas');
-  c.width = c.height = 256;
-  const g = c.getContext('2d')!;
-  const grd = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-  grd.addColorStop(0, color + 'ff');
-  grd.addColorStop(0.2, color + '66');
-  grd.addColorStop(1, color + '00');
-  g.fillStyle = grd;
-  g.fillRect(0, 0, 256, 256);
-  return new THREE.CanvasTexture(c);
-}
-
 /** One planet or the Sun as a lit sphere, with Saturn's rings and Earth's clouds. */
-export function makeBodyMesh(slug: string, radius: number, tiltDeg: number): THREE.Group {
+export function makeBodyMesh(slug: string, radius: number, tiltDeg: number, noRing = false): THREE.Group {
   const group = new THREE.Group();
   const geo = new THREE.SphereGeometry(radius, 64, 48);
   let mat: THREE.Material;
@@ -76,7 +66,7 @@ export function makeBodyMesh(slug: string, radius: number, tiltDeg: number): THR
     clouds.name = 'clouds';
     tilt.add(clouds);
   }
-  if (slug === 'saturn') {
+  if (slug === 'saturn' && !noRing) {
     const inner = radius * 1.24;
     const outer = radius * 2.27;
     const rg = new THREE.RingGeometry(inner, outer, 128, 1);
@@ -99,16 +89,6 @@ export function makeBodyMesh(slug: string, radius: number, tiltDeg: number): THR
   group.add(tilt);
   group.userData.surface = mesh;
   return group;
-}
-
-function starfield(): THREE.Mesh {
-  const t = tex('2k_stars_milky_way.jpg');
-  const m = new THREE.Mesh(
-    new THREE.SphereGeometry(5000, 48, 32),
-    new THREE.MeshBasicMaterial({ map: t, side: THREE.BackSide, color: 0x777777, depthWrite: false }),
-  );
-  m.name = 'stars';
-  return m;
 }
 
 // ---------------------------------------------------------------------------
@@ -180,9 +160,10 @@ export function createSolarSystem(opts: SolarSystemOptions) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x03040a);
-  scene.add(starfield());
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.01, 12000);
+  scene.background = new THREE.Color(0x020203);
+  const stars = createStars(6000);
+  scene.add(stars.group);
+  const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 12000);
   camera.position.set(0, 55, 85);
 
   // ---- scale modes -------------------------------------------------------
@@ -196,14 +177,18 @@ export function createSolarSystem(opts: SolarSystemOptions) {
     return 0.28 + 0.55 * Math.log10(r / 2400);
   };
 
-  scene.add(new THREE.AmbientLight(0x1a2233, 0.8));
-  const sunLight = new THREE.PointLight(0xfff0d8, 6, 0, 0.35);
+  // nearly all the light comes from the Sun, so the night sides stay dark
+  scene.add(new THREE.AmbientLight(0x1a1d24, 0.35));
+  const sunLight = new THREE.PointLight(0xfff2e2, 7, 0, 0.3);
   scene.add(sunLight);
+  // the Sun itself: the same glowing photosphere as on its own page, with a few spots
+  const SPOTS: Spot[] = [[12, 10, 9000, 20000], [-16, 60, 7000, 16000], [20, -50, 5000, 12000], [-9, 150, 8000, 18000]];
+  const sunStar = createStar(SPOTS);
+  const ringTex = createRingTexture();
+  const ringSun = new THREE.Vector3(1, 0, 0);
+  let saturnRing: THREE.Mesh | null = null;
 
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTexture('#ffb347'), blending: THREE.AdditiveBlending, depthWrite: false }));
-  glow.scale.setScalar(16);
-  scene.add(glow);
-
+  const LABEL_ORDER = ['sun', 'jupiter', 'saturn', 'neptune', 'uranus', 'earth', 'venus', 'mars', 'mercury'];
   type Entry = { body: SceneBody; group: THREE.Group; orbit?: THREE.Line; label: HTMLElement; radius: number };
   const entries = new Map<string, Entry>();
 
@@ -218,14 +203,27 @@ export function createSolarSystem(opts: SolarSystemOptions) {
 
   for (const b of opts.bodies) {
     const radius = sizeFor(b.slug);
-    const group = makeBodyMesh(b.slug, radius, b.tiltDeg);
+    let group: THREE.Group;
+    if (b.slug === 'sun') {
+      group = new THREE.Group();
+      sunStar.group.scale.setScalar(radius);
+      group.add(sunStar.group);
+    } else {
+      group = makeBodyMesh(b.slug, radius, b.tiltDeg, true);
+      if (b.slug === 'saturn') {
+        saturnRing = createRingMesh(ringTex, ringSun);
+        saturnRing.scale.setScalar(radius);
+        saturnRing.raycast = () => {};
+        (group.children[0] as THREE.Group).add(saturnRing);
+      }
+    }
     group.userData.slug = b.slug;
     scene.add(group);
     const label = addLabel(b.name);
     label.addEventListener('click', () => select(b.slug));
     let orbit: THREE.Line | undefined;
     if (b.slug !== 'sun') {
-      orbit = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: new THREE.Color(b.color), transparent: true, opacity: 0.45 }));
+      orbit = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xb9b2a4, transparent: true, opacity: 0.2, depthWrite: false }));
       scene.add(orbit);
     }
     entries.set(b.slug, { body: b, group, orbit, label, radius });
@@ -257,8 +255,12 @@ export function createSolarSystem(opts: SolarSystemOptions) {
   let selected: string | null = null;
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
+  controls.enablePan = false;
+  // the page scrolls past the model, so the wheel must not be caught here; zoom is by pinch or the text controls
+  controls.enableZoom = false;
   controls.minDistance = 0.8;
   controls.maxDistance = 1200;
+  controls.rotateSpeed = 0.6;
   const followOffset = new THREE.Vector3();
   let flying = 0; // seconds remaining on a fly-to
   let flyDur = 1.2;
@@ -266,7 +268,10 @@ export function createSolarSystem(opts: SolarSystemOptions) {
 
   function select(slug: string | null) {
     selected = slug;
-    for (const [s, e] of entries) e.label.classList.toggle('is-selected', s === slug);
+    for (const [s, e] of entries) {
+      e.label.classList.toggle('is-selected', s === slug);
+      if (e.orbit) (e.orbit.material as THREE.LineBasicMaterial).opacity = s === slug ? 0.6 : 0.2;
+    }
     if (slug) {
       const e = entries.get(slug)!;
       const target = e.group.position.clone();
@@ -355,16 +360,50 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       camera.position.lerpVectors(flyFrom, dest, ease);
     }
     controls.update();
+    stars.group.position.copy(camera.position);
+    sunStar.update(camera, 10, now / 1000);
+    if (saturnRing) {
+      // the Sun's direction in the ring's own frame, for its lighting and Saturn's shadow on it
+      const sat = entries.get('saturn')!.group;
+      ringSun.copy(sat.position).negate().normalize();
+      const q = new THREE.Quaternion();
+      saturnRing.getWorldQuaternion(q);
+      ringSun.applyQuaternion(q.invert());
+    }
     renderer.render(scene, camera);
 
     // labels
+    // each name sits just right of its body; where two would collide, the bigger body keeps its name
     const w = container.clientWidth, h = container.clientHeight;
-    for (const e of entries.values()) {
+    const focal = (h / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const placed: [number, number, number, number][] = [];
+    {
+      // keep names off the Sun's disc
+      const sun = entries.get('sun')!;
+      v3.copy(sun.group.position).project(camera);
+      const r = (sun.radius / Math.max(camera.position.distanceTo(sun.group.position), 1e-3)) * focal;
+      const sx = ((v3.x + 1) / 2) * w, sy = ((1 - v3.y) / 2) * h;
+      placed.push([sx - r, sy - r, sx + r, sy + r]);
+    }
+    for (const slug of LABEL_ORDER) {
+      const e = entries.get(slug);
+      if (!e) continue;
       v3.copy(e.group.position).project(camera);
-      const visible = v3.z < 1 && v3.z > -1;
+      const dist = camera.position.distanceTo(e.group.position);
+      const pr = (e.radius / Math.max(dist, 1e-3)) * focal;
+      const cx = ((v3.x + 1) / 2) * w, y = ((1 - v3.y) / 2) * h;
+      const lw = e.body.name.length * 7.6 + 16, lh = 22;
+      const others = placed.slice(slug === 'sun' ? 1 : 0);
+      const hits = (bx: [number, number, number, number]) => others.some((b) => bx[0] < b[2] && bx[2] > b[0] && bx[1] < b[3] && bx[3] > b[1]);
+      // right of the body if there is room, otherwise left
+      let x = cx + pr + 7;
+      let box: [number, number, number, number] = [x, y - lh / 2, x + lw, y + lh / 2];
+      if (hits(box)) { x = cx - pr - 7 - lw; box = [x, y - lh / 2, x + lw, y + lh / 2]; }
+      const clash = hits(box);
+      const visible = v3.z < 1 && v3.z > -1 && e.body.slug !== selected && !clash && pr < h * 0.25;
+      if (visible) placed.push(box);
       e.label.style.display = visible ? '' : 'none';
-      e.label.style.transform = `translate(${((v3.x + 1) / 2) * w}px, ${((1 - v3.y) / 2) * h}px) translate(-50%, -24px)`;
-      e.label.style.display = visible && e.body.slug !== selected ? '' : 'none';
+      e.label.style.transform = `translate(${x}px, ${y}px) translate(0, -50%)`;
     }
     tickAccum += dt;
     if (tickAccum > 0.1) {
@@ -399,6 +438,13 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       followOffset.setLength(e.radius * 1.35);
       flyFrom.copy(camera.position);
       flying = flyDur = 1.1;
+    },
+    zoom(f: number) {
+      const off = camera.position.clone().sub(controls.target);
+      const len = THREE.MathUtils.clamp(off.length() * f, controls.minDistance, controls.maxDistance);
+      followOffset.copy(off.setLength(len));
+      flyFrom.copy(camera.position);
+      flying = flyDur = 0.6;
     },
     stepDays(d: number) { simTime += d * 86400000; T = centuriesSinceJ2000(simTime); rebuildOrbits(); },
   };
