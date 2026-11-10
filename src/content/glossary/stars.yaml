@@ -65,8 +65,19 @@ terms:
   - id: white-dwarf
     term: White dwarf
     short: "The hot, dense core left behind when a star like the Sun dies: about the size of the Earth, and no longer making energy."
-    see: [red-giant, supernova, density]
-    lesson: how-stars-live-and-die
+    see: [red-giant, planetary-nebula, chandrasekhar-limit, black-dwarf, density]
+    lesson: white-dwarfs
+  - id: chandrasekhar-limit
+    term: Chandrasekhar limit
+    short: "The most mass a white dwarf can have: about 1.4 times the mass of the Sun."
+    more: "Above it the electrons that hold a white dwarf up can no longer carry the weight. Named after Subrahmanyan Chandrasekhar, who worked it out."
+    see: [white-dwarf, neutron-star, supernova]
+    lesson: white-dwarfs
+  - id: black-dwarf
+    term: Black dwarf
+    short: "A white dwarf that has cooled until it no longer shines. None is known, and the universe is thought to be too young to hold many yet."
+    see: [white-dwarf]
+    lesson: white-dwarfs
   - id: supernova
     term: Supernova
     also: [supernovae]
