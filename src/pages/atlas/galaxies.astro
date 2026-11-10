@@ -43,6 +43,7 @@ function field(halfKpc: number, nameIf: (g: (typeof groupGalaxies)[number]) => b
 const sats = field(300, (g) => (g.absMag ?? 0) <= -8.5, [250e3, 500e3, 750e3]);
 const group = field(1500, (g) => g.name === 'Andromeda' || (g.absMag ?? 0) <= -13, [1e6, 2e6, 3e6, 4e6]);
 const discR = (halfKpc: number) => (16 / halfKpc) * R;
+const andromeda = groupGalaxies.find((g) => g.name === 'Andromeda')!;
 const outside = groupGalaxies.length - group.inside.length;
 
 // ---- drawing IV: the cosmic web
@@ -55,6 +56,9 @@ const webNames = placeLabels(named, 18, webRings.map((g) => ringLabelBox(g.r, g.
 const offSlab = clusters.filter((c) => !c.inSlab);
 
 // ---- the list
+// millions cut to one decimal, not rounded up, so Andromeda's 2.55 reads 2.5 as it does everywhere else on the site; the catalogue's kiloparsecs sit beside it
+const millions = (ly: number) => (ly >= 1e6 ? `${(Math.floor(ly / 1e5) / 10).toLocaleString('en-GB')} million light years` : fmtLy(ly));
+const kpcText = (kpc: number) => `${Math.round(kpc).toLocaleString('en-GB')} kpc`;
 const sunLight = (absMag: number) => Math.pow(10, 0.4 * (4.83 - absMag));
 const light = (m: number | null) => { if (m === null) return null; const v = sunLight(m); return v >= 1e9 ? `${(v / 1e9).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} billion Suns` : `${(v / 1e6).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} million Suns`; };
 const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?? 0) <= -14).sort((a, b) => a.kpc - b.kpc);
@@ -117,7 +121,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
       <p class="label">Drawing III</p>
       <h2>The Local Group</h2>
       <p class="note">Step back five times. The Milky Way and Andromeda are the two big galaxies of a group about ten million light years wide. Each has its own swarm of small ones, and Triangulum is the third in size.</p>
-      <p class="note">Andromeda is {fmtLy(lyOfKpc(groupGalaxies.find((g) => g.name === 'Andromeda')!.kpc))} away, the furthest thing most people can see without a telescope. It and the Milky Way are falling towards each other.</p>
+      <p class="note">Andromeda is about 2.5 million light years away ({Math.round(andromeda.kpc)} kiloparsecs in the catalogue), the furthest thing most people can see without a telescope. It and the Milky Way are falling towards each other.</p>
       <p class="note">A ring instead of a dot means the catalogue gives no brightness for that galaxy.</p>
       <p class="note scale">The drawing is {fmtLy(lyOfKpc(3000))} across. The catalogue’s other {outside} galaxies are further off than that, just beyond the group. They are in the 3D view.</p>
       <p class="note print-hide"><a href="/v2?go=local-group">See the Local Group in 3D</a></p>
@@ -173,7 +177,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
         {listed.map((g) => (
           <tr>
             <th scope="row"><span class="nm">{nice(g.name)}</span>{g.name === 'Canis Major' && <span class="fit">Astronomers disagree on whether this is a galaxy at all.</span>}</th>
-            <td data-label="Distance from us">{fmtLy(lyOfKpc(g.kpc))}</td>
+            <td data-label="Distance from us">{millions(lyOfKpc(g.kpc))} <span class="deep__kpc">({kpcText(g.kpc)})</span></td>
             <td data-label="Light it gives out">{light(g.absMag) ?? <span class="unknown">not given</span>}</td>
           </tr>
         ))}
