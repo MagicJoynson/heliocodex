@@ -74,3 +74,29 @@ terms:
     more: "A cluster of galaxies can bend the light of galaxies behind it into arcs. How strongly it bends shows how much mass is there, seen or unseen."
     see: [gravity, dark-matter, galaxy-cluster]
     lesson: dark-matter-and-dark-energy
+  - id: cosmic-web
+    term: Cosmic web
+    short: "The pattern galaxies make on the largest scales: clusters joined by long threads, wrapped round nearly empty voids."
+    more: "It formed as gravity drew matter towards wherever there was already slightly more of it."
+    see: [galaxy-cluster, supercluster, void]
+    lesson: the-cosmic-web
+    view: { target: cosmic-web }
+  - id: supercluster
+    term: Supercluster
+    short: "A large collection of galaxy clusters and groups, most of them not held together by gravity."
+    more: "The Milky Way lies on the outer edge of one called Laniakea, about 520 million light years across."
+    see: [galaxy-cluster, local-group, cosmic-web]
+    lesson: the-cosmic-web
+  - id: void
+    term: Void
+    also: [cosmic void]
+    short: "A huge region of space with very few galaxies in it."
+    more: "Voids are the gaps between the threads and walls of the cosmic web."
+    see: [cosmic-web, galaxy-cluster]
+    lesson: the-cosmic-web
+  - id: zone-of-avoidance
+    term: Zone of Avoidance
+    short: "The strip of sky where the disc of our own galaxy hides the galaxies beyond it."
+    more: "Dust and crowded stars in the Milky Way block the view, so maps of distant galaxies have an empty band along it."
+    see: [milky-way, cosmic-web]
+    lesson: the-cosmic-web
