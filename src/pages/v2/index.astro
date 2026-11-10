@@ -47,6 +47,8 @@ import '@fontsource/ibm-plex-mono/400.css';
 
     <div class="pad" id="pad" aria-hidden="true"><span>Fly</span><i></i><span>Back</span></div>
     <p class="tech" id="tech"></p>
+    <p class="gen" id="gen"></p>
+    <nav class="goto" id="goto" aria-label="Fly to"></nav>
 
     <script>
       import { createWorld } from '../../lib/v2/engine/world';
@@ -85,11 +87,12 @@ import '@fontsource/ibm-plex-mono/400.css';
               $('r-v').textContent = fmt(r.alt);
               $('r-k2').textContent = fmtSpeed(r.speed);
             } else {
-              $('r-k').textContent = 'Distance to the test world';
+              $('r-k').textContent = `Distance to ${r.target}`;
               $('r-v').textContent = fmt(r.dist);
               $('r-k2').textContent = '';
             }
             $('tech').textContent = r.tech;
+            $('gen').textContent = r.note ?? '';
           },
           onArrive() { document.body.classList.add('in', 'arrived'); },
           onLost() {
@@ -103,6 +106,21 @@ import '@fontsource/ibm-plex-mono/400.css';
           },
         });
         $('status').textContent = `Ready · ${world.backend} · ${world.depthMode}`;
+        // every moon, where it really is; loaded after the engine is running
+        import('../../lib/v2/layers/moons').then(async ({ createMoonsLayer }) => {
+          const { allBodies } = await import('../../data/bodies/index');
+          world.registerLayer(createMoonsLayer(allBodies));
+        });
+        // testing: ?t=2017-06-01 sets the clock
+        if (params.get('t')) world.setTime(params.get('t'));
+        // testing flyTo: a row of places, shown once you have arrived
+        const goto = $('goto');
+        for (const [id, name] of [['sun', 'Sun'], ['mercury', 'Mercury'], ['venus', 'Venus'], ['earth', 'Earth'], ['moon', 'Moon'], ['mars', 'Test world'], ['jupiter', 'Jupiter'], ['io', 'Io'], ['saturn', 'Saturn'], ['titan', 'Titan'], ['uranus', 'Uranus'], ['neptune', 'Neptune'], ['pluto', 'Pluto']]) {
+          const b = document.createElement('button');
+          b.textContent = name;
+          b.addEventListener('click', () => { world.flyTo({ target: id }).catch(() => {}); });
+          goto.appendChild(b);
+        }
       } catch (e) {
         $('status').textContent = 'This device cannot run the 3D engine. The full site will fall back to the pages you know.';
         console.error(e);
@@ -162,6 +180,12 @@ import '@fontsource/ibm-plex-mono/400.css';
       .aperture:hover .word, .aperture:focus-visible .word { color: var(--warm); }
       .aperture:focus-visible { outline: none; }
       .aperture::after { content: ''; position: absolute; inset: 47%; border-radius: 50%; background: radial-gradient(circle, #fff6e6 0%, rgba(255,214,150,.6) 35%, rgba(255,180,90,0) 70%); opacity: 0; transition: opacity .5s ease .35s, inset .9s cubic-bezier(.6,0,.3,1); }
+      .gen { position: fixed; left: var(--gutter, 24px); bottom: 12px; margin: 0; font: italic 300 .85rem/1.4 var(--serif); color: var(--faint); pointer-events: none; text-shadow: 0 1px 6px #000; }
+      .goto { position: fixed; right: 12px; bottom: 12px; display: none; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: min(560px, 70vw); z-index: 5; }
+      body.arrived .goto { display: flex; }
+      .goto button { font: 400 .68rem/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--soft); background: rgba(10,10,12,.6); border: 1px solid rgba(236,231,220,.18); border-radius: 999px; padding: 7px 10px; cursor: pointer; }
+      .goto button:hover { color: var(--ink, #ece7dc); border-color: rgba(236,231,220,.4); }
+      @media (pointer: coarse) { .goto { bottom: auto; top: 52px; max-width: 70vw; } }
       .note { margin: clamp(28px, 5vh, 48px) 0 0; font: 400 .7rem/1.5 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase; }
 
       /* going through */

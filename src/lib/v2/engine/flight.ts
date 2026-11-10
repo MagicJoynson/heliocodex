@@ -26,6 +26,7 @@ export function createFlight(canvas: HTMLElement) {
   let cruise: Cruise | null = null;
   let cruiseT = 0;
   let speedMul = 1;
+  let lastFloor = 0, lastR = 0, floorOff = 0;
 
   // ---- input
   const keys = new Set<string>();
@@ -142,7 +143,14 @@ export function createFlight(canvas: HTMLElement) {
       // never below the ground
       const rel2 = sub(pos, body.centre);
       const up2 = norm(rel2);
-      const floor = body.radius + body.ground(up2) + 1.7;
+      // finer ground data can arrive and move the floor by tens of metres in one frame; ease such
+      // jumps out over a few tenths of a second instead of jolting the view
+      const target = body.radius + body.ground(up2) + 1.7;
+      if (body.radius === lastR && Math.abs(target - lastFloor) > 5 + len(vel) * dt * 2) floorOff += lastFloor - target;
+      floorOff *= Math.exp(-dt * 6);
+      if (Math.abs(floorOff) < 0.01) floorOff = 0;
+      lastFloor = target; lastR = body.radius;
+      const floor = target + floorOff;
       if (len(rel2) < floor) {
         const p = add(body.centre, scale(up2, floor));
         pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];

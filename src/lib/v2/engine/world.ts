@@ -1,11 +1,13 @@
 import * as THREE from 'three/webgpu';
-import { positionAU, centuriesSinceJ2000 } from '../../orbit';
 import { createSky, GLINT } from './sky';
 import { createTerrain } from './terrain';
 import { loadDemSpec } from './dem';
 import type { SourceSpec } from './tilebuild';
 import { createFlight } from './flight';
-import { AU, add, eclToWorld, len, norm, scale, sub, cross, type V3 } from './vec';
+import { createSystem } from './system';
+import { POLES } from '../atlas/kepler';
+import { AU, add, len, norm, scale, sub, cross, type V3 } from './vec';
+import type { Context, Engine, Layer, View } from './index';
 
 /**
  * Phase 1 engine core: one true-scale solar system with a single walkable test world in Mars's
@@ -22,6 +24,8 @@ export interface Readout {
   target: string;
   dist: number; // to the target's surface, metres
   tech: string; // renderer, depth mode, tiles
+  /** what on screen is generated rather than measured, when anything is */
+  note?: string;
 }
 
 export interface Quality { tier: 0 | 1 | 2 | 3; scale: number; split: number; maxTiles: number; antialias: boolean; target: number; maxPx: number }
@@ -60,13 +64,16 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const backend = (renderer.backend as { isWebGPUBackend?: boolean }).isWebGPUBackend ? 'WebGPU' : 'WebGL 2';
   const depthMode = renderer.reversedDepthBuffer ? 'reversed-z' : 'log depth';
 
-  // ---- where everything is, now (heliocentric, metres, engine frame)
-  const T = centuriesSinceJ2000(new Date());
-  const helio = (slug: string): V3 => scale(eclToWorld(positionAU(slug, T)), AU);
+  // ---- where everything is, on the engine's clock (heliocentric, metres, engine frame).
+  // The body list holds every moon, so it is loaded after the first paint, not with the page.
+  const { allBodies } = await import('../../../data/bodies/index');
+  const system = createSystem(allBodies);
   const sunPos: V3 = [0, 0, 0];
   const PLANETS = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
   const RADII: Record<string, number> = { mercury: 2_439_700, venus: 6_051_800, earth: 6_371_000, mars: 3_389_500, jupiter: 69_911_000, saturn: 58_232_000, uranus: 25_362_000, neptune: 24_622_000 };
-  const planetPos = Object.fromEntries(PLANETS.map((p) => [p, helio(p)])) as Record<string, V3>;
+  // live positions, updated in place every frame so references stay valid
+  const planetPos = Object.fromEntries(PLANETS.map((p) => [p, [...system.pos(p)!] as V3])) as Record<string, V3>;
+  const radiusOf = (id: string) => RADII[id] ?? (system.body(id)?.meanRadiusKm ?? 0) * 1000;
 
   // ---- the test world sits where Mars is
   const bodySlug = 'mars';
@@ -94,7 +101,59 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   local.add(sunLight, sunLight.target);
   local.add(new THREE.AmbientLight(0x8890a0, 0.015));
 
-  const camera = new THREE.PerspectiveCamera(55, 1, 1, 1e12);
+  // ---- the other planets, as plain lit globes until each gets its own ground
+  const TEX: Record<string, string> = { mercury: '2k_mercury.jpg', venus: '2k_venus_atmosphere.jpg', earth: '2k_earth_daymap.jpg', mars: '2k_mars.jpg', jupiter: '2k_jupiter.jpg', saturn: '2k_saturn.jpg', uranus: '2k_uranus.jpg', neptune: '2k_neptune.jpg' };
+  const globeGeo = new THREE.SphereGeometry(1, 96, 48);
+  const loader = new THREE.TextureLoader();
+  const globes = new Map<string, THREE.Group>();
+  /** the spin pole (IAU) in the engine frame, so each globe and its rings lean the right way */
+  const poleOf = (id: string) => {
+    const P = POLES[id];
+    if (!P) return new THREE.Vector3(0, 1, 0);
+    const ra = THREE.MathUtils.degToRad(P.raDeg), dec = THREE.MathUtils.degToRad(P.decDeg), e = THREE.MathUtils.degToRad(23.4392911);
+    const x = Math.cos(dec) * Math.cos(ra), y = Math.cos(dec) * Math.sin(ra), z = Math.sin(dec);
+    const ye = y * Math.cos(e) + z * Math.sin(e), ze = -y * Math.sin(e) + z * Math.cos(e); // to the ecliptic
+    return new THREE.Vector3(x, ze, -ye).normalize(); // to the engine frame
+  };
+  function makeGlobe(id: string, radius: number, map?: THREE.Texture) {
+    const holder = new THREE.Group();
+    holder.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), poleOf(id));
+    const g = new THREE.Mesh(globeGeo, new THREE.MeshStandardNodeMaterial(map ? { map, roughness: 1, metalness: 0 } : { color: 0x8a8580, roughness: 1, metalness: 0 }));
+    g.scale.setScalar(radius);
+    g.frustumCulled = false;
+    holder.add(g);
+    holder.visible = false;
+    local.add(holder);
+    globes.set(id, holder);
+    return holder;
+  }
+  for (const p of PLANETS) {
+    if (p === bodySlug) continue;
+    const map = loader.load(`/textures/${TEX[p]}`);
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.anisotropy = 4;
+    makeGlobe(p, RADII[p], map);
+  }
+  // Saturn's rings, from the inner C ring to the F ring, mapped by distance from the centre
+  {
+    const IN = 74_500_000, OUT = 140_220_000;
+    const geo = new THREE.RingGeometry(IN, OUT, 256, 1);
+    const uvs = geo.attributes.uv as THREE.BufferAttribute, ps = geo.attributes.position as THREE.BufferAttribute;
+    for (let k = 0; k < ps.count; k++) uvs.setXY(k, (Math.hypot(ps.getX(k), ps.getY(k)) - IN) / (OUT - IN), 0.5);
+    const tex = loader.load('/textures/4k_saturn_ring.webp');
+    tex.colorSpace = THREE.SRGBColorSpace;
+    const ring = new THREE.Mesh(geo, new THREE.MeshStandardNodeMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, roughness: 1, metalness: 0, depthWrite: false }));
+    ring.rotation.x = -Math.PI / 2; // into the equator plane
+    ring.frustumCulled = false;
+    globes.get('saturn')?.add(ring);
+  }
+
+  // ---- layers other parts of the site add (moons, orbits, labels); drawn with depth, round the camera
+  const layers = new Set<Layer>();
+  const layerRoot = new THREE.Group();
+  local.add(layerRoot);
+
+  const camera = new THREE.PerspectiveCamera(55, 1, 1, 1e13);
 
   const flight = createFlight(o.canvas);
 
@@ -129,6 +188,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     camera.aspect = w / h;
     camera.fov = THREE.MathUtils.clamp(55 / Math.min(1, camera.aspect * 1.3), 55, 78);
     camera.updateProjectionMatrix();
+    for (const l of layers) (l as Layer & { setView?(h: number, f: number): void }).setView?.(h, camera.fov);
   }
   resize();
   addEventListener('resize', resize);
@@ -139,6 +199,33 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const timer = new THREE.Timer();
   let arrived = false;
   let stats = { tiles: 0, live: 0, queued: 0, deepest: 0, built: 0, inflight: 0 };
+
+  // ---- what the camera is near, for the margin
+  const contextCbs = new Set<(c: Context) => void>();
+  let lastCtx: Context | null = null, ctxAt = 0;
+  const SPHERES = ['sun', ...PLANETS];
+  let focusId = ''; // the last place flown to, if it is not a planet (a moon or a dwarf planet)
+  const posOf = (id: string): V3 => (id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id) ?? sunPos);
+  const radOf = (id: string) => (id === 'sun' ? 695_700_000 : id === bodySlug ? terrain.radius : radiusOf(id));
+  /** the body that matters most from here: the one that looks biggest */
+  function nearest(cam: V3) {
+    let best = bodySlug, bestAng = 0;
+    for (const id of focusId ? [...SPHERES, focusId] : SPHERES) {
+      const pp = posOf(id);
+      const r = radOf(id);
+      const ang = r / Math.max(1, len(sub(pp, cam)));
+      if (ang > bestAng) { bestAng = ang; best = id; }
+    }
+    return best;
+  }
+  const rel = (id: string): V3 | null => {
+    const pp = id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id);
+    return pp ? sub(pp, flight.pos) : null;
+  };
+
+  // a flight in progress, so the next one can say the last was replaced
+  let pendingFly: { resolve: () => void; reject: (e: Error) => void } | null = null;
+  let lastMode = flight.mode;
 
   function frame() {
     timer.update();
@@ -156,7 +243,23 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (ratio !== prev) resize();
     }
 
-    const f = flight.step(dt, wall, { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) });
+    // move the clock on, and everything with it. In free flight you keep pace with the body you are
+    // near, so a planet doing 24 km a second does not slide out from under you.
+    const nearId = nearest(flight.pos);
+    const before: V3 = [...posOf(nearId)] as V3;
+    system.advance(wall);
+    for (const p of PLANETS) { const q = system.pos(p)!; planetPos[p][0] = q[0]; planetPos[p][1] = q[1]; planetPos[p][2] = q[2]; }
+    if (flight.mode === 'free' && nearId !== 'sun') {
+      const q = posOf(nearId);
+      flight.pos[0] += q[0] - before[0]; flight.pos[1] += q[1] - before[1]; flight.pos[2] += q[2] - before[2];
+    }
+
+    const onTerrain = nearId === bodySlug;
+    const f = flight.step(dt, wall, onTerrain
+      ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) }
+      : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0 });
+    if (lastMode === 'cruise' && f.mode === 'free' && pendingFly) { pendingFly.resolve(); pendingFly = null; }
+    lastMode = f.mode;
     if (f.mode === 'free' && !arrived) { arrived = true; o.onArrive?.(); }
     const cam = flight.pos;
     camera.quaternion.copy(flight.q);
@@ -166,7 +269,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const bodyRel = sub(bodyPos, cam);
     const dBody = len(bodyRel);
     camera.near = THREE.MathUtils.clamp(f.alt * 0.02, 0.05, 2e5);
-    camera.far = dBody + terrain.radius * 1.5;
+    camera.far = 1e13; // about 67 au: reversed-z and log depth both keep precision across it
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
 
@@ -179,29 +282,97 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     sunLight.position.set(sd[0], sd[1], sd[2]);
     sunLight.target.position.set(0, 0, 0);
 
+    // the other planets: a globe once it is more than a pixel or so across
+    const pxPerRad = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    // a dwarf planet you fly to gets a plain globe of its own (moons are drawn by their layer)
+    if (focusId && !globes.has(focusId) && system.body(focusId)?.kind === 'dwarf' && radOf(focusId)) makeGlobe(focusId, radOf(focusId));
+    for (const [p, g] of globes) {
+      const r = sub(posOf(p), cam);
+      const d = len(r);
+      g.visible = (radOf(p) / d) * pxPerRad > 1.5;
+      if (g.visible) g.position.set(r[0], r[1], r[2]);
+    }
+    const jd = system.jd();
+    for (const l of layers) l.update?.(rel, jd);
+
     // too far to be more than a point of light: let the glint stand in
     const tiny = terrain.radius / dBody < 0.0004;
     if (!tiny) stats = terrain.update(bodyRel, camera);
 
     renderer.clear();
     renderer.render(sky.scene, sky.camera);
-    if (!tiny) {
-      renderer.clearDepth();
-      renderer.render(local, camera);
+    renderer.clearDepth();
+    terrain.group.visible = !tiny;
+    renderer.render(local, camera);
+
+    // tell the margin where we are, when that changes (and the distance at most once a second)
+    if (contextCbs.size) {
+      const id = nearId;
+      const d = len(sub(posOf(id), cam));
+      const r = radOf(id);
+      const h = Math.max(0, d - r);
+      const fromSun = len(cam);
+      const band: Context['band'] = h < 100_000 ? 'surface' : h < 30 * r ? 'orbit' : fromSun < 120 * AU ? 'system' : fromSun < 2e5 * AU ? 'interstellar' : 'galactic';
+      const km = (band === 'surface' || band === 'orbit' ? h : fromSun) / 1000;
+      const t = performance.now();
+      if (!lastCtx || lastCtx.near !== id || lastCtx.band !== band || (t - ctxAt > 1000 && Math.abs(km - lastCtx.km) > lastCtx.km * 0.05)) {
+        lastCtx = { near: id, band, km, timeIso: new Date(system.timeMs).toISOString() };
+        ctxAt = t;
+        for (const cb of contextCbs) cb(lastCtx);
+      }
     }
 
     const now = performance.now();
     if (now - readoutAt < 120 && f.mode === 'free') return;
     readoutAt = now;
     o.onReadout?.({
-      alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving, target: 'the test world',
-      dist: dBody - terrain.radius,
+      alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
+      target: nearId === bodySlug ? 'the test world' : system.body(nearId)?.name ?? nearId,
+      dist: f.alt,
+      note: onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined,
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${Math.round(1000 / frameAvg)} fps · ${ratio.toFixed(2)}x`,
     });
   }
   renderer.setAnimationLoop(frame);
 
+  function fmtRes(m: number) { return m >= 1000 ? `${(m / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km` : `${Math.round(m)} m`; }
+
+  const engine: Engine = {
+    flyTo(view: View, opts) {
+      if (pendingFly) { pendingFly.reject(new Error('replaced by another flight')); pendingFly = null; }
+      const id = typeof view.target === 'string' ? view.target : '';
+      const target = (): V3 => (id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id) ?? sunPos);
+      const r = id === 'sun' ? 695_700_000 : id === bodySlug ? terrain.radius : radiusOf(id);
+      if (!r || !(id === 'sun' || planetPos[id] || system.pos(id))) return Promise.reject(new Error(`cannot fly to ${id}`));
+      focusId = PLANETS.includes(id) || id === 'sun' ? '' : id;
+      const endDist = view.distanceKm ? view.distanceKm * 1000 : r * (id === 'sun' ? 8 : 3);
+      const tg = target();
+      const toS = norm(sub(sunPos, tg));
+      // arrive on the lit side, a little above the ecliptic
+      const sideways = norm(cross(len(toS) ? toS : [1, 0, 0], north));
+      const dir = id === 'sun' ? norm(add(norm(sub(flight.pos, tg)), [0, 0.3, 0])) : norm(add(add(scale(toS, 0.7), scale(sideways, 0.6)), scale(north, 0.3)));
+      const from: V3 = [...flight.pos] as V3;
+      // longer trips take longer, but never more than half a minute
+      const ratio = Math.max(1.0001, len(sub(from, tg)) / endDist);
+      const secs = opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3));
+      flight.startCruise({ from, target, endDist, endDir: dir, secs, aimOffset: 0 });
+      return new Promise<void>((resolve, reject) => { pendingFly = { resolve, reject }; });
+    },
+    registerLayer(layer: Layer) {
+      layers.add(layer);
+      const holder = new THREE.Group();
+      layerRoot.add(holder);
+      layer.attach(holder);
+      (layer as Layer & { setView?(h: number, f: number): void }).setView?.(o.canvas.clientHeight, camera.fov);
+      return () => { layers.delete(layer); layer.detach?.(); holder.removeFromParent(); };
+    },
+    onContext(cb) { contextCbs.add(cb); if (lastCtx) cb(lastCtx); return () => contextCbs.delete(cb); },
+    setTime(iso) { system.setTime(iso); },
+    setRate(r) { system.setRate(r); },
+  };
+
   return {
+    ...engine,
     enter(secs = 16) {
       flight.startCruise({ from: start, target: () => bodyPos, endDist: terrain.radius * 2.6, endDir, secs, aimOffset: 0 });
     },

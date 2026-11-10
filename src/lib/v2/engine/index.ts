@@ -6,13 +6,14 @@
  * Conventions follow src/lib/v2/atlas/types.ts: the site speaks kilometres, degrees and ISO times;
  * the engine converts to metres in doubles internally. Nothing in this file imports three.js.
  *
- * Status (10 Nov 2026): the interface is fixed. createWorld() implements enter/skip today;
- * flyTo, registerLayer, onContext and setTime land with phase 2 (Mars end to end).
+ * Status (10 Nov 2026): createWorld() implements all of Engine. flyTo takes the Sun, planets,
+ * moons and dwarf planets by id; the scale-ladder places come later.
  */
 import type { View } from '../atlas/types';
 
 export type { View, Body, ScalePlace } from '../atlas/types';
 export type { HeightSource } from './heights';
+export { eclToWorld } from './vec';
 
 /** What the camera is near, for the margin to pick its lessons and facts. Fired when it changes. */
 export interface Context {
