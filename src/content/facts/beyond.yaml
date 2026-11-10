@@ -22,9 +22,9 @@ facts:
     about: [milky-way, keplers-laws]
     source: { label: "ESO, star S2 passing the Milky Way's central black hole", url: "https://www.eso.org/public/news/eso1825/" }
   - id: andromeda-by-eye
-    text: "The Andromeda Galaxy, 2.5 million light years away, is the most distant thing most people can see without a telescope."
+    text: "The Andromeda Galaxy, about 2.5 million light years away, is the most distant thing most people can see without a telescope."
     about: [local-group, light-the-only-messenger]
-    source: { label: "NASA, the Andromeda Galaxy", url: "https://science.nasa.gov/universe/galaxies/andromeda-galaxy/" }
+    source: { label: "McConnachie 2012, Astronomical Journal 144, 4", url: "https://doi.org/10.1088/0004-6256/144/1/4" }
   - id: universe-age
     text: "The universe is 13.8 billion years old. The figure comes from the faint glow left over from its first hot stage, mapped across the whole sky by the Planck spacecraft."
     about: [cmb, cosmic-web]
@@ -65,9 +65,9 @@ facts:
     about: [neighbourhood]
     source: { label: "Kervella et al. 2017, Astronomy & Astrophysics 598, L7", url: "https://doi.org/10.1051/0004-6361/201629930" }
   - id: proxima-b
-    text: "Proxima Centauri has a planet at least 1.3 times the mass of the Earth, going round it every 11 days. It is the nearest planet known outside the Solar System."
+    text: "Proxima Centauri has a planet of about the mass of the Earth, going round it every 11.2 days at a distance where water could be liquid. It is the nearest planet known outside the Solar System."
     about: [neighbourhood, planets-round-other-stars]
-    source: { label: "European Southern Observatory, 24 August 2016: planet found round the nearest star", url: "https://www.eso.org/public/news/eso1629/" }
+    source: { label: "Faria et al. 2022, Astronomy & Astrophysics 658, A115", url: "https://doi.org/10.1051/0004-6361/202142337" }
   - id: neighbours-are-dim
     text: "Of the 108 stars this site's catalogue holds within 20 light years, 85 give out less than a thirtieth of the Sun's visible light. Only six outshine the Sun. The typical star is small, red and far too faint to see by eye."
     about: [neighbourhood, what-a-star-is]
