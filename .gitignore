@@ -5,3 +5,4 @@ dist
 tiles-out
 tiles-work
 public/tiles-local
+__pycache__
