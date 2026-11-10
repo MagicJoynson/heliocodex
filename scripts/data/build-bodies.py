@@ -7,11 +7,12 @@ Database API. Everything is fetched live; the output is committed, so the site
 build needs no network.
 
 Usage: python3 -I scripts/data/build-bodies.py
+       python3 -I scripts/data/build-bodies.py --dwarf-moons   (only the moons of the far dwarf planets)
 
 After running this, run scripts/data/fit-moon-orbits.py: the JPL table gives each moon's orbit its
 size and shape, and that script works out where along it the moon is, from JPL Horizons.
 """
-import html, json, re, sys, urllib.request, datetime, pathlib
+import html, json, math, re, sys, urllib.parse, urllib.request, datetime, pathlib
 
 OUT = pathlib.Path(__file__).resolve().parents[2] / "src" / "data" / "bodies"
 ELEM = "https://ssd.jpl.nasa.gov/sats/elem/"
@@ -48,6 +49,95 @@ DWARF_RADII = {
 MOON_RADII = {
     "daphnis": (3.8, "Thomas 2010, Icarus 208, 395 (Cassini images)", "https://doi.org/10.1016/j.icarus.2010.01.025"),
 }
+
+# Moons of the far dwarf planets. JPL's satellite tables stop at Pluto, so these come from two places.
+# Where JPL Horizons carries a solution for the moon (its "TNO satellite" solutions), the orbit and
+# the size are read from Horizons: (Horizons code of the moon, code of the primary, id, name, parent,
+# year found, found by, take the size from Horizons?). Horizons marks most of these sizes with "~":
+# they are estimates from brightness, not measurements, and are left out. The two kept are measured.
+HORIZONS = "https://ssd.jpl.nasa.gov/api/horizons.api"
+HORIZONS_MOONS = [
+    (120136199, 920136199, "dysnomia", "Dysnomia", "eris", 2005, "M. E. Brown and others, Keck Observatory", True),
+    (120136108, 920136108, "hiiaka", "Hiʻiaka", "haumea", 2005, "M. E. Brown and others, Keck Observatory", False),
+    (220136108, 920136108, "namaka", "Namaka", "haumea", 2005, "M. E. Brown and others, Keck Observatory", False),
+    (120090482, 920090482, "vanth", "Vanth", "orcus", 2005, "M. E. Brown and T.-A. Suer, Hubble Space Telescope", True),
+    (120050000, 920050000, "weywot", "Weywot", "quaoar", 2006, "M. E. Brown and T.-A. Suer, Hubble Space Telescope", False),
+]
+# Moons Horizons does not carry: the size and shape of the orbit from the paper that worked it out.
+# Which way these orbits face in space is not settled, so no angles are given and the moon is not placed.
+PAPER_MOONS = [
+    {"id": "xiangliu", "name": "Xiangliu", "parent": "gonggong", "aKm": 24021.0, "e": 0.2908, "periodDays": 25.22073,
+     "discovered": {"year": 2016, "by": "C. Kiss, G. Marton and others, from Hubble Space Telescope images of 2009 and 2010"},
+     "source": ("Kiss et al. 2019, Icarus 334, 3", "https://doi.org/10.1016/j.icarus.2019.03.013"),
+     "note": "Size and shape of the orbit from Kiss et al. 2019. The Hubble pictures fit two mirror-image orbits equally well, tilted opposite ways, so which way this one faces is not known and the moon cannot be placed along it. The figures are for the solution that goes round the usual way."},
+    {"id": "s-2015-136472-1", "name": "S/2015 (136472) 1", "parent": "makemake", "aKm": 22250.0, "e": 0.0, "periodDays": 18.023,
+     "discovered": {"year": 2016, "by": "A. H. Parker and others, from Hubble Space Telescope images of 2015"},
+     "source": ("Bamberger 2025, arXiv:2509.05880 (a first orbit; not yet in a journal)", "https://arxiv.org/abs/2509.05880"),
+     "note": "A first orbit from twelve Hubble sightings (Bamberger 2025), taken as a circle 22,250 km in radius, give or take 780 km. It is seen almost edge-on from Earth. Which way it faces in space has not been published, so the moon cannot be placed along it."},
+]
+
+
+def horizons(params):
+    q = {"format": "text", **params}
+    return get(HORIZONS + "?" + urllib.parse.urlencode(q))
+
+
+def dwarf_moons():
+    out = []
+    epoch = 2458849.5  # 2020-01-01 TDB
+    dates = [epoch + 73.0 * k for k in range(-12, 13)]  # 25 dates over five years, the epoch among them
+    for code, primary, id_, name, parent, year, by, keep_size in HORIZONS_MOONS:
+        text = horizons({"COMMAND": f"'{code}'", "OBJ_DATA": "'YES'", "EPHEM_TYPE": "'ELEMENTS'", "CENTER": f"'500@{primary}'",
+                         "REF_PLANE": "'ECLIPTIC'", "TLIST_TYPE": "'JD'", "TIME_TYPE": "'TDB'",
+                         "TLIST": "'" + " ".join(f"{d:.1f}" for d in dates) + "'"})
+        block = re.search(r"\$\$SOE(.*?)\$\$EOE", text, re.S).group(1)
+        rows = []
+        for chunk in re.split(r"\n(?=\d{7}\.\d+ = )", block.strip()):
+            vals = {k.strip(): float(v) for k, v in re.findall(r"([A-Za-z]{1,2})\s*=\s*([-+]?\d\.\d+E[-+]\d+)", chunk)}
+            rows.append((float(chunk.split("=")[0]), vals))
+        assert len(rows) == len(dates), f"{id_}: {len(rows)} rows from Horizons"
+        at = min(rows, key=lambda r: abs(r[0] - epoch))[1]
+        med = lambda k: sorted(r[1][k] for r in rows)[len(rows) // 2]
+        solution = re.search(r"source=\s*(\S+)", text)
+        body = {
+            "id": id_, "name": name, "kind": "moon", "parent": parent, "naifId": code, "primaryNaifId": primary,
+            "orbit": {"type": "kepler", "frame": "ecliptic-j2000", "epochJd": epoch,
+                      "aKm": round(med("A"), 1), "e": round(med("EC"), 4), "iDeg": round(at["IN"], 4), "nodeDeg": round(at["OM"], 4),
+                      "periDeg": round(at["W"], 4), "mDeg": round(at["MA"], 4), "periodDays": round(med("PR") / 86400, 6)},
+            "ephemeris": solution.group(1) if solution else "JPL Horizons",
+            "discovered": {"year": year, "by": by},
+            "orbitSource": {"label": "NASA/JPL Horizons, solution for this moon's orbit", "url": "https://ssd.jpl.nasa.gov/horizons/"},
+        }
+        if at["IN"] > 90:
+            body["orbit"]["retrograde"] = True
+        # JPL's own estimate of how far out its solution may be
+        unc = re.search(r"Position uncertainty[^:]*on (\d{4})[^:]*:\s*([\d.]+)\s*km", text)
+        note = "The orbit is JPL Horizons' solution, which runs from 2000 to 2030. Later dates run it forward."
+        if unc:
+            km = float(unc.group(2))
+            body["positionUncertainty"] = {"year": int(unc.group(1)), "km": km}
+            deg = math.degrees(km / med("A"))
+            note += (f" JPL puts its solution within about {km:,.0f} km of the truth in {unc.group(1)}, "
+                     + (f"which is about {deg:.0f}° round the orbit." if deg >= 1 else "a small fraction of a degree round the orbit."))
+        if "may be poor" in text:
+            note += " It rests on only a few sightings from 2006 to 2011, and JPL warns that it may be poor outside those years."
+        body["orbitNote"] = note
+        rad = re.search(r"RAD\s*([=~])\s*([\d.]+)", text)
+        if keep_size and rad:
+            body["meanRadiusKm"] = float(rad.group(2))
+            body["radiusSource"] = {"label": "NASA/JPL Horizons, physical data for this moon", "url": "https://ssd.jpl.nasa.gov/horizons/"}
+        out.append(body)
+    for m in PAPER_MOONS:
+        label, url = m["source"]
+        out.append({
+            "id": m["id"], "name": m["name"], "kind": "moon", "parent": m["parent"],
+            "orbit": {"type": "kepler", "frame": "ecliptic-j2000", "epochJd": epoch, "aKm": m["aKm"], "e": m["e"],
+                      "iDeg": 0.0, "nodeDeg": 0.0, "periDeg": 0.0, "mDeg": 0.0, "periodDays": m["periodDays"]},
+            "orientationUnknown": True, "orbitNote": m["note"],
+            "discovered": m["discovered"], "orbitSource": {"label": label, "url": url},
+        })
+    return out
+
 
 def get(url):
     req = urllib.request.Request(url, headers={"User-Agent": "heliocodex-build"})
@@ -168,7 +258,19 @@ def dwarfs():
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     today = datetime.date.today().isoformat()
-    m = moons()
+    if "--dwarf-moons" in sys.argv:
+        # add or refresh only the moons of the far dwarf planets, leaving every fitted orbit as it is
+        path = OUT / "moons.json"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        new = dwarf_moons()
+        ids = {b["id"] for b in new}
+        data["moons"] = [b for b in data["moons"] if b["id"] not in ids] + new
+        data["_sources"]["dwarfPlanetMoons"] = {"fetched": today, "positions": "https://ssd.jpl.nasa.gov/horizons/",
+                                                "note": "Moons of the dwarf planets beyond Pluto are not in JPL's satellite tables. Five have orbit solutions in JPL Horizons; two are known only from the papers named on each."}
+        path.write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"{len(new)} dwarf-planet moons written; now run fit-moon-orbits.py {' '.join(b['id'] for b in new if 'naifId' in b)}")
+        return
+    m = moons() + dwarf_moons()
     (OUT / "moons.json").write_text(json.dumps({
         "_sources": {"fetched": today, "elements": ELEM, "physical": PHYS, "discovery": DISC,
                      "note": "Mean orbital elements, good for drawing where a moon is, not for navigation. Radii and masses exist only for moons a spacecraft or a good telescope has measured."},

@@ -47,11 +47,15 @@ EPOCH = 2458849.5  # 2020-01-01 00:00 TDB
 SPAN = (2451545.0, 2466154.5)  # 2000-01-01.5 to 2040-01-01
 # Moons whose JPL ephemeris stops short. Daphnis was tracked by Cassini, and Horizons carries it only
 # to January 2018. Its fit is made on those years; later dates are that orbit run forward.
-SPANS = {"daphnis": (2451545.0, 2458134.5)}
-YEARS = {"daphnis": (2000, 2018)}
+# Horizons carries its solutions for the moons of the far dwarf planets for 2000 to 2030 only.
+TNO = ("dysnomia", "hiiaka", "namaka", "vanth", "weywot")
+SPANS = {"daphnis": (2451545.0, 2458134.5), **{k: (2451546.0, 2462501.5) for k in TNO}}
+YEARS = {"daphnis": (2000, 2018), **{k: (2000, 2030) for k in TNO}}
 OBLIQUITY = math.radians(23.4392911)
 
 # planet centre codes, and GM of the planet (plus its big moons where they matter), km^3/s^2
+# (the far dwarf planets are not here: their moons carry the Horizons code of their own primary, and the
+# pull they feel is worked out from the size and period of the orbit Horizons gives)
 CENTRE = {"earth": 399, "mars": 499, "jupiter": 599, "saturn": 699, "uranus": 799, "neptune": 899, "pluto": 999}
 GM = {"earth": 398600.435 + 4902.800, "mars": 42828.375, "jupiter": 126686531.9, "saturn": 37931206.2,
       "uranus": 5793951.3, "neptune": 6835099.97, "pluto": 869.6 + 105.9}
@@ -205,12 +209,15 @@ def fit(m: dict) -> dict | None:
     SPAN = SPANS.get(m["id"], globals()["SPAN"])
     EPOCH = globals()["EPOCH"] if SPAN[0] < globals()["EPOCH"] < SPAN[1] else (SPAN[0] + SPAN[1]) / 2 + 0.5
     jds = sample_times(P0, EPOCH, SPAN)
-    st = horizons(m["naifId"], CENTRE[parent], jds)
+    centre = m.get("primaryNaifId") or CENTRE[parent]
+    # Kepler's third law gives the pull on a moon from the size and period of its own orbit
+    gm = GM.get(parent) or 4 * math.pi ** 2 * o["aKm"] ** 3 / (P0 * 86400.0) ** 2
+    st = horizons(m["naifId"], centre, jds)
     if st is None:
         return None
     t = np.array(jds) - EPOCH
     span = SPAN[1] - SPAN[0]
-    r, hhat, inc, node, evec, e_osc, a_osc, rn, v, mu = elements(st, B, GM[parent])
+    r, hhat, inc, node, evec, e_osc, a_osc, rn, v, mu = elements(st, B, gm)
     n0 = 2 * math.pi / P0
 
     inc_mean = float(np.degrees(np.arctan2(np.sin(inc).mean(), np.cos(inc).mean())))
@@ -306,7 +313,7 @@ def fit(m: dict) -> dict | None:
     # check against dates the fit has not seen
     rng = np.random.default_rng(m["naifId"])
     check = sorted([float(x) for x in rng.uniform(SPAN[0] + 5, SPAN[1] - 5, 24)] + ([2461354.5] if SPAN[1] > 2461354.5 else []))  # one of them is 10 Nov 2026
-    truth = horizons(m["naifId"], CENTRE[parent], check)
+    truth = horizons(m["naifId"], centre, check)
     if truth is None:
         return None
     err = errors(new, np.array(check), truth[:, :3])
@@ -331,7 +338,7 @@ def main():
     for m in data["moons"]:
         if want and m["id"] not in want:
             continue
-        if m["parent"] not in CENTRE or "naifId" not in m:
+        if "naifId" not in m or (m["parent"] not in CENTRE and "primaryNaifId" not in m):
             continue
         try:
             new = fit(m)

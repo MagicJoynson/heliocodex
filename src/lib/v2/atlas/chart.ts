@@ -23,7 +23,25 @@ export interface Plate {
 }
 
 /** Which way is up: the planet's own north pole (for its close moons), or the north of the plane of the planets. */
-export type ViewFrom = 'equator' | 'ecliptic';
+export type ViewFrom = 'equator' | 'ecliptic' | { pole: [number, number, number] };
+
+/**
+ * A view straight down on an orbit, for worlds whose own spin is poorly known: the far dwarf planets.
+ * The pole is the orbit's own, turned to the northern side of the plane of the planets so that
+ * "anticlockwise is the usual way" still holds on the page.
+ */
+export function viewAbove(o: KeplerOrbit): ViewFrom {
+  const i = (o.iDeg * Math.PI) / 180, n = (o.nodeDeg * Math.PI) / 180;
+  const z: [number, number, number] = [Math.sin(i) * Math.sin(n), -Math.sin(i) * Math.cos(n), Math.cos(i)];
+  return { pole: o.iDeg > 90 ? [-z[0], -z[1], -z[2]] : z };
+}
+function basisAbout(z: [number, number, number]) {
+  // x lies in the plane of the planets, at right angles to the pole; y completes the set
+  const h = Math.hypot(z[0], z[1]);
+  const x = h < 1e-9 ? [1, 0, 0] : [-z[1] / h, z[0] / h, 0];
+  const y = [z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2], z[0] * x[1] - z[1] * x[0]];
+  return { x, y, z };
+}
 const ECLIPTIC = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1] };
 
 /**
@@ -31,7 +49,7 @@ const ECLIPTIC = { x: [1, 0, 0], y: [0, 1, 0], z: [0, 0, 1] };
  * to the right and how far down the page the middle lies, in km.
  */
 export function topView(parent: string, spanKm: number, half = 440, from: ViewFrom = 'equator', centreKm: [number, number] = [0, 0]): Plate {
-  const B = from === 'ecliptic' ? ECLIPTIC : equatorBasis(parent);
+  const B = from === 'ecliptic' ? ECLIPTIC : typeof from === 'object' ? basisAbout(from.pole) : equatorBasis(parent);
   const k = half / spanKm, ox = -centreKm[0] * k, oy = -centreKm[1] * k;
   return {
     parent, spanKm, half, kmPerUnit: spanKm / half, origin: [ox, oy],

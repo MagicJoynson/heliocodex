@@ -20,13 +20,6 @@ export const groups: { id: string; name: string; note: string; ids: string[] }[]
   },
 ];
 
-/**
- * Moons of the far dwarf planets, which this site's data does not hold yet: Hi'iaka and Namaka
- * (Haumea), S/2015 (136472) 1 (Makemake), Dysnomia (Eris), Xiangliu (Gonggong), Weywot (Quaoar)
- * and Vanth (Orcus). Source: NASA's pages for each world.
- */
-export const moonsNotDrawn: Record<string, number> = { haumea: 2, makemake: 1, eris: 1, gonggong: 1, quaoar: 1, orcus: 1 };
-
 /** Which bodies each drawing shows. */
 export const shown: Record<string, string[]> = {
   inner: ['mercury', 'venus', 'earth', 'mars', 'ceres'],

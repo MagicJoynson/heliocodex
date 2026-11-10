@@ -122,6 +122,10 @@ export interface Body {
   look: Look;
   seen: Seen;
   discovered?: { year: number; by: string };
+  /** Anything a reader should know about how well the orbit is known. */
+  orbitNote?: string;
+  /** The size and shape of the orbit are known but not which way it faces, so its angles are placeholders. */
+  orientationUnknown?: boolean;
   /** NAIF/SPICE integer code, where one exists. Handy for checking against JPL Horizons. */
   naifId?: number;
   sources: Source[];

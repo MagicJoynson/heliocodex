@@ -6,7 +6,7 @@ import Plate, { type Drawn } from '../../components/atlas/Plate.astro';
 import { allBodies } from '../../data/bodies/index';
 import type { KeplerOrbit } from '../../lib/v2/atlas/types';
 import { plates } from '../../lib/v2/atlas/plates';
-import { groups, moonsNotDrawn, shown, solarSystem as spec } from '../../lib/v2/atlas/plates/solar-system';
+import { groups, shown, solarSystem as spec } from '../../lib/v2/atlas/plates/solar-system';
 import { fmtKm, markOf } from '../../lib/v2/atlas/chart';
 import { julianDate } from '../../lib/v2/atlas/kepler';
 import { AU_KM, fmtAu, fmtYears, isPlanet, planetOrbit } from '../../lib/v2/atlas/sun';
@@ -20,7 +20,7 @@ interface World extends Drawn { moons: number }
 const worlds = new Map<string, World>(allBodies.filter((b) => b.parent === 'sun').map((b) => {
   const orbit = isPlanet(b.id) ? planetOrbit(b.id, jd) : (b.orbit as KeplerOrbit);
   // these orbits are measured ones, not fits of ours, so each gets a plain line and a dot
-  return [b.id, { id: b.id, name: b.name, orbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: Math.abs(orbit.iDeg), line: 'solid', placed: true, moons: allBodies.filter((m) => m.parent === b.id).length || (moonsNotDrawn[b.id] ?? 0) }];
+  return [b.id, { id: b.id, name: b.name, orbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: Math.abs(orbit.iDeg), line: 'solid', placed: true, moons: allBodies.filter((m) => m.parent === b.id).length }];
 }));
 const listed = groups.flatMap((g) => g.ids);
 for (const id of worlds.keys()) if (listed.filter((x) => x === id).length !== 1) throw new Error(`${id} should be in exactly one list on the Solar System plate`);
@@ -111,7 +111,7 @@ const data = {
     <div class="hang"><h2>Where this comes from</h2></div>
     <div class="prose">
       <ul>{spec.sources.map((s) => <li><a href={s.url}>{s.label}</a></li>)}</ul>
-      <p>Orbit size is the average of a world’s nearest and furthest distance from the Sun. Tilt is measured from the plane of the Earth’s orbit. Width is the average width; several of these worlds are not round, and Haumea is nearly twice as long as it is thick. The moons of the worlds beyond Pluto are counted here but are not yet drawn anywhere on this site. The belts are drawn between the distances where most of their bodies orbit: 2.06 to 3.27 au for the asteroid belt and 39.4 to 47.8 au for the main Kuiper belt.</p>
+      <p>Orbit size is the average of a world’s nearest and furthest distance from the Sun. Tilt is measured from the plane of the Earth’s orbit. Width is the average width; several of these worlds are not round, and Haumea is nearly twice as long as it is thick. The belts are drawn between the distances where most of their bodies orbit: 2.06 to 3.27 au for the asteroid belt and 39.4 to 47.8 au for the main Kuiper belt.</p>
     </div>
   </section>
 
