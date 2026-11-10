@@ -23,6 +23,8 @@ export interface Place {
 }
 
 export const HYG: Credit = { label: 'HYG star database v4.4, David Nash', url: 'https://codeberg.org/astronexus/hyg', licence: 'CC BY-SA 4.0' };
+/** The line figures of the constellations, for the layer that draws them. */
+export const D3_CELESTIAL: Credit = { label: 'd3-celestial, Olaf Frohn (constellation lines)', url: 'https://github.com/ofrohn/d3-celestial', licence: 'BSD 3-Clause' };
 export const MCCONNACHIE: Credit = { label: 'McConnachie 2012, Astronomical Journal 144, 4', url: 'https://doi.org/10.1088/0004-6256/144/1/4' };
 export const TWO_MRS: Credit = { label: 'Huchra et al. 2012, Astrophysical Journal Supplement 199, 26 (the 2MASS Redshift Survey)', url: 'https://doi.org/10.1088/0067-0049/199/2/26' };
 export const WMAP: Credit = { label: 'WMAP nine-year map, NASA / WMAP Science Team', url: 'https://lambda.gsfc.nasa.gov/product/wmap/dr5/ilc_map_get.html' };
