@@ -7,6 +7,9 @@ Database API. Everything is fetched live; the output is committed, so the site
 build needs no network.
 
 Usage: python3 -I scripts/data/build-bodies.py
+
+After running this, run scripts/data/fit-moon-orbits.py: the JPL table gives each moon's orbit its
+size and shape, and that script works out where along it the moon is, from JPL Horizons.
 """
 import html, json, re, sys, urllib.request, datetime, pathlib
 

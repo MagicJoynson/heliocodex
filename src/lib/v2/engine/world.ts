@@ -73,8 +73,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const bodyPos = planetPos[bodySlug];
   // testing real ground: ?dem=<tile base url>&body=moon|mars puts that body's measured heights in Mars's place
   const params = new URLSearchParams(location.search);
-  const spec: SourceSpec = params.get('dem')
-    ? await loadDemSpec(params.get('dem')!, params.get('body') ?? 'moon')
+  // only our own tiles: a path on this site, or the tile host. Anything else in the address is ignored.
+  const demBase = params.get('dem') ?? '';
+  const demOk = /^\/(?!\/)[\w\-./]*$/.test(demBase) || /^https:\/\/tiles\.heliocodex\.com(\/[\w\-./]*)?$/.test(demBase);
+  const demBody = /^[a-z0-9-]{1,40}$/.test(params.get('body') ?? '') ? params.get('body')! : 'moon';
+  const spec: SourceSpec = demOk
+    ? await loadDemSpec(demBase, demBody)
     : { kind: 'test', radius: RADII.mars, seed: 7 };
   const terrain = createTerrain({ spec, split: quality.split, maxTiles: quality.maxTiles });
   await terrain.ready;

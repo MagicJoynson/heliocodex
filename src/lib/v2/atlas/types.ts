@@ -35,13 +35,27 @@ export interface KeplerOrbit {
   periDeg: number;
   /** Mean anomaly at the epoch. */
   mDeg: number;
+  /** Sidereal period: the time to come back to the same direction among the stars. */
   periodDays: number;
   /** The body goes round against its parent's spin. iDeg is already above 90 when this is set. */
   retrograde?: boolean;
-  /** Time for the line of apsides to turn once. Lets a mean orbit stay roughly right far from the epoch. */
-  apsisPrecessionYears?: number;
-  /** Time for the node to turn once. */
-  nodePrecessionYears?: number;
+  /**
+   * How the three angles change, in degrees a day. With these the orbit is a slowly turning
+   * ellipse that stays close to the truth for decades: node = nodeDeg + nodeDegPerDay * days, and
+   * the same for periDeg and mDeg. Without them only the mean anomaly moves, by 360 / periodDays.
+   */
+  rates?: { nodeDegPerDay: number; periDegPerDay: number; mDegPerDay: number };
+  /**
+   * A slow swing added to the mean anomaly, for the few moons that do not keep a steady pace
+   * (Mimas, Janus, Epimetheus and some small outer moons). Term k (counting from 1) adds
+   * ampDeg * sin(360 * k * days / periodDays + phaseDeg).
+   */
+  wobble?: { periodDays: number; terms: { ampDeg: number; phaseDeg: number }[] };
+  /**
+   * How well this orbit matches JPL Horizons between the two years, as an angle seen from the
+   * parent: typical and worst. Present for moons, whose orbits are fitted (scripts/data/fit-moon-orbits.py).
+   */
+  fit?: { medianDeg: number; worstDeg: number; from: number; to: number };
 }
 
 export type Orbit =
