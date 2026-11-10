@@ -85,7 +85,7 @@ terms:
     term: Ring system
     also: [rings]
     short: "A flat disc of countless small pieces of ice or rock in orbit round a planet."
-    more: "All four giant planets have one. Saturn's main rings are about 280,000 km across and mostly only tens of metres thick."
+    more: "All four giant planets have one. Saturn's main rings are about 280,000 km across and mostly only about 10 metres thick."
     see: [roche-limit, shepherd-moon]
   - id: shepherd-moon
     term: Shepherd moon

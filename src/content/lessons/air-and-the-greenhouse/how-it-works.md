@@ -14,10 +14,10 @@ lastChecked: 2026-11-10
 | Distance from the Sun (Earth = 1) | 0.72 | 1 | 1.52 |
 | Air pressure at the ground (Earth = 1) | 92 | 1 | 0.006 |
 | The air is mostly | Carbon dioxide, 96% | Nitrogen 78%, oxygen 21% | Carbon dioxide, 95% |
-| Average temperature at the ground | About 465 °C | About 15 °C | About −65 °C |
+| Average temperature at the ground | About 464 °C | About 15 °C | About −65 °C |
 | Warming from the greenhouse effect | About 500 degrees | About 33 degrees | About 5 degrees |
 
-**Venus** is the extreme. Its clouds are so bright that it soaks up less sunlight than the Earth does, even though it is closer to the Sun. With no greenhouse effect it would be colder than we are. Instead its crushing carbon dioxide air holds the surface at about 465 °C, day and night, pole to equator. That is hotter than Mercury, which is much nearer the Sun.
+**Venus** is the extreme. Its clouds are so bright that it soaks up less sunlight than the Earth does, even though it is closer to the Sun. With no greenhouse effect it would be colder than we are. Instead its crushing carbon dioxide air holds the surface at about 464 °C, day and night, pole to equator. That is hotter than Mercury, which is much nearer the Sun.
 
 **The Earth** without its greenhouse gases would average about −18 °C, and the oceans would freeze over. The natural effect is what makes the planet liveable. The concern today is about adding to it: burning coal, oil and gas has raised the carbon dioxide in the air by about half since the 1700s.
 

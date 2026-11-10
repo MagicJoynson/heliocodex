@@ -20,7 +20,7 @@ lastChecked: 2026-11-10
 | Hubble constant, $H_0$ | 67.4 ± 0.5 km/s per megaparsec |
 | All matter, $\Omega_m$ | 0.315 ± 0.007 |
 
-Three things follow, each worked out here from those figures. Dividing the first row by the second gives 5.4 parts of dark matter to one of ordinary matter. With $h = 0.674$, dark matter is 26.4 per cent of the total and ordinary matter 4.9 per cent. In a flat universe, which is the model Planck's data fit, whatever is not matter is dark energy: one minus the last row, or 68.5 per cent.
+Three things follow, each worked out here from those figures. Dividing the first row by the second gives 5.4 parts of dark matter to one of ordinary matter. With $h = 0.674$, dark matter is 26.4 per cent of the total and ordinary matter 4.9 per cent. In a flat universe, which is the model Planck's data fit, whatever is not matter is dark energy: one minus the last row, or 68.5 per cent. The familiar 27 per cent for dark matter is a rounded figure from earlier data. The 2018 analysis gives about 26.
 
 **How thin it all is.** The total density of a flat universe is fixed by the expansion rate:
 

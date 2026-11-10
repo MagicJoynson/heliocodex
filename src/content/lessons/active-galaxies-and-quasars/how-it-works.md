@@ -20,7 +20,7 @@ lastChecked: 2026-11-10
 
 **How anyone knew it was a black hole.** The first clue was how quickly the brightness changes. Quick changes point to a small source, because something very large cannot brighten and fade all at once. Great power, quick changes and a small volume together pointed to gas falling onto a black hole, one of the only things that can give out so much energy from so little room.
 
-In 2019 the engine of one active galaxy was photographed. M87 is a massive elliptical galaxy in the Virgo cluster. A network of eight radio telescopes working as one showed the shadow of its black hole, which is 55 million light years away and has the mass of 6.5 billion Suns.
+In 2019 the engine of one active galaxy was photographed. M87 is a massive elliptical galaxy in the Virgo cluster. A network of eight radio telescopes working as one showed the shadow of its black hole, which is about 55 million light years away and has the mass of 6.5 billion Suns.
 
 **One kind of object, seen from different sides.** Astronomers named several kinds of active galaxy before they understood them. Much of the difference is now thought to be the angle we happen to look from: straight down the jet, into the bright centre, or side on with the dust ring in the way.
 

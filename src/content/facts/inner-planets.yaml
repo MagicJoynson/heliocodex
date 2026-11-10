@@ -48,7 +48,7 @@ facts:
     about: [mars]
     source: { label: "NASA NSSDC Mars fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html" }
   - id: mars-gravity
-    text: "Gravity on Mars is 3.71 m/s², 38% of the Earth's. Someone who weighs 70 kg on the bathroom scales at home would read 27 kg there."
+    text: "Gravity on Mars is 3.73 m/s², 38% of the Earth's. Someone who weighs 70 kg on the bathroom scales at home would read 27 kg there."
     about: [mars]
     basis: worked-out
     source: { label: "NASA NSSDC Mars fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html" }

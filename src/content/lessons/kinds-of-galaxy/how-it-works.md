@@ -29,7 +29,7 @@ Nearly every large galaxy has a very massive black hole at its centre. When gas 
 
 | Level | What it is | Size |
 |---|---|---|
-| Group | A few dozen galaxies. Ours, the Local Group, has more than 80 known members, most of them dwarfs | About 10 million light years |
+| Group | A few dozen galaxies. Ours, the Local Group, has more than 50 known members, most of them dwarfs | About 10 million light years |
 | Cluster | Hundreds to thousands of galaxies bound by gravity. The nearest large one is in Virgo, about 54 million light years away | 10 to 30 million light years |
 | Supercluster | A loose gathering of groups and clusters | Hundreds of millions of light years |
 | The cosmic web | Threads and sheets of galaxies round nearly empty spaces called voids | Fills the universe |
