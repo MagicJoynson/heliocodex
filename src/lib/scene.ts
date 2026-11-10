@@ -194,7 +194,7 @@ export function createSolarSystem(opts: SolarSystemOptions) {
   const ringSun = new THREE.Vector3(1, 0, 0);
   let saturnRing: THREE.Mesh | null = null;
 
-  const LABEL_ORDER = ['sun', 'earth', 'jupiter', 'saturn', 'neptune', 'uranus', 'venus', 'mars', 'mercury'];
+  const LABEL_ORDER = ['sun', 'earth', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']; // the crowded inner planets choose first; the outer ones have room
   type Entry = { body: SceneBody; group: THREE.Group; orbit?: THREE.Line; label: HTMLElement; radius: number };
   const entries = new Map<string, Entry>();
 
@@ -400,18 +400,26 @@ export function createSolarSystem(opts: SolarSystemOptions) {
       const dist = camera.position.distanceTo(e.group.position);
       const pr = (e.radius / Math.max(dist, 1e-3)) * focal;
       const cx = ((v3.x + 1) / 2) * w, y = ((1 - v3.y) / 2) * h;
-      const lw = e.body.name.length * 7.6 + 16, lh = 22;
+      const lw = e.body.name.length * 7.6 + 14, lh = 17;
       const others = placed.slice(slug === 'sun' ? 1 : 0);
       const hits = (bx: [number, number, number, number]) => others.some((b) => bx[0] < b[2] && bx[2] > b[0] && bx[1] < b[3] && bx[3] > b[1]);
-      // right of the body if there is room, otherwise left
-      let x = cx + pr + 7;
-      let box: [number, number, number, number] = [x, y - lh / 2, x + lw, y + lh / 2];
-      if (hits(box) || box[2] > w - 8) { x = cx - pr - 7 - lw; box = [x, y - lh / 2, x + lw, y + lh / 2]; }
-      const clash = hits(box);
+      // right of the body if there is room, then left, then above, then below
+      const spots: [number, number][] = [
+        [cx + pr + 7, y], [cx - pr - 7 - lw, y],
+        [cx - lw / 2, y - pr - 4 - lh / 2], [cx - lw / 2, y + pr + 4 + lh / 2],
+        // and, in a crowd, a little way off on the diagonals
+        [cx - pr - 10 - lw, y - 16], [cx + pr + 10, y - 20], [cx - pr - 10 - lw, y + 16], [cx + pr + 10, y + 20],
+      ];
+      let x = spots[0][0], ly = y, box: [number, number, number, number] = [0, 0, 0, 0], clash = true;
+      for (const [sx, sy] of spots) {
+        const bx: [number, number, number, number] = [sx, sy - lh / 2, sx + lw, sy + lh / 2];
+        if (bx[0] < 8 || bx[2] > w - 8 || hits(bx)) continue;
+        x = sx; ly = sy; box = bx; clash = false; break;
+      }
       const visible = slug !== 'sun' && v3.z < 1 && v3.z > -1 && e.body.slug !== selected && !clash && pr < h * 0.25;
       if (visible) placed.push(box);
       e.label.style.display = visible ? '' : 'none';
-      e.label.style.transform = `translate(${x}px, ${y}px) translate(0, -50%)`;
+      e.label.style.transform = `translate(${x}px, ${ly}px) translate(0, -50%)`;
     }
     tickAccum += dt;
     if (tickAccum > 0.1) {
