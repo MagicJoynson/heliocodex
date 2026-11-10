@@ -54,3 +54,41 @@ terms:
     more: "The commonest kind happens when the core of a star of more than about 8 Suns collapses."
     see: [nebula, white-dwarf, nuclear-fusion]
     lesson: how-stars-live-and-die
+  - id: neutron-star
+    term: Neutron star
+    also: [pulsar]
+    short: "The crushed core left by an exploded star: more than the Sun's mass in a ball about 20 km across."
+    more: "A spinning neutron star whose beams of radio waves sweep past the Earth is called a pulsar."
+    see: [supernova, black-hole, white-dwarf]
+    lesson: what-a-black-hole-is
+  - id: black-hole
+    term: Black hole
+    short: "A place where so much mass is packed so tightly that nothing which goes in, not even light, can come out."
+    more: "Some form when the heaviest stars die. Far larger ones sit at the centres of galaxies."
+    see: [event-horizon, escape-velocity, neutron-star]
+    lesson: what-a-black-hole-is
+  - id: event-horizon
+    term: Event horizon
+    short: "The edge of a black hole: the boundary from inside which nothing can get out."
+    more: "It is not a surface. For a black hole with the Sun's mass it would be a sphere about 6 km across."
+    see: [black-hole, singularity, escape-velocity]
+    lesson: the-event-horizon
+  - id: singularity
+    term: Singularity
+    short: "The point at the centre of a black hole where today's physics says density becomes endless."
+    more: "Most physicists read this as a sign that the theory has stopped working there, not as a description of something real."
+    see: [black-hole, event-horizon]
+    lesson: the-event-horizon
+  - id: accretion-disc
+    term: Accretion disc
+    also: [accretion disk]
+    short: "A flat, spinning disc of gas spiralling in towards a star or a black hole."
+    more: "Friction in the disc can heat the gas to millions of °C, which is how black holes, dark themselves, come to be among the brightest things in the sky."
+    see: [black-hole, x-rays, accretion]
+    lesson: what-a-black-hole-is
+  - id: gravitational-wave
+    term: Gravitational wave
+    short: "A ripple in space itself, sent out when very heavy things move violently."
+    more: "The first to be detected, in 2015, came from two black holes merging about 1.3 billion light years away."
+    see: [black-hole, neutron-star, gravity]
+    lesson: what-a-black-hole-is

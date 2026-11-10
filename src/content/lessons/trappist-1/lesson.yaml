@@ -1,0 +1,9 @@
+title: TRAPPIST-1
+strand: other-worlds
+order: 2
+summary: "Seven planets the size of the Earth circle one small red star, all of them closer in than Mercury is to the Sun."
+scene: "The seven planets on their real orbits round the red star, with Mercury's orbit drawn to the same scale for comparison. How the planets look is a guess."
+view: { target: neighbourhood }
+terms: [exoplanet, red-dwarf, transit, resonance, habitable-zone, tidal-locking, atmosphere]
+needs: [planets-round-other-stars]
+next: []

@@ -1,0 +1,9 @@
+title: Planets round other stars
+strand: other-worlds
+order: 1
+summary: "More than 6,000 planets are now known round other stars. Almost none has been seen directly. Here is how they are found."
+scene: "The stars near the Sun, with every star known to have planets lit up, then one star dimming as its planet crosses in front."
+view: { target: neighbourhood }
+terms: [exoplanet, transit, doppler-shift, hot-jupiter, super-earth, habitable-zone, light-year]
+needs: [what-an-orbit-is, reading-starlight]
+next: [trappist-1]

@@ -207,3 +207,21 @@ terms:
     more: "Asteroids and comets are planetesimals that were never used."
     see: [accretion, protoplanetary-disc, asteroid]
     lesson: how-the-planets-formed
+  - id: hot-jupiter
+    term: Hot Jupiter
+    short: "A giant planet that orbits very close to its star, with a year lasting only a few days."
+    more: "The Solar System has nothing like one. They probably formed further out and moved inwards."
+    see: [exoplanet, gas-giant, frost-line]
+    lesson: planets-round-other-stars
+  - id: super-earth
+    term: Super-Earth
+    short: "A planet bigger than the Earth but smaller than Neptune."
+    more: "Planets in this range are among the commonest known, yet the Solar System has none. The larger ones, with thick gas round them, are often called sub-Neptunes."
+    see: [exoplanet, terrestrial-planet, ice-giant]
+    lesson: planets-round-other-stars
+  - id: biosignature
+    term: Biosignature
+    short: "Something we could measure from a distance that would be hard to explain without life."
+    more: "Oxygen and methane together in a planet's air is one example. None has been confirmed anywhere but the Earth."
+    see: [exoplanet, habitable-zone, atmosphere]
+    lesson: are-we-alone
