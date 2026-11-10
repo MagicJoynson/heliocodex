@@ -39,7 +39,7 @@ const INDEX = new THREE.BufferAttribute(tileIndex(), 1);
 export function createTerrain(o: TerrainOptions) {
   const radius = o.spec.radius;
   const src = makeSource(o.spec);
-  const SPLIT = o.split ?? 1.6;
+  const SPLIT = Math.max(2, o.split ?? 2.5);
   const MAX_LEVEL = o.maxLevel ?? 18;
   const MAX_TILES = o.maxTiles ?? 420;
   const group = new THREE.Group();
@@ -77,7 +77,8 @@ export function createTerrain(o: TerrainOptions) {
         const job = waiting.get(e.data.id);
         waiting.delete(e.data.id);
         built++;
-        if (job && !job.node.dead && !job.node.mesh) finish(job.node, e.data.t);
+        // a tile nobody has wanted for a few frames is not worth uploading
+        if (job && !job.node.dead && !job.node.mesh && job.node.used >= frame - 3) finish(job.node, e.data.t);
         else if (job) job.node.pending = false;
       };
       w.onerror = (e) => { console.error('tile worker failed', e.message); dropWorker(w); };
@@ -200,6 +201,11 @@ export function createTerrain(o: TerrainOptions) {
       const d = Math.max(0, len(sub(cam, c)) - t.radius);
       const size = tileSize(radius, n.level);
       const splitAt = SPLIT * size;
+      // ask for the children a little early, so they arrive before they are needed and never
+      // appear already part-way through their morph
+      if (n.level < MAX_LEVEL && d < splitAt * 1.15 && d >= splitAt) {
+        for (const q of kids(n)) { q.used = frame; q.usedAt = now; if (!q.mesh) request(q, d / size); }
+      }
       if (n.level < MAX_LEVEL && d < splitAt) {
         const k = kids(n);
         let ready = true;
@@ -217,12 +223,13 @@ export function createTerrain(o: TerrainOptions) {
       mesh.position.set(c[0] + bodyRel[0], c[1] + bodyRel[1], c[2] + bodyRel[2]);
       // the camera as seen from this tile's centre, for the per-vertex morph
       (mesh.userData.camRel as THREE.Vector3).set(-c[0] - bodyRel[0], -c[1] - bodyRel[1], -c[2] - bodyRel[2]);
-      // a tile appears when its parent's nearest point comes within the parent's split distance, so
-      // every vertex is then at least that far: fully the parent's shape there, fully its own by
-      // 60% of it (before it can split again itself, at 50%)
+      // A tile appears when its parent's nearest point comes within the parent's split distance PS,
+      // so every vertex is then at least that far: fully the parent's shape out there. It splits
+      // itself when its own nearest point reaches PS/2, and its furthest vertex is then about
+      // (0.5 + 0.71/SPLIT) PS away, so the morph must be finished by then or its children pop.
       const parentSplit = SPLIT * tileSize(radius, n.level - 1);
-      mesh.userData.mLo = n.level === 0 ? 1e30 : parentSplit * 0.6;
-      mesh.userData.mHi = n.level === 0 ? 2e30 : parentSplit * 0.95;
+      mesh.userData.mLo = n.level === 0 ? 1e30 : parentSplit * Math.min(0.9, 0.5 + 0.8 / SPLIT);
+      mesh.userData.mHi = n.level === 0 ? 2e30 : parentSplit * 0.98;
     }
     dispatch(4);
     if (live > MAX_TILES) evict(now);

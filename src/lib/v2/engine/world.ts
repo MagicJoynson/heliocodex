@@ -29,9 +29,11 @@ export function pickQuality(): Quality {
   const small = Math.min(screen.width, screen.height) < 900;
   const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
   // Safari has no deviceMemory, so iPhones all land on tier 1, which is the safe choice
-  if (coarse && small) return { tier: mem <= 3 ? 0 : 1, scale: mem <= 3 ? 0.55 : 0.7, split: mem <= 3 ? 1.0 : 1.2, maxTiles: mem <= 3 ? 200 : 280, antialias: false, target: 33, maxPx: 1.6e6 };
-  if (coarse || mem <= 4) return { tier: 2, scale: 0.85, split: 1.4, maxTiles: 360, antialias: false, target: 17, maxPx: 2.5e6 };
-  return { tier: 3, scale: 1, split: 1.6, maxTiles: 460, antialias: devicePixelRatio <= 1.25, target: 17, maxPx: 5e6 };
+  // split stays at 2 or more on every tier: below about 1.42 the morph cannot finish before a
+  // tile splits, and the ground visibly snaps. Phones save their effort elsewhere.
+  if (coarse && small) return { tier: mem <= 3 ? 0 : 1, scale: mem <= 3 ? 0.55 : 0.7, split: 2.0, maxTiles: mem <= 3 ? 320 : 420, antialias: false, target: 33, maxPx: 1.6e6 };
+  if (coarse || mem <= 4) return { tier: 2, scale: 0.85, split: 2.2, maxTiles: 520, antialias: false, target: 17, maxPx: 2.5e6 };
+  return { tier: 3, scale: 1, split: 2.5, maxTiles: 680, antialias: devicePixelRatio <= 1.25, target: 17, maxPx: 5e6 };
 }
 
 export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; forceWebGL?: boolean; quality?: Quality }) {
