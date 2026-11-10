@@ -6,4 +6,4 @@ scene: "The Milky Way with its two Magellanic Clouds close by and Andromeda, the
 view: { target: local-group, highlight: [andromeda] }
 terms: [galaxy-merger, tidal-tail, starburst, spiral-galaxy, elliptical-galaxy, globular-cluster, local-group, milky-way]
 needs: [kinds-of-galaxy, the-milky-way]
-next: [dark-matter-and-dark-energy]
+next: [active-galaxies-and-quasars, dark-matter-and-dark-energy]

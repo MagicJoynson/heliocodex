@@ -138,3 +138,36 @@ terms:
     more: "Collisions between galaxies set them off by squeezing clouds of gas. The Antennae galaxies have more than a thousand young star clusters made this way."
     see: [galaxy-merger, molecular-cloud, star-cluster]
     lesson: when-galaxies-collide
+  - id: supermassive-black-hole
+    term: Supermassive black hole
+    short: "A black hole of hundreds of thousands to billions of times the mass of the Sun, found at the centre of a galaxy."
+    more: "Most large galaxies have one. The Milky Way's is 4.3 million Suns. The one in the galaxy M87 is 6.5 billion."
+    see: [black-hole, active-galaxy, accretion-disc]
+    lesson: active-galaxies-and-quasars
+  - id: active-galaxy
+    term: Active galaxy
+    also: [active galactic nucleus, AGN]
+    short: "A galaxy whose centre outshines all its stars, powered by gas falling towards its central black hole."
+    more: "About one galaxy in ten is active. Seyfert galaxies, radio galaxies, quasars and blazars are all kinds of active galaxy."
+    see: [supermassive-black-hole, accretion-disc, quasar, seyfert-galaxy, blazar]
+    lesson: active-galaxies-and-quasars
+  - id: quasar
+    term: Quasar
+    also: [quasi-stellar object]
+    short: "The most luminous kind of active galaxy, so bright that its centre can be seen across billions of light years."
+    more: "A quasar can give out thousands of times the energy of the Milky Way. The first, 3C 273, was recognised in 1963. Over a million are now known."
+    see: [active-galaxy, supermassive-black-hole, look-back-time]
+    lesson: active-galaxies-and-quasars
+  - id: seyfert-galaxy
+    term: Seyfert galaxy
+    short: "The commonest and least powerful kind of active galaxy."
+    more: "It looks like a normal galaxy in ordinary light but is bright in infrared. Named after Carl Seyfert, who first picked them out in 1943."
+    see: [active-galaxy, infrared]
+    lesson: active-galaxies-and-quasars
+  - id: blazar
+    term: Blazar
+    short: "An active galaxy with a jet pointing almost straight at the Earth."
+    more: "Looking down the jet makes a blazar seem brighter and more changeable than other active galaxies. Most of the active galaxies found in gamma rays are blazars."
+    see: [active-galaxy, quasar, gamma-rays]
+    lesson: active-galaxies-and-quasars
+
