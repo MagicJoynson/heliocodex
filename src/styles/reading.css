@@ -56,6 +56,8 @@ body:has(.reading) { background: #0b0b0c; }
 .plain-list { list-style: none; margin: 0; padding: 0; }
 
 @media (max-width: 760px) {
-  .row { grid-template-columns: 1fr; gap: .9rem; padding: 1.8rem 0 2.1rem; }
+  .row { grid-template-columns: minmax(0, 1fr); gap: .9rem; padding: 1.8rem 0 2.1rem; }
   .prose { font-size: 1.1rem; }
+  .prose > table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prose > table th, .prose > table td { white-space: nowrap; }
 }
