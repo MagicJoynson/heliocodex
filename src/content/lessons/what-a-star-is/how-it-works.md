@@ -7,7 +7,7 @@ lastChecked: 2026-11-10
 ---
 **A balance.** A star is a contest between two things. Gravity pulls all of its gas towards the middle. The heat of the gas pushes back out. Where the two are equal the star holds its shape, and it can stay that way for billions of years.
 
-The squeeze makes the centre hot and dense. In the Sun's core it is about 15 million degrees. At that temperature the nuclei of hydrogen atoms hit each other hard enough to join into helium, and each joining lets out a little energy. This is nuclear fusion. The Sun turns about 600 million tonnes of hydrogen into helium every second, and has enough to go on for billions of years yet.
+The squeeze makes the centre hot and dense. In the Sun's core it is nearly 16 million degrees. At that temperature the nuclei of hydrogen atoms hit each other hard enough to join into helium, and each joining lets out a little energy. This is nuclear fusion. The Sun turns about 600 million tonnes of hydrogen into helium every second, and has enough to go on for billions of years yet.
 
 **The lower limit.** Fusion needs that heat, and the heat needs weight. A ball of gas with less than about 8 per cent of the Sun's mass, roughly 80 times the mass of Jupiter, never gets hot enough in the middle to keep hydrogen burning. It glows dull red from the heat of its own shrinking and slowly cools. These are brown dwarfs: too heavy to be planets and too light to be stars.
 

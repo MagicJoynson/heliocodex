@@ -29,7 +29,7 @@ A transit only happens if the orbit is edge-on to us. For a planet at the Earth'
 
 - **Hot Jupiters.** Giant planets with years of a few days. The planet of 51 Pegasi has about half Jupiter's mass and goes round in 4.2 days. They are rare, found round about 1 Sun-like star in 100, but easy to detect.
 - **Super-Earths and sub-Neptunes.** Planets between the Earth and Neptune in size are among the commonest kind known. The Solar System has none.
-- **Small rocky planets** are common, particularly round red dwarf stars. The nearest star of all, Proxima Centauri, 4.2 light years away, has a planet of at least the Earth's mass with a year of 11 days.
+- **Small rocky planets** are common, particularly round red dwarf stars. The nearest star of all, Proxima Centauri, 4.25 light years away, has a planet of at least the Earth's mass with a year of 11 days.
 
 Our own arrangement, with small planets inside and giants outside on nearly circular orbits, is one pattern among many. How common it is cannot yet be said, because a copy of the Solar System would be very hard to find with today's instruments.
 

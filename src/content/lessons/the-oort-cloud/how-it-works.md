@@ -11,7 +11,7 @@ The Oort cloud is an idea that fits the evidence, not a place anyone has photogr
 | Place | Distance from the Sun | Time for sunlight to get there |
 |---|---|---|
 | Earth | 1 au | A little over 8 minutes |
-| Neptune | About 30 au | About 4.5 hours |
+| Neptune | About 30 au | A little over 4 hours |
 | Heliopause, where the Sun's wind ends | Beyond the Kuiper belt | About 17 hours |
 | Inner edge of the Oort cloud | 2,000 to 5,000 au | 10 to 28 days |
 | Outer edge of the Oort cloud | 10,000 to 100,000 au | Perhaps a year and a half |

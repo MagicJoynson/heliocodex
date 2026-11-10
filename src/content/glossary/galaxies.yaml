@@ -28,7 +28,7 @@ terms:
   - id: local-group
     term: Local Group
     short: "The small family of galaxies that the Milky Way belongs to."
-    more: "It has more than 80 known members spread over about 10 million light years. The Milky Way and Andromeda are much the largest."
+    more: "It has more than 50 known members spread over about 10 million light years. The Milky Way and Andromeda are much the largest."
     see: [milky-way, galaxy-cluster]
     lesson: kinds-of-galaxy
   - id: galaxy-cluster

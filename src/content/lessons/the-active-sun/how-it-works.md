@@ -7,9 +7,9 @@ sources:
   - { label: "NASA, Parker Solar Probe", url: "https://science.nasa.gov/mission/parker-solar-probe/" }
 lastChecked: 2026-11-10
 ---
-**It is all magnetism.** The Sun is made of plasma, gas so hot that it carries electric currents, and moving currents make magnetic fields. The Sun does not turn as a solid ball. Its equator goes round in about 25 days and the regions near its poles take about 35. That difference drags the magnetic field round and round, winding it up like elastic until it is tangled and strained.
+**It is all magnetism.** The Sun is made of plasma, gas so hot that it carries electric currents, and moving currents make magnetic fields. The Sun does not turn as a solid ball. Its equator goes round in about 25 days and the regions near its poles take about 36. That difference drags the magnetic field round and round, winding it up like elastic until it is tangled and strained.
 
-**Sunspots** are where bundles of that field break through the surface. The strong field holds back the hot gas rising from below, so the patch cools to about 3,500 °C while the surface around it is at about 5,500 °C. It is still very bright. It only looks dark beside its surroundings.
+**Sunspots** are where bundles of that field break through the surface. The strong field holds back the hot gas rising from below, so the middle of the patch cools to about 3,900 °C while the surface around it is at about 5,500 °C. It is still very bright. It only looks dark beside its surroundings.
 
 **The cycle.** Over about eleven years the tangle builds up, the spots multiply, and then the whole field collapses and re-forms the other way up, with north and south swapped. Then it starts again. People have counted sunspots since the early 1600s, and the cycles are numbered. The current one, the 25th, began in December 2019 and reached its busiest stretch around 2024.
 

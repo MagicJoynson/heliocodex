@@ -41,9 +41,10 @@ facts:
     about: [sun]
     source: { label: "NASA, Sun facts", url: "https://science.nasa.gov/sun/facts/" }
   - id: sun-galactic-year
-    text: "The Sun and everything round it circle the centre of the Milky Way at about 720,000 km/h. One lap takes about 230 million years."
+    text: "The Sun and everything round it circle the centre of the Milky Way at about 830,000 km/h. One lap takes about 230 million years."
     about: [sun, milky-way]
-    source: { label: "NASA, Sun facts", url: "https://science.nasa.gov/sun/facts/" }
+    basis: worked-out
+    source: { label: "Reid and others 2019, Astrophysical Journal 885, 131", url: "https://arxiv.org/abs/1910.03357" }
   - id: heliosphere-voyager
     text: "Voyager 1 left the bubble blown by the solar wind in August 2012, about 121 au from the Sun, after 35 years of travel."
     about: [sun, solar-system, voyager-1]

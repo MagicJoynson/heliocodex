@@ -8,4 +8,4 @@ Think of a river running towards a waterfall. Far upstream the water is slow and
 
 At the event horizon, space itself is the river, and to get back you would need to move faster than light.
 
-In 2019 astronomers published the first picture of this. It shows a glowing ring of hot gas round a dark middle. The dark middle is the shadow of a black hole 6.5 billion times as heavy as the Sun, in a galaxy 55 million light years away.
+In 2019 astronomers published the first picture of this. It shows a glowing ring of hot gas round a dark middle. The dark middle is the shadow of a black hole 6.5 billion times as heavy as the Sun, in a galaxy about 55 million light years away.
