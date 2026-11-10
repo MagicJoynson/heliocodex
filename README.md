@@ -34,4 +34,5 @@ Textures in `public/textures` are from Solar System Scope under CC BY 4.0.
 - Framework preset: Astro
 - Build command: `npm run build`
 - Build output directory: `dist`
-- Node version: 22 (set `NODE_VERSION=22` if needed)
+- Node version: 22.23.4 or newer (Astro 7 needs it). The `.node-version` file in the repo sets this, so Cloudflare picks it up on its own. If a build ever fails with a Node version error, add the environment variable `NODE_VERSION` = `22.23.4`.
+- No other environment variables are needed. Everything the site loads is in `public/` and is served from the same domain.
