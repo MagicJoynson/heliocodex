@@ -23,7 +23,7 @@ import { keplerPath, keplerPosition, eclToEngine } from '../atlas/kepler';
 
 const KM = 1000;
 const AU = 149_597_870_700;
-const SEGMENTS = 160;
+const SEGMENTS = 320;
 const ASSUMED_RADIUS_KM = 1; // 2 km across, for moons known only as a point of light
 const ALBEDO = 0.2; // a middling grey; individual albedos come with each moon's own surface
 
@@ -96,7 +96,7 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
   const lit = max(float(0), dot(normalWorld, sunDir));
   // a soft edge to the lit side, and the faintest glow on the night side so the ball has a shape
   bmat.colorNode = vec3(0.56, 0.55, 0.53).mul(lit.mul(0.97).add(0.012));
-  const ballGeo = new THREE.IcosahedronGeometry(1, 5);
+  const ballGeo = new THREE.IcosahedronGeometry(1, 20);
   const balls = new Map<string, THREE.Mesh>();
   for (const m of moons) {
     if (!m.measured) continue;
