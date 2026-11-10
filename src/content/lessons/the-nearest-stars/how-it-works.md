@@ -2,6 +2,7 @@
 sources:
   - { label: "ESA Gaia Data Release 3", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
   - { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+  - { label: "Kervella et al. 2016, Astronomy & Astrophysics 594, A107", url: "https://doi.org/10.1051/0004-6361/201629201" }
   - { label: "Kervella et al. 2017, Astronomy & Astrophysics 598, L7", url: "https://doi.org/10.1051/0004-6361/201629930" }
   - { label: "Faria et al. 2022, Astronomy & Astrophysics 658, A115", url: "https://doi.org/10.1051/0004-6361/202142337" }
   - { label: "NASA, Types of stars", url: "https://science.nasa.gov/universe/stars/types/" }
@@ -11,13 +12,13 @@ lastChecked: 2026-11-10
 ---
 The space round the Sun is the one part of the galaxy where we can count nearly every star, including the faint ones. That makes it the fairest sample we have of what stars are really like.
 
-**The nearest.** These are the named stars within 10 light years in the catalogue this site draws. The distances are the catalogue's, rounded. Brightness is visible light only, compared with the Sun.
+**The nearest.** These are the named stars within 10 light years in the catalogue this site draws. The distances are the catalogue's, rounded, except Alpha Centauri's 4.4, which comes from a newer measurement (1.338 parsecs) than the catalogue holds. Brightness is visible light only, compared with the Sun.
 
 | Star | Distance | Visible light, Sun = 1 |
 |---|---|---|
 | Proxima Centauri | 4.2 light years | About 1/17,000 |
-| Alpha Centauri A (Rigil Kentaurus) | 4.3 | 1.5 |
-| Alpha Centauri B (Toliman) | 4.3 | 0.4 |
+| Alpha Centauri A (Rigil Kentaurus) | 4.4 | 1.5 |
+| Alpha Centauri B (Toliman) | 4.4 | 0.4 |
 | Barnard's Star | 5.9 | About 1/2,300 |
 | Wolf 359 | 7.8 | About 1/50,000 |
 | Lalande 21185 | 8.3 | About 1/180 |
