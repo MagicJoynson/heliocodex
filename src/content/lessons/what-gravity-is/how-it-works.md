@@ -23,6 +23,11 @@ Distance is measured between centres. Standing on the ground you are about 6,400
 
 **Everything falls together.** Because a heavier object is pulled harder but is also harder to get moving, the two effects cancel, and all things fall at the same rate where there is no air. In 1971 the Apollo 15 astronaut David Scott dropped a hammer and a feather on the Moon. They landed at the same moment.
 
+<figure class="photo">
+  <img src="/img/learn/astronaut-floating-iss.jpg" alt="An astronaut floating in the middle of a space station laboratory, arms spread, surrounded by equipment." width="1100" height="728" loading="lazy" />
+  <figcaption><b>A photograph.</b> Astronaut Greg Chamitoff floating in the Destiny laboratory of the International Space Station on 13 October 2008. Credit: NASA.</figcaption>
+</figure>
+
 **Why astronauts float.** The International Space Station flies about 400 km up, where gravity is still about nine tenths as strong as on the ground. Nothing there is weightless in the sense of being beyond gravity. The station and everyone in it are in free fall: falling round the Earth, and missing it, all the time. With nothing pushing up on their feet, they feel no weight. The lesson on orbits explains the falling and missing.
 
 **Both bodies move.** The Earth pulls on the Moon, and the Moon pulls back just as hard. So the Earth does not sit still while the Moon circles it. Both go round a balance point between them, like two skaters holding hands, with the heavier one making the smaller circle. For the Earth and Moon that point lies inside the Earth, about 4,700 km from its centre. For the Sun and Jupiter it lies just outside the Sun's surface. That small wobble of a star is one of the ways planets round other stars are found.

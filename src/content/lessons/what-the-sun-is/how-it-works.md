@@ -15,6 +15,11 @@ Working outward from the centre:
 
 **The convective zone** is the outer 30%. Here the gas carries the heat itself, rising hot, cooling at the top and sinking again, like a pan on the boil. The tops of the rising columns are the granules that pattern the surface, each about the size of France or larger.
 
+<figure class="photo">
+  <img src="/img/learn/sun-sunspots-sdo.jpg" alt="The whole Sun as an orange disc with a cluster of dark spots below the middle." width="1024" height="990" loading="lazy" />
+  <figcaption><b>A photograph.</b> The Sun in ordinary light in October 2014, by NASA's Solar Dynamics Observatory. The dark group of sunspots was the largest for 24 years, about 130,000 km across, which is ten Earths side by side. Credit: NASA/SDO.</figcaption>
+</figure>
+
 **The photosphere** is the layer we see. It is a few hundred kilometres deep and its temperature is 5,772 K. Sunspots are patches of it held about 1,700 degrees cooler by strong magnetism.
 
 **The chromosphere and corona** lie above. The corona is extremely thin but has a temperature of more than a million kelvin, far hotter than the surface below it. Its outer edge has no end. It streams away past the planets as the solar wind.
