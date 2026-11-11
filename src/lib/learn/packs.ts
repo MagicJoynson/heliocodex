@@ -51,12 +51,12 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}sun-sunspots-sdo.jpg`, width: 1024, height: 990, alt: 'The whole Sun as an orange disc with a cluster of dark spots below the middle.', caption: 'The Sun in October 2014, with a group of sunspots wider than ten Earths. Credit: NASA/SDO.' },
     stages: [
       { title: 'The Sun', about: 'The star in the middle, which holds almost all of the mass.', lessons: ['what-the-sun-is', 'how-the-sun-shines', 'the-active-sun', 'the-suns-reach'] },
-      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'the-earth-as-a-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
+      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'the-earth-as-a-planet', 'how-the-planets-formed', 'inside-planets-and-magnetic-shields', 'air-and-the-greenhouse', 'rings'] },
       { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'the-moon', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
       { title: 'The small things, and the edge', about: 'Asteroids, comets, falling rocks and the cloud that surrounds it all.', lessons: ['rubble-and-ice', 'comets', 'falling-rocks', 'things-that-hit-the-earth', 'the-oort-cloud'] },
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
-    coming: ['Inside planets and their magnetic shields'],
+    coming: [],
     look: [{ href: '/', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
