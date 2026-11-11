@@ -52,11 +52,11 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'The Sun', about: 'The star in the middle, which holds almost all of the mass.', lessons: ['what-the-sun-is', 'how-the-sun-shines', 'the-active-sun', 'the-suns-reach'] },
       { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
-      { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
+      { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'the-moon', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
       { title: 'The small things, and the edge', about: 'Asteroids, comets, falling rocks and the cloud that surrounds it all.', lessons: ['rubble-and-ice', 'comets', 'falling-rocks', 'the-oort-cloud'] },
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
-    coming: ['The Earth as a planet', 'The Moon', 'What counts as a planet', 'Inside planets and their magnetic shields', 'Things that hit the Earth'],
+    coming: ['The Earth as a planet', 'What counts as a planet', 'Inside planets and their magnetic shields', 'Things that hit the Earth'],
     look: [{ href: '/', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
