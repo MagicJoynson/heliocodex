@@ -1,0 +1,9 @@
+title: The stuff between the stars
+strand: the-galaxy
+order: 3
+summary: "The space between the stars holds thin gas and a little dust. It is emptier than any vacuum made on the Earth, and it is what every star is made from."
+scene: "A real photograph of the Milky Way crossed by dark lanes of dust, one small dark cloud photographed in visible light and again in infrared, and drawings of how empty the gas is and how hydrogen gives itself away by radio."
+view: { target: milky-way }
+terms: [milky-way, nebula, molecular-cloud, hydrogen, infrared, radio-waves, wavelength, kelvin]
+needs: [the-milky-way, the-whole-spectrum]
+next: [nebulae-and-star-birth, the-centre-of-the-galaxy]
