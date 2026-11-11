@@ -124,9 +124,9 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-stuff-between-the-stars', 'spiral-arms', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'how-galaxies-form-and-change', 'active-galaxies-and-quasars'] },
       { title: 'The biggest picture', about: 'How galaxies are spread through space, and how their distances are found.', lessons: ['the-distance-ladder', 'the-cosmic-web', 'galaxy-clusters'] },
-      { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy', 'how-it-all-ends'] },
+      { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy', 'how-big-is-the-universe', 'how-it-all-ends'] },
     ],
-    coming: ['How big is the universe'],
+    coming: [],
     look: [{ href: '/?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
