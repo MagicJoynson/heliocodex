@@ -1,0 +1,9 @@
+title: Why the sky turns
+strand: finding-your-way
+order: 6
+summary: "The stars wheel overhead every night because the ground under you is turning. One point in the sky stays still, and how high it sits tells you where you are."
+scene: "A real half-hour photograph of the stars circling the southern pole of the sky, the Earth turning under a fixed sky, the Plough going round the pole star, and the same sky seen from four different latitudes."
+view: { target: earth }
+terms: [celestial-sphere, celestial-pole, zenith, sidereal-day, solar-day, precession]
+needs: [how-big-is-space]
+next: [seasons, constellations]

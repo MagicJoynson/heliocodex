@@ -38,10 +38,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}orion-nebula-hubble.jpg`, width: 1100, height: 1100, alt: 'A great glowing cloud of pink, orange and grey gas with a bright hollow near the middle.', caption: 'The Orion Nebula, which you can see by eye as the fuzzy middle "star" of Orion’s sword. Credit: NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Space Telescope Orion Treasury Project Team, CC BY 4.0.' },
     stages: [
       { title: 'Getting your bearings', about: 'How far away things are, and the units used to say so.', lessons: ['how-big-is-space', 'measuring-distance'] },
-      { title: 'What changes, and why', about: 'The year, the month, and the shadows that cause eclipses.', lessons: ['seasons', 'phases-and-eclipses', 'tides'] },
+      { title: 'What changes, and why', about: 'The night, the year, the month, and the shadows that cause eclipses.', lessons: ['why-the-sky-turns', 'seasons', 'phases-and-eclipses', 'tides'] },
       { title: 'The stars overhead', about: 'The patterns, the colours, and what the eye can and cannot see.', lessons: ['constellations', 'the-stars-you-can-see', 'colour-and-brightness', 'star-clusters'] },
     ],
-    coming: ['Why the sky turns', 'The sky through the year', 'Looking up for yourself'],
+    coming: ['The sky through the year', 'Looking up for yourself'],
     look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The stars, planets and constellations over your own horizon at this moment.' }, { href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope.' }],
   },
   {
