@@ -103,7 +103,7 @@ const gather: Scene = {
 // ---- 6. a passing star and its planet
 const A = (u: number) => (u * u + 2) / (u * Math.sqrt(u * u + 4));
 const bright = (x: number) => A(Math.hypot(0.28, x)) + 0.9 * Math.exp(-(((x - 0.62) / 0.045) ** 2));
-const micro: Scene = {
+export const micro: Scene = {
   caption: 'Above, a star with a planet drifting in front of a more distant star. Below, the brightness of the distant star as it happens: a slow rise and fall from the nearer star, and a short flicker from its planet. A drawing of the idea, not a real measurement.',
   stillAt: 11,
   draw({ ctx, w, h, t, say }) {
