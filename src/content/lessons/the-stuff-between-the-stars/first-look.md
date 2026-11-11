@@ -6,7 +6,7 @@ sources:
 ---
 Look at the Milky Way on a dark night and you see a band of light with dark rifts running along it. The rifts are not gaps in the stars. They are clouds of dust lying in front, blocking the light of everything behind. The space between the stars is not empty. It holds gas, and mixed into the gas a little dust.
 
-It is very thin all the same. A cubic centimetre of the air you are breathing, about the size of a sugar cube, holds roughly ten million million million atoms. Spread the gas of the galaxy out evenly and the same cube of space would hold about one. Even the thickest clouds out there are a better vacuum than any pump on the Earth can make.
+It is very thin all the same. A cubic centimetre of the air you are breathing, about the size of a sugar cube, holds about 25 million million million molecules. Spread the gas of the galaxy out evenly and the same cube of space would hold about one atom. Even the thickest clouds out there are a better vacuum than any pump on the Earth can make.
 
 But space is so big that it adds up. This is a small dark cloud called Barnard 68, 410 light years away. It looks like a hole in the sky. It is a cloud of cold gas and dust with about twice the mass of the Sun, and it hides every one of the stars behind it.
 
