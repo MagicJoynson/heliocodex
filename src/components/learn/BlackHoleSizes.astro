@@ -1,0 +1,42 @@
+---
+// A picture the reader can work: choose a mass, see how wide a black hole of that mass would be.
+import { PRESETS } from '../../lib/learn/figures/black-hole-sizes';
+---
+<section class="works" data-works="black-hole-sizes" aria-labelledby="works-h">
+  <div>
+    <h2 id="works-h">Try it</h2>
+    <p class="note">Choose a mass and see how small it would have to be crushed.</p>
+  </div>
+  <figure data-stage>
+    <canvas aria-hidden="true"></canvas>
+    <p class="say" aria-live="polite"><span data-say="1"></span><span data-say="2"></span></p>
+    <div class="works-controls">
+      <input type="range" min="0" max="1000" value="424" aria-label="Mass, from the Earth's to the heaviest black hole known" />
+      <div class="works-presets">
+        {PRESETS.map((p) => <button type="button" data-suns={p.suns} aria-pressed="false">{p.name}</button>)}
+      </div>
+    </div>
+    <p class="cap" data-caption></p>
+  </figure>
+</section>
+
+<script>
+  import { mount } from '../../lib/learn/stage';
+  import { sizes, MASS_RANGE } from '../../lib/learn/figures/black-hole-sizes';
+
+  for (const host of document.querySelectorAll<HTMLElement>('[data-works="black-hole-sizes"]')) {
+    const slider = host.querySelector<HTMLInputElement>('input[type="range"]')!;
+    const buttons = [...host.querySelectorAll<HTMLButtonElement>('button[data-suns]')];
+    const [lo, hi] = MASS_RANGE, mass = { suns: 10 };
+    const shown = mount(host.querySelector<HTMLElement>('[data-stage]')!, sizes(mass));
+    const mark = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(Math.abs(Math.log10(Number(b.dataset.suns)) - Math.log10(mass.suns)) < 0.01)));
+    function choose(suns: number, moveSlider: boolean): void {
+      mass.suns = suns;
+      if (moveSlider) slider.value = String(Math.round(((Math.log10(suns) - lo) / (hi - lo)) * 1000));
+      mark(); shown.redraw();
+    }
+    slider.addEventListener('input', () => choose(10 ** (lo + (Number(slider.value) / 1000) * (hi - lo)), false));
+    for (const b of buttons) b.addEventListener('click', () => choose(Number(b.dataset.suns), true));
+    choose(10, true);
+  }
+</script>

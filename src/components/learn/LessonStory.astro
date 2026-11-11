@@ -1,0 +1,128 @@
+---
+// A lesson in the visual style. This page is the first look: a picture that stays in view and
+// changes as each paragraph comes past. The deeper levels are pages of their own, linked below.
+import Base from '../../layouts/Base.astro';
+import Stage from './Stage.astro';
+import '../../styles/reading.css';
+import '../../styles/lesson.css';
+import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
+
+interface Props { lesson: Lesson }
+const { lesson } = Astro.props;
+const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
+const first = lesson.levels.find((l) => levelOf(l) === 'first-look')!;
+const deeper = lesson.levels.filter((l) => levelOf(l) !== 'first-look');
+// one step of the story for each paragraph of the first look
+const steps = (first.rendered?.html ?? '').split(/(?<=<\/p>|<\/ul>|<\/ol>|<\/table>)\s*(?=<)/).filter((s) => s.trim());
+const minutes = (entry: (typeof deeper)[number]) => Math.max(2, Math.round((entry.body ?? '').split(/\s+/).length / 200));
+const words = lesson.data.terms.map((id) => terms.find((t) => t.id === id)!);
+const worthKnowing = facts.filter((f) => f.about.includes(lesson.id)).slice(0, 5);
+const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
+const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
+---
+<Base title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary}>
+  <article class="lesson" data-lesson={lesson.id}>
+    <header class="l-hero" data-stage>
+      <canvas aria-hidden="true"></canvas>
+      <div class="l-hero-words">
+        <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
+        <h1>{lesson.data.title}</h1>
+        <p class="lead">{lesson.data.summary}</p>
+        <a class="l-begin" href="#first-look">Begin</a>
+      </div>
+      <p class="cap" data-caption></p>
+    </header>
+
+    <section class="story" id="first-look" data-story>
+      <div class="hang">
+        <h2>{LEVEL_NAMES['first-look'].name}</h2>
+        <p class="note">{LEVEL_NAMES['first-look'].reader}</p>
+      </div>
+      <Stage class="story-stage" />
+      <ol class="story-steps">
+        {steps.map((html) => <li data-step><div class="prose" set:html={html} /></li>)}
+      </ol>
+    </section>
+
+    <div class="reading l-rest">
+      {deeper.length > 0 && (
+        <section class="deeper" aria-labelledby="deeper-h">
+          <h2 id="deeper-h">Go deeper</h2>
+          <p class="aside">That was the idea. The same subject is written again below for readers who want more, each on a page of its own.</p>
+          <ol class="plain-list">
+            {deeper.map((entry) => (
+              <li>
+                <a href={`/learn/${lesson.id}/${levelOf(entry)}`} data-level-link>
+                  <span class="deeper-name">{LEVEL_NAMES[levelOf(entry)].name}</span>
+                  <span class="deeper-for">{LEVEL_NAMES[levelOf(entry)].reader}</span>
+                  <span class="label">About {minutes(entry)} minutes</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <section class="row">
+        <div class="hang"><h2>Words used here</h2></div>
+        <dl class="words">
+          {words.map((t) => (
+            <div>
+              <dt><a href={`/glossary#${t.id}`}>{t.term}</a></dt>
+              <dd>{t.short}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {worthKnowing.length > 0 && (
+        <section class="row">
+          <div class="hang"><h2>Worth knowing</h2></div>
+          <ul class="plain-list facts">
+            {worthKnowing.map((f) => (
+              <li>
+                <p>{f.text}</p>
+                <p class="label">{basisNote[f.basis] && <span>{basisNote[f.basis]}. </span>}<a href={f.source.url} rel="noopener">{f.source.label}</a></p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section class="row small">
+        <div class="hang"><h2>Where this comes from</h2></div>
+        <div>
+          <ul class="plain-list sources">
+            {first.data.sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}
+          </ul>
+          <p class="aside small-note">The words are written for this site. The pictures are drawn by the page from the figures in the lesson, and each one says underneath what it is based on.</p>
+        </div>
+      </section>
+
+      {(lesson.data.needs.length > 0 || lesson.data.next.length > 0) && (
+        <nav class="row onward" aria-label="Other lessons">
+          <div class="hang"><h2>Keep going</h2></div>
+          <ul class="plain-list">
+            {lesson.data.needs.map((id) => <li><span class="label">Helps to read first</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
+            {lesson.data.next.map((id) => <li><span class="label">Next</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
+          </ul>
+        </nav>
+      )}
+    </div>
+  </article>
+</Base>
+
+<script>
+  import { mount, story } from '../../lib/learn/stage';
+  import { loadScenes } from '../../lib/learn/stories';
+
+  const page = document.querySelector<HTMLElement>('.lesson[data-lesson]');
+  const load = page && loadScenes[page.dataset.lesson!];
+  if (page && load) {
+    load().then(({ lens, scenes }) => {
+      mount(page.querySelector<HTMLElement>('.l-hero')!, lens);
+      story(page.querySelector<HTMLElement>('[data-story]')!, scenes);
+      page.classList.add('is-live');
+    });
+  }
+</script>
