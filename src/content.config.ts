@@ -92,4 +92,17 @@ const facts = defineCollection({
   }),
 });
 
-export const collections = { lessons, lessonLevels, glossary, facts };
+// The legal pages: one Markdown file each, so the wording can be read and changed like any other text.
+const legal = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/legal' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    /** One or two sentences under the title. */
+    lead: z.string(),
+    /** The date the current wording took effect. */
+    updated: z.coerce.date(),
+  }),
+});
+
+export const collections = { lessons, lessonLevels, glossary, facts, legal };

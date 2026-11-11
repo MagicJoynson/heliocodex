@@ -42,7 +42,9 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
               <option value="typed" hidden>The place typed below</option>
             </select>
             <button type="button" id="sky-here">Use where I am</button>
+            <button type="button" id="sky-forget" hidden>Forget my place</button>
             <p class="hint" id="sky-place-note"></p>
+            <p class="hint">Your place stays in this browser and is never sent to us. <a href="/cookies">What is kept on your device</a>.</p>
             <details>
               <summary>Type a latitude and longitude</summary>
               <div class="pair">
@@ -107,7 +109,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   import { draw, load, wayOf, heightOf, PLANET_NAMES, type Mark, type SkyData } from '../lib/sky/chart';
   import { moment } from '../lib/sky/place';
   import { CITIES, guess } from '../lib/sky/cities';
-  import { readPlace, keepPlace } from '../lib/sky/remember';
+  import { readPlace, keepPlace, forgetPlace } from '../lib/sky/remember';
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const canvas = $<HTMLCanvasElement>('sky-canvas'), ctx = canvas.getContext('2d')!;
@@ -124,6 +126,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   function setPlace(name: string, la: number, lo: number, why: string, chosen = true): void {
     where = { name, lat: la, lon: lo };
     if (chosen) keepPlace(where);
+    $('sky-forget').hidden = !readPlace();
     lat.value = la.toFixed(2); lon.value = lo.toFixed(2);
     note.textContent = why;
     render();
@@ -208,6 +211,12 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   place.addEventListener('change', () => {
     const i = Number(place.value);
     if (!Number.isNaN(i)) setPlace(CITIES[i][0], CITIES[i][1], CITIES[i][2], '');
+  });
+  $('sky-forget').addEventListener('click', () => {
+    forgetPlace();
+    const g = guess();
+    place.value = String(g);
+    setPlace(CITIES[g][0], CITIES[g][1], CITIES[g][2], 'Forgotten. Nothing about your place is kept on this device now.', false);
   });
   $('sky-here').addEventListener('click', () => {
     if (!navigator.geolocation) { note.textContent = 'This device cannot say where it is. Choose a city or type a position.'; return; }

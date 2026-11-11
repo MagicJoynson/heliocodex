@@ -8,5 +8,10 @@ export function readPlace(): Place | null {
   } catch { return null; }
 }
 export function keepPlace(p: Place): void {
-  try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* private browsing: nothing is kept */ }
+  // The device's own position is kept to about 11 km (a tenth of a degree), which is plenty for the sky and no more than needed.
+  const q = p.name === 'Where you are' ? { ...p, lat: Math.round(p.lat * 10) / 10, lon: Math.round(p.lon * 10) / 10 } : p;
+  try { localStorage.setItem(KEY, JSON.stringify(q)); } catch { /* private browsing: nothing is kept */ }
+}
+export function forgetPlace(): void {
+  try { localStorage.removeItem(KEY); } catch { /* nothing to forget */ }
 }
