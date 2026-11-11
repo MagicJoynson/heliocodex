@@ -120,11 +120,11 @@ export const PACKS: Pack[] = [
     blurb: 'From our own galaxy outward to the largest structures there are, and back in time to the first few minutes.',
     photo: { src: `${P}m87-jet-hubble.jpg`, width: 1222, height: 1276, alt: 'A bright yellow galaxy centre with a narrow, knotted blue streak pointing away from it.', caption: 'The centre of the galaxy M87 and the jet thrown out from beside its black hole. Credit: The Hubble Heritage Team (STScI/AURA) and NASA/ESA, CC BY 4.0.' },
     stages: [
-      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
+      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
       { title: 'The biggest picture', about: 'How galaxies are spread through space, and how their distances are found.', lessons: ['the-distance-ladder', 'the-cosmic-web'] },
       { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'dark-matter-and-dark-energy'] },
     ],
-    coming: ['The stuff between the stars', 'The centre of the galaxy', 'Spiral arms', 'How galaxies form and change', 'Galaxy clusters', 'How we know there was a Big Bang', 'The history of the universe on one timeline', 'How it ends', 'How big is the universe'],
+    coming: ['The stuff between the stars', 'Spiral arms', 'How galaxies form and change', 'Galaxy clusters', 'How we know there was a Big Bang', 'The history of the universe on one timeline', 'How it ends', 'How big is the universe'],
     look: [{ href: '/?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
