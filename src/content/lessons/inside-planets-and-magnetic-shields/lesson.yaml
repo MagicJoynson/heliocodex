@@ -1,0 +1,9 @@
+title: Inside planets and their magnetic shields
+strand: planets
+order: 7
+summary: "Nobody has been more than a scratch below the ground, yet earthquakes show what is inside the Earth. The moving metal at its centre makes a shield round the planet."
+scene: "Drawings to scale of the deepest hole ever drilled and of the layers of the Earth, a drawing of earthquake waves crossing the planet, and real pictures of the lights at Jupiter's pole and of Mars, which lost its shield."
+view: { target: earth }
+terms: [differentiation, magnetic-field, magnetosphere, solar-wind, aurora, terrestrial-planet, gas-giant, atmosphere]
+needs: [the-earth-as-a-planet, three-kinds-of-planet]
+next: [air-and-the-greenhouse, the-suns-reach]

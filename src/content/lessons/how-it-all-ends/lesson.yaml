@@ -1,0 +1,9 @@
+title: How it all ends
+strand: the-universe
+order: 7
+summary: "The Sun will die, the galaxies will run out of gas, and the last stars will go out. What happens after that depends on something nobody yet understands."
+scene: "Real photographs of a dying star like the Sun, of the Andromeda galaxy and of an exploding star, and drawings of the stars going out, of the long ages to come, and of three ways the universe could end."
+view: { target: cosmic-web }
+terms: [white-dwarf, red-dwarf, planetary-nebula, dark-energy, black-hole, galaxy-merger, power-of-ten, supernova]
+needs: [how-stars-live-and-die, the-expanding-universe, dark-matter-and-dark-energy]
+next: [the-history-of-the-universe]

@@ -1,0 +1,9 @@
+title: Falling into a black hole
+strand: stellar-remnants
+order: 5
+summary: "Nobody can go and look, but Einstein's equations say what a fall into a black hole would be like. In 2024 NASA ran them on a supercomputer."
+scene: "A real picture of the black hole at the centre of our galaxy, a frame from NASA's computer simulation of the glowing gas round one, and drawings of the fall, of two clocks, and of what the pull does to a falling body."
+view: { target: milky-way }
+terms: [black-hole, event-horizon, singularity, accretion-disc, tide, supermassive-black-hole, speed-of-light]
+needs: [what-a-black-hole-is, the-event-horizon]
+next: [gravity-as-bent-space-and-time, the-centre-of-the-galaxy]
