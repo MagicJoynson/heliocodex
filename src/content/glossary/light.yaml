@@ -1,0 +1,122 @@
+# Light, and what can be read from it.
+terms:
+  - id: speed-of-light
+    term: Speed of light
+    also: [c]
+    short: "299,792,458 metres per second in empty space, the fastest that anything can carry news from one place to another."
+    more: "The figure is exact, because the metre is now defined from it. Light crosses from the Moon to the Earth in about 1.3 seconds."
+    see: [light-time, light-year, look-back-time]
+    lesson: light-the-only-messenger
+  - id: look-back-time
+    term: Look-back time
+    short: "How long ago the light you are seeing set out."
+    more: "Looking far away always means looking into the past. We see the Andromeda Galaxy as it was about 2.5 million years ago."
+    see: [speed-of-light, light-time]
+    lesson: light-the-only-messenger
+  - id: photon
+    term: Photon
+    short: "The smallest packet light comes in."
+    more: "Bluer light comes in packets that each carry more energy than redder light."
+    see: [wavelength, electromagnetic-spectrum]
+  - id: wavelength
+    term: Wavelength
+    short: "The distance from one crest of a wave to the next."
+    more: "For light it sets the colour. The eye sees from about 380 nanometres (violet) to about 750 (red)."
+    see: [frequency, electromagnetic-spectrum]
+    lesson: light-the-only-messenger
+  - id: frequency
+    term: Frequency
+    short: "How many crests of a wave pass each second."
+    more: "For light, shorter wavelength means higher frequency and more energy in each photon."
+    see: [wavelength, photon]
+  - id: electromagnetic-spectrum
+    term: Electromagnetic spectrum
+    short: "The whole range of light, from radio waves through the colours we see to gamma rays."
+    more: "Visible light is a narrow slice of it. Most of what astronomy has learned in the last century came from the rest."
+    see: [radio-waves, infrared, ultraviolet, x-rays, wavelength]
+    lesson: light-the-only-messenger
+  - id: radio-waves
+    term: Radio waves
+    short: "Light with the longest wavelengths, from about a millimetre to many kilometres."
+    more: "Cold gas between the stars gives off radio waves, which pass through the dust that blocks ordinary light."
+    see: [electromagnetic-spectrum, infrared]
+  - id: infrared
+    term: Infrared
+    short: "Light with wavelengths a little longer than red, which we feel as heat."
+    more: "Cool things such as planets, dust and newborn stars shine mostly in infrared, which is why the James Webb Space Telescope looks there."
+    see: [electromagnetic-spectrum, ultraviolet]
+  - id: ultraviolet
+    term: Ultraviolet
+    also: [UV]
+    short: "Light with wavelengths a little shorter than violet, given off by very hot things."
+    more: "The Earth's ozone layer stops most of it, so it has to be studied from space."
+    see: [electromagnetic-spectrum, x-rays]
+  - id: x-rays
+    term: X-rays
+    short: "Light of very short wavelength, given off by gas at millions of degrees."
+    more: "The Sun's corona and the gas falling towards black holes both glow in X-rays."
+    see: [electromagnetic-spectrum, corona]
+  - id: spectrum
+    term: Spectrum
+    short: "Light spread out in order of wavelength, as a prism or a rainbow does."
+    see: [spectral-line, electromagnetic-spectrum]
+    lesson: light-the-only-messenger
+  - id: spectral-line
+    term: Spectral line
+    short: "A narrow dark or bright line in a spectrum, at a colour that one kind of atom takes in or gives out."
+    more: "Every element has its own pattern of lines, so a spectrum shows what a star is made of. Helium was found this way in the Sun in 1868, before anyone had found it on Earth."
+    see: [spectrum, doppler-shift]
+    lesson: light-the-only-messenger
+  - id: doppler-shift
+    term: Doppler shift
+    short: "The change in the wavelength of light from something moving towards you or away from you."
+    more: "Light from an approaching source is squeezed towards blue, and from a receding one stretched towards red. The size of the shift gives the speed."
+    see: [redshift, spectral-line]
+  - id: redshift
+    term: Redshift
+    short: "A stretching of light to longer, redder wavelengths."
+    more: "Light from distant galaxies is redshifted because space itself has expanded while the light was on its way."
+    see: [doppler-shift, look-back-time]
+  - id: luminosity
+    term: Luminosity
+    short: "The total power a star gives out, in every direction and at every wavelength."
+    more: "The Sun's is 3.828 × 10²⁶ watts."
+    see: [apparent-magnitude, absolute-magnitude, inverse-square-law]
+  - id: inverse-square-law
+    term: Inverse square law
+    short: "The rule that light, and gravity, spread out and weaken with the square of the distance."
+    more: "Twice as far is a quarter as strong. Sunlight at Jupiter, 5.2 times further out than the Earth, is 27 times weaker."
+    see: [luminosity, gravity]
+  - id: albedo
+    term: Albedo
+    short: "The share of the light falling on a surface that it reflects."
+    more: "The Moon looks bright but reflects only about 12%, much the same as worn tarmac."
+    see: [luminosity]
+  - id: blackbody
+    term: Blackbody
+    also: [black body]
+    short: "An ideal object that soaks up all the light that falls on it and glows with a colour set only by its temperature."
+    more: "Stars come close. Cool ones glow red, the Sun yellow-white, and the hottest blue-white."
+    see: [kelvin, photosphere]
+  - id: kelvin
+    term: Kelvin
+    also: [K]
+    short: "The temperature scale that starts at absolute zero, the coldest anything can be."
+    more: "Its steps are the same size as degrees Celsius, and 0 °C is 273.15 K."
+    see: [blackbody]
+  - id: gamma-rays
+    term: Gamma rays
+    short: "Light with the shortest wavelengths and the most energy of all, made by the most violent events in the universe."
+    see: [electromagnetic-spectrum, x-rays]
+    lesson: the-whole-spectrum
+  - id: aperture
+    term: Aperture
+    short: "The width of a telescope's main lens or mirror. It sets how much light the telescope collects and how fine a detail it can show."
+    see: [arcsecond, wavelength]
+    lesson: telescopes
+  - id: interferometer
+    term: Interferometer
+    short: "An instrument that splits a beam of light in two, sends the halves along different paths and compares them when they meet again."
+    more: "The tiniest change in the length of either path shows up, which is how LIGO's 4 km arms catch gravitational waves."
+    see: [gravitational-wave, wavelength]
+    lesson: gravitational-waves

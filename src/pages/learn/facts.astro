@@ -1,0 +1,41 @@
+---
+import Reading from '../../layouts/Reading.astro';
+import { allFacts } from '../../lib/v2/margin/content';
+
+const facts = await allFacts();
+const SUBJECTS: [string, string][] = [
+  ['sun', 'The Sun'], ['earth-and-moon', 'The Earth and the Moon'], ['inner-planets', 'Mercury, Venus and Mars'],
+  ['giant-planets', 'The giant planets'], ['moons', 'Moons'], ['small-bodies', 'Dwarf planets, asteroids and comets'],
+  ['beyond', 'Beyond the Solar System'],
+];
+const groups = SUBJECTS.map(([id, name]) => ({ id, name, facts: facts.filter((f) => f.subject === id) })).filter((g) => g.facts.length);
+const basisNote = { measured: '', 'worked-out': 'Worked out', theory: 'From a model' } as const;
+---
+<Reading title="Facts" path="/learn/facts" description={`${facts.length} short facts about the Sun, planets, moons and beyond, each with its source.`}>
+  <header class="reading-head">
+    <p class="label"><a href="/learn">Learn</a> / Facts</p>
+    <h1>Small facts</h1>
+    <p class="lead">{facts.length} things worth knowing, each with a link to where it comes from. Most were measured. Where a figure was worked out by arithmetic, or comes from a model that nobody can check directly, it says so.</p>
+  </header>
+
+  {groups.map((g) => (
+    <section class="row" id={g.id}>
+      <div class="hang sticks"><h2>{g.name}</h2></div>
+      <ul class="plain-list facts">
+        {g.facts.map((f) => (
+          <li id={f.id}>
+            <p>{f.text}</p>
+            <p class="label">{basisNote[f.basis] && <span class="basis">{basisNote[f.basis]}</span>}<a href={f.source.url} rel="noopener">{f.source.label}</a></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Reading>
+
+<style>
+  .facts { display: grid; gap: 1.7rem; }
+  .facts li { scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .facts p:first-child { font: 300 1.16rem/1.58 var(--r-serif); color: var(--ink); margin: 0 0 .4rem; }
+  .basis { color: var(--accent); margin-right: .9em; }
+</style>

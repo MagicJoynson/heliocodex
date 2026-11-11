@@ -1,0 +1,85 @@
+---
+// The atlas front page: the list of charts, and the ruler that holds everything on one scale.
+import Reading from '../../layouts/Reading.astro';
+import Ruler from '../../components/atlas/Ruler.astro';
+import { allBodies } from '../../data/bodies/index';
+import { plates } from '../../lib/v2/atlas/plates';
+import { landmarks } from '../../lib/v2/atlas/landmarks';
+import { bodyMarks, landmarkMarks, layout, RULES } from '../../lib/v2/atlas/ruler';
+import { places } from '../../lib/v2/atlas/places';
+import { julianDate } from '../../lib/v2/atlas/kepler';
+import '../../styles/atlas.css';
+
+const marks = [...landmarkMarks(), ...bodyMarks(allBodies, julianDate(new Date()))];
+// the same marks laid out twice: two columns for a wide screen, one for a phone.
+// slot, tall and under are the heights of a label and of a rule's words, as fractions of --dec in atlas.css
+const wide = layout(marks, RULES, { columns: 2, slot: 1.65 / 16, tall: 2.6 / 16, under: 1.8 / 16, maxShift: 0.3 });
+const narrow = layout(marks, RULES, { columns: 1, slot: 1.65 / 24, tall: 2.6 / 24, under: 2.9 / 24, maxShift: 0.3 });
+
+const count = (id: string) => allBodies.filter((b) => b.parent === id).length;
+const charts = [
+  { href: '/atlas/solar-system', name: 'The Solar System from above', what: 'Eight planets and nine dwarf planets on their real orbits, in three drawings.' },
+  { href: '/atlas/small-bodies', name: 'Asteroids and comets', what: 'Twenty-six small bodies on their real orbits, and a count of where all the known asteroids are.' },
+  ...Object.entries(plates).map(([id, spec]) => ({ href: `/atlas/${id}`, name: spec.title, what: id === 'earth' ? 'One moon, and the path it really follows.' : count(id) === 1 ? 'Its one known moon, on its orbit.' : count(id) === 2 ? 'Both of its moons, each on its own orbit.' : `All ${count(id)} known moons, each on its own orbit.` })),
+  { href: '/atlas/stars', name: 'The stars round the Sun', what: 'The stars within 20 light years, and every star you can see by eye, each at its measured distance.' },
+  { href: '/atlas/galaxies', name: 'Our galaxy and the others', what: 'The Milky Way as a model, the small galaxies round it, the Local Group and the cosmic web.' },
+];
+const bySize = [...landmarks].sort((a, b) => a.metres - b.metres);
+const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked out here from a measured figure.' } as const;
+---
+<Reading title="The atlas" path="/atlas" description="Charts of the Solar System, its moons, the nearest stars and the galaxies, drawn to scale, and one ruler that runs from the height of a person to the edge of the visible universe.">
+  <header class="reading-head">
+    <p class="label">Atlas</p>
+    <h1>The atlas</h1>
+    <p class="lead">Flat charts of everything in the 3D model, drawn to scale and good enough to print. Below them, one ruler that runs from your own height to the edge of what can be seen.</p>
+  </header>
+
+  <section class="row" id="charts">
+    <div class="hang"><h2>The charts</h2><p class="note">Each one shows where its worlds are today, and every name on it will fly you there in 3D.</p></div>
+    <ul class="plain-list chart-list">
+      {charts.map((c) => <li><a href={c.href}>{c.name}</a><span>{c.what}</span></li>)}
+    </ul>
+  </section>
+
+  <section class="row" id="beyond">
+    <div class="hang"><h2>Further out</h2><p class="note">Eight steps away from the Sun, each one opening in 3D.</p><p class="note">Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p></div>
+    <ul class="plain-list chart-list">
+      {places.map((p) => <li><a href={`/v2?go=${p.id}`} aria-label={`Fly out to ${p.name} in 3D`}>{p.name}</a><span>{p.what}{p.model && <> <em>Partly a model.</em></>}{p.chart && <> <a href={p.chart}>The chart.</a></>}</span></li>)}
+    </ul>
+  </section>
+
+  <section class="row figure-row ruler-row" id="ruler">
+    <div class="hang sticks">
+      <h2>The ruler</h2>
+      <p class="note">Each line across is ten times the one above it. There are 27 of them between a metre and the edge of the visible universe.</p>
+      <p class="note wide-only">Sizes are on the left and distances on the right.</p>
+      <p class="note">Where names crowd, a thin line joins each one to its true place.</p>
+      <p class="note">Names in italics are landmarks, explained <a href="#marks">underneath</a>. The others are worlds, and lead to their chart.</p>
+    </div>
+    <div class="ruler-holder">
+      <Ruler layout={wide} variant="wide" />
+      <Ruler layout={narrow} variant="narrow" />
+    </div>
+  </section>
+
+  <section class="row" id="marks">
+    <div class="hang"><h2>The landmarks</h2><p class="note">From the smallest to the largest, with where each figure comes from.</p></div>
+    <dl class="landmarks">
+      {bySize.map((l) => (
+        <div id={`mark-${l.id}`}>
+          <dt><span class="nm">{l.name}</span> <span class="val">{l.value}</span></dt>
+          <dd>{l.note}{l.known && <> <em>{KNOWN[l.known]}</em></>} <a class="src" href={l.source.url}>{l.source.label}</a></dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="row">
+    <div class="hang"><h2>How far is far</h2></div>
+    <div class="prose">
+      <p>A light year is how far light travels in a year: 9.46 trillion km. Past the planets, kilometres stop meaning much, so the ruler changes to light years.</p>
+      <p>For the furthest marks, distance needs care. Space has stretched while the light was on its way, so a galaxy is further off now than it was when its light set out. The distances here are where things are now.</p>
+      <p>The widths and orbits of the worlds come from the same data as the 3D model and the charts, and each chart lists its sources.</p>
+    </div>
+  </section>
+</Reading>

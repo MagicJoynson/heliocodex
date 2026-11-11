@@ -1,0 +1,9 @@
+title: "Falling rocks: meteors, meteorites and impacts"
+strand: small-bodies
+order: 3
+summary: "A shooting star is a grain of dust burning up. Bigger pieces reach the ground, and once in a long while one is big enough to change the world."
+scene: "The Earth crossing the trail of dust left along a comet's orbit, with the meteors of a shower all seeming to come from one point in the sky."
+view: { target: earth, distanceKm: 60000, highlight: [meteor-shower] }
+terms: [meteoroid, meteor, meteorite, meteor-shower, impact-crater, near-earth-object, asteroid, comet]
+needs: [rubble-and-ice]
+next: []

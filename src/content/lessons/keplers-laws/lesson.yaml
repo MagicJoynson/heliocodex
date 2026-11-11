@@ -1,0 +1,9 @@
+title: Kepler's three laws
+strand: gravity-and-orbits
+order: 2
+summary: "Three short rules that describe every orbit, found from years of watching Mars."
+scene: "The real orbit of Mars drawn as an ellipse, with equal areas swept out in equal times."
+view: { target: mars, facing: sun, highlight: [mars] }
+terms: [keplers-laws, ellipse, eccentricity, semi-major-axis, perihelion, aphelion, orbital-period]
+needs: [what-an-orbit-is]
+next: [what-gravity-is, tides]

@@ -1,0 +1,9 @@
+title: "The Sun's reach: the solar wind and the edge"
+strand: the-sun
+order: 4
+summary: "The Sun blows a thin wind past every planet. Far beyond Neptune the wind stops, and two spacecraft have crossed the place where it does."
+scene: "The Solar System shrinking to a dot inside the great bubble the solar wind blows, with the two Voyagers crossing its edge."
+view: { target: sun, distanceKm: 45000000000, highlight: [heliosphere, voyager-1, voyager-2] }
+terms: [solar-wind, corona, heliosphere, heliopause, magnetosphere, comet-tail, astronomical-unit, oort-cloud]
+needs: [the-active-sun]
+next: []

@@ -1,0 +1,8 @@
+title: Phases and eclipses
+strand: finding-your-way
+order: 4
+summary: "Why the Moon changes shape every month, and why eclipses are much rarer than that."
+scene: "The Earth, Moon and Sun seen from above the orbit, then the same moment seen from the ground."
+view: { target: moon, facing: earth, distanceKm: 30000 }
+terms: [phase, synodic-period, node, solar-eclipse, lunar-eclipse, umbra, penumbra]
+needs: [seasons]

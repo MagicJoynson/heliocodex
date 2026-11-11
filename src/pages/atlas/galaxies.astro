@@ -1,0 +1,200 @@
+---
+// The chart of the galaxies: the Milky Way as a model, the small galaxies that go round it, the
+// Local Group, and the cosmic web. The same data the 3D view draws, from the same files.
+import Reading from '../../layouts/Reading.astro';
+import DeepPlate from '../../components/atlas/DeepPlate.astro';
+import { MCCONNACHIE, TWO_MRS } from '../../lib/v2/atlas/places';
+import { LY_PER_PC, R, R0_PC, armPath, clusters, dotPath, fmtLy, galaxyDot, groupGalaxies, limits, localArmPath, milkyWay, modelOnPage, onPage, placeLabels, ringLabelBox, webGalaxies } from '../../lib/v2/atlas/deep';
+import '../../styles/atlas.css';
+
+const lyOfKpc = (kpc: number) => kpc * 1000 * LY_PER_PC;
+const rings = (lys: number[], halfLy: number) => lys.map((ly) => ({ r: (ly / halfLy) * R, label: fmtLy(ly) }));
+
+// ---- drawing I: the Milky Way, a model
+const MW_HALF = 20000; // pc
+const mwRings = rings([20000, 40000], MW_HALF * LY_PER_PC);
+const sun = modelOnPage(R0_PC, 0, MW_HALF);
+const bar = (() => { const a = (milkyWay.bar.angleDeg * Math.PI) / 180, [x, y] = modelOnPage(milkyWay.bar.halfPc * Math.cos(a), milkyWay.bar.halfPc * Math.sin(a), MW_HALF); return { x, y, w: (milkyWay.bar.widthPc * 2 / MW_HALF) * R }; })();
+const armWidth = (840 / MW_HALF) * R;
+const eyeRing = ((2000 / LY_PER_PC) / MW_HALF) * R;
+
+// ---- drawings II and III: the galaxies round us
+const NICE: Record<string, string> = { LMC: 'Large Magellanic Cloud', SMC: 'Small Magellanic Cloud', 'Sagittarius dSph': 'Sagittarius Dwarf', 'Pegasus dIrr': 'Pegasus Dwarf', 'Sagittarius dIrr': 'Sagittarius Irregular' };
+const nice = (n: string) => NICE[n] ?? n.replace(/ \((I+)\)/, ' $1').replace(/ \(.*\)/, '');
+// the catalogue gives no brightness for Andromeda itself; it is the brightest galaxy in the group
+const dotOf = (g: { name: string; absMag: number | null }) => (g.name === 'Andromeda' ? 12 : galaxyDot(g.absMag));
+const centre: [number, number, number] = [R0_PC / 1000, 0, 0]; // the middle of the Milky Way, kpc from the Sun
+const fromCentre = (g: { p: number[] }) => Math.hypot(g.p[0] - centre[0], g.p[1], g.p[2]);
+function field(halfKpc: number, nameIf: (g: (typeof groupGalaxies)[number]) => boolean, ringLys: number[]) {
+  const ringList = rings(ringLys, lyOfKpc(halfKpc));
+  // a galaxy belongs on a drawing if it is really that close, not just in line with it from above
+  const inside = groupGalaxies.filter((g) => fromCentre(g) <= halfKpc).map((g) => { const [x, y] = onPage(g.p, halfKpc); return { g, x, y, r: dotOf(g) }; });
+  const home = onPage(centre, halfKpc);
+  const homeR = Math.max(12, (16 / halfKpc) * R);
+  // the largest are named first, and a small galaxy tight against a named one is left to the list
+  const chosen: { x: number; y: number; r: number; text: string }[] = [{ x: home[0], y: home[1], r: homeR, text: 'The Milky Way' }];
+  for (const d of [...inside].sort((a, b) => b.r - a.r || (a.g.absMag ?? 0) - (b.g.absMag ?? 0))) {
+    if (!nameIf(d.g) || d.g.name === 'Canis Major') continue;
+    if (chosen.some((c) => Math.hypot(c.x - d.x, c.y - d.y) < c.r + 22)) continue;
+    chosen.push({ x: d.x, y: d.y, r: d.r, text: nice(d.g.name) });
+  }
+  return { ringList, inside, names: placeLabels(chosen, 18, ringList.map((g) => ringLabelBox(g.r, g.label))), home };
+}
+const sats = field(300, (g) => (g.absMag ?? 0) <= -8.5, [250e3, 500e3, 750e3]);
+const group = field(1500, (g) => g.name === 'Andromeda' || (g.absMag ?? 0) <= -13, [1e6, 2e6, 3e6, 4e6]);
+const discR = (halfKpc: number) => (16 / halfKpc) * R;
+const andromeda = groupGalaxies.find((g) => g.name === 'Andromeda')!;
+const outside = groupGalaxies.length - group.inside.length;
+
+// ---- drawing IV: the cosmic web
+const WEB_HALF = limits.webMpc;
+const lyOfMpc = (mpc: number) => mpc * 1e6 * LY_PER_PC;
+const webRings = rings([250e6, 500e6, 750e6, 1e9], lyOfMpc(WEB_HALF));
+const web = dotPath(webGalaxies.map(([x, y]) => [(x / WEB_HALF) * R, (-y / WEB_HALF) * R]));
+const named = clusters.filter((c) => c.inSlab).map((c) => ({ x: (c.x / WEB_HALF) * R, y: (-c.y / WEB_HALF) * R, r: 6, text: c.name }));
+const webNames = placeLabels(named, 18, webRings.map((g) => ringLabelBox(g.r, g.label)));
+const offSlab = clusters.filter((c) => !c.inSlab);
+
+// ---- the list
+// two decimals below 10 million, so Andromeda's 783 kpc reads 2.55 million and sits with the "about 2.5 million" used in the facts
+const millions = (ly: number) => (ly >= 1e6 && ly < 1e7 ? `${(Math.round(ly / 1e4) / 100).toLocaleString('en-GB', { minimumFractionDigits: 2 })} million light years` : fmtLy(ly));
+const kpcText = (kpc: number) => `${Math.round(kpc).toLocaleString('en-GB')} kpc`;
+const sunLight = (absMag: number) => Math.pow(10, 0.4 * (4.83 - absMag));
+const light = (m: number | null) => { if (m === null) return null; const v = sunLight(m); return v >= 1e9 ? `${(v / 1e9).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} billion Suns` : `${(v / 1e6).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} million Suns`; };
+const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?? 0) <= -14).sort((a, b) => a.kpc - b.kpc);
+---
+<Reading title="The galaxies · Atlas" path="/atlas/galaxies" description="Charts of the Milky Way, the small galaxies round it, the Local Group and the cosmic web, with what is measured and what is a model kept apart.">
+  <header class="reading-head">
+    <p class="label">Atlas · Galaxies</p>
+    <h1>Our galaxy and the others</h1>
+    <p class="lead">Four steps outward: the Milky Way, the small galaxies that keep it company, the Local Group, and the web of galaxies beyond. The first drawing is a model, because nobody has seen our galaxy from outside. The other three are measured.</p>
+  </header>
+
+  <section class="row figure-row" id="figure-milky-way">
+    <div class="hang">
+      <p class="label">Drawing I</p>
+      <h2>The Milky Way</h2>
+      <p class="note"><strong>This drawing is a model, not a map.</strong> We live inside the Milky Way’s disc, and dust hides most of it from us, so nobody knows just where every arm runs.</p>
+      <p class="note">What is measured: the Sun is {fmtLy(R0_PC * LY_PER_PC)} from the centre, the middle of the galaxy is a bar of old stars, and the arms wind outward at a shallow slant. The model is built from those figures: four arms slanted at {milkyWay.pitchDeg}°, a bar {fmtLy(milkyWay.bar.halfPc * 2 * LY_PER_PC)} long turned 30° from our line of sight, and the short Local arm that the Sun sits in.</p>
+      <p class="note">The small ring round the Sun is 2,000 light years in radius. Nearly every star you can see by eye is inside it.</p>
+      <p class="note scale">The drawing is {fmtLy(MW_HALF * 2 * LY_PER_PC)} across.</p>
+      <p class="note print-hide"><a href="/v2?go=milky-way">See the same model in 3D</a></p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="milky-way" numeral="I" title="The Milky Way from above" rings={mwRings} model="A model, not a map" footLeft="Seen from the north side of the disc" footRight="The same model as the 3D view"
+        summary={`A model of the Milky Way seen from above: a central bar with four spiral arms winding out from its ends, and the Sun ${fmtLy(R0_PC * LY_PER_PC)} from the centre, a little over half way to the edge of the bright disc.`}>
+        <circle class="disc" r={((milkyWay.discPc / MW_HALF) * R).toFixed(1)} />
+        <g class="arms">
+          {milkyWay.arms.map((a) => <path class="arm" d={armPath(a, MW_HALF)} stroke-width={armWidth.toFixed(1)} />)}
+          <path class="arm local" d={localArmPath(MW_HALF)} stroke-width={(armWidth * 0.8).toFixed(1)} />
+        </g>
+        <path class="arm bar-line" d={`M${bar.x.toFixed(1)} ${bar.y.toFixed(1)}L${(-bar.x).toFixed(1)} ${(-bar.y).toFixed(1)}`} stroke-width={bar.w.toFixed(1)} />
+        <circle class="bar-shape" r={((900 * 1.6 / MW_HALF) * R).toFixed(1)} />
+        <g class="here" transform={`translate(${sun[0].toFixed(1)} ${sun[1].toFixed(1)})`}><circle class="eye" r={eyeRing.toFixed(1)} /><circle class="pip" r="2.4" /></g>
+        <text class="name it" x={sun[0] + eyeRing + 8} y={sun[1] + 6}>The Sun</text>
+        <text class="name small it" x="0" y="-48" text-anchor="middle">The centre</text>
+        <text class="name small it" x={(bar.x - 10).toFixed(1)} y={(bar.y + 28).toFixed(1)} text-anchor="end">The bar</text>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row figure-row" id="figure-satellites">
+    <div class="hang">
+      <p class="label">Drawing II</p>
+      <h2>The Milky Way’s companions</h2>
+      <p class="note">The {sats.inside.length} small galaxies in this catalogue that lie within about a million light years of the centre of the Milky Way. Most are held by the Milky Way’s gravity and go round it. The two Magellanic Clouds are the only ones easy to see by eye, from the southern half of the Earth.</p>
+      <p class="note">The grey disc in the middle is the Milky Way of drawing I, to scale. Each dot is where a galaxy really is. A bigger dot is a brighter galaxy, but the dots are not to scale: most of these would be smaller than a full stop.</p>
+      <p class="note scale">The drawing is {fmtLy(lyOfKpc(600))} across.</p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="satellites" numeral="II" title="The small galaxies round the Milky Way" rings={sats.ringList} footLeft="Seen from the north side of the Milky Way’s disc" footRight="McConnachie 2012"
+        summary={`A chart of the ${sats.inside.length} small galaxies within about a million light years of the Milky Way, each at its measured place, seen from above the Milky Way’s disc. The nearest large ones are the two Magellanic Clouds.`}>
+        <circle class="disc strong" cx={sats.home[0].toFixed(1)} cy={sats.home[1].toFixed(1)} r={discR(300).toFixed(1)} />
+        <g>{sats.inside.map((d) => <circle class:list={['galaxy', d.g.absMag === null && d.g.name !== 'Andromeda' && 'unknown']} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={d.r} />)}</g>
+        <g class="names">{sats.names.placed.map((l) => <text class="name small" x={l.tx.toFixed(1)} y={l.ty.toFixed(1)} text-anchor={l.anchor}>{l.text}</text>)}</g>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row figure-row" id="figure-local-group">
+    <div class="hang">
+      <p class="label">Drawing III</p>
+      <h2>The Local Group</h2>
+      <p class="note">Step back five times. The Milky Way and Andromeda are the two big galaxies of a group about ten million light years wide. Each has its own swarm of small ones, and Triangulum is the third in size.</p>
+      <p class="note">Andromeda is about 2.5 million light years away ({Math.round(andromeda.kpc)} kiloparsecs in the catalogue), the furthest thing most people can see without a telescope. It and the Milky Way are falling towards each other.</p>
+      <p class="note">A ring instead of a dot means the catalogue gives no brightness for that galaxy.</p>
+      <p class="note scale">The drawing is {fmtLy(lyOfKpc(3000))} across. The catalogue’s other {outside} galaxies are further off than that, just beyond the group. They are in the 3D view.</p>
+      <p class="note print-hide"><a href="/v2?go=local-group">See the Local Group in 3D</a></p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="local-group" numeral="III" title="The Local Group" rings={group.ringList} footLeft="Seen from the north side of the Milky Way’s disc" footRight="McConnachie 2012"
+        summary={`A chart of the Local Group seen from above the Milky Way’s disc: the Milky Way in the middle with its small companions, Andromeda and its own companions about two and a half million light years away, and scattered dwarf galaxies between and beyond.`}>
+        <circle class="galaxy" cx={group.home[0].toFixed(1)} cy={group.home[1].toFixed(1)} r="11" />
+        <g>{group.inside.map((d) => <circle class:list={['galaxy', d.g.absMag === null && d.g.name !== 'Andromeda' && 'unknown']} cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={d.r} />)}</g>
+        <g class="names">{group.names.placed.map((l) => <text class="name small" x={l.tx.toFixed(1)} y={l.ty.toFixed(1)} text-anchor={l.anchor}>{l.text}</text>)}</g>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row figure-row" id="figure-web">
+    <div class="hang">
+      <p class="label">Drawing IV</p>
+      <h2>The cosmic web</h2>
+      <p class="note">Step back two hundred times more. Each dot is now a whole galaxy: {webGalaxies.length.toLocaleString('en-GB')} of them, in a slice of space {fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick with us in the middle. Galaxies are not scattered evenly. They gather into clusters and threads, with great empty voids between.</p>
+      <p class="note"><strong>Three things here are not real.</strong> The dots thin out towards the edge only because faint galaxies far away were too dim for the survey. Along a narrow line to the left and right of the middle there are fewer dots, because the Milky Way’s own disc hides what lies behind it. And a rich cluster is smeared into a streak pointing at us, because distance is worked out from speed and the galaxies in a cluster are also flying round each other.</p>
+      <p class="note scale">The drawing is {fmtLy(lyOfMpc(WEB_HALF * 2))} across.</p>
+      <p class="note print-hide"><a href="/v2?go=cosmic-web">See the cosmic web in 3D</a></p>
+    </div>
+    <figure class="plate-holder">
+      <DeepPlate id="web" numeral="IV" title="Galaxies out to a billion light years" rings={webRings} footLeft={`A slice ${fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick`} footRight="2MASS Redshift Survey"
+        summary={`A chart of ${webGalaxies.length.toLocaleString('en-GB')} galaxies in a thin slice of space reaching a billion light years from us in every direction. They gather into clusters and threads round empty voids. The Virgo Cluster is the nearest rich cluster.`}>
+        <path class="dust" d={web} stroke-width="1.7" />
+        <g>{webNames.placed.map((l) => <circle class="edge" cx={l.x.toFixed(1)} cy={l.y.toFixed(1)} r="6" />)}</g>
+        <g class="here"><circle r="5" /></g>
+        <g class="names">{webNames.placed.map((l) => <text class="name small" x={l.tx.toFixed(1)} y={l.ty.toFixed(1)} text-anchor={l.anchor}>{l.text}</text>)}</g>
+      </DeepPlate>
+    </figure>
+  </section>
+
+  <section class="row key-row">
+    <div class="hang"><h2>How to read it</h2></div>
+    <div class="prose key">
+      <p>Drawings I to III look straight down on the disc of the Milky Way from its north side, the same way up as the <a href="/atlas/stars">chart of the stars</a>. A flat drawing cannot show height, so galaxies that look close together on the page may be far apart above and below it.</p>
+      <p>Drawing IV is turned a different way, to lie along the sheet in which most of the nearby galaxies are found. Astronomers call it the supergalactic plane. We are the ring in the middle.</p>
+      <p>The distances in drawing IV come from redshift: the faster a galaxy is moving away, the further it is, at {limits.h0} km a second for every megaparsec (3.26 million light years). That is good to about a tenth far away, and poor close in.</p>
+      <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
+    </div>
+  </section>
+
+  <section class="row family-row" id="brightest">
+    <div class="hang">
+      <h2>The larger galaxies near us</h2>
+      <p class="note">Andromeda and the {listed.length - 1} galaxies in the catalogue that give out more visible light than about 30 million Suns, nearest first. All {groupGalaxies.length} are in the 3D view.</p>
+    </div>
+    <table class="moons worlds">
+      <thead><tr><th scope="col">Galaxy</th><th scope="col">Distance from us</th><th scope="col">Light it gives out</th></tr></thead>
+      <tbody>
+        {listed.map((g) => (
+          <tr>
+            <th scope="row"><span class="nm">{nice(g.name)}</span>{g.name === 'Canis Major' && <span class="fit">Astronomers disagree on whether this is a galaxy at all.</span>}</th>
+            <td data-label="Distance from us">{millions(lyOfKpc(g.kpc))} <span class="deep__kpc">({kpcText(g.kpc)})</span></td>
+            <td data-label="Light it gives out">{light(g.absMag) ?? <span class="unknown">not given</span>}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+
+  <section class="row sources-row">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <ul>
+        <li>Drawings II and III: <a href={MCCONNACHIE.url}>{MCCONNACHIE.label}</a>, “The observed properties of dwarf galaxies in and around the Local Group”.</li>
+        <li>Drawing IV: <a href={TWO_MRS.url}>{TWO_MRS.label}</a>. The survey measured {limits.webAll.toLocaleString('en-GB')} galaxies over the whole sky, and the slice drawn here holds about a quarter of them.</li>
+        <li>The Sun’s distance from the centre of the Milky Way: <a href="https://doi.org/10.1051/0004-6361/201935656">GRAVITY Collaboration 2019, Astronomy &amp; Astrophysics 625, L10</a>.</li>
+      </ul>
+      <p>The Milky Way in drawing I is the model used by the 3D view. Its arms follow the usual picture of four arms winding out from a central bar, but their exact places are our own choice and should not be read as measurements.</p>
+      <p>The light a galaxy gives out is its visible light, compared with the Sun’s, worked out here from the brightness given in the catalogue.</p>
+    </div>
+  </section>
+</Reading>

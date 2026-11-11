@@ -1,0 +1,120 @@
+# The Sun, and stars as the same kind of thing.
+terms:
+  - id: star
+    term: Star
+    short: "A ball of hot gas held together by its own gravity and shining by nuclear fusion in its core."
+    see: [nuclear-fusion, main-sequence, plasma]
+    lesson: what-the-sun-is
+  - id: plasma
+    term: Plasma
+    short: "Gas so hot that its atoms have lost electrons, so it carries electric current and is steered by magnetic fields."
+    more: "The Sun is plasma all the way through, and so is most of the ordinary matter in the universe."
+    see: [star, magnetic-field]
+    lesson: what-the-sun-is
+  - id: hydrogen
+    term: Hydrogen
+    short: "The lightest and commonest element, a single proton with a single electron."
+    more: "It makes up about 73% of the Sun by mass."
+    see: [helium, nuclear-fusion]
+  - id: helium
+    term: Helium
+    short: "The second lightest element, and what the Sun makes from hydrogen."
+    more: "It is about 25% of the Sun by mass. Everything heavier adds up to under 2%."
+    see: [hydrogen, nuclear-fusion]
+  - id: nuclear-fusion
+    term: Nuclear fusion
+    also: [fusion]
+    short: "The joining of light atomic nuclei into heavier ones, which releases energy."
+    more: "Each second the Sun turns about 600 million tonnes of hydrogen into helium, and about 4 million tonnes of that leaves as light."
+    see: [solar-core, hydrogen, helium, neutrino]
+    lesson: what-the-sun-is
+  - id: neutrino
+    term: Neutrino
+    short: "A particle with almost no mass that passes through ordinary matter nearly untouched."
+    more: "Fusion in the Sun's core makes them in huge numbers. Tens of billions pass through each square centimetre of you every second, day and night."
+    see: [nuclear-fusion, solar-core]
+  - id: solar-core
+    term: Core (of the Sun)
+    also: [core]
+    short: "The inner quarter of the Sun's radius, the only part hot and dense enough for fusion."
+    more: "The temperature at the centre is about 15.7 million kelvin."
+    see: [nuclear-fusion, radiative-zone]
+    lesson: what-the-sun-is
+  - id: radiative-zone
+    term: Radiative zone
+    short: "The thick layer round the Sun's core where energy works its way outward as light, absorbed and given out again countless times."
+    more: "The gas is so dense that the journey takes many thousands of years."
+    see: [solar-core, convective-zone]
+    lesson: what-the-sun-is
+  - id: convective-zone
+    term: Convective zone
+    also: [convection zone]
+    short: "The outer third of the Sun, where heat is carried up by rising and sinking gas, like water at a rolling boil."
+    see: [radiative-zone, granule, photosphere]
+    lesson: what-the-sun-is
+  - id: photosphere
+    term: Photosphere
+    short: "The layer of the Sun that we see, where the gas turns clear enough for light to get out."
+    more: "It is a few hundred kilometres deep and about 5,772 K. The Sun has no solid surface, and this is the nearest thing to one."
+    see: [granule, sunspot, chromosphere]
+    lesson: what-the-sun-is
+  - id: granule
+    term: Granule
+    short: "The top of a column of hot gas rising at the Sun's surface, about 1,000 to 1,500 km across."
+    more: "Each lasts ten minutes or so before it cools, sinks at its edges and is replaced."
+    see: [convective-zone, photosphere]
+  - id: sunspot
+    term: Sunspot
+    short: "A darker, cooler patch on the Sun where strong magnetism holds back the heat rising from below."
+    more: "Spots are often bigger than the Earth. They only look dark beside the hotter surface around them."
+    see: [solar-cycle, umbra, magnetic-field]
+  - id: solar-cycle
+    term: Solar cycle
+    short: "The rise and fall in the number of sunspots, flares and storms on the Sun, which takes about eleven years."
+    more: "The Sun's magnetic poles swap over at each peak, so the full magnetic cycle is about 22 years."
+    see: [sunspot, solar-flare]
+  - id: chromosphere
+    term: Chromosphere
+    short: "The thin layer just above the Sun's visible surface, seen as a red rim during a total eclipse."
+    see: [photosphere, corona]
+  - id: corona
+    term: Corona
+    short: "The Sun's thin outer atmosphere, which at over a million kelvin is far hotter than the surface beneath it."
+    more: "Why it is so hot is not fully settled. By eye it can be seen only during a total solar eclipse."
+    see: [chromosphere, solar-wind, x-rays]
+  - id: solar-wind
+    term: Solar wind
+    short: "A stream of charged particles that blows outward from the Sun all the time."
+    more: "It passes the Earth at several hundred kilometres per second."
+    see: [corona, heliosphere, aurora, magnetosphere]
+  - id: solar-flare
+    term: Solar flare
+    short: "A sudden burst of light, from radio waves to X-rays, when tangled magnetic field above a sunspot group snaps into a simpler shape."
+    see: [sunspot, coronal-mass-ejection]
+  - id: coronal-mass-ejection
+    term: Coronal mass ejection
+    also: [CME]
+    short: "A huge cloud of plasma thrown off the Sun, which can reach the Earth in one to three days."
+    more: "When one arrives it can set off bright aurorae and disturb power grids and satellites."
+    see: [solar-flare, aurora, solar-wind]
+  - id: aurora
+    term: Aurora
+    also: [northern lights, southern lights]
+    short: "Light in the sky near a planet's magnetic poles, made when charged particles strike the upper air."
+    more: "Jupiter, Saturn, Uranus and Neptune have them too."
+    see: [solar-wind, magnetosphere]
+  - id: heliosphere
+    term: Heliosphere
+    short: "The bubble that the solar wind blows in the thin gas between the stars."
+    more: "Voyager 1 crossed its edge in 2012 at about 121 au from the Sun, and Voyager 2 in 2018 at about 119 au."
+    see: [solar-wind, heliopause]
+  - id: heliopause
+    term: Heliopause
+    short: "The edge of the heliosphere, where the solar wind is stopped by the gas between the stars."
+    more: "It is not the edge of the Solar System. The Sun's gravity holds comets very much further out."
+    see: [heliosphere, oort-cloud]
+  - id: main-sequence
+    term: Main sequence
+    short: "The long, steady part of a star's life while it fuses hydrogen in its core."
+    more: "The Sun is about 4.6 billion years into a main-sequence life of roughly 10 billion."
+    see: [star, nuclear-fusion]

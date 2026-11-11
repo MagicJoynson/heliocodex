@@ -1,0 +1,21 @@
+---
+// Visit counting by Cloudflare Web Analytics, unless the visitor has said no
+// (Do Not Track, Global Privacy Control, or the switch on /cookies). With no token set, nothing is added.
+import { ANALYTICS_TOKEN, OPT_OUT_KEY } from '../lib/analytics';
+---
+{ANALYTICS_TOKEN && (
+  <script is:inline define:vars={{ token: ANALYTICS_TOKEN, optOut: OPT_OUT_KEY }}>
+    // Visit counting by Cloudflare Web Analytics, unless the visitor has said no (Do Not Track, Global Privacy Control, or the switch on /cookies).
+    (function () {
+      try {
+        if (navigator.globalPrivacyControl || navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
+        if (localStorage.getItem(optOut) === '1') return;
+      } catch (e) {}
+      var s = document.createElement('script');
+      s.type = 'module';
+      s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      s.setAttribute('data-cf-beacon', JSON.stringify({ token: token }));
+      document.head.appendChild(s);
+    })();
+  </script>
+)}

@@ -1,0 +1,9 @@
+title: Neutron stars and pulsars
+strand: stellar-remnants
+order: 2
+summary: "When a massive star dies, its core can be crushed into a ball the size of a city with more mass than the Sun. Some sweep beams past us like lighthouses."
+scene: "A star's core falling in on itself until a sphere 20 km across is left, spinning many times a second, with two beams sweeping round like a lighthouse."
+view: { target: milky-way }
+terms: [neutron-star, supernova, density, magnetic-field, black-hole, white-dwarf, gravitational-wave]
+needs: [how-stars-live-and-die]
+next: [what-a-black-hole-is]

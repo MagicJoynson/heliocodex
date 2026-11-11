@@ -1,0 +1,139 @@
+---
+import { render } from 'astro:content';
+import Reading from '../../layouts/Reading.astro';
+import LessonStory from '../../components/learn/LessonStory.astro';
+import { STORY_LESSONS } from '../../lib/learn/stories';
+import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
+import equationStyles from 'katex/dist/katex.min.css?url';
+
+export async function getStaticPaths() {
+  const lessons = await allLessons();
+  return lessons.map((lesson) => ({ params: { lesson: lesson.id }, props: { lesson } }));
+}
+
+const { lesson } = Astro.props as { lesson: Lesson };
+// lessons rebuilt in the visual style have a page of their own shape, and their deeper levels on separate pages
+const visual = STORY_LESSONS.includes(lesson.id);
+const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
+const levels = await Promise.all(lesson.levels.map(async (entry) => ({ id: levelOf(entry), entry, ...(await render(entry)) })));
+// The stylesheet for equations is only sent with lessons that have one. The guide in the 3D view picks it up from here too.
+const hasEquations = levels.some((l) => l.entry.rendered?.html.includes('class="katex'));
+const words = lesson.data.terms.map((id) => terms.find((t) => t.id === id)!);
+const worthKnowing = facts.filter((f) => f.about.includes(lesson.id)).slice(0, 5);
+const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
+
+// every source named by any level, once each
+const sources = [...new Map(levels.flatMap((l) => l.entry.data.sources).map((s) => [s.url, s])).values()];
+const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
+---
+{visual ? <LessonStory lesson={lesson} /> : (
+<Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary}>
+  {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
+  <header class="reading-head">
+    <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
+    <h1>{lesson.data.title}</h1>
+    <p class="lead">{lesson.data.summary}</p>
+    {levels.length > 1 && (
+      <nav class="depths" aria-label="Levels of this lesson">
+        {levels.map((l) => <a href={`#${l.id}`}>{LEVEL_NAMES[l.id].name}</a>)}
+      </nav>
+    )}
+  </header>
+
+  {levels.map((l) => (
+    <section class="row" id={l.id}>
+      <div class="hang sticks">
+        <h2>{LEVEL_NAMES[l.id].name}</h2>
+        <p class="note">{LEVEL_NAMES[l.id].reader}</p>
+      </div>
+      <div class="prose"><l.Content /></div>
+    </section>
+  ))}
+
+  {lesson.data.scene && (
+    <section class="row">
+      <div class="hang"><h2>In the 3D view</h2></div>
+      <div>
+        <p class="aside">{lesson.data.scene}</p>
+        <p class="label not-yet">Not built yet. This lesson will be able to fly you there.</p>
+      </div>
+    </section>
+  )}
+
+  <section class="row">
+    <div class="hang"><h2>Words used here</h2></div>
+    <dl class="words">
+      {words.map((t) => (
+        <div>
+          <dt><a href={`/glossary#${t.id}`}>{t.term}</a></dt>
+          <dd>{t.short}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  {worthKnowing.length > 0 && (
+    <section class="row">
+      <div class="hang"><h2>Worth knowing</h2></div>
+      <ul class="plain-list facts">
+        {worthKnowing.map((f) => (
+          <li>
+            <p>{f.text}</p>
+            <p class="label">{basisNote[f.basis] && <span>{basisNote[f.basis]}. </span>}<a href={f.source.url} rel="noopener">{f.source.label}</a></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="row small">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div>
+      <ul class="plain-list sources">
+        {sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}
+      </ul>
+      <p class="aside small-note">The words are written for this site. Sums in the text are worked from the figures in these sources.</p>
+    </div>
+  </section>
+
+  {(lesson.data.needs.length > 0 || lesson.data.next.length > 0) && (
+    <nav class="row onward" aria-label="Other lessons">
+      <div class="hang"><h2>Keep going</h2></div>
+      <ul class="plain-list">
+        {lesson.data.needs.map((id) => <li><span class="label">Helps to read first</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
+        {lesson.data.next.map((id) => <li><span class="label">Next</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
+      </ul>
+    </nav>
+  )}
+</Reading>
+)}
+
+<script>
+  // Wide tables scroll sideways on a phone and leave the page still.
+  document.querySelectorAll('.prose table').forEach((table) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'table-scroll';
+    wrap.tabIndex = 0;
+    table.replaceWith(wrap);
+    wrap.append(table);
+  });
+</script>
+
+<style>
+  .depths { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; margin-top: 1.8rem; font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .depths a { color: var(--ink-soft); text-decoration: none; padding: .35rem 0; border-bottom: 1px solid var(--rule); }
+  .depths a:hover { color: var(--accent); border-color: var(--accent); }
+  .row[id] { scroll-margin-top: calc(var(--header-h) + .5rem); }
+  .aside { font: 300 1.1rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0 0 .8rem; }
+  .not-yet { color: var(--accent); }
+  .words { margin: 0; display: grid; gap: 1.1rem; }
+  .words dt { font: 400 1.1rem/1.3 var(--r-serif); }
+  .words dd { margin: .15rem 0 0; font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); }
+  .facts { display: grid; gap: 1.5rem; }
+  .facts p:first-child { font: 300 1.12rem/1.55 var(--r-serif); color: var(--ink); margin: 0 0 .4rem; }
+  .sources { display: grid; gap: .45rem; font: 400 .8rem/1.6 var(--r-mono); letter-spacing: .02em; }
+  .small-note { font-size: .98rem; color: var(--ink-faint); margin: 1.1rem 0 0; }
+  .onward ul { display: grid; gap: 1.1rem; }
+  .onward li { display: grid; gap: .2rem; }
+  .onward a { font: 400 1.25rem/1.25 var(--r-serif); }
+</style>

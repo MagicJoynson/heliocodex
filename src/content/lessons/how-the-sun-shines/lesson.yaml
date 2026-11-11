@@ -1,0 +1,9 @@
+title: How the Sun shines
+strand: the-sun
+order: 2
+summary: "The Sun turns matter into light in its core. The light then takes many thousands of years to find its way out."
+scene: "A cut through the Sun, following one burst of energy from the core as it staggers outward, while a neutrino made at the same moment leaves in two seconds."
+view: { target: sun, distanceKm: 2500000 }
+terms: [nuclear-fusion, solar-core, hydrogen, helium, neutrino, radiative-zone, convective-zone, photosphere]
+needs: [what-the-sun-is]
+next: [the-active-sun]

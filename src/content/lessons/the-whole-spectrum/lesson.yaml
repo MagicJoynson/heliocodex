@@ -1,0 +1,9 @@
+title: "The whole spectrum: light we cannot see"
+strand: light
+order: 2
+summary: "The colours we see are a thin slice of light. Radio waves, infrared, ultraviolet, X-rays and gamma rays are the same thing at other wavelengths."
+scene: "One patch of sky, the centre of the Milky Way, shown in radio, infrared, visible light and X-rays in turn: four quite different pictures of the same place."
+view: { target: milky-way, highlight: [galactic-centre] }
+terms: [electromagnetic-spectrum, wavelength, frequency, photon, radio-waves, infrared, ultraviolet, x-rays]
+needs: [light-the-only-messenger]
+next: [reading-starlight, telescopes]

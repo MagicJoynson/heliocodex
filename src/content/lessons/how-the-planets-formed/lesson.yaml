@@ -1,0 +1,9 @@
+title: How the planets formed
+strand: planets
+order: 2
+summary: "The planets grew from a disc of gas and dust around the young Sun, from specks to boulders to worlds, in a few tens of millions of years."
+scene: "A flat, glowing disc of gas and dust around the young Sun, with dark lanes opening in it as planets gather."
+view: { target: sun, distanceKm: 9000000000 }
+terms: [protoplanetary-disc, accretion, planetesimal, frost-line, terrestrial-planet, gas-giant, asteroid-belt, exoplanet]
+needs: [three-kinds-of-planet]
+next: [air-and-the-greenhouse]

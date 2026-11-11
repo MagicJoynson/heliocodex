@@ -1,0 +1,126 @@
+---
+// The Codex in the 3D view: a panel that stays out of sight until asked for. It shows what is
+// worth knowing about wherever the camera is, the lessons and the glossary, and the atlas.
+// The markup here is the empty shell; lib/v2/margin/panel.ts fills it once the engine is running.
+---
+<button type="button" class="margin-tab" id="margin-tab" aria-expanded="false" aria-controls="margin" hidden>
+  <span>Codex</span><kbd aria-hidden="true">M</kbd>
+</button>
+<aside class="margin" id="margin" aria-label="Codex" inert>
+  <header class="margin-head">
+    <div class="margin-tabs" role="tablist" aria-label="Parts of the Codex">
+      <button type="button" role="tab" id="mt-here" aria-controls="mp-here" aria-selected="true">Here</button>
+      <button type="button" role="tab" id="mt-lessons" aria-controls="mp-lessons" aria-selected="false" tabindex="-1">Lessons</button>
+      <button type="button" role="tab" id="mt-words" aria-controls="mp-words" aria-selected="false" tabindex="-1">Words</button>
+      <button type="button" role="tab" id="mt-atlas" aria-controls="mp-atlas" aria-selected="false" tabindex="-1">Atlas</button>
+    </div>
+    <button type="button" class="margin-close" id="margin-close" aria-label="Close the Codex">Close</button>
+  </header>
+  <div class="margin-body" id="margin-body">
+    <section role="tabpanel" id="mp-here" aria-labelledby="mt-here" tabindex="0"><p class="m-wait">Finding out where you are…</p></section>
+    <section role="tabpanel" id="mp-lessons" aria-labelledby="mt-lessons" tabindex="0" hidden></section>
+    <section role="tabpanel" id="mp-words" aria-labelledby="mt-words" tabindex="0" hidden></section>
+    <section role="tabpanel" id="mp-atlas" aria-labelledby="mt-atlas" tabindex="0" hidden></section>
+    <article id="mp-read" class="m-read" tabindex="-1" hidden></article>
+  </div>
+  <p class="margin-said" id="margin-said" role="status"></p>
+</aside>
+
+<style is:global>
+  /* The space at the foot of the screen that belongs to the readout and the Skip button. */
+  :root { --m-foot: calc(max(clamp(16px, 4vh, 36px), env(safe-area-inset-bottom)) + 5.6rem); --m-w: min(26rem, calc(100vw - 3rem)); }
+
+  .margin-tab { position: fixed; right: 0; top: 34%; z-index: 30; display: flex; flex-direction: column; align-items: center; gap: .7rem; padding: 1rem .55rem; background: rgba(10, 10, 12, .78); border: 1px solid rgba(236, 231, 220, .22); border-right: 0; color: var(--soft); cursor: pointer; transition: transform .35s ease, color .2s, border-color .2s; }
+  .margin-tab[hidden] { display: none; }
+  .margin-tab span { writing-mode: vertical-rl; font: 400 .7rem/1 var(--mono); letter-spacing: .22em; text-transform: uppercase; }
+  @media (hover: none) { .margin-tab kbd { display: none; } }
+  .margin-tab kbd { font: 400 .62rem/1 var(--mono); color: var(--faint); border: 1px solid rgba(236, 231, 220, .22); padding: .25rem .3rem; }
+  .margin-tab:hover, .margin-tab:focus-visible { color: var(--warm); border-color: var(--warm); }
+  .margin-tab:focus-visible, .margin button:focus-visible, .margin a:focus-visible, .margin input:focus-visible, .margin summary:focus-visible, .margin [role='tabpanel']:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+  body.margin-open .margin-tab { transform: translateX(calc(-1 * var(--m-w))); color: var(--ink); }
+
+  .margin { position: fixed; z-index: 29; top: 0; right: 0; bottom: var(--m-foot); width: var(--m-w); display: flex; flex-direction: column; background: rgba(9, 9, 11, .93); border-left: 1px solid rgba(236, 231, 220, .2); border-bottom: 1px solid rgba(236, 231, 220, .2); transform: translateX(100%); visibility: hidden; transition: transform .35s ease, visibility 0s .35s; }
+  body.margin-open .margin { transform: none; visibility: visible; transition: transform .35s ease; }
+  .margin-head { display: flex; align-items: stretch; justify-content: space-between; border-bottom: 1px solid rgba(236, 231, 220, .14); padding: 0 .4rem 0 1.1rem; flex: none; }
+  .margin-tabs { display: flex; gap: 1.2rem; }
+  .margin-tabs button, .margin-close { font: 400 .7rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); padding: 1.15rem 0 1rem; border-bottom: 2px solid transparent; min-height: 44px; }
+  .margin-tabs button[aria-selected='true'] { color: var(--ink); border-bottom-color: var(--warm); }
+  .margin-tabs button:hover, .margin-close:hover { color: var(--ink); }
+  .margin-close { padding-left: .8rem; padding-right: .8rem; }
+  .margin-body { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 1.4rem 1.3rem 2rem 1.1rem; scrollbar-width: thin; scrollbar-color: rgba(236, 231, 220, .25) transparent; }
+  .margin-said { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+  .margin .m-kicker { font: 400 .68rem/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--warm); margin: 0 0 .5rem; }
+  .margin h2 { font: 200 2.3rem/1 var(--serif); letter-spacing: -.01em; margin: 0 0 .6rem; }
+  .margin h3 { font: 400 .68rem/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--faint); margin: 1.9rem 0 .2rem; padding-top: .9rem; border-top: 1px solid rgba(236, 231, 220, .14); }
+  .margin p { font: 300 1.02rem/1.55 var(--serif); color: var(--soft); margin: 0 0 .7rem; }
+  .margin .m-what { color: var(--ink); }
+  .margin .m-drawn, .margin .m-wait, .margin .m-none { font-style: italic; color: var(--faint); }
+  .margin ul, .margin dl { list-style: none; margin: 0; padding: 0; }
+  .margin li, .margin dl > div { padding: .8rem 0; border-top: 1px solid rgba(236, 231, 220, .09); }
+  .margin li:first-child, .margin dl > div:first-child { border-top: 0; }
+  .margin li p { margin: 0; }
+  .margin .m-src { display: block; margin-top: .35rem; font: 400 .64rem/1.5 var(--mono); letter-spacing: .03em; color: var(--faint); }
+  .margin .m-src b { font-weight: 400; color: var(--warm); margin-right: .7em; }
+  .margin a { color: inherit; text-decoration-color: rgba(236, 231, 220, .35); text-underline-offset: 3px; }
+  .margin a:hover { color: var(--warm); }
+  .margin .m-title { font: 400 1.14rem/1.3 var(--serif); color: var(--ink); margin: 0 0 .2rem; }
+  .margin .m-acts { display: flex; flex-wrap: wrap; gap: .5rem 1.3rem; margin-top: .5rem; }
+  .margin .m-act { font: 400 .68rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); padding: .5rem 0; border-bottom: 1px solid rgba(236, 231, 220, .35); text-decoration: none; }
+  .margin .m-act:hover { color: var(--warm); border-bottom-color: var(--warm); }
+  .margin .m-act[disabled] { color: var(--faint); border-bottom-color: transparent; cursor: default; }
+  .margin dt { font: 400 1.08rem/1.3 var(--serif); color: var(--ink); }
+  .margin dd { margin: .15rem 0 0; font: 300 1rem/1.5 var(--serif); color: var(--soft); }
+  .margin dd .m-more { display: block; margin-top: .3rem; color: var(--faint); }
+  .margin input[type='search'] { width: 100%; font: 300 1.05rem/1.3 var(--serif); color: var(--ink); background: transparent; border: 0; border-bottom: 1px solid rgba(236, 231, 220, .35); padding: .55rem 0; margin-bottom: .6rem; border-radius: 0; }
+  .margin input[type='search']::placeholder { color: var(--faint); }
+  .margin details { border-top: 1px solid rgba(236, 231, 220, .09); }
+  .margin summary { cursor: pointer; padding: .75rem 0; font: 400 1.08rem/1.3 var(--serif); color: var(--ink); list-style: none; display: flex; justify-content: space-between; gap: 1rem; }
+  .margin summary::-webkit-details-marker { display: none; }
+  .margin summary span { font: 400 .64rem/1.9 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .margin details[open] > summary { color: var(--warm); }
+  .margin .m-fly { display: flex; flex-wrap: wrap; gap: .4rem .5rem; padding: 0 0 1rem; }
+  .margin .m-fly button { font: 300 1rem/1 var(--serif); color: var(--soft); padding: .5rem .7rem; border: 1px solid rgba(236, 231, 220, .2); min-height: 36px; }
+  .margin .m-fly button:hover { color: var(--warm); border-color: var(--warm); }
+  .margin .m-fly a { font: 400 .64rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); align-self: center; padding: .5rem .2rem; }
+
+  /* the small ruler in the atlas pane: one line for each step of ten, and a pointer for the camera */
+  .m-ruler { position: relative; margin: .9rem 0 .4rem; --row: 1.45rem; height: calc(var(--row) * 27); border-left: 1px solid rgba(236, 231, 220, .45); }
+  .m-ruler i { position: absolute; left: 0; width: .55rem; border-top: 1px solid rgba(236, 231, 220, .45); top: calc(var(--row) * var(--y)); }
+  .m-ruler span { position: absolute; left: 1rem; top: calc(var(--row) * var(--y)); transform: translateY(-50%); font: 400 .62rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .m-ruler .m-you { position: absolute; left: -1px; right: 0; top: calc(var(--row) * var(--y)); border-top: 1px solid var(--warm); transition: top .8s ease; }
+  .m-ruler .m-you b { position: absolute; right: 0; top: 0; transform: translateY(-50%); font: 400 .66rem/1.3 var(--mono); letter-spacing: .06em; color: var(--warm); background: rgba(9, 9, 11, .95); padding: .2rem 0 .2rem .6rem; text-align: right; max-width: 62%; }
+
+  /* phones: a sheet that rises from above the readout */
+  @media (max-width: 760px) {
+    :root { --m-w: 100vw; }
+    .margin-tab { top: 30%; }
+    body.margin-open .margin-tab { transform: none; opacity: 0; pointer-events: none; }
+    .margin { left: 0; width: auto; top: auto; height: min(62vh, 34rem); border-left: 0; border-top: 1px solid rgba(236, 231, 220, .28); transform: translateY(calc(100% + var(--m-foot))); }
+    .margin-tabs { gap: 1rem; }
+    .margin h2 { font-size: 1.9rem; }
+  }
+  /* a lesson read inside the panel */
+  .margin .m-back { font: 400 .68rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); background: none; border: 0; border-bottom: 1px solid rgba(236, 231, 220, .3); padding: .5rem 0 .4rem; margin: 0 0 1.6rem; cursor: pointer; }
+  .margin .m-back:hover { color: var(--warm); border-color: var(--warm); }
+  .m-read h2 { font-size: 1.9rem; line-height: 1.1; }
+  .m-read .m-lead { color: var(--ink); font-size: 1.1rem; }
+  .m-read h3 small { display: block; font: italic 300 .92rem/1.4 var(--serif); letter-spacing: 0; text-transform: none; color: var(--faint); margin-top: .25rem; }
+  .m-read .m-prose p { color: var(--soft); margin: 0 0 .9rem; }
+  .m-read .m-prose strong { font-weight: 400; color: var(--ink); }
+  .m-read .m-prose ul, .m-read .m-prose ol { padding-left: 1.1em; margin: 0 0 .9rem; }
+  .m-read .m-prose li { display: list-item; border: 0; padding: 0; margin: 0 0 .35rem; font: 300 1.02rem/1.55 var(--serif); color: var(--soft); }
+  .m-read .m-scroll { overflow-x: auto; margin: 0 0 1rem; }
+  .m-read .katex-display { overflow-x: auto; overflow-y: hidden; margin: 0 0 1rem; padding: .3em 0; }
+  .m-read .katex-display > .katex { white-space: nowrap; }
+  .margin .katex { text-transform: none; letter-spacing: normal; }
+  .m-read table { border-collapse: collapse; font: 400 .72rem/1.45 var(--mono); color: var(--soft); min-width: 100%; }
+  .m-read th, .m-read td { text-align: left; padding: .4rem .9rem .4rem 0; border-bottom: 1px solid rgba(236, 231, 220, .14); vertical-align: top; }
+  .m-read th { font-weight: 400; color: var(--faint); }
+
+  /* the panel never sits on the engine's debug line, and on a phone the sheet takes the touch pad's place */
+  body.margin-open .tech { visibility: hidden; }
+  @media (max-width: 760px) { body.margin-open .pad { display: none !important; } }
+
+  @media (prefers-reduced-motion: reduce) { .margin, .margin-tab, .m-ruler .m-you { transition: none !important; } }
+</style>

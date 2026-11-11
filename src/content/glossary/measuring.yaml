@@ -1,0 +1,152 @@
+# Distances, angles, time and finding things in the sky.
+terms:
+  - id: astronomical-unit
+    term: Astronomical unit
+    also: [au, AU]
+    short: "The average distance between the Earth and the Sun, used as the ruler inside the Solar System."
+    more: "It is fixed by definition at exactly 149,597,870.7 km, which light crosses in about 8 minutes 19 seconds."
+    see: [light-year, parsec, light-time]
+    lesson: measuring-distance
+  - id: light-year
+    term: Light year
+    also: [ly, light-year]
+    short: "The distance light travels in one year, about 9.46 million million km."
+    more: "It measures distance, not time. One light year is about 63,241 au, and the nearest star beyond the Sun is 4.25 light years away."
+    see: [astronomical-unit, parsec, speed-of-light]
+    lesson: measuring-distance
+  - id: parsec
+    term: Parsec
+    also: [pc, kiloparsec, megaparsec]
+    short: "A distance of about 3.26 light years, the unit astronomers use most between the stars."
+    more: "It is how far away you would have to stand for the gap between the Earth and the Sun to look one arcsecond wide. One parsec is 206,265 au."
+    see: [parallax, arcsecond, light-year]
+    lesson: measuring-distance
+  - id: light-time
+    term: Light time
+    also: [light second, light minute, light hour]
+    short: "How long light takes to cross a gap, used as a way of saying how big the gap is."
+    more: "The Moon is about 1.3 light seconds away, the Sun 8.3 light minutes, and Neptune a little over 4 light hours."
+    see: [speed-of-light, light-year, look-back-time]
+    lesson: measuring-distance
+  - id: power-of-ten
+    term: Power of ten
+    also: [order of magnitude]
+    short: "A step of ten times bigger or ten times smaller, the only practical way to count the sizes of things in space."
+    more: "From a person to the edge of the visible universe is about 27 such steps."
+    see: [astronomical-unit, light-year]
+    lesson: how-big-is-space
+  - id: arcsecond
+    term: Arcsecond
+    also: [arcminute, second of arc]
+    short: "A very small angle, one 3,600th of a degree."
+    more: "The full Moon is about 1,800 arcseconds wide. A one pound coin looks one arcsecond wide from nearly 5 km away."
+    see: [parallax, parsec]
+  - id: parallax
+    term: Parallax
+    short: "The small shift of a nearby star against far ones as the Earth moves round the Sun."
+    more: "The size of the shift gives the distance directly. Even the nearest star, Proxima Centauri, shifts by only 0.77 arcseconds."
+    see: [parsec, arcsecond]
+    lesson: measuring-distance
+  - id: ecliptic
+    term: Ecliptic
+    short: "The line the Sun appears to follow against the stars through the year, which is the plane of the Earth's orbit seen from inside it."
+    more: "The planets and the Moon always stay near it, because the Solar System is nearly flat."
+    see: [inclination, celestial-equator, zodiac]
+  - id: zodiac
+    term: Zodiac
+    short: "The band of constellations that the ecliptic runs through, where the Sun, Moon and planets are always found."
+    more: "The Sun passes through thirteen constellations in a year, not twelve. The extra one is Ophiuchus."
+    see: [ecliptic, constellation]
+  - id: constellation
+    term: Constellation
+    short: "One of the 88 named areas into which the whole sky is officially divided."
+    more: "The stars of a constellation only line up from where we stand. Most are at very different distances and have nothing to do with one another."
+    see: [celestial-sphere, zodiac]
+  - id: celestial-sphere
+    term: Celestial sphere
+    short: "An imaginary ball around the Earth with the stars painted on the inside, used for mapping the sky."
+    more: "It works because the stars are so far off that they keep their pattern wherever on Earth you stand."
+    see: [celestial-equator, celestial-pole, right-ascension, declination]
+  - id: celestial-equator
+    term: Celestial equator
+    short: "The Earth's equator pushed outward onto the sky."
+    more: "It is tilted 23.4° to the ecliptic. The two cross at the points where the Sun stands at the equinoxes."
+    see: [ecliptic, equinox, declination]
+  - id: celestial-pole
+    term: Celestial pole
+    short: "One of the two points in the sky straight above the Earth's poles, around which the stars appear to turn."
+    more: "Polaris sits less than a degree from the northern one at present. The southern one has no bright star nearby."
+    see: [celestial-sphere, precession]
+  - id: right-ascension
+    term: Right ascension
+    also: [RA]
+    short: "The sky's version of longitude, measured eastward along the celestial equator."
+    more: "It is counted in hours, from 0 to 24, because the sky turns through one hour of it in about one hour of time."
+    see: [declination, celestial-equator]
+  - id: declination
+    term: Declination
+    also: [Dec]
+    short: "The sky's version of latitude, from +90° at the north celestial pole to -90° at the south."
+    see: [right-ascension, celestial-equator]
+  - id: zenith
+    term: Zenith
+    short: "The point in the sky straight above your head."
+    see: [celestial-sphere]
+  - id: axial-tilt
+    term: Axial tilt
+    also: [obliquity]
+    short: "The lean of a planet's spin axis away from upright on its orbit."
+    more: "The Earth's is 23.44°, which gives it seasons. Uranus leans by about 98°, so it rolls round the Sun on its side."
+    see: [solstice, equinox, precession]
+    lesson: seasons
+  - id: solstice
+    term: Solstice
+    short: "One of the two days each year when one pole is tipped most directly towards the Sun, giving the longest and shortest days."
+    more: "They fall on about 21 June and 21 December."
+    see: [equinox, axial-tilt]
+    lesson: seasons
+  - id: equinox
+    term: Equinox
+    short: "One of the two days each year when the Sun stands over the equator and day and night are close to equal everywhere."
+    more: "They fall on about 20 March and 22 or 23 September."
+    see: [solstice, celestial-equator]
+    lesson: seasons
+  - id: precession
+    term: Precession
+    short: "The slow circling of a spinning body's axis, like the wobble of a spinning top."
+    more: "The Earth's axis takes about 26,000 years to go round once, so the pole star changes over the centuries."
+    see: [axial-tilt, celestial-pole]
+  - id: sidereal-day
+    term: Sidereal day
+    short: "The time a planet takes to turn once measured against the stars."
+    more: "For the Earth it is 23 hours 56 minutes 4 seconds, about four minutes shorter than the day on the clock."
+    see: [solar-day]
+  - id: solar-day
+    term: Solar day
+    short: "The time from one noon to the next: on Earth, 24 hours on average."
+    more: "It is longer than the sidereal day because the Earth moves along its orbit as it spins, and has to turn a little further to bring the Sun back overhead."
+    see: [sidereal-day]
+  - id: apparent-magnitude
+    term: Apparent magnitude
+    also: [magnitude]
+    short: "How bright a star or planet looks from the Earth, on a scale where smaller numbers mean brighter."
+    more: "Five magnitudes is a factor of exactly 100 in brightness. Sirius is -1.46, and the faintest stars the eye can see from a dark place are about 6."
+    see: [absolute-magnitude, luminosity]
+  - id: absolute-magnitude
+    term: Absolute magnitude
+    short: "How bright a star would look if it were moved to a standard distance of 10 parsecs."
+    more: "It lets stars be compared fairly. The Sun's is 4.83: from 10 parsecs it would be a faint, ordinary star."
+    see: [apparent-magnitude, luminosity, parsec]
+  - id: standard-candle
+    term: Standard candle
+    also: [standard candles]
+    short: "Something whose true brightness is known, so that its distance can be worked out from how faint it looks."
+    more: "Cepheids and Type Ia supernovae are the two most used."
+    see: [cepheid, inverse-square-law, luminosity, distance-ladder]
+    lesson: the-distance-ladder
+  - id: distance-ladder
+    term: Distance ladder
+    short: "The chain of methods used to measure distances in space, each one set by the one that reaches less far."
+    more: "Parallax sets the Cepheids, Cepheids set the Type Ia supernovae, and the supernovae set the Hubble constant."
+    see: [parallax, cepheid, standard-candle, hubble-constant]
+    lesson: the-distance-ladder

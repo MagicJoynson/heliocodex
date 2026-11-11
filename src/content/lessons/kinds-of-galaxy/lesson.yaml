@@ -1,0 +1,9 @@
+title: Kinds of galaxy
+strand: galaxies
+order: 1
+summary: "Galaxies come as spirals, smooth ellipticals and ragged irregulars. They gather into groups and clusters, strung across space like a web."
+scene: "Real examples of each kind side by side at the same scale, then the view pulls back to the map of real galaxies, where clusters and empty gaps appear."
+view: { target: local-group }
+terms: [galaxy, spiral-galaxy, elliptical-galaxy, local-group, galaxy-cluster, milky-way, nebula]
+needs: [the-milky-way]
+next: [the-cosmic-web, when-galaxies-collide, the-expanding-universe]

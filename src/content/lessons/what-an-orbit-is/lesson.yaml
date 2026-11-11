@@ -1,0 +1,8 @@
+title: What an orbit is
+strand: gravity-and-orbits
+order: 1
+summary: "An orbit is a fall that never reaches the ground. Newton's cannonball shows how."
+scene: "A cannon on a mountain firing faster each time, until the ball comes all the way round."
+view: { target: earth, distanceKm: 20000 }
+terms: [orbit, gravity, free-fall, orbital-velocity, escape-velocity]
+next: [keplers-laws]

@@ -1,0 +1,9 @@
+title: White dwarfs
+strand: stellar-remnants
+order: 1
+summary: "A white dwarf is the core a star like the Sun leaves behind: the mass of a star in a ball the size of the Earth, with no fuel left, slowly cooling."
+scene: "Sirius, the brightest star in the sky, among the Sun's neighbours. Beside it, far too faint and close to pick out, goes a white dwarf as heavy as the Sun and smaller than the Earth."
+view: { target: neighbourhood }
+terms: [white-dwarf, red-giant, planetary-nebula, density, chandrasekhar-limit, binary-star, supernova, nuclear-fusion]
+needs: [how-stars-live-and-die]
+next: [neutron-stars-and-pulsars, what-a-black-hole-is]

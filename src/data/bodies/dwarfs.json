@@ -1,0 +1,249 @@
+{
+ "_sources": {
+  "fetched": "2026-11-10",
+  "api": "https://ssd-api.jpl.nasa.gov/doc/sbdb.html",
+  "note": "Osculating elements at the stated epoch from the JPL Small-Body Database."
+ },
+ "dwarfs": [
+  {
+   "id": "ceres",
+   "name": "Ceres",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": true,
+   "designation": "1 Ceres (A801 AA)",
+   "orbitClass": "Main-belt Asteroid",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 413720779.52595985,
+    "e": 0.07969229514816586,
+    "iDeg": 10.58802780183462,
+    "nodeDeg": 80.24862682043221,
+    "periDeg": 73.29421453021587,
+    "mDeg": 274.4193463761342,
+    "periodDays": 1679.853119758983
+   },
+   "meanRadiusKm": 469.7,
+   "rotationHours": 9.07417,
+   "gmKm3S2": 62.6284
+  },
+  {
+   "id": "pluto",
+   "name": "Pluto",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": true,
+   "designation": "134340 Pluto (1930 BM)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2457588.5,
+    "aKm": 5922374659.953067,
+    "e": 0.2518378778576892,
+    "iDeg": 17.14771140999114,
+    "nodeDeg": 110.2923840543057,
+    "periDeg": 113.7090015158565,
+    "mDeg": 38.68366347318184,
+    "periodDays": 90981.71647718345
+   },
+   "meanRadiusKm": 1188.3,
+   "radiusSource": {
+    "label": "Nimmo et al. 2017, Icarus 287, 12 (New Horizons)",
+    "url": "https://doi.org/10.1016/j.icarus.2016.06.027"
+   },
+   "rotationHours": 153.2935
+  },
+  {
+   "id": "eris",
+   "name": "Eris",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": true,
+   "designation": "136199 Eris (2003 UB313)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 10162773801.275846,
+    "e": 0.4382385347971672,
+    "iDeg": 43.9258279471791,
+    "nodeDeg": 36.00477044417249,
+    "periDeg": 150.7949235840312,
+    "mDeg": 211.774434275007,
+    "periodDays": 204516.6629430732
+   },
+   "meanRadiusKm": 1163.0,
+   "radiusSource": {
+    "label": "Sicardy et al. 2011, Nature 478, 493 (stellar occultation)",
+    "url": "https://doi.org/10.1038/nature10550"
+   },
+   "rotationHours": 25.9
+  },
+  {
+   "id": "haumea",
+   "name": "Haumea",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": true,
+   "designation": "136108 Haumea (2003 EL61)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 6441727731.1058235,
+    "e": 0.1944430148898797,
+    "iDeg": 28.20847393040364,
+    "nodeDeg": 121.7860561329425,
+    "periDeg": 240.6905472508661,
+    "mDeg": 223.2104118812299,
+    "periodDays": 103208.1173403618
+   },
+   "meanRadiusKm": 798.0,
+   "radiusSource": {
+    "label": "Ortiz et al. 2017, Nature 550, 219 (stellar occultation; the mean of three unequal axes)",
+    "url": "https://doi.org/10.1038/nature24051"
+   },
+   "rotationHours": 3.9154
+  },
+  {
+   "id": "makemake",
+   "name": "Makemake",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": true,
+   "designation": "136472 Makemake (2005 FY9)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 6817314568.492872,
+    "e": 0.1588889953992523,
+    "iDeg": 29.02785603743067,
+    "nodeDeg": 79.2948338209406,
+    "periDeg": 297.0922733397207,
+    "mDeg": 169.9379962048232,
+    "periodDays": 112364.8068762869
+   },
+   "meanRadiusKm": 715.0,
+   "radiusSource": {
+    "label": "Ortiz et al. 2012, Nature 491, 566 (stellar occultation)",
+    "url": "https://doi.org/10.1038/nature11597"
+   },
+   "rotationHours": 22.8266
+  },
+  {
+   "id": "gonggong",
+   "name": "Gonggong",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": false,
+   "designation": "225088 Gonggong (2007 OR10)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 10003110806.198324,
+    "e": 0.5042510000302973,
+    "iDeg": 30.89906721170288,
+    "nodeDeg": 336.8383156185827,
+    "periDeg": 206.6232839773693,
+    "mDeg": 111.664541568459,
+    "periodDays": 199716.0317096358
+   },
+   "meanRadiusKm": 615.0,
+   "radiusSource": {
+    "label": "Kiss et al. 2019, Icarus 334, 3 (heat measured by the Herschel telescope)",
+    "url": "https://doi.org/10.1016/j.icarus.2019.03.013"
+   },
+   "rotationHours": 22.4
+  },
+  {
+   "id": "quaoar",
+   "name": "Quaoar",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": false,
+   "designation": "50000 Quaoar (2002 LM60)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 6456072071.069493,
+    "e": 0.03520019261837198,
+    "iDeg": 7.991575800732639,
+    "nodeDeg": 188.9191248092036,
+    "periDeg": 163.209046106457,
+    "mDeg": 292.8487574842713,
+    "periodDays": 103553.0425468722
+   },
+   "meanRadiusKm": 555.0,
+   "radiusSource": {
+    "label": "Braga-Ribas et al. 2013, Astrophysical Journal 773, 26 (stellar occultation)",
+    "url": "https://doi.org/10.1088/0004-637X/773/1/26"
+   },
+   "rotationHours": 8.84
+  },
+  {
+   "id": "sedna",
+   "name": "Sedna",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": false,
+   "designation": "90377 Sedna (2003 VB12)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 81339283783.01387,
+    "e": 0.8598824585187618,
+    "iDeg": 11.92527582847476,
+    "nodeDeg": 144.5061662673739,
+    "periDeg": 311.0987725939751,
+    "mDeg": 358.5956944005428,
+    "periodDays": 4630851.183590915
+   },
+   "meanRadiusKm": 497.5,
+   "radiusSource": {
+    "label": "Pál et al. 2012, Astronomy & Astrophysics 541, L6 (heat measured by the Herschel telescope)",
+    "url": "https://doi.org/10.1051/0004-6361/201218874"
+   },
+   "rotationHours": 10.273
+  },
+  {
+   "id": "orcus",
+   "name": "Orcus",
+   "kind": "dwarf",
+   "parent": "sun",
+   "recognisedByIau": false,
+   "designation": "90482 Orcus (2004 DW)",
+   "orbitClass": "TransNeptunian Object",
+   "orbit": {
+    "type": "kepler",
+    "frame": "ecliptic-j2000",
+    "epochJd": 2461200.5,
+    "aKm": 5890695215.561185,
+    "e": 0.2205240628250881,
+    "iDeg": 20.55681019612,
+    "nodeDeg": 268.4053519455824,
+    "periDeg": 73.56848606705262,
+    "mDeg": 189.0972913554275,
+    "periodDays": 90252.68650688507
+   },
+   "meanRadiusKm": 458.5,
+   "radiusSource": {
+    "label": "Fornasier et al. 2013, Astronomy & Astrophysics 555, A15 (heat measured by the Herschel telescope)",
+    "url": "https://doi.org/10.1051/0004-6361/201321329"
+   },
+   "rotationHours": 13.188
+  }
+ ]
+}

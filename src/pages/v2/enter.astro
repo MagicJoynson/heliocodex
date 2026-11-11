@@ -1,0 +1,254 @@
+---
+import Analytics from '../../components/Analytics.astro';
+import '@fontsource/spectral/200.css';
+import '@fontsource/spectral/300.css';
+import '@fontsource/spectral/300-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex" />
+    <title>Heliocodex · enter (prototype)</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Analytics />
+  </head>
+  <body>
+    <canvas id="space" aria-label="The solar system at its true size and distance"></canvas>
+    <div id="tags" aria-hidden="true"></div>
+
+    <!-- the threshold: nothing but the name, one line, and the aperture you go through -->
+    <section class="threshold" id="threshold">
+      <p class="name">Heliocodex</p>
+      <p class="line">The Sun and its worlds, at their true size and distance.</p>
+      <button class="aperture" id="enter" type="button" aria-label="Enter">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="ring outer" cx="100" cy="100" r="96" />
+          <circle class="ring inner" cx="100" cy="100" r="78" />
+          <g class="ticks"></g>
+        </svg>
+        <span class="word">Enter</span>
+      </button>
+      <p class="note">Sound on <button type="button" id="mute" class="mute" aria-pressed="false">turn off</button></p>
+    </section>
+
+    <!-- instruments once inside: as little as possible, at the edges -->
+    <div class="hud" id="hud" aria-live="off">
+      <div class="readout">
+        <span class="k" id="r-k">Distance to Earth</span>
+        <span class="v" id="r-v">—</span>
+        <span class="k2" id="r-light"></span>
+      </div>
+      <button type="button" class="skip" id="skip">Skip ahead</button>
+      <button type="button" class="sound" id="hud-sound" aria-pressed="true">Sound off</button>
+    </div>
+
+    <div class="arrival" id="arrival">
+      <p class="a-kicker">You are here</p>
+      <h1>Earth</h1>
+      <p>About <span id="alt">17,600</span> km above the clouds, with everything else where it really is tonight. You came in from beyond Neptune and past Jupiter. The Sun is 150 million km behind you, its light eight minutes old. Drag to look round.</p>
+      <p class="a-note">Prototype of the way into Heliocodex v2. From here the full version would let you fly on to any world and down to its surface.</p>
+    </div>
+
+    <script>
+      import { createEnter } from '../../lib/v2/enter';
+      const $ = (id: string) => document.getElementById(id)!;
+      const threshold = $('threshold'), hud = $('hud'), arrival = $('arrival');
+
+      // a ring of fine ticks round the aperture, like a dial
+      const ticks = document.querySelector('.ticks')!;
+      for (let i = 0; i < 120; i++) {
+        const a = (i / 120) * Math.PI * 2, long = i % 10 === 0;
+        const r1 = 86, r2 = long ? 92 : 89;
+        const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        l.setAttribute('x1', String(100 + Math.cos(a) * r1)); l.setAttribute('y1', String(100 + Math.sin(a) * r1));
+        l.setAttribute('x2', String(100 + Math.cos(a) * r2)); l.setAttribute('y2', String(100 + Math.sin(a) * r2));
+        ticks.appendChild(l);
+      }
+
+      const fmtKm = (km: number) => {
+        const au = km / 149_597_870.7;
+        if (au > 0.1) return `${au.toFixed(au > 10 ? 1 : 2)} au`;
+        if (km > 1e6) return `${(km / 1e6).toFixed(1)} million km`;
+        return `${Math.round(km).toLocaleString('en-GB')} km`;
+      };
+      const fmtLight = (km: number) => {
+        const s = km / 299_792.458;
+        if (s > 3600) return `light takes ${Math.floor(s / 3600)} h ${Math.round((s % 3600) / 60)} min`;
+        if (s > 60) return `light takes ${Math.floor(s / 60)} min ${Math.round(s % 60)} s`;
+        return `light takes ${s.toFixed(2)} s`;
+      };
+
+      let lastKm = 0;
+      const sys = createEnter({
+        canvas: $('space') as HTMLCanvasElement,
+        labels: $('tags'),
+        onReadout({ target, distKm }) {
+          lastKm = distKm;
+          $('r-k').textContent = `Distance to ${target}`;
+          $('r-v').textContent = fmtKm(distKm);
+          $('r-light').textContent = fmtLight(distKm);
+        },
+        onArrive() {
+          $('alt').textContent = (Math.round(lastKm / 100) * 100).toLocaleString('en-GB');
+          document.body.classList.add('arrived');
+          hum?.settle();
+        },
+      });
+
+      // ---- sound: a low generated hum that opens up as you fall in. Nothing is downloaded.
+      let muted = false;
+      let hum: { settle(): void; set(on: boolean): void } | null = null;
+      function startHum() {
+        const ctx = new AudioContext();
+        const master = ctx.createGain();
+        master.gain.value = 0;
+        master.connect(ctx.destination);
+        const lp = ctx.createBiquadFilter();
+        lp.type = 'lowpass'; lp.frequency.value = 180; lp.Q.value = 0.7;
+        lp.connect(master);
+        // three slightly detuned low tones
+        for (const [f, g] of [[55, 0.5], [82.4, 0.28], [110.3, 0.16]] as const) {
+          const osc = ctx.createOscillator(); osc.type = 'sine'; osc.frequency.value = f;
+          const og = ctx.createGain(); og.gain.value = g;
+          osc.connect(og).connect(lp); osc.start();
+        }
+        // and a soft wash of filtered noise
+        const buf = ctx.createBuffer(1, ctx.sampleRate * 4, ctx.sampleRate);
+        const d = buf.getChannelData(0);
+        for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.5;
+        const noise = ctx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+        const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 400; bp.Q.value = 0.6;
+        const ng = ctx.createGain(); ng.gain.value = 0.05;
+        noise.connect(bp).connect(ng).connect(master); noise.start();
+        const t = ctx.currentTime;
+        let level = 0.32;
+        master.gain.linearRampToValueAtTime(muted ? 0 : level, t + 3);
+        lp.frequency.setValueAtTime(180, t);
+        lp.frequency.exponentialRampToValueAtTime(1400, t + 16);
+        bp.frequency.exponentialRampToValueAtTime(1800, t + 16);
+        return {
+          settle() {
+            const n = ctx.currentTime;
+            lp.frequency.cancelScheduledValues(n);
+            lp.frequency.setTargetAtTime(420, n, 2.5);
+            level = 0.16;
+            master.gain.setTargetAtTime(muted ? 0 : level, n, 3);
+          },
+          set(on: boolean) {
+            const n = ctx.currentTime;
+            master.gain.cancelScheduledValues(n);
+            master.gain.setTargetAtTime(on ? level : 0, n, 0.3);
+          },
+        };
+      }
+      const mute = $('mute');
+      mute.addEventListener('click', () => {
+        muted = !muted;
+        mute.setAttribute('aria-pressed', String(muted));
+        mute.textContent = muted ? 'turn on' : 'turn off';
+        mute.parentElement!.firstChild!.textContent = muted ? 'Sound off ' : 'Sound on ';
+        syncHud();
+      });
+      // the same switch, once inside
+      const hudSound = $('hud-sound');
+      function syncHud() {
+        hudSound.textContent = muted ? 'Sound on' : 'Sound off';
+        hudSound.setAttribute('aria-pressed', String(!muted));
+      }
+      syncHud();
+      hudSound.addEventListener('click', () => {
+        muted = !muted;
+        hum?.set(!muted);
+        syncHud();
+      });
+
+      // ---- going through: the aperture closes onto the Sun, then the flight starts
+      const ap = $('enter');
+      function go() {
+        if (document.body.classList.contains('in')) return;
+        hum = startHum();
+        const r = ap.getBoundingClientRect();
+        const [sx, sy] = sys.sunScreen();
+        ap.style.setProperty('--dx', `${sx - (r.left + r.width / 2)}px`);
+        ap.style.setProperty('--dy', `${sy - (r.top + r.height / 2)}px`);
+        document.body.classList.add('in');
+        setTimeout(() => sys.enter(), 900);
+      }
+      ap.addEventListener('click', go);
+      addEventListener('keydown', (e) => { if (e.key === 'Enter' && !document.body.classList.contains('in')) go(); });
+      $('skip').addEventListener('click', () => sys.skip());
+    </script>
+
+    <style is:global>
+      :root { --ink: #ece7dc; --soft: #b9b2a5; --faint: #7d786f; --warm: #f1c98e; --serif: 'Spectral', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: #000; color: var(--ink); overflow: hidden; }
+      body { font-family: var(--serif); -webkit-font-smoothing: antialiased; }
+      button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+      #space { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+      /* threshold */
+      .threshold { position: fixed; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; padding: 24px; gap: 0; transition: opacity 1.2s ease .2s; }
+      .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; }
+      .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; }
+      .aperture { position: relative; width: clamp(150px, 22vmin, 210px); aspect-ratio: 1; display: grid; place-items: center; transition: transform 1s cubic-bezier(.6,0,.3,1), opacity .6s ease .55s; }
+      .aperture svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      .ring { fill: none; stroke: rgba(236,231,220,.55); stroke-width: .8; vector-effect: non-scaling-stroke; transition: stroke .4s, r .9s cubic-bezier(.6,0,.3,1); }
+      .ring.inner { stroke: rgba(236,231,220,.22); }
+      .ticks line { stroke: rgba(236,231,220,.35); stroke-width: .7; vector-effect: non-scaling-stroke; }
+      .ticks { transform-origin: 100px 100px; animation: turn 120s linear infinite; }
+      @keyframes turn { to { transform: rotate(360deg); } }
+      .word { font: 400 .78rem/1 var(--mono); letter-spacing: .32em; text-transform: uppercase; padding-left: .32em; transition: opacity .3s; }
+      .aperture:hover .ring.outer, .aperture:focus-visible .ring.outer { stroke: var(--warm); }
+      .aperture:hover .word, .aperture:focus-visible .word { color: var(--warm); }
+      .aperture:focus-visible { outline: none; }
+      .aperture::after { content: ''; position: absolute; inset: 47%; border-radius: 50%; background: radial-gradient(circle, #fff6e6 0%, rgba(255,214,150,.6) 35%, rgba(255,180,90,0) 70%); opacity: 0; transition: opacity .5s ease .35s, inset .9s cubic-bezier(.6,0,.3,1); }
+      .note { margin: clamp(28px, 5vh, 48px) 0 0; font: 400 .7rem/1.5 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase; }
+      .mute { text-decoration: underline; text-underline-offset: .25em; color: var(--soft); text-transform: uppercase; letter-spacing: .08em; }
+
+      /* going through */
+      body.in .name, body.in .line, body.in .note { opacity: 0; transition: opacity .5s ease; }
+      body.in .word { opacity: 0; }
+      body.in .ring.outer { r: 3; } body.in .ring.inner { r: 1; }
+      body.in .ticks { opacity: 0; transition: opacity .3s; }
+      body.in .aperture { transform: translate(var(--dx, 0), var(--dy, 0)) scale(.35); opacity: 0; }
+      body.in .aperture::after { opacity: 1; inset: 42%; }
+      body.in .threshold { pointer-events: none; }
+
+      /* name tags on bodies */
+      #tags { position: fixed; inset: 0; pointer-events: none; }
+      .tag { position: absolute; left: 0; top: 0; font: 400 .66rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: rgba(236,231,220,.62); white-space: nowrap; transition: opacity .6s; opacity: 0; display: flex; align-items: center; gap: 6px; margin-top: -.33rem; }
+      .tag i { display: block; width: 10px; height: 1px; background: rgba(236,231,220,.4); }
+
+      /* instruments */
+      .hud { position: fixed; left: 0; right: 0; bottom: 0; padding: 0 clamp(16px, 4vw, 40px) max(clamp(16px, 4vh, 36px), env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1.4s ease 1.2s; pointer-events: none; }
+      body.in .hud { opacity: 1; pointer-events: auto; }
+      .readout { display: grid; gap: .3rem; }
+      .readout .k, .readout .k2 { font: 400 .68rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+      .readout .v { font: 200 clamp(2rem, 5vw, 3.4rem)/1 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+      .skip { font: 400 .68rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); border-bottom: 1px solid rgba(236,231,220,.3); padding-bottom: 3px; }
+      body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
+      .sound { position: fixed; top: max(clamp(16px, 3vh, 28px), env(safe-area-inset-top)); right: clamp(16px, 4vw, 40px); font: 400 .68rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid rgba(236,231,220,.2); padding-bottom: 3px; }
+      .sound:hover, .sound:focus-visible { color: var(--ink); }
+
+      /* arrival */
+      .arrival { position: fixed; right: clamp(16px, 5vw, 64px); top: 50%; transform: translateY(-50%); width: min(23rem, calc(100% - 32px)); opacity: 0; pointer-events: none; transition: opacity 2s ease 1s; text-shadow: 0 1px 14px #000, 0 0 2px #000; }
+      body.arrived .arrival { opacity: 1; }
+      .a-kicker { font: 400 .68rem/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--warm); margin: 0 0 .8rem; }
+      .arrival h1 { font: 200 clamp(3rem, 7vw, 5rem)/.95 var(--serif); margin: 0 0 1rem; letter-spacing: -.01em; }
+      .arrival p { font: 300 1.08rem/1.6 var(--serif); color: var(--soft); margin: 0 0 1rem; }
+      .arrival .a-note { font: italic 300 .95rem/1.5 var(--serif); color: var(--faint); }
+
+      @media (max-width: 760px) {
+        .arrival { top: auto; bottom: 8.5rem; transform: none; left: 16px; right: 16px; width: auto; }
+        .arrival .a-note { display: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .ticks { animation: none; }
+      }
+    </style>
+  </body>
+</html>

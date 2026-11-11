@@ -1,0 +1,120 @@
+---
+// The Solar System plates: the planets and dwarf planets on their real paths round the Sun, seen
+// from above the plane of the planets. Three drawings, because no one scale holds them all.
+import Reading from '../../layouts/Reading.astro';
+import Plate, { type Drawn } from '../../components/atlas/Plate.astro';
+import { allBodies } from '../../data/bodies/index';
+import type { KeplerOrbit } from '../../lib/v2/atlas/types';
+import { plates } from '../../lib/v2/atlas/plates';
+import { groups, shown, solarSystem as spec } from '../../lib/v2/atlas/plates/solar-system';
+import { fmtKm, markOf } from '../../lib/v2/atlas/chart';
+import { julianDate } from '../../lib/v2/atlas/kepler';
+import { AU_KM, fmtAu, fmtYears, isPlanet, planetOrbit } from '../../lib/v2/atlas/sun';
+import '../../styles/atlas.css';
+
+const built = new Date();
+const jd = julianDate(built);
+const drawnFor = `Orbits as they lie in ${built.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
+
+interface World extends Drawn { moons: number }
+const worlds = new Map<string, World>(allBodies.filter((b) => b.parent === 'sun' && (b.kind === 'planet' || b.kind === 'dwarf')).map((b) => {
+  const orbit = isPlanet(b.id) ? planetOrbit(b.id, jd) : (b.orbit as KeplerOrbit);
+  // these orbits are measured ones, not fits of ours, so each gets a plain line and a dot
+  return [b.id, { id: b.id, name: b.name, orbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: Math.abs(orbit.iDeg), line: 'solid', placed: true, moons: allBodies.filter((m) => m.parent === b.id).length }];
+}));
+const listed = groups.flatMap((g) => g.ids);
+for (const id of worlds.keys()) if (listed.filter((x) => x === id).length !== 1) throw new Error(`${id} should be in exactly one list on the Solar System plate`);
+const inFigure = (id: string) => shown[id].map((b) => worlds.get(b)!);
+
+const SEEN = { filled: 'Mapped by spacecraft', half: 'Partly seen by spacecraft', open: 'Seen only as a point of light' } as const;
+const summaries: Record<string, string> = {
+  inner: 'The inner Solar System seen from above: the orbits of Mercury, Venus, the Earth, Mars and Ceres round the Sun, drawn to scale. Every one is in the lists below.',
+  outer: 'The outer Solar System seen from above: the orbits of Jupiter, Saturn, Uranus, Neptune and seven worlds beyond, drawn to scale. Every one is in the lists below.',
+  sedna: 'The long, narrow orbit of Sedna round the Sun, drawn to scale, with Neptune’s orbit as a small ring near one end.',
+};
+const data = {
+  parent: 'sun', dots: spec.dots,
+  figures: spec.figures.map((f) => ({ id: f.id, spanKm: f.spanKm, view: f.view, centreKm: f.centreKm, ids: shown[f.id] })),
+  orbits: Object.fromEntries([...worlds.values()].map((w) => [w.id, w.orbit])),
+};
+---
+<Reading title="The Solar System from above · Atlas" path="/atlas/solar-system" description="A chart of the eight planets and nine dwarf planets on their real orbits round the Sun, drawn to scale from above, with where each one is today.">
+  <header class="reading-head">
+    <p class="label">Atlas · The Solar System</p>
+    <h1>{spec.title}</h1>
+    <p class="lead">{spec.lead}</p>
+  </header>
+
+  {spec.figures.map((f) => (
+    <section class="row figure-row" id={`figure-${f.id}`}>
+      <div class="hang">
+        <p class="label">Drawing {f.numeral}</p>
+        <h2>{f.title}</h2>
+        <p class="note">{f.caption}</p>
+        <p class="note scale">The drawing is {((2 * f.spanKm) / AU_KM).toLocaleString('en-GB', { maximumSignificantDigits: 3 })} au across, which is {fmtKm(2 * f.spanKm)}.</p>
+      </div>
+      <figure class="plate-holder">
+        <Plate spec={spec} figure={f} bodies={inFigure(f.id)} jd={jd} drawnFor={drawnFor} summary={summaries[f.id]} />
+      </figure>
+    </section>
+  ))}
+
+  <section class="row key-row">
+    <div class="hang"><h2>How to read it</h2></div>
+    <div class="prose key">
+      <p>You are looking straight down on the plane of the planets, from its north side. Everything goes round anticlockwise. The Sun is the dot in the middle. Distances are to scale; the Sun and the worlds are not, because at these scales every one of them would be too small to see.</p>
+      <p>A flat drawing cannot show tilt. The planets keep within a few degrees of one flat sheet, but several of the dwarf planets do not: Eris is tilted by 44°, so its path rises far above the sheet and dips far below it. Where two orbits cross on the page, the worlds are usually nowhere near each other. Pluto’s path crosses inside Neptune’s here, yet the two never come close. The tilt of each orbit is in the lists.</p>
+      <noscript><p><strong>The dots are missing</strong> because scripts are off. The orbits and the lists are complete without them.</p></noscript>
+      <ul class="plain-list key-list">
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot filled"><circle r="5" /></g></svg><span><strong>Solid dot.</strong> A spacecraft has mapped the whole surface.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot open"><circle r="5" /></g></svg><span><strong>Ring.</strong> Never seen as more than a point of light or a blur of a few pixels.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><path class="key-band" d="M2 8H42" /></svg><span><strong>Faint band.</strong> A belt of many small bodies, shown as the zone they keep to. The bodies themselves are not drawn.</span></li>
+      </ul>
+      <p>One astronomical unit, written au, is the average distance from the Earth to the Sun: 149.6 million km. Touch a row in the lists to pick out its orbit.</p>
+      <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
+    </div>
+  </section>
+
+  {groups.map((g) => (
+    <section class="row family-row" id={`family-${g.id}`}>
+      <div class="hang">
+        <h2>{g.name}</h2>
+        <p class="note">{g.note}</p>
+      </div>
+      <table class="moons worlds">
+        <thead>
+          <tr><th scope="col">World</th><th scope="col">Orbit size</th><th scope="col">One orbit</th><th scope="col">Tilt</th><th scope="col">Width</th><th scope="col">Moons</th><th scope="col"><span class="vh">See it in 3D</span></th></tr>
+        </thead>
+        <tbody>
+          {g.ids.map((id) => worlds.get(id)!).sort((a, b) => a.orbit.aKm - b.orbit.aKm).map((w) => (
+            <tr id={w.id} data-body={w.id}>
+              <th scope="row">
+                <svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class:list={['dot', markOf(w.seen)]}><circle r="5" /></g></svg>
+                <span class="nm">{w.name}</span>
+                <span class="vh">. {SEEN[markOf(w.seen)]}.</span>
+                <span class="fit">{fmtKm(w.orbit.aKm)} from the Sun</span>
+              </th>
+              <td data-label="Orbit size">{fmtAu(w.orbit.aKm)}</td>
+              <td data-label="One orbit">{fmtYears(w.orbit.periodDays)}</td>
+              <td data-label="Tilt">{w.tilt < 10 ? w.tilt.toFixed(1) : Math.round(w.tilt)}°</td>
+              <td data-label="Width">{w.meanRadiusKm ? fmtKm(w.meanRadiusKm * 2) : <span class="unknown">not measured</span>}</td>
+              <td data-label="Moons">{w.moons === 0 ? 'none' : plates[w.id] ? <a href={`/atlas/${w.id}`} aria-label={`${w.moons} ${w.moons === 1 ? 'moon' : 'moons'}: the chart of ${w.name}’s moons`}>{w.moons}</a> : w.moons}</td>
+              <td class="go"><a href={`/v2?go=${w.id}`} aria-label={`Fly to ${w.name} in 3D`}>Fly there</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  ))}
+
+  <section class="row sources-row">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <ul>{spec.sources.map((s) => <li><a href={s.url}>{s.label}</a></li>)}</ul>
+      <p>Orbit size is the average of a world’s nearest and furthest distance from the Sun. Tilt is measured from the plane of the Earth’s orbit. Width is the average width; several of these worlds are not round, and Haumea is nearly twice as long as it is thick. The belts are drawn between the distances where most of their bodies orbit: 2.06 to 3.27 au for the asteroid belt and 39.4 to 47.8 au for the main Kuiper belt.</p>
+    </div>
+  </section>
+
+  <script type="application/json" id="plate-data" set:html={JSON.stringify(data)} />
+  <script>import '../../lib/v2/atlas/live';</script>
+</Reading>

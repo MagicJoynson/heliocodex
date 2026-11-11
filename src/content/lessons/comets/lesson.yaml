@@ -1,0 +1,9 @@
+title: Comets
+strand: small-bodies
+order: 2
+summary: "A comet is a small dark lump of ice and dust. Near the Sun it boils off a cloud bigger than a planet and tails millions of kilometres long."
+scene: "A comet followed in from beyond Jupiter: the dark nucleus alone, then the coma growing, then two tails, both pointing away from the Sun."
+view: { target: sun, distanceKm: 800000000, highlight: [comets] }
+terms: [comet, coma, comet-tail, solar-wind, kuiper-belt, oort-cloud, eccentricity, perihelion]
+needs: [rubble-and-ice]
+next: [falling-rocks, the-oort-cloud]

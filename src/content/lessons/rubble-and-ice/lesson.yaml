@@ -1,0 +1,9 @@
+title: "Rubble and ice: the small bodies"
+strand: small-bodies
+order: 1
+summary: "Asteroids, comets and the icy bodies beyond Neptune are what was left over when the planets were made. Where each kind lives tells you what it is made of."
+scene: "The whole Solar System from above with every known small body drawn as a point: the asteroid belt, Jupiter's two swarms of Trojans and the Kuiper Belt."
+view: { target: sun, distanceKm: 9000000000, highlight: [asteroids, trojans, kuiper-belt] }
+terms: [asteroid, asteroid-belt, trojan, kuiper-belt, trans-neptunian-object, oort-cloud, frost-line, dwarf-planet]
+needs: [three-kinds-of-planet]
+next: [comets, falling-rocks]

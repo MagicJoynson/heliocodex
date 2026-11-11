@@ -1,0 +1,9 @@
+title: What a moon is
+strand: moons
+order: 1
+summary: "Anything that orbits a planet is a moon. There are more than 400, from worlds bigger than Mercury to rocks a kilometre across."
+scene: "Saturn with all of its moons marked: the few large ones close in and level with the rings, and a wide, tilted swarm of small ones far outside."
+view: { target: saturn, distanceKm: 40000000, highlight: [moons] }
+terms: [moon, regular-moon, irregular-moon, retrograde, hill-sphere, tidal-locking]
+needs: [what-an-orbit-is]
+next: [ocean-moons, moons-in-step]

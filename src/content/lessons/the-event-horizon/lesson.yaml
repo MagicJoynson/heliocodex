@@ -1,0 +1,9 @@
+title: The event horizon
+strand: stellar-remnants
+order: 4
+summary: "The edge of a black hole is not a surface but a point of no return. What happens there depends on who is watching."
+scene: "A probe dropped towards a black hole, shown twice: as seen from a ship keeping its distance, and from the probe itself."
+view: { target: milky-way }
+terms: [event-horizon, black-hole, singularity, redshift, tide, accretion-disc, speed-of-light]
+needs: [what-a-black-hole-is]
+next: []

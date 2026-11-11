@@ -1,0 +1,140 @@
+---
+// Meet a star: the star whose light is as old as you are, then every star that has a name.
+import { readFileSync } from 'node:fs';
+import Reading from '../../layouts/Reading.astro';
+import { pageStars } from '../../lib/sky/starlist';
+import { LY_PER_PC, tint, round2, type Star } from '../../lib/sky/star';
+import { declination } from '../../lib/sky/starlist';
+
+const stars = pageStars(), slugs = new Map(stars.map((s) => [s.index, s.slug]));
+const brightest = [...stars].sort((a, b) => a.appMag - b.appMag).slice(0, 20);
+const nearest = [...stars].sort((a, b) => a.distPc - b.distPc).slice(0, 12);
+const letters = [...new Set(stars.map((s) => s.slug[0].toUpperCase()))].sort();
+const byLetter = letters.map((l) => ({ l, stars: stars.filter((s) => s.slug[0].toUpperCase() === l).sort((a, b) => a.slug.localeCompare(b.slug)) }));
+
+// for the birthday star: every star the eye can see within about 120 light years, named or not
+const meta = JSON.parse(readFileSync('public/data/deep/stars-meta.json', 'utf8')) as { fields: string[]; stars: unknown[][] };
+const near = meta.stars
+  .map((row) => Object.fromEntries(meta.fields.map((f, i) => [f, row[i]])) as unknown as Star)
+  .filter((s) => s.appMag <= 6.5 && s.distPc * LY_PER_PC <= 121)
+  .map((s) => [s.proper || s.catalogue || (s.hip ? `HIP ${s.hip}` : `HD ${s.hd}`), Math.round(s.distPc * LY_PER_PC * 10) / 10, Math.round(s.appMag * 10) / 10, slugs.get(s.index) ?? '', s.index, Math.round(declination(s.index))]);
+const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
+---
+<Reading title="Meet a star" path="/stars" description={`Find the star whose light is as old as you are, and meet ${stars.length} stars that have names: how far each is, how bright, how hot, and where it is in your sky.`}>
+  <header class="reading-head">
+    <p class="label">Meet a star</p>
+    <h1>Pick one and say hello</h1>
+    <p class="lead">Every star you can see is a sun, with its own distance, colour and story. Here are {stars.length} that people have given names to. Start with the one whose light is as old as you are.</p>
+  </header>
+
+  <section class="row">
+    <div class="hang"><h2>Your birthday star</h2></div>
+    <div class="prose">
+      <p>Light takes time to cross space. Somewhere up there is a star whose light, arriving tonight, set off in the year you were born.</p>
+      <form class="age" id="age-form" data-near={JSON.stringify(near)}>
+        <label for="age">How old are you?</label>
+        <input id="age" type="number" min="1" max="120" step="1" inputmode="numeric" required />
+        <button type="submit">Find my star</button>
+      </form>
+      <div id="age-out" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="row">
+    <div class="hang"><h2>The brightest</h2><p class="note">The twenty brightest stars in the night sky, as seen from the Earth.</p></div>
+    <ol class="plain-list star-list">
+      {brightest.map((s) => (
+        <li><i style={dot(s.bv)}></i><a href={`/stars/${s.slug}`}>{s.name}</a><span>{s.constellation}{s.constellation && ', '}{round2(s.distPc * LY_PER_PC)} light years</span></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="row">
+    <div class="hang"><h2>The nearest</h2><p class="note">The closest stars that have names. Most are too faint to see without a telescope.</p></div>
+    <ol class="plain-list star-list">
+      {nearest.map((s) => (
+        <li><i style={dot(s.bv)}></i><a href={`/stars/${s.slug}`}>{s.name}</a><span>{round2(s.distPc * LY_PER_PC)} light years</span></li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="row">
+    <div class="hang sticks"><h2>All of them</h2><p class="note">{stars.length} stars, in the order of the alphabet.</p></div>
+    <div class="all">
+      {byLetter.map((g) => (
+        <div class="letter">
+          <h3>{g.l}</h3>
+          <ul class="plain-list">{g.stars.map((s) => <li><a href={`/stars/${s.slug}`}>{s.name}</a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="row small">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <p>The stars and their measurements are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. The names are the ones approved by the International Astronomical Union, as that database lists them. To see which stars are up tonight, open <a href="/sky">the sky map</a>.</p>
+    </div>
+  </section>
+</Reading>
+
+<script>
+  import { CITIES, guess } from '../../lib/sky/cities';
+  import { readPlace } from '../../lib/sky/remember';
+  type Near = [name: string, ly: number, mag: number, slug: string, index: number, dec: number];
+  const form = document.getElementById('age-form') as HTMLFormElement, out = document.getElementById('age-out')!;
+  const near = JSON.parse(form.dataset.near!) as Near[];
+  const p = (html: string) => { const e = document.createElement('p'); e.innerHTML = html; return e; };
+  const safe = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const age = Math.round(Number((document.getElementById('age') as HTMLInputElement).value));
+    if (!(age >= 1 && age <= 120)) return;
+    if (age < 4) {
+      out.replaceChildren(p(`No star is that close. The nearest one to the Sun, <a href="/stars/proxima-centauri">Proxima Centauri</a>, is 4.2 light years away, so the light arriving from it tonight set off before you were born. Come back when you are four.`));
+      return;
+    }
+    // light that left during the year you were born has travelled between age and age + 1 years
+    const born = new Date().getFullYear() - age;
+    // stars that climb well clear of the horizon from the visitor's place come first, then the brightest
+    const first = guess(), here = readPlace() ?? { name: CITIES[first][0], lat: CITIES[first][1], lon: CITIES[first][2] };
+    const top = (s: Near) => 90 - Math.abs(here.lat - s[5]), seen = (s: Near) => top(s) >= 15;
+    const exact = near.filter((s) => Math.abs(s[1] - age) <= 0.5).sort((a, b) => Number(seen(b)) - Number(seen(a)) || a[2] - b[2]);
+    const star = exact[0] ?? [...near].sort((a, b) => Math.abs(a[1] - age) - Math.abs(b[1] - age))[0];
+    const [name, ly, mag, slug, index] = star, from = here.name === 'Where you are' ? 'where you are' : here.name;
+    const n = safe(name), sight = !seen(star) ? '' : mag <= 2 ? 'It is one of the bright stars, easy to pick out.' : mag <= 4.5 ? 'It is easy to see by eye on a clear night.' : 'It is faint, and needs a dark sky to see by eye.';
+    const parts = [p(`<strong class="found">${n}</strong>`)];
+    parts.push(p(exact.length
+      ? `${n} is ${ly.toFixed(1)} light years away. The light you see from it tonight set off in about ${born}, around the time you were born, and has been on its way ever since. ${sight}`
+      : `No star you can see by eye is exactly ${age} light years away. The closest match is ${n}, at ${ly.toFixed(1)} light years. ${sight}`));
+    if (!seen(star)) parts.push(p(top(star) < 0 ? `It never rises from ${safe(from)}. You would have to travel ${here.lat > 0 ? 'south' : 'north'} to see it.` : `From ${safe(from)} it only just clears the horizon, so it is hard to see.`));
+    const links = [slug ? `<a href="/stars/${slug}">Meet ${n}</a>` : '', mag < 4.5 ? `<a href="/sky?star=${index}">Find it on the sky map</a>` : '', `<a href="/v2?go=star:${index}">Fly to it in 3D</a>`].filter(Boolean);
+    const row = p(links.join('')); row.className = 'age-links'; parts.push(row);
+    if (exact.length > 1) parts.push(p(`${exact.length - 1 === 1 ? 'One other star' : `${exact.length - 1} other stars`} you can see by eye ${exact.length - 1 === 1 ? 'is' : 'are'} at the same distance: ${exact.slice(1, 5).map((s) => (s[3] ? `<a href="/stars/${s[3]}">${safe(s[0])}</a>` : safe(s[0]))).join(', ')}${exact.length > 5 ? ' and more' : ''}.`));
+    if (age > 60) parts.push(p('For stars this far away the distance is known to about one light year, so the year is close but not exact.'));
+    out.replaceChildren(...parts);
+  });
+</script>
+
+<style>
+  .age { display: flex; flex-wrap: wrap; align-items: end; gap: .8rem 1.2rem; margin: 1.4rem 0 1.6rem; }
+  .age label { font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); flex-basis: 100%; }
+  .age input { font: 300 1.6rem var(--r-serif); color: var(--ink); background: #131315; border: 1px solid var(--rule); border-radius: 2px; padding: .35rem .7rem; width: 7rem; min-height: 48px; font-variant-numeric: lining-nums; }
+  .age button { font: 400 .76rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--accent); padding: 1rem 0 .7rem; cursor: pointer; min-height: 48px; }
+  .age button:hover { color: var(--accent); }
+  #age-out :global(.found) { font: italic 300 clamp(2rem, 5vw, 3rem)/1.1 var(--r-serif); color: var(--ink); }
+  #age-out :global(.age-links) { display: flex; flex-wrap: wrap; gap: .4rem 1.8rem; font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; }
+  #age-out :global(.age-links a) { text-decoration: none; padding: .55rem 0; border-bottom: 1px solid var(--accent); }
+  .star-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0 2.4rem; }
+  .star-list li { display: grid; grid-template-columns: 1rem minmax(0, 1fr); column-gap: .8rem; align-items: baseline; padding: .7rem 0; border-top: 1px solid var(--rule); }
+  .star-list i { width: .7rem; height: .7rem; border-radius: 50%; align-self: center; grid-row: 1; }
+  .star-list a { font: 300 1.3rem/1.2 var(--r-serif); text-decoration: none; }
+  .star-list span { grid-column: 2; font: 300 .95rem/1.4 var(--r-serif); color: var(--ink-faint); }
+  .all { columns: 4 11rem; column-gap: 2.4rem; }
+  .letter { break-inside: avoid; margin-bottom: 1.6rem; }
+  .letter h3 { font: 400 .74rem/1 var(--r-mono); letter-spacing: .1em; color: var(--accent); margin: 0 0 .5rem; padding-top: .6rem; border-top: 1px solid var(--rule); }
+  .letter li { padding: .12rem 0; }
+  .letter a { font: 300 1.04rem/1.5 var(--r-serif); text-decoration: none; color: var(--ink-soft); display: inline-block; padding: .18rem 0; }
+  .letter a:hover { color: var(--accent); }
+</style>

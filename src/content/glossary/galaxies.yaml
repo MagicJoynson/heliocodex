@@ -1,0 +1,173 @@
+# Galaxies and the universe as a whole.
+terms:
+  - id: galaxy
+    term: Galaxy
+    short: "A huge family of stars, gas and dust held together by gravity."
+    more: "The smallest hold a few thousand stars and the largest more than a trillion."
+    see: [milky-way, spiral-galaxy, elliptical-galaxy]
+    lesson: kinds-of-galaxy
+  - id: milky-way
+    term: Milky Way
+    also: [the Galaxy]
+    short: "The galaxy we live in. From inside it shows as a pale band of light across a dark sky."
+    more: "It is a flat disc of stars about 100,000 light years across, with the Sun roughly half way out from the centre."
+    see: [galaxy, spiral-galaxy, local-group]
+    lesson: the-milky-way
+  - id: spiral-galaxy
+    term: Spiral galaxy
+    short: "A galaxy shaped like a flat, turning disc with bright arms winding out from the middle."
+    more: "The arms are where new stars are forming. In about two thirds of spirals, the Milky Way among them, the arms start from a straight bar of stars."
+    see: [galaxy, elliptical-galaxy, milky-way]
+    lesson: kinds-of-galaxy
+  - id: elliptical-galaxy
+    term: Elliptical galaxy
+    short: "A smooth, rounded galaxy with no disc or arms, made mostly of old stars."
+    more: "The largest galaxies known are ellipticals, built up from collisions between smaller galaxies."
+    see: [galaxy, spiral-galaxy, galaxy-cluster]
+    lesson: kinds-of-galaxy
+  - id: local-group
+    term: Local Group
+    short: "The small family of galaxies that the Milky Way belongs to."
+    more: "It has more than 50 known members spread over about 10 million light years. The Milky Way and Andromeda are much the largest."
+    see: [milky-way, galaxy-cluster]
+    lesson: kinds-of-galaxy
+  - id: galaxy-cluster
+    term: Galaxy cluster
+    short: "Hundreds or thousands of galaxies held together by gravity."
+    more: "Clusters are the largest things that gravity holds together. The nearest large one, in Virgo, is about 54 million light years away."
+    see: [galaxy, local-group, dark-matter]
+    lesson: kinds-of-galaxy
+  - id: big-bang
+    term: Big Bang
+    short: "The hot, dense early state from which the universe has been expanding and cooling for 13.8 billion years."
+    more: "It was not an explosion at one place in space. Space itself was expanding, everywhere at once."
+    see: [cosmic-microwave-background, hubble-constant, redshift]
+    lesson: the-expanding-universe
+  - id: cosmic-microwave-background
+    term: Cosmic microwave background
+    also: [CMB]
+    short: "The oldest light there is: a faint glow of microwaves coming from every direction in the sky."
+    more: "It was released about 380,000 years after the Big Bang, when the universe first became clear enough for light to travel freely."
+    see: [big-bang, redshift, look-back-time]
+    lesson: the-expanding-universe
+  - id: hubble-constant
+    term: Hubble constant
+    short: "The number that says how fast the universe is expanding today."
+    more: "It is about 70 km/s for every megaparsec of distance, which is about 21 km/s for every million light years. Two ways of measuring it disagree by nearly a tenth."
+    see: [redshift, big-bang, parsec]
+    lesson: the-expanding-universe
+  - id: dark-matter
+    term: Dark matter
+    short: "Matter that gives out no light at all and is known only by the pull of its gravity."
+    more: "There seems to be about five times as much of it as of ordinary matter. Nobody yet knows what it is made of."
+    see: [dark-energy, gravitational-lensing, galaxy-cluster]
+    lesson: dark-matter-and-dark-energy
+  - id: dark-energy
+    term: Dark energy
+    short: "The name for whatever is making the expansion of the universe speed up."
+    more: "It was found in 1998. It makes up about 68 per cent of everything in the universe, and what it is remains unknown."
+    see: [dark-matter, hubble-constant, big-bang]
+    lesson: dark-matter-and-dark-energy
+  - id: gravitational-lensing
+    term: Gravitational lensing
+    short: "The bending of light by gravity as it passes something massive."
+    more: "A cluster of galaxies can bend the light of galaxies behind it into arcs. How strongly it bends shows how much mass is there, seen or unseen."
+    see: [gravity, dark-matter, galaxy-cluster]
+    lesson: dark-matter-and-dark-energy
+  - id: cosmic-web
+    term: Cosmic web
+    short: "The pattern galaxies make on the largest scales: clusters joined by long threads, wrapped round nearly empty voids."
+    more: "It formed as gravity drew matter towards wherever there was already slightly more of it."
+    see: [galaxy-cluster, supercluster, void]
+    lesson: the-cosmic-web
+    view: { target: cosmic-web }
+  - id: supercluster
+    term: Supercluster
+    short: "A large collection of galaxy clusters and groups, most of them not held together by gravity."
+    more: "The Milky Way lies on the outer edge of one called Laniakea, about 520 million light years across."
+    see: [galaxy-cluster, local-group, cosmic-web]
+    lesson: the-cosmic-web
+  - id: void
+    term: Void
+    also: [cosmic void]
+    short: "A huge region of space with very few galaxies in it."
+    more: "Voids are the gaps between the threads and walls of the cosmic web."
+    see: [cosmic-web, galaxy-cluster]
+    lesson: the-cosmic-web
+  - id: zone-of-avoidance
+    term: Zone of Avoidance
+    short: "The strip of sky where the disc of our own galaxy hides the galaxies beyond it."
+    more: "Dust and crowded stars in the Milky Way block the view, so maps of distant galaxies have an empty band along it."
+    see: [milky-way, cosmic-web]
+    lesson: the-cosmic-web
+  - id: big-bang-nucleosynthesis
+    term: Big Bang nucleosynthesis
+    also: [nucleosynthesis]
+    short: "The making of the first elements, in the first few minutes of the universe, when all of it was hot enough for nuclear fusion."
+    more: "It left about a quarter of ordinary matter as helium and nearly all the rest as hydrogen, with traces of deuterium and lithium."
+    see: [big-bang, nuclear-fusion, hydrogen, helium]
+    lesson: the-first-minutes
+  - id: recombination
+    term: Recombination
+    short: "The time, about 380,000 years after the Big Bang, when the universe cooled enough for electrons to settle onto nuclei and make the first whole atoms."
+    more: "With the loose electrons gone the universe turned clear, and the light set free is the cosmic microwave background."
+    see: [cosmic-microwave-background, plasma, big-bang]
+    lesson: the-first-minutes
+  - id: cosmic-dark-ages
+    term: Dark ages
+    also: [cosmic dark ages]
+    short: "The stretch of about 200 million years after the oldest light was released and before the first stars lit."
+    more: "The universe then was hydrogen and helium gas, slowly gathering under gravity."
+    see: [recombination, star, big-bang]
+    lesson: the-first-minutes
+  - id: galaxy-merger
+    term: Galaxy merger
+    short: "Two galaxies falling together under gravity and settling into one."
+    more: "Hardly any stars hit one another, but the shapes of both galaxies are changed. Two spirals of similar size usually leave an elliptical."
+    see: [galaxy, elliptical-galaxy, tidal-tail, starburst]
+    lesson: when-galaxies-collide
+  - id: tidal-tail
+    term: Tidal tail
+    short: "A long curved streamer of stars pulled out of a galaxy by the gravity of another."
+    more: "It forms because the near side of a galaxy is pulled harder than the far side, the same uneven pull that raises tides."
+    see: [galaxy-merger, tide]
+    lesson: when-galaxies-collide
+  - id: starburst
+    term: Starburst
+    short: "A spell in which a galaxy makes new stars far faster than usual."
+    more: "Collisions between galaxies set them off by squeezing clouds of gas. The Antennae galaxies have more than a thousand young star clusters made this way."
+    see: [galaxy-merger, molecular-cloud, star-cluster]
+    lesson: when-galaxies-collide
+  - id: supermassive-black-hole
+    term: Supermassive black hole
+    short: "A black hole of hundreds of thousands to billions of times the mass of the Sun, found at the centre of a galaxy."
+    more: "Most large galaxies have one. The Milky Way's is 4.3 million Suns. The one in the galaxy M87 is 6.5 billion."
+    see: [black-hole, active-galaxy, accretion-disc]
+    lesson: active-galaxies-and-quasars
+  - id: active-galaxy
+    term: Active galaxy
+    also: [active galactic nucleus, AGN]
+    short: "A galaxy whose centre outshines all its stars, powered by gas falling towards its central black hole."
+    more: "About one galaxy in ten is active. Seyfert galaxies, radio galaxies, quasars and blazars are all kinds of active galaxy."
+    see: [supermassive-black-hole, accretion-disc, quasar, seyfert-galaxy, blazar]
+    lesson: active-galaxies-and-quasars
+  - id: quasar
+    term: Quasar
+    also: [quasi-stellar object]
+    short: "The most luminous kind of active galaxy, so bright that its centre can be seen across billions of light years."
+    more: "A quasar can give out thousands of times the energy of the Milky Way. The first, 3C 273, was recognised in 1963. Over a million are now known."
+    see: [active-galaxy, supermassive-black-hole, look-back-time]
+    lesson: active-galaxies-and-quasars
+  - id: seyfert-galaxy
+    term: Seyfert galaxy
+    short: "The commonest and least powerful kind of active galaxy."
+    more: "It looks like a normal galaxy in ordinary light but is bright in infrared. Named after Carl Seyfert, who first picked them out in 1943."
+    see: [active-galaxy, infrared]
+    lesson: active-galaxies-and-quasars
+  - id: blazar
+    term: Blazar
+    short: "An active galaxy with a jet pointing almost straight at the Earth."
+    more: "Looking down the jet makes a blazar seem brighter and more changeable than other active galaxies. Most of the active galaxies found in gamma rays are blazars."
+    see: [active-galaxy, quasar, gamma-rays]
+    lesson: active-galaxies-and-quasars
+

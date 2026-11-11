@@ -1,0 +1,9 @@
+title: The expanding universe
+strand: the-universe
+order: 1
+summary: "Distant galaxies are all moving away from us, and from each other. Run the film backwards and you arrive at a hot, dense beginning 13.8 billion years ago."
+scene: "The map of real galaxies slowly spreading apart, viewed from our galaxy and then from another, with the same result both times."
+view: { target: cmb }
+terms: [redshift, hubble-constant, big-bang, cosmic-microwave-background, look-back-time, galaxy, light-year]
+needs: [kinds-of-galaxy, reading-starlight]
+next: [the-first-minutes, dark-matter-and-dark-energy]

@@ -1,0 +1,51 @@
+facts:
+  - id: sun-mass-share
+    text: "The Sun holds 99.86% of all the mass in the Solar System. Jupiter has most of what is left."
+    about: [sun, solar-system]
+    basis: worked-out
+    source: { label: "NASA NSSDC planetary fact sheets", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/" }
+  - id: sun-light-travel
+    text: "Sunlight takes 8 minutes 19 seconds to reach the Earth. If the Sun went out, nobody would know for that long."
+    about: [sun, earth, light-the-only-messenger]
+    basis: worked-out
+    source: { label: "NASA/JPL astrodynamic parameters", url: "https://ssd.jpl.nasa.gov/astro_par.html" }
+  - id: sun-mass-loss
+    text: "The Sun turns about 4 million tonnes of its mass into light every second, and has done for 4.6 billion years. It has barely made a dent."
+    about: [sun, what-the-sun-is]
+    basis: worked-out
+    source: { label: "NASA NSSDC Sun fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html" }
+  - id: sun-surface-temperature
+    text: "The visible surface of the Sun is at 5,772 K, about 5,500 °C."
+    about: [sun]
+    source: { label: "NASA NSSDC Sun fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html" }
+  - id: sun-core-temperature
+    text: "The centre of the Sun is at about 15.7 million K. Nobody has measured it directly: it comes from models that are checked against the Sun's vibrations and the neutrinos it gives off."
+    about: [sun, what-the-sun-is]
+    basis: theory
+    source: { label: "NASA NSSDC Sun fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html" }
+  - id: sun-size
+    text: "The Sun is 109 Earths wide, and about 1.3 million Earths would fit inside it."
+    about: [sun, how-big-is-space]
+    basis: worked-out
+    source: { label: "NASA NSSDC Sun fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html" }
+  - id: sun-rotation
+    text: "The Sun does not turn in one piece. Its equator goes round in about 25 days and the regions near its poles in about 36."
+    about: [sun]
+    source: { label: "NASA, Sun facts", url: "https://science.nasa.gov/sun/facts/" }
+  - id: sun-gravity
+    text: "Gravity at the Sun's visible surface is 274 m/s², 28 times what you feel on Earth."
+    about: [sun]
+    source: { label: "NASA NSSDC Sun fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html" }
+  - id: sun-corona-heat
+    text: "The Sun's outer atmosphere, the corona, reaches about 2 million °C, hundreds of times hotter than the surface underneath. Why is still not fully explained."
+    about: [sun]
+    source: { label: "NASA, Sun facts", url: "https://science.nasa.gov/sun/facts/" }
+  - id: sun-galactic-year
+    text: "The Sun and everything round it circle the centre of the Milky Way at about 830,000 km/h. One lap takes about 230 million years."
+    about: [sun, milky-way]
+    basis: worked-out
+    source: { label: "Reid and others 2019, Astrophysical Journal 885, 131", url: "https://arxiv.org/abs/1910.03357" }
+  - id: heliosphere-voyager
+    text: "Voyager 1 left the bubble blown by the solar wind in August 2012, about 121 au from the Sun, after 35 years of travel."
+    about: [sun, solar-system, voyager-1]
+    source: { label: "NASA, the Voyager mission", url: "https://science.nasa.gov/mission/voyager/" }

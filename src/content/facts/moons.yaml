@@ -1,0 +1,92 @@
+facts:
+  - id: moons-count
+    text: "NASA's list holds 460 moons of the planets and Pluto. Saturn has 292, Jupiter 115, Uranus 29, Neptune 16, Pluto 5, Mars 2 and the Earth 1. Mercury and Venus have none."
+    about: [solar-system, saturn, jupiter]
+    source: { label: "NASA/JPL, planetary satellites (list read November 2026)", url: "https://ssd.jpl.nasa.gov/sats/" }
+  - id: moons-found-recently
+    text: "Of the 460 known moons, 391 have been found since the year 2000. Nearly all of those are a few kilometres across and were picked up as faint dots by large telescopes."
+    about: [solar-system]
+    basis: worked-out
+    source: { label: "NASA/JPL, satellite discovery circumstances", url: "https://ssd.jpl.nasa.gov/sats/discovery.html" }
+  - id: moons-backwards
+    text: "About two thirds of the known moons of the four giant planets go round backwards, against their planet's spin. They are captured strays, not moons that formed in place."
+    about: [jupiter, saturn, uranus, neptune]
+    basis: worked-out
+    source: { label: "NASA/JPL, planetary satellite mean elements", url: "https://ssd.jpl.nasa.gov/sats/elem/" }
+  - id: moons-furthest
+    text: "The most distant moon known is a small body called S/2021 N 1. It circles Neptune about 50 million km out, a third of the distance from the Earth to the Sun, and takes 27 years to go round once."
+    about: [neptune]
+    source: { label: "NASA/JPL, planetary satellite mean elements", url: "https://ssd.jpl.nasa.gov/sats/elem/" }
+  - id: galilean-discovery
+    text: "Galileo found the four large moons of Jupiter in January 1610. They were the first things ever seen to orbit something other than the Earth."
+    about: [jupiter, io, europa, ganymede, callisto]
+    source: { label: "NASA/JPL, satellite discovery circumstances", url: "https://ssd.jpl.nasa.gov/sats/discovery.html" }
+  - id: ganymede-largest
+    text: "Ganymede is the largest moon in the Solar System, 5,262 km across. It is wider than the planet Mercury, though less than half as heavy."
+    about: [ganymede, mercury]
+    source: { label: "NASA/JPL, planetary satellite physical parameters", url: "https://ssd.jpl.nasa.gov/sats/phys_par/" }
+  - id: ganymede-magnetic-field
+    text: "Ganymede is the only moon known to make its own magnetic field."
+    about: [ganymede]
+    source: { label: "NASA, Ganymede", url: "https://science.nasa.gov/jupiter/jupiter-moons/ganymede/" }
+  - id: io-volcanoes
+    text: "Io is the most volcanic world known, with hundreds of volcanoes. Some throw lava fountains dozens of kilometres high."
+    about: [io, tides]
+    source: { label: "NASA, Io", url: "https://science.nasa.gov/jupiter/jupiter-moons/io/" }
+  - id: io-europa-ganymede-rhythm
+    text: "Io goes round Jupiter in 1.77 days, Europa in 3.55 and Ganymede in 7.16: each takes almost exactly twice as long as the one before. The regular tugs that result are what keep Io's inside molten."
+    about: [io, europa, ganymede, tides]
+    source: { label: "NASA/JPL, planetary satellite mean elements", url: "https://ssd.jpl.nasa.gov/sats/elem/" }
+  - id: europa-ocean
+    text: "Under its shell of ice Europa is thought to hold a salt-water ocean with about twice as much water as all the Earth's oceans together."
+    about: [europa]
+    basis: theory
+    source: { label: "NASA, Europa", url: "https://science.nasa.gov/jupiter/jupiter-moons/europa/" }
+  - id: callisto-craters
+    text: "Callisto has the most heavily cratered surface known. Almost nothing has smoothed it over in four billion years."
+    about: [callisto]
+    source: { label: "NASA, Callisto", url: "https://science.nasa.gov/jupiter/jupiter-moons/callisto/" }
+  - id: titan-atmosphere
+    text: "Titan is the only moon with a thick atmosphere. The air is mostly nitrogen, like ours, and the pressure at the ground is about one and a half times the Earth's."
+    about: [titan]
+    source: { label: "NASA, Titan", url: "https://science.nasa.gov/saturn/moons/titan/" }
+  - id: titan-seas
+    text: "Titan is the only place besides the Earth known to have rivers, lakes and seas on its surface. They are liquid methane and ethane, at about -179 °C."
+    about: [titan]
+    source: { label: "NASA, Titan", url: "https://science.nasa.gov/saturn/moons/titan/" }
+  - id: enceladus-jets
+    text: "Enceladus is only 504 km across, yet it sprays jets of water into space from cracks near its south pole. The Cassini spacecraft flew through them and found salt and simple organic chemicals."
+    about: [enceladus]
+    source: { label: "NASA, Enceladus", url: "https://science.nasa.gov/saturn/moons/enceladus/" }
+  - id: mimas-crater
+    text: "The crater Herschel on Mimas is 130 km wide, a third of the width of the moon itself. A much bigger impact would probably have broken Mimas apart."
+    about: [mimas]
+    source: { label: "NASA, Mimas", url: "https://science.nasa.gov/saturn/moons/mimas/" }
+  - id: iapetus-two-faces
+    text: "Iapetus has one face as dark as coal and the other as bright as snow. The leading side sweeps up dark dust as the moon moves along its orbit."
+    about: [iapetus]
+    source: { label: "NASA, Iapetus", url: "https://science.nasa.gov/saturn/moons/iapetus/" }
+  - id: hyperion-sponge
+    text: "Hyperion is about half empty space inside: its density is only 0.54 times that of water. It also tumbles as it orbits, with no fixed day."
+    about: [hyperion]
+    source: { label: "NASA/JPL, planetary satellite physical parameters", url: "https://ssd.jpl.nasa.gov/sats/phys_par/" }
+  - id: miranda-cliff
+    text: "Miranda, a moon of Uranus only 470 km across, has fault canyons as much as twelve times as deep as the Grand Canyon."
+    about: [miranda]
+    source: { label: "NASA, Miranda", url: "https://science.nasa.gov/uranus/moons/miranda/" }
+  - id: triton-backwards
+    text: "Triton is the only large moon that orbits backwards. It was almost certainly a world like Pluto that Neptune captured."
+    about: [triton, neptune]
+    source: { label: "NASA, Triton", url: "https://science.nasa.gov/neptune/moons/triton/" }
+  - id: triton-cold
+    text: "Triton's surface is at about -235 °C, among the coldest measured anywhere in the Solar System. Even so, Voyager 2 saw geysers there throwing dark plumes 8 km up."
+    about: [triton]
+    source: { label: "NASA, Triton", url: "https://science.nasa.gov/neptune/moons/triton/" }
+  - id: phobos-doomed
+    text: "Phobos goes round Mars in 7 hours 39 minutes, faster than Mars turns, so it rises in the west. It is creeping inward by about 1.8 metres a century and will be torn apart or hit the ground in about 50 million years."
+    about: [phobos, mars, tides]
+    source: { label: "NASA, Phobos", url: "https://science.nasa.gov/mars/moons/phobos/" }
+  - id: charon-double-world
+    text: "Charon is half as wide as Pluto. The two keep the same faces towards each other all the time, and the point they both circle is out in the space between them."
+    about: [charon, pluto, tides]
+    source: { label: "NASA, Charon", url: "https://science.nasa.gov/dwarf-planets/pluto/moons/charon/" }

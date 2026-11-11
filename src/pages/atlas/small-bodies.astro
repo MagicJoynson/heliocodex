@@ -1,0 +1,176 @@
+---
+// The chart of small bodies: 26 asteroids and comets on their real paths round the Sun, and a
+// count of where every known asteroid orbits. Built like the Solar System chart.
+import Reading from '../../layouts/Reading.astro';
+import Plate, { type Drawn } from '../../components/atlas/Plate.astro';
+import Spread from '../../components/atlas/Spread.astro';
+import { allBodies, smallBodies, smallFetched, smallSpread } from '../../data/bodies/index';
+import type { KeplerOrbit } from '../../lib/v2/atlas/types';
+import { groupOf, groups, inStep, offChart, shown, smallBodiesPlate as spec } from '../../lib/v2/atlas/plates/small-bodies';
+import { fmtKm, markOf } from '../../lib/v2/atlas/chart';
+import { julianDate } from '../../lib/v2/atlas/kepler';
+import { AU_KM, fmtAu, fmtYears, isPlanet, planetOrbit } from '../../lib/v2/atlas/sun';
+import '../../styles/atlas.css';
+
+const built = new Date();
+const jd = julianDate(built);
+const drawnFor = `Orbits as they lie in ${built.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
+
+const about = new Map(smallBodies.map((b) => [b.id, b]));
+const ids = new Set([...smallBodies.map((b) => b.id), ...Object.values(shown).flat()]);
+const all = new Map<string, Drawn>(allBodies.filter((b) => ids.has(b.id)).map((b) => {
+  const orbit = isPlanet(b.id) ? planetOrbit(b.id, jd) : (b.orbit as KeplerOrbit);
+  // measured orbits, not fits of ours: a plain line and a dot each. Comets are less sure, and the key says so.
+  return [b.id, { id: b.id, name: b.name, orbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: Math.abs(orbit.iDeg), line: 'solid', placed: true }];
+}));
+for (const b of smallBodies) if (!offChart[b.id] && !Object.values(shown).some((l) => l.includes(b.id))) throw new Error(`${b.id} is on no drawing of the small-bodies chart`);
+const inFigure = (id: string) => shown[id].map((b) => all.get(b)!);
+const listOf = (g: string) => smallBodies.filter((b) => groupOf(b.group) === g).map((b) => all.get(b.id)!).sort((a, b) => a.orbit.aKm - b.orbit.aKm);
+
+const SEEN = { filled: 'Mapped by spacecraft', half: 'Partly seen by spacecraft', open: 'Seen only as a point of light' } as const;
+const summaries: Record<string, string> = {
+  near: 'Six asteroids whose orbits lie near the Earth’s, drawn to scale from above with the orbits of the Earth and Mars. Every one is in the lists below.',
+  belt: 'Nine asteroids of the main belt and the Trojan Hektor, drawn to scale from above with the orbits of Mars and Jupiter. Every one is in the lists below.',
+  comets: 'Six short-period comets on their stretched orbits, drawn to scale from above with the orbits of the Earth and Jupiter. Every one is in the lists below.',
+  far: 'Halley’s Comet, Chiron and Arrokoth, drawn to scale from above with the orbits of Jupiter, Saturn and Neptune. Every one is in the lists below.',
+};
+const data = {
+  parent: 'sun', dots: spec.dots,
+  figures: spec.figures.map((f) => ({ id: f.id, spanKm: f.spanKm, view: f.view, centreKm: f.centreKm, ids: shown[f.id] })),
+  orbits: Object.fromEntries([...all.values()].map((w) => [w.id, w.orbit])),
+};
+
+// the count diagrams
+const au = (id: string) => planetOrbit(id, jd).aKm / AU_KM;
+const J = au('jupiter'), N = au('neptune');
+const fetched = new Date(smallFetched).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const counted = `${smallSpread.counted.toLocaleString('en-GB')} asteroids known on ${fetched}`;
+const gaps = [[3, 1], [5, 2], [7, 3], [2, 1]].map(([p, q]) => ({ au: inStep(J, p, q), label: `${p}:${q}`, kind: 'gap' as const }));
+const innerMarks = [
+  { au: au('mars'), label: 'Mars', kind: 'planet' as const }, { au: J, label: 'Jupiter', kind: 'planet' as const },
+  ...gaps, { au: inStep(J, 3, 2), label: '3:2', kind: 'group' as const },
+];
+const outerMarks = [
+  { au: N, label: 'Neptune', kind: 'planet' as const },
+  { au: inStep(N, 2, 3), label: '2:3', kind: 'group' as const }, { au: inStep(N, 1, 2), label: '1:2', kind: 'group' as const },
+];
+const inBelt = smallSpread.inner.counts.reduce((n, c, k) => { const a = smallSpread.inner.fromAu + (k + 0.5) * smallSpread.inner.stepAu; return a > 2.06 && a < 3.27 ? n + c : n; }, 0);
+const beyond = smallSpread.outer.counts.reduce((n, c) => n + c, 0);
+const pct = Math.round((inBelt / smallSpread.counted) * 100);
+const two = (v: number) => v.toFixed(2);
+---
+<Reading title="Asteroids and comets · Atlas" path="/atlas/small-bodies" description="A chart of 26 asteroids and comets on their real orbits round the Sun, drawn to scale from above, and a count of where every known asteroid orbits.">
+  <header class="reading-head">
+    <p class="label">Atlas · Small bodies</p>
+    <h1>{spec.title}</h1>
+    <p class="lead">{spec.lead}</p>
+  </header>
+
+  {spec.figures.map((f) => (
+    <section class="row figure-row" id={`figure-${f.id}`}>
+      <div class="hang">
+        <p class="label">Drawing {f.numeral}</p>
+        <h2>{f.title}</h2>
+        <p class="note">{f.caption}</p>
+        <p class="note scale">The drawing is {((2 * f.spanKm) / AU_KM).toLocaleString('en-GB', { maximumSignificantDigits: 3 })} au across, which is {fmtKm(2 * f.spanKm)}.</p>
+      </div>
+      <figure class="plate-holder">
+        <Plate spec={spec} figure={f} bodies={inFigure(f.id)} jd={jd} drawnFor={drawnFor} summary={summaries[f.id]} />
+      </figure>
+    </section>
+  ))}
+
+  <section class="row figure-row" id="figure-count-inner">
+    <div class="hang">
+      <p class="label">Drawing V</p>
+      <h2>Where the asteroids are</h2>
+      <p class="note">Every known asteroid with an orbit between {smallSpread.inner.fromAu} and {smallSpread.inner.toAu} au, counted by the size of its orbit. The taller the line, the more asteroids have orbits of that size.</p>
+      <p class="note">The belt is not even. It has gaps, marked in amber, at the orbits where an asteroid would keep step with Jupiter. The label 3:1 at {two(gaps[0].au)} au means three orbits for each one of Jupiter’s. Jupiter’s pull, repeated at the same place every time, moves such asteroids away. In two places keeping step does the opposite and holds a group together: the Hildas at {two(inStep(J, 3, 2))} au, and the Trojans, which share Jupiter’s own orbit.</p>
+    </div>
+    <figure class="plate-holder">
+      <Spread id="inner" numeral="V" title="Asteroids by the size of their orbits" spread={smallSpread.inner} marks={innerMarks} counted={counted}
+        summary={`A count of known asteroids by the size of their orbits, from ${smallSpread.inner.fromAu} to ${smallSpread.inner.toAu} astronomical units. Most lie between 2.1 and 3.3, with clear gaps at ${gaps.map((g) => two(g.au)).join(', ')} and small separate groups near ${two(inStep(J, 3, 2))} and ${two(J)}.`} />
+    </figure>
+  </section>
+
+  <section class="row figure-row" id="figure-count-outer">
+    <div class="hang">
+      <p class="label">Drawing VI</p>
+      <h2>Beyond Neptune</h2>
+      <p class="note">The same count from {smallSpread.outer.fromAu} to {smallSpread.outer.toAu} au: the Kuiper belt. Here keeping step with Neptune gathers bodies instead of clearing them. The spike at {inStep(N, 2, 3).toFixed(1)} au is the bodies that go round twice for every three of Neptune’s. Pluto is one of them. The belt thins out sharply past {inStep(N, 1, 2).toFixed(1)} au, where a body goes round once for every two of Neptune’s.</p>
+      <p class="note">Only {beyond.toLocaleString('en-GB')} bodies are counted here, against {inBelt.toLocaleString('en-GB')} in the asteroid belt. That is because they are far away and faint, not because they are few.</p>
+    </div>
+    <figure class="plate-holder">
+      <Spread id="outer" numeral="VI" title="Bodies beyond Neptune by the size of their orbits" spread={smallSpread.outer} marks={outerMarks} counted={counted}
+        summary={`A count of known bodies by the size of their orbits, from ${smallSpread.outer.fromAu} to ${smallSpread.outer.toAu} astronomical units. Most lie between about 39 and 48, with a sharp spike at ${inStep(N, 2, 3).toFixed(1)}.`} />
+    </figure>
+  </section>
+
+  <section class="row key-row">
+    <div class="hang"><h2>How to read it</h2></div>
+    <div class="prose key">
+      <p>In drawings I to IV you are looking straight down on the plane of the planets, from its north side. The Sun is the dot in the middle. Distances are to scale. The bodies are not: the largest asteroid drawn here would be far smaller than the width of a line.</p>
+      <p>A flat drawing cannot show tilt, so where two paths cross on the page the bodies are usually nowhere near each other. The tilt of each orbit is in the lists.</p>
+      <p>Drawings V and VI count what has been found. About {pct} in every 100 known asteroids are in the main belt. Small, dark and distant bodies are hard to find, so the true numbers are larger everywhere, and far larger beyond Neptune.</p>
+      <noscript><p><strong>The dots are missing</strong> because scripts are off. The orbits and the lists are complete without them.</p></noscript>
+      <ul class="plain-list key-list">
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot filled"><circle r="5" /></g></svg><span><strong>Solid dot.</strong> A spacecraft has mapped all or nearly all of it.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot half"><circle r="5" /><path d="M0 -5A5 5 0 0 0 0 5Z" /></g></svg><span><strong>Half dot.</strong> A spacecraft has flown past and seen part of it.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot open"><circle r="5" /></g></svg><span><strong>Ring.</strong> Never visited.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Pale line.</strong> Goes round the usual way, anticlockwise on these drawings.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit back solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Amber line.</strong> Goes round backwards. Halley’s Comet does.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><path class="key-band" d="M2 8H42" /></svg><span><strong>Faint band.</strong> A belt of many small bodies, shown as the zone they keep to.</span></li>
+      </ul>
+      <p><strong>Where a comet is today is approximate.</strong> Gas streaming off a comet pushes it like a weak rocket, so its timing drifts from one orbit to the next. Each comet here is run forward from its last closest approach to the Sun, and its dot can be some way off. The asteroids’ dots are good to well within a line’s width.</p>
+      <p>One astronomical unit, written au, is the average distance from the Earth to the Sun: 149.6 million km. Touch a row in the lists to pick out its orbit.</p>
+      <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
+    </div>
+  </section>
+
+  {groups.map((g) => (
+    <section class="row family-row" id={`family-${g.id}`}>
+      <div class="hang">
+        <h2>{g.name}</h2>
+        <p class="note">{g.note}</p>
+      </div>
+      <table class="moons worlds small-bodies">
+        <thead>
+          <tr><th scope="col">Body</th><th scope="col">Orbit size</th><th scope="col">Nearest the Sun</th><th scope="col">One orbit</th><th scope="col">Tilt</th><th scope="col">Width</th><th scope="col"><span class="vh">See it in 3D</span></th></tr>
+        </thead>
+        <tbody>
+          {listOf(g.id).map((w) => (
+            <tr id={w.id} data-body={w.id}>
+              <th scope="row">
+                <svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class:list={['dot', markOf(w.seen)]}><circle r="5" />{markOf(w.seen) === 'half' && <path d="M0 -5A5 5 0 0 0 0 5Z" />}</g></svg>
+                <span class="nm">{w.name}</span>
+                <span class="vh">. {SEEN[markOf(w.seen)]}.</span>
+                <span class="fit why">{about.get(w.id)!.why}{offChart[w.id] && ` ${offChart[w.id]}`}</span>
+              </th>
+              <td data-label="Orbit size">{fmtAu(w.orbit.aKm)}</td>
+              <td data-label="Nearest the Sun">{fmtAu(w.orbit.aKm * (1 - w.orbit.e))}</td>
+              <td data-label="One orbit">{fmtYears(w.orbit.periodDays)}</td>
+              <td data-label="Tilt">{w.tilt < 10 ? w.tilt.toFixed(1) : Math.round(w.tilt)}°</td>
+              <td data-label="Width">{w.meanRadiusKm ? fmtKm(w.meanRadiusKm * 2) : <span class="unknown">not given</span>}</td>
+              <td class="go"><a href={`/v2?go=${w.id}`} aria-label={`Fly to ${w.name} in 3D`}>Fly there</a></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  ))}
+
+  <section class="row sources-row">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <ul>{spec.sources.map((s) => <li><a href={s.url}>{s.label}</a></li>)}</ul>
+      <p>Orbit size is the average of a body’s nearest and furthest distance from the Sun. Tilt is measured from the plane of the Earth’s orbit, and above 90° means the body goes round backwards. Width is an average: none of these bodies is round, and where JPL gives only the lengths of a body’s three axes, the width here is their mean. “Not given” means JPL’s database has no width for it. The gaps and groups are placed by sum from the planets’ orbits, not read off the count.</p>
+    </div>
+  </section>
+
+  <script type="application/json" id="plate-data" set:html={JSON.stringify(data)} />
+  <script>import '../../lib/v2/atlas/live';</script>
+</Reading>
+
+<style is:global>
+  .moons .fit.why { white-space: normal; max-width: 34rem; font: 300 .9rem/1.4 var(--r-serif); letter-spacing: 0; }
+</style>

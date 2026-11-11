@@ -1,0 +1,94 @@
+---
+// One legal page: title, a contents list in the margin, and the text from src/content/legal/<id>.md.
+import { getEntry, render } from 'astro:content';
+import Reading from '../layouts/Reading.astro';
+import { OPT_OUT_KEY } from '../lib/analytics';
+
+interface Props { id: string }
+const { id } = Astro.props;
+const entry = await getEntry('legal', id);
+if (!entry) throw new Error(`No legal page called ${id}`);
+const { headings } = await render(entry);
+// Wide tables scroll sideways on a phone, so each one sits in a region that the keyboard can reach.
+let n = 0;
+const html = (entry.rendered?.html ?? '')
+  .replace(/<table>/g, () => `<div class="table-scroll" role="region" aria-label="Table ${++n}, scrolls sideways" tabindex="0"><table>`)
+  .replace(/<\/table>/g, '</table></div>');
+const contents = headings.filter((h) => h.depth === 2);
+const updated = entry.data.updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const others = [
+  ['privacy', 'Privacy policy'], ['terms', 'Terms of use'], ['cookies', 'Cookies and storage'],
+  ['licences', 'Licences and credits'], ['accessibility', 'Accessibility'],
+].filter(([slug]) => slug !== id);
+---
+<Reading title={entry.data.title} path={`/${id}`} description={entry.data.description}>
+  <header class="reading-head">
+    <p class="label">Legal · Last updated {updated}</p>
+    <h1>{entry.data.title}</h1>
+    <p class="lead">{entry.data.lead}</p>
+  </header>
+
+  <section class="row legal">
+    <div class="hang sticks">
+      <h2>Contents</h2>
+      <nav class="legal-toc" aria-label="Contents of this page">
+        <ol class="plain-list">
+          {contents.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}
+        </ol>
+      </nav>
+    </div>
+    <div class="prose" set:html={html} />
+  </section>
+
+  <section class="row">
+    <div class="hang"><h2>The other legal pages</h2></div>
+    <ul class="plain-list legal-others">
+      {others.map(([slug, name]) => <li><a href={`/${slug}`}>{name}</a></li>)}
+    </ul>
+  </section>
+</Reading>
+
+{id === 'cookies' && (
+  <script is:inline define:vars={{ key: OPT_OUT_KEY }}>
+    (function () {
+      var box = document.getElementById('count-switch'), state = document.getElementById('count-state'), btn = document.getElementById('count-button');
+      if (!box) return;
+      var signal = navigator.globalPrivacyControl || navigator.doNotTrack === '1' || window.doNotTrack === '1';
+      function off() { try { return localStorage.getItem(key) === '1'; } catch (e) { return false; } }
+      function show() {
+        if (signal) { state.textContent = 'Your browser is sending a Do Not Track or Global Privacy Control signal, so you are not being counted.'; btn.hidden = true; }
+        else if (off()) { state.textContent = 'You are not being counted in this browser.'; btn.textContent = 'Count my visits again'; }
+        else { state.textContent = 'Your visits to Heliocodex are counted, without cookies and without knowing who you are.'; btn.textContent = 'Stop counting my visits'; }
+        box.hidden = false;
+      }
+      btn.addEventListener('click', function () {
+        try { if (off()) localStorage.removeItem(key); else localStorage.setItem(key, '1'); } catch (e) {}
+        show();
+      });
+      show();
+    })();
+  </script>
+)}
+
+<style is:global>
+  .legal-toc ol { margin: 1rem 0 0; font: 400 .86rem/1.4 var(--r-mono); }
+  .legal-toc li { margin: 0 0 .5rem; }
+  .legal-toc a { text-decoration: none; color: var(--ink-soft); }
+  .legal-toc a:hover { color: var(--accent); }
+  .legal-others { font: 300 1.16rem/1.8 var(--r-serif); }
+  .reading .prose h2 { font: italic 300 clamp(1.5rem, 2.4vw, 1.9rem)/1.2 var(--r-serif); color: var(--ink); margin: 2.6em 0 .7em; scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .reading .prose > h2:first-child { margin-top: 0; }
+  .reading .prose h3 { font: 500 1.12rem/1.4 var(--r-serif); color: var(--ink); margin: 1.8em 0 .5em; }
+  .reading .prose .short-version { border: 1px solid var(--rule); padding: 1.2rem 1.4rem .4rem; margin: 0 0 2.2rem; }
+  .reading .prose ol { margin: 0 0 1.05em; padding-left: 1.4em; }
+  .reading .prose ol li { padding-left: .2em; }
+  .reading .prose ol li::before { display: none; }
+  .count-switch { border: 1px solid var(--rule); padding: 1rem 1.2rem; margin: 1.2rem 0 1.4rem; }
+  .count-switch p { margin: 0 0 .8rem; }
+  .count-switch button { font: 400 .72rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--rule); padding: .5rem 0; cursor: pointer; }
+  .count-switch button:hover { color: var(--accent); border-color: var(--accent); }
+  .legal .table-scroll table { min-width: 34rem; }
+  .legal .table-scroll td, .legal .table-scroll th { min-width: 7rem; }
+  .legal .table-scroll:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+  @media (max-width: 760px) { .legal > .hang { display: none; } }
+</style>

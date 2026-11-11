@@ -1,0 +1,9 @@
+title: The nearest stars
+strand: stars
+order: 4
+summary: "The stars next door are light years away, and most are small red ones too faint to see. The bright stars of the night sky are the unusual ones."
+scene: "The Sun shrinks to a point among its neighbours: every star in the catalogue within a few tens of light years, in its true colour and place."
+view: { target: neighbourhood }
+terms: [star, light-year, parallax, parsec, red-dwarf, luminosity, exoplanet, habitable-zone]
+needs: [what-a-star-is, measuring-distance]
+next: [the-stars-you-can-see, planets-round-other-stars]

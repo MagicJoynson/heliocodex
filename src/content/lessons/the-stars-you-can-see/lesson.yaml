@@ -1,0 +1,9 @@
+title: The stars you can see
+strand: stars
+order: 5
+summary: "A few thousand stars are bright enough to see by eye. All belong to our galaxy, most lie within 1,000 light years, and the patterns they make are only patterns."
+scene: "The view pulls back from the Sun until the stars of the night sky hang round it as a small cloud, the familiar patterns coming apart as the angle changes."
+view: { target: night-sky }
+terms: [star, constellation, apparent-magnitude, absolute-magnitude, luminosity, light-year, milky-way]
+needs: [what-a-star-is, the-nearest-stars]
+next: [double-and-multiple-stars, the-milky-way]

@@ -1,0 +1,100 @@
+---
+import Reading from '../../layouts/Reading.astro';
+import { allTerms, allLessons } from '../../lib/v2/margin/content';
+
+const [terms, lessons] = await Promise.all([allTerms(), allLessons()]);
+const name = new Map(terms.map((t) => [t.id, t.term]));
+const lessonTitle = new Map(lessons.map((l) => [l.id, l.data.title]));
+const letters = [...new Set(terms.map((t) => t.term[0].toUpperCase()))];
+const groups = letters.map((letter) => ({ letter, terms: terms.filter((t) => t.term[0].toUpperCase() === letter) }));
+---
+<Reading title="Glossary" path="/glossary" description={`${terms.length} words used in astronomy, each explained in one plain sentence, with a little more for anyone who wants it.`}>
+  <header class="reading-head">
+    <p class="label">Glossary</p>
+    <h1>What the words mean</h1>
+    <p class="lead">{terms.length} terms. Each gets one plain sentence, then a little more if you want it.</p>
+    <div class="find">
+      <label class="label" for="find">Find a word</label>
+      <input id="find" type="search" autocomplete="off" spellcheck="false" />
+      <p class="label" id="find-count" aria-live="polite"></p>
+    </div>
+    <nav class="letters" aria-label="Jump to a letter">
+      {groups.map((g) => <a href={`#letter-${g.letter}`}>{g.letter}</a>)}
+    </nav>
+  </header>
+
+  {groups.map((g) => (
+    <section class="row letter" id={`letter-${g.letter}`}>
+      <div class="hang sticks"><h2 aria-label={`Words beginning with ${g.letter}`}>{g.letter}</h2></div>
+      <dl>
+        {g.terms.map((t) => (
+          <div class="term" id={t.id} data-find={[t.term, ...t.also].join(' ').toLowerCase()}>
+            <dt>{t.term}{t.also.length > 0 && <span class="also">{t.also.join(', ')}</span>}</dt>
+            <dd>
+              <p>{t.short}</p>
+              {t.more && <p class="more">{t.more}</p>}
+              {(t.see.length > 0 || t.lesson) && (
+                <p class="label links">
+                  {t.see.length > 0 && <span>See {t.see.map((s, i) => <>{i > 0 && ', '}<a href={`#${s}`}>{name.get(s)}</a></>)}</span>}
+                  {t.lesson && lessonTitle.has(t.lesson) && <span>Lesson <a href={`/learn/${t.lesson}`}>{lessonTitle.get(t.lesson)}</a></span>}
+                </p>
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  ))}
+  <p class="none" id="find-none" hidden>Nothing here matches that. Try a shorter word.</p>
+</Reading>
+
+<script>
+  const input = document.getElementById('find') as HTMLInputElement;
+  const count = document.getElementById('find-count')!;
+  const none = document.getElementById('find-none')!;
+  const terms = [...document.querySelectorAll<HTMLElement>('.term')];
+  const sections = [...document.querySelectorAll<HTMLElement>('.letter')];
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    for (const t of terms) {
+      const hit = !q || t.dataset.find!.includes(q);
+      t.hidden = !hit;
+      if (hit) shown++;
+    }
+    for (const s of sections) s.hidden = !s.querySelector('.term:not([hidden])');
+    none.hidden = shown > 0;
+    count.textContent = q ? `${shown} of ${terms.length}` : '';
+  });
+</script>
+
+<style>
+  .find { margin-top: 2rem; display: grid; grid-template-columns: auto minmax(0, 18rem) auto; align-items: baseline; justify-content: start; gap: 0 1rem; }
+  .find input { font: 300 1.2rem/1.4 var(--r-serif); color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--ink-faint); border-radius: 0; padding: .2rem 0 .3rem; width: 100%; }
+  .find input:focus { outline: none; border-color: var(--accent); }
+  .find input:focus-visible { box-shadow: 0 1px 0 var(--accent); }
+  .letters { display: flex; flex-wrap: wrap; gap: .1rem .15rem; margin: 1.6rem 0 0 -.55rem; font: 400 .82rem/1 var(--r-mono); }
+  .letters a { text-decoration: none; color: var(--ink-soft); min-width: 2rem; padding: .6rem .55rem; text-align: center; }
+  .letters a:hover { color: var(--accent); }
+  .letter { scroll-margin-top: var(--header-h); }
+  .letter .hang h2 { font: 300 clamp(2.6rem, 5vw, 3.6rem)/.9 var(--r-serif); font-style: normal; color: var(--ink-faint); }
+  dl { margin: 0; display: grid; gap: 2rem; }
+  .term { scroll-margin-top: calc(var(--header-h) + 1.2rem); }
+  .term:target dt { color: var(--accent); }
+  dt { font: 400 1.34rem/1.25 var(--r-serif); color: var(--ink); }
+  .also { font: 400 .72rem/1.4 var(--r-mono); letter-spacing: .04em; color: var(--ink-faint); margin-left: .9em; white-space: nowrap; }
+  dd { margin: .3rem 0 0; }
+  dd p { font: 300 1.12rem/1.58 var(--r-serif); color: var(--ink-soft); margin: 0 0 .35rem; }
+  dd .more { color: var(--ink-faint); }
+  dd .links { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .2rem 1.6rem; text-transform: none; letter-spacing: .02em; font-size: .76rem; line-height: 1.7; }
+  dd .links a { color: var(--ink-soft); text-decoration: underline; text-decoration-color: var(--rule); }
+  dd .links a:hover { color: var(--accent); }
+  .none { font: 300 1.15rem/1.5 var(--r-serif); color: var(--ink-soft); border-top: 1px solid var(--rule); padding-top: 2rem; }
+  [hidden] { display: none !important; }
+  @media (max-width: 760px) {
+    .find { grid-template-columns: 1fr auto; }
+    .find label { grid-column: 1 / -1; }
+    .letter .hang h2 { font-size: 2.2rem; }
+    .also { white-space: normal; }
+  }
+</style>

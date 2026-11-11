@@ -1,0 +1,9 @@
+title: Constellations
+strand: finding-your-way
+order: 5
+summary: "A constellation is a pattern of stars as seen from the Earth, and one of 88 areas the sky is divided into. Its stars are rarely together in space."
+scene: "The constellation figures drawn between their stars, seen from a few light years outside the Solar System, where the nearer stars have already pulled the figures out of shape."
+view: { target: neighbourhood }
+terms: [constellation, zodiac, ecliptic, celestial-sphere, star, light-year]
+needs: [how-big-is-space]
+next: [the-stars-you-can-see]

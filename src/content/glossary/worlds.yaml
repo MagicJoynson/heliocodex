@@ -1,0 +1,227 @@
+# Planets, moons and the small bodies.
+terms:
+  - id: planet
+    term: Planet
+    short: "A body that orbits the Sun, is massive enough to have pulled itself round, and has cleared other bodies from around its orbit."
+    more: "This is the International Astronomical Union's definition of 2006. It gives the Solar System eight."
+    see: [dwarf-planet, terrestrial-planet, gas-giant, ice-giant, exoplanet]
+    lesson: three-kinds-of-planet
+  - id: dwarf-planet
+    term: Dwarf planet
+    short: "A body that orbits the Sun and is round, but shares its orbit with many others."
+    more: "The International Astronomical Union names five: Ceres, Pluto, Haumea, Makemake and Eris. Several more almost certainly qualify."
+    see: [planet, kuiper-belt, trans-neptunian-object]
+  - id: moon
+    term: Moon
+    also: [natural satellite, satellite]
+    short: "A natural body that orbits a planet, a dwarf planet or an asteroid."
+    more: "Written with a capital M it means the Earth's own."
+    see: [regular-moon, irregular-moon, tidal-locking]
+  - id: terrestrial-planet
+    term: Terrestrial planet
+    also: [rocky planet]
+    short: "A planet made mostly of rock and metal with a solid surface: Mercury, Venus, the Earth and Mars."
+    see: [gas-giant, ice-giant, differentiation]
+    lesson: three-kinds-of-planet
+  - id: gas-giant
+    term: Gas giant
+    short: "A very large planet made mostly of hydrogen and helium, with no solid surface: Jupiter and Saturn."
+    see: [ice-giant, terrestrial-planet]
+    lesson: three-kinds-of-planet
+  - id: ice-giant
+    term: Ice giant
+    short: "A large planet made mostly of water, ammonia and methane under a hydrogen and helium atmosphere: Uranus and Neptune."
+    more: "Planetary scientists call those three materials ices because of where they freeze, not because they are frozen. Inside the planets they are hot, dense fluids."
+    see: [gas-giant, frost-line]
+    lesson: three-kinds-of-planet
+  - id: atmosphere
+    term: Atmosphere
+    short: "The layer of gas held round a planet or moon by its gravity."
+    see: [greenhouse-effect, magnetosphere]
+  - id: greenhouse-effect
+    term: Greenhouse effect
+    short: "The warming of a planet when gases in its air let sunlight in but hold back the heat trying to leave."
+    more: "It keeps the Earth about 33 °C warmer than it would otherwise be. On Venus it keeps the ground at about 464 °C, hot enough to melt lead."
+    see: [atmosphere, albedo]
+  - id: magnetic-field
+    term: Magnetic field
+    short: "The region round a magnet, or round moving electric charge, in which other magnets and charges feel a force."
+    more: "Planets make theirs with moving, conducting fluid deep inside: liquid iron in the Earth, metallic hydrogen in Jupiter."
+    see: [magnetosphere, plasma]
+  - id: magnetosphere
+    term: Magnetosphere
+    short: "The space round a planet ruled by its own magnetic field, which turns the solar wind aside."
+    more: "Jupiter's is the largest structure in the Solar System after the heliosphere."
+    see: [magnetic-field, solar-wind, aurora]
+  - id: differentiation
+    term: Differentiation
+    short: "The sorting of a young, molten world into layers, with heavy metal sinking to the middle and lighter rock floating above it."
+    more: "It is why the Earth has an iron core, a rocky mantle and a thin crust."
+    see: [terrestrial-planet, accretion]
+    lesson: three-kinds-of-planet
+  - id: impact-crater
+    term: Impact crater
+    also: [crater]
+    short: "A bowl blasted out of a surface by something striking it at many kilometres per second."
+    more: "Counting craters is the main way of telling how old a surface is: the more there are, the longer it has lain undisturbed."
+    see: [regolith, meteorite]
+  - id: regolith
+    term: Regolith
+    short: "The layer of loose dust and broken rock that covers the solid ground of an airless world."
+    more: "The Moon's was made by billions of years of impacts, large and small."
+    see: [impact-crater]
+  - id: cryovolcanism
+    term: Cryovolcanism
+    also: [cryovolcano, ice volcano]
+    short: "Eruptions of water, ammonia or methane in place of molten rock."
+    more: "Enceladus sprays water from cracks near its south pole, found by the Cassini spacecraft in 2005."
+    see: [subsurface-ocean, tidal-heating]
+  - id: subsurface-ocean
+    term: Subsurface ocean
+    short: "A layer of liquid water hidden under the icy crust of a moon or dwarf planet."
+    more: "The evidence is strong for Europa, Ganymede, Callisto, Enceladus and Titan."
+    see: [tidal-heating, cryovolcanism]
+  - id: ring-system
+    term: Ring system
+    also: [rings]
+    short: "A flat disc of countless small pieces of ice or rock in orbit round a planet."
+    more: "All four giant planets have one. Saturn's main rings are about 280,000 km across and mostly only about 10 metres thick."
+    see: [roche-limit, shepherd-moon]
+  - id: shepherd-moon
+    term: Shepherd moon
+    short: "A small moon whose gravity keeps the edge of a ring sharp or holds a narrow ring together."
+    more: "Prometheus and Pandora orbit on either side of Saturn's thin F ring."
+    see: [ring-system]
+  - id: regular-moon
+    term: Regular moon
+    short: "A moon on a near-circular orbit close to its planet's equator, going the same way as the planet spins."
+    more: "Such moons formed in place, from a disc round the young planet."
+    see: [irregular-moon, prograde]
+  - id: irregular-moon
+    term: Irregular moon
+    short: "A small moon on a wide, tilted and often backwards orbit."
+    more: "Irregular moons were almost certainly captured. They make up most of the moons of Jupiter and Saturn by number."
+    see: [regular-moon, retrograde, hill-sphere]
+  - id: asteroid
+    term: Asteroid
+    also: [minor planet]
+    short: "A small body of rock or metal in orbit round the Sun."
+    more: "Most are leftovers from the building of the planets."
+    see: [asteroid-belt, trojan, meteoroid]
+  - id: asteroid-belt
+    term: Asteroid belt
+    also: [main belt]
+    short: "The region between the orbits of Mars and Jupiter where most known asteroids are found."
+    more: "It is mostly empty space. Everything in it together has about 3% of the mass of the Moon."
+    see: [asteroid, resonance]
+  - id: trojan
+    term: Trojan
+    short: "An asteroid that shares a planet's orbit, keeping about 60° ahead of it or behind."
+    more: "Jupiter has many thousands. They gather round the Lagrange points called L4 and L5."
+    see: [lagrange-point, asteroid]
+  - id: comet
+    term: Comet
+    short: "A small body of ice, dust and rock that grows a cloud of gas and a tail when it comes near the Sun."
+    see: [coma, comet-tail, kuiper-belt, oort-cloud]
+  - id: coma
+    term: Coma
+    short: "The thin cloud of gas and dust around the solid heart of an active comet."
+    more: "It can grow wider than a planet, round a nucleus only a few kilometres across."
+    see: [comet, comet-tail]
+  - id: comet-tail
+    term: Comet tail
+    short: "Gas and dust pushed off a comet by sunlight and the solar wind."
+    more: "A tail always points away from the Sun, whichever way the comet is travelling."
+    see: [comet, coma, solar-wind]
+  - id: kuiper-belt
+    term: Kuiper belt
+    short: "A wide ring of icy bodies beyond Neptune, from about 30 to about 50 au from the Sun."
+    more: "Pluto is its best known member."
+    see: [trans-neptunian-object, dwarf-planet, oort-cloud]
+  - id: trans-neptunian-object
+    term: Trans-Neptunian object
+    also: [TNO]
+    short: "Any small body whose orbit lies, on average, beyond Neptune's."
+    see: [kuiper-belt, dwarf-planet]
+  - id: oort-cloud
+    term: Oort cloud
+    short: "A vast, thin shell of icy bodies thought to surround the Solar System out to tens of thousands of au."
+    more: "Nothing has ever been seen in it. It is worked out from the orbits of comets that fall in from every direction."
+    see: [comet, kuiper-belt, heliopause]
+  - id: meteoroid
+    term: Meteoroid
+    short: "A piece of rock or metal in space, smaller than an asteroid: anything from a grain of dust to a boulder."
+    see: [meteor, meteorite]
+  - id: meteor
+    term: Meteor
+    also: [shooting star]
+    short: "The streak of light made when a meteoroid burns up in the air."
+    see: [meteoroid, meteorite]
+  - id: meteorite
+    term: Meteorite
+    short: "A piece of a meteoroid or asteroid that has survived the fall and reached the ground."
+    see: [meteor, meteoroid]
+  - id: protoplanetary-disc
+    term: Protoplanetary disc
+    also: [protoplanetary disk]
+    short: "The flat, spinning disc of gas and dust round a newborn star, out of which its planets grow."
+    see: [accretion, frost-line]
+    lesson: three-kinds-of-planet
+  - id: accretion
+    term: Accretion
+    short: "Growth by gathering: dust sticking into pebbles, pebbles into boulders, and so on up to planets."
+    see: [protoplanetary-disc, differentiation]
+  - id: frost-line
+    term: Frost line
+    also: [snow line, ice line]
+    short: "The distance from a young star beyond which it is cold enough for water to freeze into solid grains."
+    more: "In the young Solar System it is thought to have lain between where Mars and Jupiter are now, which goes a long way to explaining why the giants are outside it."
+    see: [protoplanetary-disc, ice-giant, gas-giant]
+    lesson: three-kinds-of-planet
+  - id: exoplanet
+    term: Exoplanet
+    also: [extrasolar planet]
+    short: "A planet that orbits a star other than the Sun."
+    more: "The first found round a Sun-like star was 51 Pegasi b, in 1995."
+    see: [transit, habitable-zone]
+  - id: habitable-zone
+    term: Habitable zone
+    short: "The range of distances from a star at which a planet with a suitable atmosphere could keep liquid water on its surface."
+    more: "Being in it is no promise of anything. Venus sits near the inner edge of the Sun's."
+    see: [exoplanet, greenhouse-effect]
+  - id: meteor-shower
+    term: Meteor shower
+    short: "A night or more with many meteors, all seeming to come from one part of the sky, as the Earth passes through dust left along a comet's orbit."
+    see: [meteor, comet, meteoroid]
+    lesson: falling-rocks
+  - id: near-earth-object
+    term: Near-Earth object
+    also: [NEO, near-Earth asteroid]
+    short: "An asteroid or comet whose orbit brings it close to the Earth's."
+    more: "More than 35,000 are known. None of the large ones is on course to hit the Earth in the next century or more."
+    see: [asteroid, comet, impact-crater]
+    lesson: falling-rocks
+  - id: planetesimal
+    term: Planetesimal
+    short: "One of the bodies, from about a kilometre to hundreds of kilometres across, that planets were built from."
+    more: "Asteroids and comets are planetesimals that were never used."
+    see: [accretion, protoplanetary-disc, asteroid]
+    lesson: how-the-planets-formed
+  - id: hot-jupiter
+    term: Hot Jupiter
+    short: "A giant planet that orbits very close to its star, with a year lasting only a few days."
+    more: "The Solar System has nothing like one. They probably formed further out and moved inwards."
+    see: [exoplanet, gas-giant, frost-line]
+    lesson: planets-round-other-stars
+  - id: super-earth
+    term: Super-Earth
+    short: "A planet bigger than the Earth but smaller than Neptune."
+    more: "Planets in this range are among the commonest known, yet the Solar System has none. The larger ones, with thick gas round them, are often called sub-Neptunes."
+    see: [exoplanet, terrestrial-planet, ice-giant]
+    lesson: planets-round-other-stars
+  - id: biosignature
+    term: Biosignature
+    short: "Something we could measure from a distance that would be hard to explain without life."
+    more: "Oxygen and methane together in a planet's air is one example. None has been confirmed anywhere but the Earth."
+    see: [exoplanet, habitable-zone, atmosphere]
+    lesson: are-we-alone

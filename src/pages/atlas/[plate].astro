@@ -1,0 +1,133 @@
+---
+import Reading from '../../layouts/Reading.astro';
+import Plate, { type Drawn } from '../../components/atlas/Plate.astro';
+import { allBodies } from '../../data/bodies/index';
+import type { KeplerOrbit } from '../../lib/v2/atlas/types';
+import { plates, type Figure } from '../../lib/v2/atlas/plates';
+import { canPlace, fitsOn, topView, fmtDays, fmtKm, lineOf, LOOSE_FIT_DEG, markOf, sortIntoFamilies, tiltDeg } from '../../lib/v2/atlas/chart';
+import { julianDate } from '../../lib/v2/atlas/kepler';
+import '../../styles/atlas.css';
+
+export function getStaticPaths() {
+  return Object.keys(plates).map((plate) => ({ params: { plate } }));
+}
+
+const spec = plates[Astro.params.plate as string];
+const built = new Date();
+const jd = julianDate(built);
+const drawnFor = `Orbits as they lie in ${built.toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' })}`;
+
+const moons: (Drawn & { tiltUnknown?: boolean })[] = allBodies
+  .filter((b) => b.parent === spec.parent && b.orbit.type === 'kepler')
+  .map((b) => ({ id: b.id, name: b.name, orbit: b.orbit as KeplerOrbit, seen: b.seen, meanRadiusKm: b.meanRadiusKm, tilt: tiltDeg(b.orbit as KeplerOrbit, spec.parent, jd), discovered: b.discovered, tiltUnknown: b.orientationUnknown }));
+const families = sortIntoFamilies(moons, spec.families, spec.parent, jd);
+const inFigure = (f: Figure) => { const p = topView(spec.parent, f.spanKm, 440, f.view); return f.families.flatMap((id) => families.get(id) ?? []).filter((m) => fitsOn(p, m.orbit, jd)); };
+const year = new Map(allBodies.map((b) => [b.id, b.discovered?.year]));
+
+const SEEN = { filled: 'Mapped by spacecraft', half: 'Partly seen by spacecraft', open: 'Seen only as a point of light' } as const;
+const parentName = spec.parent[0].toUpperCase() + spec.parent.slice(1);
+const unmeasured = moons.filter((m) => !m.meanRadiusKm).length;
+const backwards = moons.filter((m) => m.tilt > 90).length;
+const loose = moons.filter((m) => lineOf(m.orbit) === 'dashed').length;
+const stale = moons.filter((m) => m.orbit.fit && m.orbit.fit.to < built.getUTCFullYear());
+const fitted = moons.filter((m) => m.orbit.fit);
+const unplaced = moons.filter((m) => !canPlace(m.orbit)).length;
+const parentBody = allBodies.find((b) => b.id === spec.parent);
+const views = new Set(spec.figures.map((f) => f.view ?? 'equator'));
+const count = (n: number, one: string, many: string) => (n === 1 ? `1 ${one}` : `${n} ${many}`);
+
+// what the script needs to place the dots: orbits without the fit report
+const data = {
+  parent: spec.parent,
+  parentOrbit: parentBody?.orbit.type === 'kepler' ? parentBody.orbit : undefined,
+  figures: spec.figures.map((f) => ({ id: f.id, spanKm: f.spanKm, view: f.view, ids: inFigure(f).map((m) => m.id), adrift: inFigure(f).every((m) => m.tiltUnknown) || undefined })),
+  orbits: Object.fromEntries(moons.map((m) => { const { fit: _fit, ...o } = m.orbit; return [m.id, o]; })),
+};
+---
+<Reading title={`${spec.title} · Atlas`} path={`/atlas/${spec.parent}`} description={spec.parent === 'earth' ? `A chart of the Moon’s path round the Earth, drawn to scale from above, with where the Moon is today.` : `A chart of ${moons.length === 1 ? 'the one known moon' : moons.length === 2 ? 'the two known moons' : `all ${moons.length} known moons`} of ${parentName}, drawn to scale from above, with where each one is today.`}>
+  <header class="reading-head">
+    <p class="label">Atlas · {parentName}</p>
+    <h1>{spec.title}</h1>
+    <p class="lead">{spec.lead}</p>
+  </header>
+
+  {spec.figures.map((f) => (
+    <section class="row figure-row" id={`figure-${f.id}`}>
+      <div class="hang">
+        {spec.figures.length > 1 && <p class="label">Drawing {f.numeral}</p>}
+        <h2>{f.title}</h2>
+        <p class="note">{f.caption}</p>
+        <p class="note scale">The edge of the drawing is {fmtKm(f.spanKm)} from the centre of {parentName}.</p>
+      </div>
+      <figure class="plate-holder">
+        <Plate spec={spec} figure={f} bodies={inFigure(f)} jd={jd} drawnFor={drawnFor} />
+      </figure>
+    </section>
+  ))}
+
+  <section class="row key-row">
+    <div class="hang"><h2>How to read it</h2></div>
+    <div class="prose key">
+      <p>{spec.viewNote ? spec.viewNote : views.has('equator') && views.has('ecliptic') ? `The close-in drawings look straight down on ${parentName}’s north pole. The drawing of the outer moons looks down on the plane of the planets instead, because that is the plane those moons keep to.` : views.has('ecliptic') ? 'You are looking straight down on the plane of the planets, from its north side.' : `You are looking straight down on ${parentName}’s north pole.`} {parentName} is drawn to scale with the orbits. The moons are not: at this scale most would be far too small to see, so each is a dot.</p>
+      {spec.caution && <p>{spec.caution}</p>}
+      <noscript><p><strong>The dots are missing</strong> because scripts are off. The orbits and the list are complete without them.</p></noscript>
+      <ul class="plain-list key-list">
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot filled"><circle r="5" /></g></svg><span><strong>Solid dot.</strong> A spacecraft has mapped the whole surface.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot half"><circle r="5" /><path d="M0 -5A5 5 0 0 0 0 5Z" /></g></svg><span><strong>Half dot.</strong> A spacecraft has seen part of it.</span></li>
+        <li><svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class="dot open"><circle r="5" /></g></svg><span><strong>Ring.</strong> Never seen as more than a point of light.</span></li>
+        <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Pale line.</strong> Goes round the usual way, the way the planets go round the Sun: anticlockwise on these drawings.</span></li>
+        {backwards > 0 && <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit back solid"><path class="line" d="M2 8H42" /></g></svg><span><strong>Amber line.</strong> Goes round backwards. {count(backwards, 'moon does', 'moons do')}.</span></li>}
+        {loose > 0 && <li><svg viewBox="0 0 44 16" class="key-line" aria-hidden="true"><g class="orbit fwd dashed"><path class="line" d="M2 8H42" /></g></svg><span><strong>Broken line.</strong> {loose > unplaced && `The moon can be more than ${LOOSE_FIT_DEG}° from where we draw it. ${count(loose - unplaced, 'orbit is', 'orbits are')} like this. The pull of the Sun and of other moons keeps changing these paths, and a simple orbit cannot follow them exactly.`}{unplaced > 0 && ` For ${count(unplaced, 'moon', 'moons')} we have no run of positions to fit an orbit to, so ${unplaced === 1 ? 'it has' : 'they have'} a line and no dot.`}</span></li>}
+      </ul>
+      <p>{unmeasured > 0 && (moons.length === 1 ? 'Nobody has measured its size. ' : unmeasured === moons.length ? `Nobody has measured the size of ${moons.length === 2 ? 'either' : 'any of them'}. ` : `Nobody has measured the size of ${unmeasured} of the ${moons.length}. `)}{fitted.length > 0 && `${fitted.length === 1 ? 'The orbit' : 'Each orbit'} is a slowly turning ellipse fitted to positions from NASA’s Jet Propulsion Laboratory for the years 2000 to ${Math.max(...fitted.map((m) => m.orbit.fit!.to))}.`}{stale.length > 0 && ` JPL’s record of ${stale.map((m) => m.name).join(' and ')} ends in ${stale[0].orbit.fit!.to}, so its place today is that orbit run forward, and nothing can yet check it.`}{fitted.length > 0 && ' The list gives how far out each fit can be.'} Touch a row to pick out its orbit.</p>
+      <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
+    </div>
+  </section>
+
+  {spec.families.map((fam) => {
+    const list = families.get(fam.id) ?? [];
+    return (
+      <section class="row family-row" id={`family-${fam.id}`}>
+        <div class="hang">
+          <h2>{fam.name}</h2>
+          <p class="label">{list.length === 1 ? '1 moon' : `${list.length} moons`}</p>
+          <p class="note">{fam.note}</p>
+        </div>
+        <table class="moons">
+          <thead>
+            <tr><th scope="col">Moon</th><th scope="col">Orbit size</th><th scope="col">One orbit</th><th scope="col">Tilt</th><th scope="col">Width</th><th scope="col">Found</th><th scope="col"><span class="vh">See it in 3D</span></th></tr>
+          </thead>
+          <tbody>
+            {list.map((m) => (
+              <tr id={m.id} data-body={m.id}>
+                <th scope="row">
+                  <svg viewBox="-8 -8 16 16" class="key-dot" aria-hidden="true"><g class:list={['dot', markOf(m.seen)]}><circle r="5" />{markOf(m.seen) === 'half' && <path d="M0 -5A5 5 0 0 0 0 5Z" />}</g></svg>
+                  <span class="nm">{m.name}</span>
+                  <span class="vh">. {SEEN[markOf(m.seen)]}.</span>
+                  {m.orbit.fit ? <span class="fit">drawn to within {m.orbit.fit.worstDeg < 1 ? Math.max(0.01, m.orbit.fit.worstDeg).toFixed(2) : Math.round(m.orbit.fit.worstDeg)}°{m.orbit.fit.to < built.getUTCFullYear() && ` up to ${m.orbit.fit.to}, run forward since`}</span> : <span class="fit">no positions to place it by yet</span>}
+                </th>
+                <td data-label="Orbit size">{fmtKm(m.orbit.aKm)}</td>
+                <td data-label="One orbit">{fmtDays(m.orbit.periodDays)}</td>
+                <td data-label="Tilt">{m.tiltUnknown ? <span class="unknown">not known</span> : `${m.tilt < 10 ? m.tilt.toFixed(1) : Math.round(m.tilt)}°`}</td>
+                <td data-label="Width">{m.meanRadiusKm ? fmtKm(m.meanRadiusKm * 2) : <span class="unknown">not measured</span>}</td>
+                <td data-label="Found">{year.get(m.id) ?? ''}</td>
+                <td class="go">{canPlace(m.orbit) && <a href={`/v2?go=${m.id}`} aria-label={`Fly to ${m.name} in 3D`}>Fly there</a>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    );
+  })}
+
+  <section class="row sources-row">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <ul>{spec.sources.map((s) => <li><a href={s.url}>{s.label}</a></li>)}</ul>
+      <p>Orbit size is the average distance from the centre of {parentName}. {spec.tiltNote ?? `Tilt is measured from ${parentName}’s equator for the close moons and from the plane of the planets for the far ones, and above 90° means the moon goes round backwards.`} {spec.families.length > 3 && 'The families of outer moons are groups on similar orbits. Where one family ends and the next begins is not agreed, and the lines here are ours.'}</p>
+    </div>
+  </section>
+
+  <script type="application/json" id="plate-data" set:html={JSON.stringify(data)} />
+  <script>import '../../lib/v2/atlas/live';</script>
+</Reading>

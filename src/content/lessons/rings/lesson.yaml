@@ -1,0 +1,9 @@
+title: Rings
+strand: planets
+order: 4
+summary: "All four giant planets have rings. They are countless separate pieces of ice and rock, each on its own orbit, and astonishingly thin."
+scene: "Saturn's rings from far off, then closer and closer until the smooth sheet breaks up into separate tumbling lumps of ice."
+view: { target: saturn, distanceKm: 400000, highlight: [rings] }
+terms: [ring-system, roche-limit, shepherd-moon, resonance, tide, occultation, orbit]
+needs: [what-an-orbit-is, tides]
+next: []

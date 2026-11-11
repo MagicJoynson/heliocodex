@@ -1,0 +1,9 @@
+title: "Balance points: where gravity holds things still"
+strand: gravity-and-orbits
+order: 6
+summary: "Near any two orbiting bodies there are five places where a small object can keep station. Telescopes are parked at two of them, and asteroids gather at two more."
+scene: "The Sun and Earth with the five balance points marked, the Webb telescope circling one, and then Jupiter's orbit with its two swarms of asteroids."
+view: { target: earth, distanceKm: 5000000, highlight: [lagrange-points] }
+terms: [lagrange-point, hill-sphere, trojan, orbital-period, gravity, barycentre]
+needs: [what-gravity-is, keplers-laws]
+next: []

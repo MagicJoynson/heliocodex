@@ -1,0 +1,11 @@
+---
+import Base from './Base.astro';
+import '../styles/reading.css';
+interface Props { title: string; description: string; path: string }
+const { title, description, path } = Astro.props;
+---
+<Base title={title} description={description} path={path}>
+  <article class="reading">
+    <slot />
+  </article>
+</Base>

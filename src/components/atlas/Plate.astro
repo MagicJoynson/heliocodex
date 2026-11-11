@@ -1,0 +1,98 @@
+---
+// One drawing of a plate: a planet seen from above its north pole with the orbits of its moons.
+// Drawn at build time as plain SVG. The dots are left out here and placed by atlas/live.ts,
+// because where a moon is goes out of date within hours and an old dot would be a wrong one.
+import type { KeplerOrbit, Seen } from '../../lib/v2/atlas/types';
+import type { Figure, PlateSpec } from '../../lib/v2/atlas/plates';
+import { canPlace, fmtKm, labelArc, lineOf, markOf, orbitD, pointAt, scaleBar, topView } from '../../lib/v2/atlas/chart';
+import { AU_KM } from '../../lib/v2/atlas/sun';
+
+/** `line` and `placed` are worked out from the orbit's fit unless the page says otherwise. */
+export interface Drawn { id: string; name: string; orbit: KeplerOrbit; seen: Seen; meanRadiusKm?: number; tilt: number; line?: 'solid' | 'dashed'; placed?: boolean }
+interface Props { spec: PlateSpec; figure: Figure; bodies: Drawn[]; jd: number; drawnFor: string; summary?: string }
+const { spec, figure, bodies, jd, drawnFor } = Astro.props;
+
+const p = topView(spec.parent, figure.spanKm, 440, figure.view, figure.centreKm);
+const [ox, oy] = p.origin.map((v) => +v.toFixed(1));
+const planetR = Math.max(1.4, spec.equatorKm / p.kmPerUnit);
+const rings = spec.rings.map((r) => ({ ...r, mid: (r.innerKm + r.outerKm) / 2 / p.kmPerUnit, width: (r.outerKm - r.innerKm) / p.kmPerUnit })).filter((r) => (!r.only || r.only === figure.id) && r.mid > planetR + 2 && r.mid - r.width / 2 < 486 + Math.hypot(ox, oy));
+const other = figure.marks ? spec.figures.find((f) => f.id === figure.marks) : undefined;
+const square = other ? other.spanKm / p.kmPerUnit : 0;
+// the other drawing may itself be off-centre
+const inset = other ? [ox + (other.centreKm?.[0] ?? 0) / p.kmPerUnit, oy + (other.centreKm?.[1] ?? 0) / p.kmPerUnit] : [0, 0];
+const inAu = figure.unit === 'au';
+const bar = scaleBar(inAu ? p.kmPerUnit / AU_KM : p.kmPerUnit, 240);
+const barLabel = inAu ? `${bar.km.toLocaleString('en-GB')} au` : fmtKm(bar.km);
+const leaders = bodies.filter((b) => figure.leaders?.[b.id]).map((b) => { const l = figure.leaders![b.id]; const [x, y] = pointAt(p, b.orbit, jd, l.at); return { b, x, y, tx: l.to[0], ty: l.to[1] }; });
+const dotR = (b: Drawn) => (bodies.length > 40 ? 2.4 : (b.meanRadiusKm ?? 0) >= 1000 ? 6.5 : (b.meanRadiusKm ?? 0) >= 40 ? 4.4 : 3.2);
+// fewer points for the crowd of outer orbits, which are large, smooth curves
+const crowd = bodies.length > 40;
+const steps = bodies.length > 150 ? 72 : crowd ? 96 : 180;
+const named = bodies.filter((b) => figure.names[b.id] !== undefined);
+const parentName = spec.parent[0].toUpperCase() + spec.parent.slice(1);
+const summary = Astro.props.summary ?? `${figure.title}. ${parentName} seen from above, with the ${bodies.length === 1 ? 'orbit of 1 moon' : `orbits of ${bodies.length} moons`} drawn to scale. Every moon is in the list below.`;
+---
+<svg class="plate" data-figure={figure.id} viewBox="-500 -500 1000 1000" role="img" aria-label={summary}>
+  <rect class="frame" x="-494" y="-494" width="988" height="988" />
+  <rect class="frame thin" x="-486" y="-486" width="972" height="972" />
+
+  <defs>
+    {bodies.map((b) => <path id={`o-${figure.id}-${b.id}`} d={orbitD(p, b.orbit, jd, steps, crowd)} />)}
+  </defs>
+  <g class="orbits">
+    {bodies.map((b) => (
+      <a href={`#${b.id}`} tabindex="-1" data-body={b.id} class:list={['orbit', b.tilt > 90 ? 'back' : 'fwd', b.line ?? lineOf(b.orbit)]}>
+        <use class="hit" href={`#o-${figure.id}-${b.id}`} />
+        <use class="line" href={`#o-${figure.id}-${b.id}`} />
+      </a>
+    ))}
+  </g>
+
+  <clipPath id={`clip-${spec.parent}-${figure.id}`}><rect x="-486" y="-486" width="972" height="972" /></clipPath>
+  <g clip-path={`url(#clip-${spec.parent}-${figure.id})`}>
+    {rings.map((r) => <circle class:list={['ring', { faint: r.faint }]} cx={ox} cy={oy} r={r.mid.toFixed(1)} stroke-width={Math.max(0.8, r.width).toFixed(1)} />)}
+  </g>
+  <circle class="planet" cx={ox} cy={oy} r={planetR.toFixed(1)} />
+  {other && (
+    <g class="inset-mark">
+      <rect x={inset[0] - square} y={inset[1] - square} width={square * 2} height={square * 2} />
+      <text x={inset[0] + square + 6} y={inset[1] - square + 4}>{other.numeral}</text>
+    </g>
+  )}
+
+  <g class="dots" data-dots>
+    {bodies.filter((b) => b.placed ?? canPlace(b.orbit)).map((b) => (
+      <g data-dot={b.id} class:list={['dot', markOf(b.seen)]}>
+        <circle r={dotR(b)} />
+        {markOf(b.seen) === 'half' && <path d={`M0 ${-dotR(b)}A${dotR(b)} ${dotR(b)} 0 0 0 0 ${dotR(b)}Z`} />}
+      </g>
+    ))}
+  </g>
+
+  <g class="names">
+    {named.map((b) => (
+      <>
+        <path id={`nm-${figure.id}-${b.id}`} class="namepath" d={labelArc(p, b.orbit, jd, figure.names[b.id], b.name.length * 26 + 60)} />
+        <text class="name" dy="-7" data-body={b.id}><textPath href={`#nm-${figure.id}-${b.id}`} startOffset="50%" text-anchor="middle">{b.name}</textPath></text>
+      </>
+    ))}
+    {leaders.map((l) => (
+      <>
+        <path class="leader" d={`M${l.x.toFixed(1)} ${l.y.toFixed(1)}L${l.tx} ${l.ty}`} />
+        <text class="name" x={l.tx + (l.tx >= l.x ? 7 : -7)} y={l.ty + 6} text-anchor={l.tx >= l.x ? 'start' : 'end'} data-body={l.b.id}>{l.b.name}</text>
+      </>
+    ))}
+  </g>
+
+  <g class="sunward" data-sunward style="display:none">
+    <path d="M-26 0H0M-8 -5L0 0L-8 5" />
+    <text text-anchor="middle">Sun</text>
+  </g>
+
+  <text x="-462" y="-446"><tspan class="numeral">{figure.numeral}</tspan><tspan class="title" dx="16">{figure.title}</tspan></text>
+  <g class="bar" transform="translate(-462 458)">
+    <path d={`M0 -7V0H${bar.units.toFixed(1)}V-7M${(bar.units / 2).toFixed(1)} -4V0`} />
+    <text x={(bar.units + 12).toFixed(1)} y="1">{barLabel}</text>
+  </g>
+  <text class="when" x="462" y="459" text-anchor="end" data-when>{drawnFor}</text>
+</svg>

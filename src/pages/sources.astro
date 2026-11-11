@@ -17,6 +17,7 @@ const plates = bodies.flatMap((b) => {
   return out;
 });
 const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.name, url: `https://nssdc.gsfc.nasa.gov/planetary/factsheet/${b.slug}fact.html` }));
+import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places, D3_CELESTIAL } from '../lib/v2/atlas/places';
 ---
 <Base title="Sources" path="/sources" description="Where every number, map and photograph on Heliocodex comes from, and which parts are drawn rather than photographed.">
   <article class="ledger">
@@ -59,6 +60,32 @@ const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.n
       </div>
     </section>
 
+    <section class="entry" id="photographs">
+      <h2>Photographs in the lessons</h2>
+      <div class="entry-body">
+        <p>Where a real picture of something exists, the lessons show it and say so beside it. The black holes in M87 and at the centre of our galaxy are by the <a href="https://eventhorizontelescope.org/">Event Horizon Telescope Collaboration</a>, from <a href="https://www.eso.org/public/images/eso1907a/">ESO</a> (<a href="https://www.eso.org/public/images/eso2208-eht-mwa/">and here</a>). The jet of M87 is by <a href="https://esahubble.org/images/opo0020a/">The Hubble Heritage Team (STScI/AURA) and NASA/ESA</a>. All three are shared under a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0</a> licence. They have been made smaller for the web, and the first is cropped square.</p>
+      </div>
+    </section>
+
+    <section class="entry" id="beyond">
+      <h2>Beyond the Solar System</h2>
+      <div class="entry-body">
+        <p>The <a href="/v2">3D view</a> can leave the planets behind and go out as far as the oldest light. What it shows on the way is built from four sets of measurements:</p>
+        <ul class="drawn-list">
+          <li><span>The stars</span> About 109,000 stars, each at its measured distance, from the <a href={HYG.url}>HYG star database, version 4.4</a>, put together by David Nash from the Hipparcos, Yale and Gliese catalogues. It is shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0</a> licence. Our star file, <a href="/data/deep/stars.bin">stars.bin</a>, is made from it and is shared under the same licence. It keeps each star’s place, brightness and colour and leaves out the stars whose distance is unknown or too great to trust.</li>
+          <li><span>Nearby galaxies</span> About a hundred galaxies in and around the Local Group, with their places, distances and brightness, from <a href={MCCONNACHIE.url}>McConnachie 2012</a>, “The observed properties of dwarf galaxies in and around the Local Group”, Astronomical Journal 144, 4.</li>
+          <li><span>The cosmic web</span> About 43,000 galaxies from the <a href={TWO_MRS.url}>2MASS Redshift Survey</a> (Huchra and others 2012, Astrophysical Journal Supplement 199, 26). Where each one is on the sky is measured. How far away it is has been worked out here from how fast it is moving away, taking 70 km a second for every megaparsec. Inside a cluster that smears galaxies into streaks pointing at us, which are not real.</li>
+          <li><span>The oldest light</span> the nine-year map of the cosmic microwave background from NASA’s WMAP spacecraft (<a href={WMAP.url}>NASA / WMAP Science Team</a>).</li>
+        </ul>
+        <p>The lines that join stars into constellation figures are not measurements. They are one modern convention for drawing the figures, taken from <a href={D3_CELESTIAL.url}>d3-celestial</a> by Olaf Frohn (copyright 2015, shared under the <a href="/data/deep/constellations.LICENSE.txt">BSD 3-Clause licence</a>). Each end of a line was matched here to a star in the catalogue above.</p>
+        <p>Some of what you fly past out there is a model and not a map, because nobody has seen it from outside or, for the Oort cloud, at all:</p>
+        <ul class="drawn-list">
+          {places.filter((p) => p.model).map((p) => <li><span>{p.name}</span> {p.drawn}</li>)}
+        </ul>
+        <p>The Codex in the 3D view says the same thing at each of these places.</p>
+      </div>
+    </section>
+
     <section class="entry">
       <h2>Saturn’s rings</h2>
       <div class="entry-body">
@@ -97,7 +124,7 @@ const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.n
     <section class="entry small">
       <h2>Type and code</h2>
       <div class="entry-body">
-        <p>Each page has its own typeface, all free under the SIL Open Font Licence and served from this site through <a href="https://fontsource.org/">Fontsource</a>: Spectral, IBM Plex, Fraunces, Archivo, Bodoni Moda, Source Serif, Libre Caslon, Newsreader, Young Serif, Literata, Bevan, Libre Franklin, Italiana, EB Garamond, Instrument Serif and Big Shoulders. The site is built with <a href="https://astro.build/">Astro</a> and draws in 3D with <a href="https://threejs.org/">three.js</a>, both under the MIT licence.</p>
+        <p>Each page has its own typeface, all free under the SIL Open Font Licence and served from this site through <a href="https://fontsource.org/">Fontsource</a>: Spectral, IBM Plex, Fraunces, Archivo, Bodoni Moda, Source Serif, Libre Caslon, Newsreader, Young Serif, Literata, Bevan, Libre Franklin, Italiana, EB Garamond, Instrument Serif, Big Shoulders and Inter. The site is built with <a href="https://astro.build/">Astro</a> and draws in 3D with <a href="https://threejs.org/">three.js</a>, both under the MIT licence.</p>
         <p>Heliocodex is an independent project. It is not connected to NASA, JPL, Solar System Scope or any of the missions named here.</p>
       </div>
     </section>
