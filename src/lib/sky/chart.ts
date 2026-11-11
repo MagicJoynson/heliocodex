@@ -117,7 +117,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   }
 
   // names are placed at the end, most important first, and one that would sit on another is left out
-  const wanted: { text: string; x: number; y: number; font: string; colour: string; centred: boolean; rank: number; endAt?: number; must?: number }[] = [];
+  const wanted: { text: string; x: number; y: number; font: string; colour: string; centred: boolean; rank: number; endAt?: number; must?: number; back?: number }[] = [];
   // fainter stars come in as the view closes in, so a wide view is not a blur of dots
   const faintest = Math.max(4.6, Math.min(6.5, 2.1 + 1.7 * Math.log10(S))), grow = Math.max(0.8, Math.min(1.5, Math.sqrt(S / 300)));
   const dim = 1 - 0.8 * day;
@@ -175,9 +175,9 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   }
   if (shown.names) {
     const figureFont = `italic 300 ${Math.max(12, Math.min(17, S / 22))}px ${SERIF}`, starFont = `400 ${Math.max(9.5, Math.min(11.5, S / 34))}px ${MONO}`;
-    const named = S > 260 ? 2.7 : 1.6;
+    const named = S > 260 ? 2.7 : 2.1;
     for (const l of labels) if (onScreen(l.x, l.y, -20)) wanted.push({ text: l.name, x: l.x, y: l.y, font: figureFont, colour: `rgba(${INK},.5)`, centred: true, rank: 3 });
-    for (const s of marks) if (s.kind === 'star' && s.name && (s.mag ?? 9) < named) wanted.push({ text: s.name.toUpperCase(), x: s.x + s.r + 6, y: s.y + 1, font: starFont, colour: `rgba(${INK},.72)`, centred: false, rank: 2 + (s.mag ?? 0) / 10 });
+    for (const s of marks) if (s.kind === 'star' && s.name && (s.mag ?? 9) < named) wanted.push({ text: s.name.toUpperCase(), x: s.x + s.r + 6, y: s.y + 1, font: starFont, colour: `rgba(${INK},.72)`, centred: false, rank: 2 + (s.mag ?? 0) / 10, back: 2 * (s.r + 6) });
   }
 
   // ---- planets
@@ -268,6 +268,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     // a planet or the Moon is always named: if the name will not go on the usual side it is tried on the other, then above and below
     const dotX = l.must === undefined ? 0 : l.x - l.must, spots: [number, number][] = [[first, l.y]];
     if (l.must !== undefined) spots.push([dotX + l.must, l.y], [dotX - l.must - wide, l.y], [dotX - wide / 2, l.y - l.must - 6], [dotX - wide / 2, l.y + l.must + 6]);
+    // a star's name goes to its left when there is no room on the right
+    if (l.back !== undefined) spots.push([l.x - l.back - wide, l.y]);
     const boxOf = ([x, y]: [number, number]): [number, number, number, number] => [x - 3, y - 8, x + wide + 3, y + 8];
     const inside = ([x, y]: [number, number]) => x > 6 && x + wide < w - 6 && y > 12 && y < h - 12 && !below(x, y) && !below(x + wide, y);
     const free = (b: [number, number, number, number]) => !taken.some((t) => b[0] < t[2] && b[2] > t[0] && b[1] < t[3] && b[3] > t[1]);
