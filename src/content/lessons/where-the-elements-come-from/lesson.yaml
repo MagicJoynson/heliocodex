@@ -1,0 +1,9 @@
+title: Where the elements come from
+strand: stars
+order: 10
+summary: "The first minutes of the universe made hydrogen and helium. Almost every other kind of atom, in the Earth and in you, was made by a star."
+scene: "The first minutes leaving only hydrogen and helium, nuclei joining inside a star, real photographs of the ways stars hand their atoms back, and a chart of where each element was made."
+view: { target: milky-way }
+terms: [nuclear-fusion, hydrogen, helium, big-bang-nucleosynthesis, planetary-nebula, supernova, neutron-star, gravitational-wave]
+needs: [how-stars-live-and-die]
+next: [supernovae, the-first-minutes]
