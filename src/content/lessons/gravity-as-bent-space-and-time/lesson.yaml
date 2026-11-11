@@ -1,0 +1,9 @@
+title: Gravity as bent space and time
+strand: gravity-and-orbits
+order: 9
+summary: "Einstein's second idea: mass bends space and time, and what we call gravity is things following that bend. It has passed every test for more than a century."
+scene: "Space bending round the Sun and a planet following the bend, the slow turning of Mercury's orbit, the real photograph from 1919 that showed starlight bent, and two clocks at different heights."
+view: { target: sun }
+terms: [gravity, perihelion, ellipse, solar-eclipse, corona, black-hole, gravitational-wave, speed-of-light]
+needs: [what-gravity-is, space-and-time-are-not-fixed]
+next: [gravity-as-a-lens, gravitational-waves]

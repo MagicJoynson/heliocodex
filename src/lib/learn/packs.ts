@@ -85,7 +85,7 @@ export const PACKS: Pack[] = [
       { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
-    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
+    coming: ['Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
     look: [{ href: '/?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
@@ -97,8 +97,9 @@ export const PACKS: Pack[] = [
       { title: 'The idea', about: 'What gravity is, and why an orbit is a fall that never lands.', lessons: ['what-gravity-is', 'what-an-orbit-is', 'keplers-laws'] },
       { title: 'What it does', about: 'Tides, moons kept in step, and places where pulls balance.', lessons: ['tides', 'moons-in-step', 'balance-points'] },
       { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['leaving-and-arriving', 'gravitational-waves'] },
+      { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed', 'gravity-as-bent-space-and-time', 'gravity-as-a-lens'] },
     ],
-    coming: ['Space and time are not fixed', 'Gravity as bent space and time', 'Gravity as a lens', 'How a rocket works'],
+    coming: ['How a rocket works'],
     look: [{ href: '/', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
   },
   {
@@ -110,8 +111,9 @@ export const PACKS: Pack[] = [
       { title: 'What light carries', about: 'The only messenger we have from almost everywhere.', lessons: ['light-the-only-messenger', 'the-whole-spectrum'] },
       { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight'] },
       { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'measuring-distance', 'the-distance-ladder'] },
+      { title: 'Beyond light', about: 'Particles and ripples that bring news light cannot.', lessons: ['messengers-other-than-light'] },
     ],
-    coming: ['Messengers other than light', 'Telescopes in space', 'Redshift and the Doppler effect'],
+    coming: ['Telescopes in space', 'Redshift and the Doppler effect'],
     look: [{ href: '/sources', text: 'Where the pictures come from', about: 'Every photograph on the site, with who took it and how.' }],
   },
   {
@@ -133,11 +135,11 @@ export const PACKS: Pack[] = [
     blurb: 'Planets round other stars, the places nearer home where there may be water, and the oldest question of all.',
     photo: { src: `${P}pale-blue-dot-voyager.jpg`, width: 1100, height: 1088, alt: 'A dark picture crossed by faint bands of light, with one tiny pale speck in the right-hand band.', caption: 'The only world known to have life, from 6 billion km away: the pale speck in the right-hand band of light. Voyager 1, 14 February 1990. Credit: NASA/JPL-Caltech.' },
     stages: [
-      { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'the-kinds-of-planet-out-there', 'trappist-1'] },
+      { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'the-kinds-of-planet-out-there', 'trappist-1'] },
       { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'ocean-moons'] },
       { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
     ],
-    coming: ['How planets are found', 'The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
+    coming: ['The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
     look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];

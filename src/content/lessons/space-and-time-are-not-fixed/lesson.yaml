@@ -1,0 +1,9 @@
+title: Space and time are not fixed
+strand: gravity-and-orbits
+order: 8
+summary: "Light always travels at the same speed, whoever measures it. To make that true, moving clocks have to run slow, and nothing can go faster than light."
+scene: "A thrown ball and a beam of light leaving a moving ship, a clock made of bouncing light that slows as it moves, the satellites whose clocks prove it every day, and the speed nothing can reach."
+view: { target: earth }
+terms: [speed-of-light, photon, mass, orbit, orbital-velocity, nuclear-fusion]
+needs: [light-the-only-messenger]
+next: [gravity-as-bent-space-and-time, gravitational-waves]

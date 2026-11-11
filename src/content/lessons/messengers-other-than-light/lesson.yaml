@@ -1,0 +1,9 @@
+title: Messengers other than light
+strand: light
+order: 5
+summary: "Three other things reach the Earth from deep space: neutrinos, cosmic rays and ripples in space itself. Each brings news that light cannot."
+scene: "A real photograph of the neutrino telescope at the South Pole, drawings of neutrinos passing through the Earth, the detector under the ice to scale and a cosmic ray shower, and photographs of two events caught in more than one way."
+view: { target: milky-way }
+terms: [neutrino, gravitational-wave, supernova, neutron-star, blazar, magnetic-field, speed-of-light]
+needs: [light-the-only-messenger]
+next: [gravitational-waves, supernovae]

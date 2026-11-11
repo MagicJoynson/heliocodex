@@ -1,0 +1,9 @@
+title: Gravity as a lens
+strand: gravity-and-orbits
+order: 10
+summary: "A galaxy's gravity bends the light passing it, so it can stretch, copy and brighten whatever lies behind. Astronomers use it as a telescope."
+scene: "Real Hubble photographs of far galaxies stretched into arcs, a ring and four copies of one quasar, with drawings of how the light is bent and how a passing star gives away its planet."
+view: { target: milky-way }
+terms: [gravitational-lensing, galaxy-cluster, quasar, dark-matter, look-back-time, arcsecond, exoplanet]
+needs: [gravity-as-bent-space-and-time]
+next: [dark-matter-and-dark-energy, planets-round-other-stars]

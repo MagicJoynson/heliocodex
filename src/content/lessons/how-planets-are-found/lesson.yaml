@@ -1,0 +1,9 @@
+title: How planets are found
+strand: other-worlds
+order: 4
+summary: "Four ways of finding a planet round another star: the star's wobble, its dimming, a direct picture, and a flicker of bent light. Each finds a different kind."
+scene: "A count of every known planet by the way it was found, drawings of a star wobbling and dimming, a real picture of a planet beside its star, and the flicker from a planet passing in front of a far star."
+view: { target: neighbourhood }
+terms: [exoplanet, transit, doppler-shift, hot-jupiter, brown-dwarf, gravitational-lensing, density, infrared]
+needs: [planets-round-other-stars]
+next: [trappist-1, gravity-as-a-lens]
