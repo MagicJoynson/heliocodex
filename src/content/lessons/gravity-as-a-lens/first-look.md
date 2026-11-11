@@ -3,6 +3,7 @@ sources:
   - { label: "ESA/Hubble, The last of the Frontier Fields: Abell 370 (2017)", url: "https://esahubble.org/images/heic1711a/" }
   - { label: "ESA/Hubble, Hubble captures a “lucky” galaxy alignment (2011)", url: "https://esahubble.org/images/potw1151a/" }
   - { label: "ESA/Hubble, Seeing quadruple (2012)", url: "https://esahubble.org/images/potw1204a/" }
+  - { label: "Huchra and others, 2237+0305: a new and unusual gravitational lens (1985). Redshifts 0.039 and 1.695", url: "https://ui.adsabs.harvard.edu/abs/1985AJ.....90..691H" }
   - { label: "ESA/Hubble, Hubble finds the most distant star ever seen (2022)", url: "https://esahubble.org/news/heic2203/" }
   - { label: "NASA, Roman Space Telescope: microlensing", url: "https://science.nasa.gov/mission/roman-space-telescope/microlensing/" }
   - { label: "NASA Exoplanet Archive, planets by discovery method (counted 11 November 2026)", url: "https://exoplanetarchive.ipac.caltech.edu/" }
@@ -13,7 +14,7 @@ Here is how that happens. Mass bends the space round it, and light crossing that
 
 When the far galaxy, the near one and the Earth sit almost exactly in a line, the light comes round every side at once and the far galaxy is drawn out into a ring. This one is called the Cosmic Horseshoe. The orange galaxy in the middle has about ten times the mass of the Milky Way. The blue ring is a galaxy far behind it, seen as it was about 3 billion years after the Big Bang.
 
-When the line-up is a little off, the ring breaks into separate copies. The four bright dots here are one single quasar, the blazing centre of a far galaxy, seen four times over. Its light has been travelling for around 11 billion years. The faint glow in the middle is the galaxy doing the bending, some ten times nearer.
+When the line-up is a little off, the ring breaks into separate copies. The four bright dots here are one single quasar, the blazing centre of a far galaxy, seen four times over. Its light set out about 10 billion years ago. The faint glow in the middle is the galaxy doing the bending, whose light has taken only about half a billion years to get here.
 
 Bending the light also gathers it. Light that was heading wide of the Earth is turned towards us, so the thing behind looks brighter than it has any right to. In 2022 Hubble picked out a single star, nicknamed Earendel, whose light set out 12.9 billion years ago. A cluster of galaxies in front of it makes it look a thousand times brighter or more. Without that, no telescope could have seen it.
 

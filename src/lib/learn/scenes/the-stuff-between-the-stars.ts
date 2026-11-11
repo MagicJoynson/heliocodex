@@ -24,7 +24,7 @@ const lanes = photoScene({
 // ---- 2. how empty
 const AIR = (() => { const r = rng(5); return Array.from({ length: 900 }, () => [r(), r(), r()] as [number, number, number]); })();
 const empty: Scene = {
-  caption: 'Two cubes one centimetre across. The one on the left is full of air and holds about ten million million million atoms, far more than can be drawn. The one on the right is an average piece of the space between the stars and holds about one. A drawing of the idea.',
+  caption: 'Two cubes one centimetre across. The one on the left is full of air and holds about 25 million million million molecules, far more than can be drawn. The one on the right is an average piece of the space between the stars and holds about one atom. A drawing of the idea.',
   stillAt: 3,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.3);
@@ -36,7 +36,7 @@ const empty: Scene = {
       label(ctx, i ? 'Between the stars' : 'Air', cx, y + s + 18, { align: 'center', colour: i ? ACCENT : SOFT });
       label(ctx, i ? 'About 1 atom' : '10,000,000,000,000,000,000', cx, y + s + 36, { align: 'center', size: w > 560 ? 11 : 9 });
     });
-    say('Emptier than any vacuum made on the Earth', 'One atom where the air has ten million million million');
+    say('Emptier than any vacuum made on the Earth', 'One atom, against 25 million million million in air');
   },
 };
 
