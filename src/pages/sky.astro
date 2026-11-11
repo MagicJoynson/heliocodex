@@ -1,0 +1,263 @@
+---
+// The sky above the visitor, now: every star the eye can see, the planets, the Moon and the
+// constellation figures, worked out in the page for their place and time.
+import Base from '../layouts/Base.astro';
+import '../styles/reading.css';
+import { CITIES } from '../lib/sky/cities';
+---
+<Base title="The sky tonight" path="/sky" description="The whole sky above you at this moment: the stars, the planets, the Moon and the constellations, worked out for where you are.">
+  <article class="sky reading">
+    <header class="reading-head">
+      <p class="label">The sky tonight</p>
+      <h1>Look up</h1>
+      <p class="lead" id="sky-lead">This is the whole sky above you, with the point overhead in the middle and the horizon round the edge.</p>
+    </header>
+
+    <div class="sky-main">
+      <div class="sky-chart">
+        <canvas id="sky-canvas" role="img" aria-label="A round chart of the sky. The list under the chart says what is up."></canvas>
+        <p class="sky-hold" id="sky-hold">Fetching the stars…</p>
+      </div>
+
+      <aside class="sky-side">
+        <section class="sky-card" id="sky-card" aria-live="polite">
+          <p class="label">Touch a star</p>
+          <p class="sky-card-text">Touch or click any bright star, a planet or the Moon to find out what it is.</p>
+        </section>
+
+        <form class="sky-controls" id="sky-controls">
+          <div class="field">
+            <label class="label" for="sky-place">Where</label>
+            <select id="sky-place">
+              {CITIES.map(([name], i) => <option value={i}>{name}</option>)}
+              <option value="here" hidden>Where I am</option>
+              <option value="typed" hidden>The place typed below</option>
+            </select>
+            <button type="button" id="sky-here">Use where I am</button>
+            <p class="hint" id="sky-place-note"></p>
+            <details>
+              <summary>Type a latitude and longitude</summary>
+              <div class="pair">
+                <label>Latitude, north is plus <input id="sky-lat" type="number" min="-90" max="90" step="0.01" inputmode="decimal" /></label>
+                <label>Longitude, east is plus <input id="sky-lon" type="number" min="-180" max="180" step="0.01" inputmode="decimal" /></label>
+              </div>
+            </details>
+          </div>
+
+          <div class="field">
+            <label class="label" for="sky-shift">When</label>
+            <p class="sky-time" id="sky-time"></p>
+            <input id="sky-shift" type="range" min="-720" max="720" step="5" value="0" aria-label="Earlier or later, up to twelve hours either way" />
+            <div class="row-buttons">
+              <button type="button" data-step="-1440">A day back</button>
+              <button type="button" id="sky-now">Now</button>
+              <button type="button" data-step="1440">A day on</button>
+            </div>
+          </div>
+
+          <fieldset class="field">
+            <legend class="label">Show</legend>
+            <label class="tick"><input type="checkbox" id="sky-figures" checked /> Constellation figures</label>
+            <label class="tick"><input type="checkbox" id="sky-names" checked /> Names</label>
+            <label class="tick"><input type="checkbox" id="sky-path" checked /> The path of the Sun and planets</label>
+          </fieldset>
+        </form>
+      </aside>
+    </div>
+
+    <section class="row">
+      <div class="hang"><h2>Up now</h2></div>
+      <div class="prose" id="sky-list"><p>Working it out…</p></div>
+    </section>
+
+    <section class="row">
+      <div class="hang"><h2>How to read it</h2></div>
+      <div class="prose">
+        <p>Hold the chart over your head, or picture yourself lying on your back with your head to the north. The middle of the circle is the point straight above you. The edge is the horizon. East is on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down.</p>
+        <p>A bigger dot is a brighter star.  The colours are real: blue-white stars are the hottest and orange ones the coolest.</p>
+        <p>Things near the edge are low in the sky and may be hidden by houses, trees or haze.</p>
+      </div>
+    </section>
+
+    <section class="row small">
+      <div class="hang"><h2>How it is worked out</h2></div>
+      <div class="prose">
+        <p>Nothing here is looked up from a service. The page works out the sky itself from your place and the time on your device.</p>
+        <ul>
+          <li>Stars: places, distances, brightness and colour from the HYG star database, the same file the 3D view uses.</li>
+          <li>Planets and the Sun: orbits from NASA/JPL Solar System Dynamics, the same sums as the rest of this site.</li>
+          <li>The Moon: the largest terms of the series in Jean Meeus, <cite>Astronomical Algorithms</cite>, chapter 47.</li>
+          <li>Constellation figures: from d3-celestial by Olaf Frohn.</li>
+        </ul>
+        <p>Checked against NASA's JPL Horizons service, the planets land within a fifth of a degree and the Moon within a tenth. A fifth of a degree is less than half the width of the full Moon. If you use "where I am", your position stays on your device. See <a href="/sources">Sources</a> for the files and their licences.</p>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<script>
+  import { draw, load, wayOf, heightOf, PLANET_NAMES, type Mark, type SkyData } from '../lib/sky/chart';
+  import { moment } from '../lib/sky/place';
+  import { CITIES, guess } from '../lib/sky/cities';
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const canvas = $<HTMLCanvasElement>('sky-canvas'), ctx = canvas.getContext('2d')!;
+  const place = $<HTMLSelectElement>('sky-place'), shift = $<HTMLInputElement>('sky-shift');
+  const lat = $<HTMLInputElement>('sky-lat'), lon = $<HTMLInputElement>('sky-lon');
+  const card = $('sky-card'), list = $('sky-list'), timeEl = $('sky-time'), note = $('sky-place-note');
+  const nf = (n: number, d = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d });
+
+  let data: SkyData | null = null, marks: Mark[] = [], picked: Mark | null = null;
+  let where = { name: '', lat: 0, lon: 0 }, dayShift = 0, size = 0;
+
+  function setPlace(name: string, la: number, lo: number, why: string): void {
+    where = { name, lat: la, lon: lo };
+    lat.value = la.toFixed(2); lon.value = lo.toFixed(2);
+    note.textContent = why;
+    render();
+  }
+  const when = () => new Date(Date.now() + (Number(shift.value) + dayShift) * 60000);
+
+  function fit(): void {
+    const box = canvas.parentElement!.getBoundingClientRect(), ratio = Math.min(devicePixelRatio || 1, 2);
+    size = Math.floor(box.width);
+    canvas.style.height = `${size}px`;
+    canvas.width = Math.round(size * ratio); canvas.height = Math.round(size * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function render(): void {
+    const t = when();
+    timeEl.textContent = `${t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}, ${t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}${Number(shift.value) + dayShift === 0 ? ' (now)' : ''}`;
+    if (!data || !size) return;
+    const m = moment(t, where.lat, where.lon);
+    marks = draw(ctx, size, data, m, { figures: $<HTMLInputElement>('sky-figures').checked, names: $<HTMLInputElement>('sky-names').checked, path: $<HTMLInputElement>('sky-path').checked }, picked);
+    if (picked) { const again = marks.find((k) => k.id === picked!.id); if (again) show(again); }
+    upNow();
+  }
+
+  const el = (tag: string, text?: string, cls?: string) => { const e = document.createElement(tag); if (text) e.textContent = text; if (cls) e.className = cls; return e; };
+  const whereabouts = (k: Mark) => `${heightOf(k.altDeg)} in the ${wayOf(k.azDeg)}`;
+
+  function show(k: Mark): void {
+    picked = k;
+    const parts: HTMLElement[] = [el('p', k.kind === 'star' ? 'A star' : k.kind === 'planet' ? 'A planet' : k.kind === 'moon' ? 'Our moon' : 'Our star', 'label')];
+    parts.push(el('h2', k.name || 'A star with no common name'));
+    const lines: string[] = [`It is ${whereabouts(k)}, ${nf(k.altDeg)}° above the horizon.`];
+    if (k.kind === 'star') {
+      const year = when().getFullYear() - Math.round(k.ly!);
+      lines.push(`It is ${nf(k.ly!, k.ly! < 100 ? 1 : 0)} light years away. The light reaching you now left it ${year > 0 ? `in about ${year}` : `about ${nf(Math.round(k.ly!))} years ago`}.`);
+      lines.push(k.suns! >= 1.5 ? `It gives out about ${nf(k.suns!, k.suns! < 10 ? 1 : 0)} times as much visible light as the Sun.` : k.suns! > 0.67 ? 'It gives out about as much visible light as the Sun.' : `It gives out about ${nf(k.suns! * 100)} per cent of the Sun's visible light.`);
+      lines.push(`Brightness as seen from here: magnitude ${k.mag!.toFixed(1).replace('-', '−')}. Smaller numbers are brighter.`);
+    } else if (k.kind === 'planet') {
+      lines.push(`It is ${nf(k.au! * 149.5978707, k.au! < 1 ? 1 : 0)} million km from the Earth at this moment, and its light takes ${nf(k.au! * 8.3168, k.au! < 3 ? 1 : 0)} minutes to arrive.`);
+      if (k.id === 'uranus' || k.id === 'neptune') lines.push('It is too faint to see without binoculars or a telescope.');
+    } else if (k.kind === 'moon') {
+      lines.push(`${nf(k.lit! * 100)} per cent of its face is lit. It is ${nf(Math.round(k.km! / 100) * 100)} km from you.`);
+    } else lines.push('Never look straight at the Sun.');
+    for (const l of lines) parts.push(el('p', l, 'sky-card-text'));
+    const go = document.createElement('p'); go.className = 'sky-card-links';
+    const link = (href: string, text: string) => { const a = document.createElement('a'); a.href = href; a.textContent = text; go.append(a); };
+    if (k.kind === 'star') link(`/v2?go=star:${k.index}`, 'Fly to it in 3D');
+    if (k.kind === 'planet') { link(`/${k.id}`, `About ${PLANET_NAMES[k.id]}`); link(`/v2?go=${k.id}`, 'Fly to it in 3D'); }
+    if (k.kind === 'moon') link('/v2?go=moon', 'Fly to it in 3D');
+    if (k.kind === 'sun') link('/sun', 'About the Sun');
+    if (go.childElementCount) parts.push(go);
+    card.replaceChildren(...parts);
+  }
+
+  function upNow(): void {
+    const planets = marks.filter((k) => k.kind === 'planet'), moon = marks.find((k) => k.kind === 'moon'), sun = marks.find((k) => k.kind === 'sun');
+    const stars = marks.filter((k) => k.kind === 'star' && k.name && k.mag! < 1.6 && k.altDeg > 5).sort((a, b) => a.mag! - b.mag!).slice(0, 8);
+    const out: HTMLElement[] = [];
+    if (sun && sun.altDeg > 0) out.push(el('p', `The Sun is up, ${whereabouts(sun)}, so the stars are hidden by daylight. The chart shows what is behind the blue. Move the time on to tonight to see your night sky.`));
+    const eye = planets.filter((k) => k.id !== 'uranus' && k.id !== 'neptune' && k.altDeg > 3);
+    out.push(el('p', eye.length ? `Planets you can see by eye: ${eye.map((k) => `${k.name}, ${whereabouts(k)}`).join('; ')}.` : 'No planet bright enough to see by eye is above the horizon at this moment.'));
+    out.push(el('p', moon && moon.altDeg > 0 ? `The Moon is up, ${whereabouts(moon)}, with ${nf(moon.lit! * 100)} per cent of its face lit.` : 'The Moon is below the horizon.'));
+    if (stars.length) out.push(el('p', `Brightest stars: ${stars.map((k) => `${k.name}, ${whereabouts(k)}`).join('; ')}.`));
+    list.replaceChildren(...out);
+  }
+
+  function pick(e: PointerEvent): void {
+    const b = canvas.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+    let best: Mark | null = null, gap = 26;
+    for (const k of marks) {
+      // planets and the Moon win over a star beside them
+      const d = Math.hypot(k.x - x, k.y - y) - (k.kind === 'star' ? 0 : 8) + (k.kind === 'star' ? (k.mag ?? 5) * 1.5 : 0);
+      if (d < gap) { gap = d; best = k; }
+    }
+    if (best) { show(best); render(); }
+  }
+
+  // ---- wiring
+  place.addEventListener('change', () => {
+    const i = Number(place.value);
+    if (!Number.isNaN(i)) setPlace(CITIES[i][0], CITIES[i][1], CITIES[i][2], '');
+  });
+  $('sky-here').addEventListener('click', () => {
+    if (!navigator.geolocation) { note.textContent = 'This device cannot say where it is. Choose a city or type a position.'; return; }
+    note.textContent = 'Asking your device…';
+    navigator.geolocation.getCurrentPosition(
+      (p) => { place.querySelector<HTMLOptionElement>('option[value="here"]')!.hidden = false; place.value = 'here'; setPlace('Where you are', p.coords.latitude, p.coords.longitude, 'Using your own position. It stays on this device.'); },
+      () => { note.textContent = 'Your device would not share its position. Choose a city or type a position instead.'; },
+      { maximumAge: 600000, timeout: 15000 },
+    );
+  });
+  for (const input of [lat, lon]) input.addEventListener('change', () => {
+    const la = Number(lat.value), lo = Number(lon.value);
+    if (lat.value === '' || lon.value === '' || Math.abs(la) > 90 || Math.abs(lo) > 180) return;
+    place.querySelector<HTMLOptionElement>('option[value="typed"]')!.hidden = false; place.value = 'typed';
+    setPlace('The place you typed', la, lo, '');
+  });
+  shift.addEventListener('input', render);
+  $('sky-now').addEventListener('click', () => { shift.value = '0'; dayShift = 0; render(); });
+  for (const b of document.querySelectorAll<HTMLButtonElement>('#sky-controls [data-step]')) b.addEventListener('click', () => { dayShift += Number(b.dataset.step); render(); });
+  for (const id of ['sky-figures', 'sky-names', 'sky-path']) $(id).addEventListener('change', render);
+  canvas.addEventListener('pointerup', pick);
+  new ResizeObserver(() => { fit(); render(); }).observe(canvas.parentElement!);
+  setInterval(() => { if (!document.hidden) render(); }, 30000);
+  document.fonts?.ready.then(render);
+
+  const first = guess();
+  place.value = String(first);
+  setPlace(CITIES[first][0], CITIES[first][1], CITIES[first][2], `Guessed from your device's clock. For your exact sky, choose "Use where I am".`);
+
+  // the file is stored brightest first, so its first part holds every star the eye can see
+  const hold = $('sky-hold');
+  load(7200).then((d) => {
+    data = d; hold.remove(); render();
+  }).catch(() => { hold.textContent = 'The stars could not be fetched. Check your connection and load the page again.'; });
+</script>
+
+<style>
+  .sky-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); gap: clamp(24px, 4vw, 56px); align-items: start; margin-bottom: clamp(40px, 6vw, 80px); }
+  .sky-chart { position: relative; max-width: min(100%, calc(100svh - var(--header-h) - 2rem)); width: 100%; justify-self: center; }
+  .sky-chart canvas { display: block; width: 100%; touch-action: manipulation; cursor: crosshair; }
+  .sky-hold { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: italic 300 1.1rem var(--r-serif); color: var(--ink-faint); }
+  .sky-side { display: grid; gap: 2rem; position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  .sky-card { border-top: 1px solid var(--accent); padding-top: 1.1rem; min-height: 11rem; }
+  .sky-card h2 { font: italic 300 clamp(1.7rem, 3vw, 2.3rem)/1.1 var(--r-serif); margin: .5rem 0 .8rem; }
+  .sky-card-text { font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 .55rem; }
+  .sky-card-links { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; margin: 1rem 0 0; font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .sky-card-links a { text-decoration: none; padding: .45rem 0; border-bottom: 1px solid var(--accent); }
+  .sky-controls { display: grid; gap: 1.6rem; }
+  .field { display: grid; gap: .6rem; border: 0; padding: 1.1rem 0 0; margin: 0; border-top: 1px solid var(--rule); min-width: 0; }
+  .field legend { padding: 0; float: left; width: 100%; }
+  .sky select, .sky input[type='number'] { font: 300 1.05rem var(--r-serif); color: var(--ink); background: #131315; border: 1px solid var(--rule); border-radius: 2px; padding: .55rem .6rem; width: 100%; min-height: 44px; }
+  .sky button { font: 400 .72rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--rule); padding: .9rem 0 .6rem; cursor: pointer; justify-self: start; min-height: 44px; }
+  .sky button:hover { color: var(--accent); border-color: var(--accent); }
+  .hint { font: italic 300 .92rem/1.4 var(--r-serif); color: var(--ink-faint); margin: 0; }
+  .sky details summary { font: 300 .98rem var(--r-serif); color: var(--ink-soft); cursor: pointer; padding: .4rem 0; }
+  .pair { display: grid; gap: .7rem; margin-top: .5rem; }
+  .pair label { display: grid; gap: .3rem; font: 300 .95rem var(--r-serif); color: var(--ink-soft); }
+  .sky-time { font: 300 1.15rem/1.35 var(--r-serif); color: var(--ink); margin: 0; font-variant-numeric: tabular-nums lining-nums; }
+  .sky input[type='range'] { width: 100%; accent-color: #e9c48a; height: 32px; margin: 0; }
+  .row-buttons { display: flex; flex-wrap: wrap; gap: 0 1.6rem; }
+  .tick { display: flex; gap: .6rem; align-items: center; font: 300 1.02rem var(--r-serif); color: var(--ink-soft); min-height: 36px; }
+  .tick input { accent-color: #e9c48a; width: 18px; height: 18px; }
+  @media (max-width: 900px) {
+    .sky-main { grid-template-columns: minmax(0, 1fr); }
+    .sky-side { position: static; }
+    .sky-card { min-height: 0; }
+  }
+</style>

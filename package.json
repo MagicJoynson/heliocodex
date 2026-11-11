@@ -10,6 +10,7 @@
     "check": "astro check",
     "facts": "python3 -I scripts/build-facts.py",
     "test:content": "python3 -I scripts/check-content.py",
+    "test:sky": "rolldown src/lib/sky/sky.test.ts --file node_modules/.cache/sky-test.mjs --platform node --log-level warn && node node_modules/.cache/sky-test.mjs",
     "test:atlas": "rolldown src/lib/v2/atlas/chart.test.ts --file node_modules/.cache/atlas-test.mjs --platform node --log-level warn && node node_modules/.cache/atlas-test.mjs"
   },
   "dependencies": {
