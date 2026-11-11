@@ -6,4 +6,4 @@ scene: "A thrown ball and a beam of light leaving a moving ship, a clock made of
 view: { target: earth }
 terms: [speed-of-light, photon, mass, orbit, orbital-velocity, nuclear-fusion]
 needs: [light-the-only-messenger]
-next: [what-gravity-is, gravitational-waves]
+next: [gravity-as-bent-space-and-time, gravitational-waves]

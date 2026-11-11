@@ -85,7 +85,7 @@ export const PACKS: Pack[] = [
       { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
-    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
+    coming: ['Gravity as a lens', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
     look: [{ href: '/?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
@@ -97,9 +97,9 @@ export const PACKS: Pack[] = [
       { title: 'The idea', about: 'What gravity is, and why an orbit is a fall that never lands.', lessons: ['what-gravity-is', 'what-an-orbit-is', 'keplers-laws'] },
       { title: 'What it does', about: 'Tides, moons kept in step, and places where pulls balance.', lessons: ['tides', 'moons-in-step', 'balance-points'] },
       { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['leaving-and-arriving', 'gravitational-waves'] },
-      { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed'] },
+      { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed', 'gravity-as-bent-space-and-time'] },
     ],
-    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'How a rocket works'],
+    coming: ['Gravity as a lens', 'How a rocket works'],
     look: [{ href: '/', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
   },
   {
