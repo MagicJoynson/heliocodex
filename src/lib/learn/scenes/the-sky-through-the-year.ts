@@ -6,7 +6,7 @@
  * its 26,000 year circle, with Polaris and Thuban at their catalogued places.
  */
 import { type Scene, INK, SOFT, FAINT, ACCENT, label, stars, nf } from '../stage';
-import { TAU, photoScene, globe, sun, dot, line, ring } from '../kit';
+import { photoScene, globe, sun, dot, line, ring } from '../kit';
 
 const backdrop = stars(120, 31);
 const RAD = Math.PI / 180;

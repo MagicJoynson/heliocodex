@@ -4,7 +4,7 @@
  * The hundred dots of air are a count, not a picture of anything.
  */
 import { type Scene, SOFT, ACCENT, clamp, ease, label, stars } from '../stage';
-import { TAU, photoScene, globe, dot, line, ring } from '../kit';
+import { TAU, photoScene, globe, dot, line } from '../kit';
 
 const backdrop = stars(120, 31);
 const MARBLE = '/img/learn/earth-blue-marble-apollo-17.jpg';

@@ -4,7 +4,7 @@
  * width and the length of its year. The lava world is a drawing of something nobody has seen.
  * The picture of PDS 70b is a real one.
  */
-import { type Scene, type Frame, SOFT, ACCENT, clamp, ease, label, stars } from '../stage';
+import { type Scene, type Frame, SOFT, clamp, ease, label, stars } from '../stage';
 import { TAU, photoScene, sun, dot, ring } from '../kit';
 import { planets, PLOTTED } from '../data/exoplanets';
 

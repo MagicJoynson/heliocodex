@@ -4,7 +4,7 @@
  * the swarm of near-Earth objects and the changed orbit are drawings of the idea, not to scale.
  */
 import { type Scene, SOFT, ACCENT, clamp, ease, mix, label, stars, rng } from '../stage';
-import { TAU, photoScene, globe, sun, dot, line, ring } from '../kit';
+import { TAU, photoScene, globe, sun, dot, ring } from '../kit';
 
 const backdrop = stars(130, 47);
 const APL = 'Credit: NASA/Johns Hopkins APL.';
