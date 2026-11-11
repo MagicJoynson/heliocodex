@@ -1,0 +1,9 @@
+title: The oldest light
+strand: the-universe
+order: 4
+summary: "A faint glow of microwaves comes from every direction in the sky. It is the light of the young universe, and its pattern holds the age and make-up of everything."
+scene: "A real photograph of the antenna that found the glow in 1964, drawings of the early fog clearing and of light being stretched, and the real map of the whole sky made by NASA's WMAP spacecraft."
+view: { target: cmb }
+terms: [cosmic-microwave-background, recombination, big-bang, plasma, wavelength, kelvin, dark-matter, dark-energy]
+needs: [the-first-minutes]
+next: [dark-matter-and-dark-energy, the-cosmic-web]
