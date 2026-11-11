@@ -68,10 +68,10 @@ export const PACKS: Pack[] = [
       { title: 'What a star is', about: 'Begin with the one star we can see close up.', lessons: ['what-the-sun-is', 'what-a-star-is', 'how-the-sun-shines'] },
       { title: 'Reading a star', about: 'Colour, brightness and distance: how anything is known about a point of light.', lessons: ['colour-and-brightness', 'reading-starlight', 'measuring-distance'] },
       { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'the-stars-you-can-see', 'double-and-multiple-stars', 'star-clusters'] },
-      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'Stars as measuring sticks', about: 'How certain stars give the distances to other galaxies.', lessons: ['the-distance-ladder'] },
     ],
-    coming: ['Where the elements come from', 'Supernovae', 'Stars that change', 'Brown dwarfs', 'Red dwarfs, the commonest stars', 'Giants and supergiants'],
+    coming: ['Where the elements come from', 'Stars that change', 'Brown dwarfs', 'Red dwarfs, the commonest stars', 'Giants and supergiants'],
     look: [{ href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope, with its distance, colour and place in your sky.' }, { href: '/sky', text: 'Tonight’s sky', about: 'Find the stars from these lessons over your own horizon.' }],
   },
   {
@@ -81,10 +81,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}m87-black-hole-eht.jpg`, width: 1200, height: 1200, alt: 'A blurred orange ring, brighter along its lower edge, round a dark centre.', caption: 'The black hole in the galaxy M87, published on 10 April 2019. A photograph, not a drawing. Credit: EHT Collaboration, CC BY 4.0.' },
     stages: [
       { title: 'What you need first', about: 'Gravity, and why a star cannot last for ever.', lessons: ['what-gravity-is', 'how-stars-live-and-die'] },
-      { title: 'Three ways to end', about: 'Which one a star gets depends only on how heavy it is.', lessons: ['white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
-    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'Supernovae', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
+    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
     look: [{ href: '/?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
