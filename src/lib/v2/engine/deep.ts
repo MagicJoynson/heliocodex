@@ -333,10 +333,12 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   const starsGain = u1(1);
   let stars: THREE.Sprite | null = null;
   let starNames: { i: number; name: string; p: V3; M: number }[] = [];
+  let starF: Float32Array | null = null;
   const ready: Promise<unknown>[] = [];
   const starsBuf = fetch('/data/deep/stars.bin').then((r) => r.arrayBuffer());
   ready.push(Promise.all([starsBuf, fetch('/data/deep/stars.json').then((r) => r.json())]).then(([buf, names]: [ArrayBuffer, [number, string][]]) => {
     const f = new Float32Array(buf);
+    starF = f;
     const n = f.length / 5;
     const pos = new Float32Array(n * 4), col = new Float32Array(n * 3);
     for (let i = 0; i < n; i++) {
@@ -699,7 +701,12 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   function dispose() { root.removeFromParent(); labels.remove(); }
 
   const settled = Promise.allSettled(ready).then((r) => { for (const x of r) if (x.status === 'rejected') console.error('part of the sky beyond the Solar System could not be drawn', x.reason); return r; });
-  return { update, ready: settled, dispose, lgCentre: lgMid };
+  /** Where star n of stars.bin is, in parsecs from the Sun (engine frame), once the catalogue has loaded. */
+  const starAt = (n: number): V3 | null => {
+    if (!starF || !Number.isInteger(n) || n < 0 || n >= starF.length / 5) return null;
+    return [starF[n * 5], starF[n * 5 + 1], starF[n * 5 + 2]];
+  };
+  return { update, ready: settled, dispose, lgCentre: lgMid, starAt };
 }
 
 function smooth(a: number, b: number, x: number) {

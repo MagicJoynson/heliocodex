@@ -537,7 +537,14 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     // far enough out to see the whole sphere the oldest light comes from, 46 billion light years in radius
     cmb: { centre: () => sunPos, dist: ly(110e9), dir: () => norm(add(SUPERGAL_POLE, [0, 0.4, 0])) },
   };
-  const canFlyTo = (id: string) => id in PLACES || id === 'sun' || !!planetPos[id] || !!system.pos(id);
+  // a star of the catalogue, as 'star:<index in stars.bin>': arrive 2,000 au out, on the side facing home,
+  // so the star fills the view and the Sun is a faint point behind it
+  const starOf = (id: string): V3 | null => {
+    const m = /^star:(\d+)$/.exec(id);
+    const p = m ? deep.starAt(Number(m[1])) : null;
+    return p && len(p) > 0 ? scale(p, PC) : null;
+  };
+  const canFlyTo = (id: string) => id in PLACES || id === 'sun' || !!planetPos[id] || !!system.pos(id) || !!starOf(id);
   const engine: Engine = {
     canFlyTo,
     flyTo(view: View, opts) {
@@ -546,7 +553,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       // only now, with somewhere to go, does the flight in progress give way
       if (pendingFly) { pendingFly.reject(abort('replaced by another flight')); pendingFly = null; }
       if (view.timeIso) system.setTime(view.timeIso);
-      const P = PLACES[id];
+      const sp = starOf(id);
+      const P = PLACES[id] ?? (sp ? { centre: () => sp, dist: 2000 * AU, dir: () => norm(add(norm(scale(sp, -1)), [0, 0.15, 0])) } : undefined);
       if (P) {
         focusId = ''; focusHold = 0;
         const from: V3 = [...flight.pos] as V3;

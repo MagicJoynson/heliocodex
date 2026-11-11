@@ -6,8 +6,8 @@
  * Conventions follow src/lib/v2/atlas/types.ts: the site speaks kilometres, degrees and ISO times;
  * the engine converts to metres in doubles internally. Nothing in this file imports three.js.
  *
- * Status (10 Nov 2026): createWorld() implements all of Engine. flyTo takes the Sun, planets,
- * moons and dwarf planets by id; the scale-ladder places come later.
+ * Status (11 Nov 2026): createWorld() implements all of Engine. flyTo takes the Sun, planets,
+ * moons, dwarf planets, the scale-ladder places and catalogue stars ("star:<index in stars.bin>").
  */
 import type { View } from '../atlas/types';
 
