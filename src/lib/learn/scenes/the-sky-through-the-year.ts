@@ -76,7 +76,7 @@ const glow = photoScene({
 // ---- 5. the slow wobble
 const eclip = (lon: number, lat: number, cx: number, cy: number, k: number): [number, number] => [cx + Math.cos(lon * RAD) * (90 - lat) * k, cy - Math.sin(lon * RAD) * (90 - lat) * k];
 const wobble: Scene = {
-  caption: 'The patch of sky the Earth’s axis points to, going once round its circle in about 26,000 years. Polaris and Thuban are at their catalogued places. The years are my own sums from that period and are rough. A drawing.',
+  caption: 'The patch of sky the Earth’s axis points to, going once round its circle in about 26,000 years. Polaris and Thuban are at their catalogued places. The years are worked out here from that period and are rough. A drawing.',
   stillAt: 100,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.5);

@@ -133,11 +133,11 @@ export const PACKS: Pack[] = [
     blurb: 'Planets round other stars, the places nearer home where there may be water, and the oldest question of all.',
     photo: { src: `${P}pale-blue-dot-voyager.jpg`, width: 1100, height: 1088, alt: 'A dark picture crossed by faint bands of light, with one tiny pale speck in the right-hand band.', caption: 'The only world known to have life, from 6 billion km away: the pale speck in the right-hand band of light. Voyager 1, 14 February 1990. Credit: NASA/JPL-Caltech.' },
     stages: [
-      { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'trappist-1'] },
+      { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'the-kinds-of-planet-out-there', 'trappist-1'] },
       { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'ocean-moons'] },
       { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
     ],
-    coming: ['How planets are found', 'The kinds of planet out there', 'The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
+    coming: ['How planets are found', 'The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
     look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];

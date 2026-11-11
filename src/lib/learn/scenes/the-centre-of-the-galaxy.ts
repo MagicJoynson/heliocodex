@@ -35,7 +35,7 @@ const infrared = photoScene({
 // ---- 3. the crowd in the middle
 const crowd = photoScene({
   src: '/img/learn/galactic-centre-stars-naco.jpg',
-  caption: 'A real photograph in infrared light, shown in colours the eye can see: the stars at the very centre of the Milky Way, from the Very Large Telescope in Chile. The picture is about three light years across (my own sum from its width on the sky). Credit: ESO/S. Gillessen et al., CC BY 4.0.',
+  caption: 'A real photograph in infrared light, shown in colours the eye can see: the stars at the very centre of the Milky Way, from the Very Large Telescope in Chile. The picture is about three light years across (worked out here from its width on the sky). Credit: ESO/S. Gillessen et al., CC BY 4.0.',
   say: ['Three light years from side to side', 'Round the Sun, a space this size holds no other star'],
   zoom: [0.92, 1.05],
 });

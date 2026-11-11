@@ -8,7 +8,7 @@ lastChecked: 2026-11-11
 ---
 **Four minutes a night.** The Earth turns once against the stars in 23 hours and 56 minutes, four minutes less than the day on the clock. So each star rises four minutes earlier every night. That is two hours earlier each month, and after twelve months the stars are back where they started. A constellation that rises at midnight in October rises at ten in the evening in November and at eight in December.
 
-**What is up in the evening.** These are for the northern half of the world, looking south an hour or two after dark. They are worked out from where each constellation lies compared with the Sun, which is my own working and not a quoted list.
+**What is up in the evening.** These are for the northern half of the world, looking south an hour or two after dark. They are worked out from where each constellation lies compared with the Sun. The working was done for this lesson and is not a quoted list.
 
 | Season | In the evening sky | Hidden behind the Sun |
 |---|---|---|

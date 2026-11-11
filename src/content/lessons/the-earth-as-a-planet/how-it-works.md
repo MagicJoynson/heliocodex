@@ -31,7 +31,7 @@ The Earth sorted itself into these layers when it was young and molten. The heav
 
 **A surface that moves.** The crust and the top of the mantle are broken into large plates, and the plates move. They go about as fast as a fingernail grows. Where two pull apart, new rock wells up between them, and the longest mountain range on the Earth is one of these seams, running along the floor of the oceans. Where two push together, mountains rise and volcanoes form. This slow movement is why the Earth has so few old craters. The surface is always being remade.
 
-**A football.** In the lesson's opening I said that on an Earth the size of a football the oceans would be a film of damp. Here is the sum, which is my own. A football is about 22 centimetres across and the Earth is 12,756 kilometres. On that scale the sea, at 3.6 kilometres, would be about six hundredths of a millimetre deep, which is about the thickness of a hair.
+**A football.** The opening of this lesson says that on an Earth the size of a football the oceans would be a film of damp. Here is the sum, worked out for this lesson. A football is about 22 centimetres across and the Earth is 12,756 kilometres. On that scale the sea, at 3.6 kilometres, would be about six hundredths of a millimetre deep, which is about the thickness of a hair.
 
 **The magnet.** The field comes from the liquid metal of the outer core, kept stirring by the planet's heat and its spin. It is not fixed. Every so often, on average about every 300,000 years but very unevenly, north and south swap over.
 
