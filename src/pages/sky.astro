@@ -4,16 +4,20 @@
 import Base from '../layouts/Base.astro';
 import '../styles/reading.css';
 import { CITIES } from '../lib/sky/cities';
+import { pageStars } from '../lib/sky/starlist';
+import { SKY_STARS } from '../lib/sky/chart';
+// which of the stars on the chart have a page of their own
+const pages = Object.fromEntries(pageStars().filter((s) => s.index < SKY_STARS).map((s) => [s.index, s.slug]));
 ---
 <Base title="The sky tonight" path="/sky" description="The whole sky above you at this moment: the stars, the planets, the Moon and the constellations, worked out for where you are.">
-  <article class="sky reading">
-    <header class="reading-head">
-      <p class="label">The sky tonight</p>
-      <h1>Look up</h1>
-      <p class="lead" id="sky-lead">This is the whole sky above you, with the point overhead in the middle and the horizon round the edge.</p>
-    </header>
-
+  <article class="sky reading" data-pages={JSON.stringify(pages)}>
     <div class="sky-main">
+      <header class="reading-head sky-head">
+        <p class="label">The sky tonight</p>
+        <h1>Look up</h1>
+        <p class="lead" id="sky-lead">This is the whole sky above you, with the point overhead in the middle and the horizon round the edge.</p>
+      </header>
+
       <div class="sky-chart">
         <canvas id="sky-canvas" role="img" aria-label="A round chart of the sky. The list under the chart says what is up."></canvas>
         <p class="sky-hold" id="sky-hold">Fetching the stars…</p>
@@ -23,6 +27,7 @@ import { CITIES } from '../lib/sky/cities';
         <section class="sky-card" id="sky-card" aria-live="polite">
           <p class="label">Touch a star</p>
           <p class="sky-card-text">Touch or click any bright star, a planet or the Moon to find out what it is.</p>
+          <p class="sky-card-links"><a href="/stars">Meet a star</a></p>
         </section>
 
         <form class="sky-controls" id="sky-controls">
@@ -84,7 +89,7 @@ import { CITIES } from '../lib/sky/cities';
       <div class="prose">
         <p>Nothing here is looked up from a service. The page works out the sky itself from your place and the time on your device.</p>
         <ul>
-          <li>Stars: places, distances, brightness and colour from the HYG star database, the same file the 3D view uses.</li>
+          <li>Stars: places, distances, brightness and colour from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database</a> by David Nash (CC BY-SA 4.0), the same stars the 3D view uses.</li>
           <li>Planets and the Sun: orbits from NASA/JPL Solar System Dynamics, the same sums as the rest of this site.</li>
           <li>The Moon: the largest terms of the series in Jean Meeus, <cite>Astronomical Algorithms</cite>, chapter 47.</li>
           <li>Constellation figures: from d3-celestial by Olaf Frohn.</li>
@@ -99,19 +104,22 @@ import { CITIES } from '../lib/sky/cities';
   import { draw, load, wayOf, heightOf, PLANET_NAMES, type Mark, type SkyData } from '../lib/sky/chart';
   import { moment } from '../lib/sky/place';
   import { CITIES, guess } from '../lib/sky/cities';
+  import { readPlace, keepPlace } from '../lib/sky/remember';
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const canvas = $<HTMLCanvasElement>('sky-canvas'), ctx = canvas.getContext('2d')!;
   const place = $<HTMLSelectElement>('sky-place'), shift = $<HTMLInputElement>('sky-shift');
   const lat = $<HTMLInputElement>('sky-lat'), lon = $<HTMLInputElement>('sky-lon');
   const card = $('sky-card'), list = $('sky-list'), timeEl = $('sky-time'), note = $('sky-place-note');
+  const pages = JSON.parse(document.querySelector<HTMLElement>('.sky')!.dataset.pages!) as Record<string, string>;
   const nf = (n: number, d = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d });
 
   let data: SkyData | null = null, marks: Mark[] = [], picked: Mark | null = null;
   let where = { name: '', lat: 0, lon: 0 }, dayShift = 0, size = 0;
 
-  function setPlace(name: string, la: number, lo: number, why: string): void {
+  function setPlace(name: string, la: number, lo: number, why: string, chosen = true): void {
     where = { name, lat: la, lon: lo };
+    if (chosen) keepPlace(where);
     lat.value = la.toFixed(2); lon.value = lo.toFixed(2);
     note.textContent = why;
     render();
@@ -146,7 +154,9 @@ import { CITIES } from '../lib/sky/cities';
     const lines: string[] = [`It is ${whereabouts(k)}, ${nf(k.altDeg)}° above the horizon.`];
     if (k.kind === 'star') {
       const year = when().getFullYear() - Math.round(k.ly!);
-      lines.push(`It is ${nf(k.ly!, k.ly! < 100 ? 1 : 0)} light years away. The light reaching you now left it ${year > 0 ? `in about ${year}` : `about ${nf(Math.round(k.ly!))} years ago`}.`);
+      // a year is only given where the distance is known well enough to name one
+      const far = Number(k.ly!.toPrecision(2));
+      lines.push(k.ly! < 200 ? `It is ${nf(k.ly!, k.ly! < 100 ? 1 : 0)} light years away. The light reaching you now left it in about ${year}.` : `It is about ${nf(far)} light years away. The light reaching you now left it about ${nf(far)} years ago.`);
       lines.push(k.suns! >= 1.5 ? `It gives out about ${nf(k.suns!, k.suns! < 10 ? 1 : 0)} times as much visible light as the Sun.` : k.suns! > 0.67 ? 'It gives out about as much visible light as the Sun.' : `It gives out about ${nf(k.suns! * 100)} per cent of the Sun's visible light.`);
       lines.push(`Brightness as seen from here: magnitude ${k.mag!.toFixed(1).replace('-', '−')}. Smaller numbers are brighter.`);
     } else if (k.kind === 'planet') {
@@ -158,7 +168,7 @@ import { CITIES } from '../lib/sky/cities';
     for (const l of lines) parts.push(el('p', l, 'sky-card-text'));
     const go = document.createElement('p'); go.className = 'sky-card-links';
     const link = (href: string, text: string) => { const a = document.createElement('a'); a.href = href; a.textContent = text; go.append(a); };
-    if (k.kind === 'star') link(`/v2?go=star:${k.index}`, 'Fly to it in 3D');
+    if (k.kind === 'star') { if (pages[k.index!]) link(`/stars/${pages[k.index!]}`, `Meet ${k.name}`); link(`/v2?go=star:${k.index}`, 'Fly to it in 3D'); }
     if (k.kind === 'planet') { link(`/${k.id}`, `About ${PLANET_NAMES[k.id]}`); link(`/v2?go=${k.id}`, 'Fly to it in 3D'); }
     if (k.kind === 'moon') link('/v2?go=moon', 'Fly to it in 3D');
     if (k.kind === 'sun') link('/sun', 'About the Sun');
@@ -218,23 +228,43 @@ import { CITIES } from '../lib/sky/cities';
   setInterval(() => { if (!document.hidden) render(); }, 30000);
   document.fonts?.ready.then(render);
 
-  const first = guess();
-  place.value = String(first);
-  setPlace(CITIES[first][0], CITIES[first][1], CITIES[first][2], `Guessed from your device's clock. For your exact sky, choose "Use where I am".`);
+  const first = guess(), kept = readPlace();
+  if (kept) {
+    const i = CITIES.findIndex(([name]) => name === kept.name);
+    if (i < 0) place.querySelector<HTMLOptionElement>('option[value="typed"]')!.hidden = false;
+    place.value = i < 0 ? 'typed' : String(i);
+    setPlace(i < 0 ? 'The place you typed' : kept.name, kept.lat, kept.lon, 'The place you chose last time.', false);
+  } else {
+    place.value = String(first);
+    setPlace(CITIES[first][0], CITIES[first][1], CITIES[first][2], `Guessed from your device's clock. For your exact sky, choose "Use where I am".`, false);
+  }
 
-  // the file is stored brightest first, so its first part holds every star the eye can see
   const hold = $('sky-hold');
-  load(7200).then((d) => {
+  load().then((d) => {
     data = d; hold.remove(); render();
+    // a star page can send its star here to be pointed out
+    const asked = new URLSearchParams(location.search).get('star');
+    if (asked && /^\d+$/.test(asked)) {
+      const found = marks.find((k) => k.id === `star:${asked}`), name = d.names.get(Number(asked));
+      if (found) { show(found); render(); }
+      else if (name) card.replaceChildren(el('p', 'A star', 'label'), el('h2', name), el('p', `${name} is below the horizon from ${where.name === 'Where you are' ? 'where you are' : where.name} at this moment. Move the time on, or choose another place, and touch it when it comes up.`, 'sky-card-text'));
+    }
   }).catch(() => { hold.textContent = 'The stars could not be fetched. Check your connection and load the page again.'; });
 </script>
 
 <style>
-  .sky-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); gap: clamp(24px, 4vw, 56px); align-items: start; margin-bottom: clamp(40px, 6vw, 80px); }
-  .sky-chart { position: relative; max-width: min(100%, calc(100svh - var(--header-h) - 2rem)); width: 100%; justify-self: center; }
+  /* on a wide screen the chart stands beside the title, so the whole circle is seen without scrolling */
+  .sky { padding-top: clamp(16px, 2.4vw, 32px); }
+  .sky-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); grid-template-areas: 'chart head' 'chart side'; grid-template-rows: auto 1fr; gap: 1.6rem clamp(24px, 4vw, 56px); align-items: start; margin-bottom: clamp(40px, 6vw, 80px); }
+  .sky-head { grid-area: head; margin: 0; }
+  .sky-head h1 { font-size: clamp(2.4rem, 4.4vw, 3.6rem); margin-bottom: .9rem; }
+  .sky-head .lead { font-size: 1.08rem; }
+  .sky-head .label { margin-bottom: .8rem; }
+  .sky-chart { grid-area: chart; position: sticky; top: calc(var(--header-h) + 1rem); max-width: min(100%, calc(100svh - var(--header-h) - 2rem)); width: 100%; justify-self: center; }
+  .sky-side { grid-area: side; }
   .sky-chart canvas { display: block; width: 100%; touch-action: manipulation; cursor: crosshair; }
   .sky-hold { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: italic 300 1.1rem var(--r-serif); color: var(--ink-faint); }
-  .sky-side { display: grid; gap: 2rem; position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  .sky-side { display: grid; gap: 2rem; }
   .sky-card { border-top: 1px solid var(--accent); padding-top: 1.1rem; min-height: 11rem; }
   .sky-card h2 { font: italic 300 clamp(1.7rem, 3vw, 2.3rem)/1.1 var(--r-serif); margin: .5rem 0 .8rem; }
   .sky-card-text { font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 .55rem; }
@@ -256,8 +286,8 @@ import { CITIES } from '../lib/sky/cities';
   .tick { display: flex; gap: .6rem; align-items: center; font: 300 1.02rem var(--r-serif); color: var(--ink-soft); min-height: 36px; }
   .tick input { accent-color: #e9c48a; width: 18px; height: 18px; }
   @media (max-width: 900px) {
-    .sky-main { grid-template-columns: minmax(0, 1fr); }
-    .sky-side { position: static; }
+    .sky-main { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'chart' 'side'; grid-template-rows: auto; }
+    .sky-chart { position: relative; top: 0; }
     .sky-card { min-height: 0; }
   }
 </style>

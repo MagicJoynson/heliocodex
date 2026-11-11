@@ -186,27 +186,17 @@ export function draw(ctx: CanvasRenderingContext2D, size: number, data: SkyData,
   return marks;
 }
 
-const WAYS = ['north', 'north-east', 'east', 'south-east', 'south', 'south-west', 'west', 'north-west'];
-export const wayOf = (azDeg: number) => WAYS[Math.round(azDeg / 45) % 8];
-export function heightOf(altDeg: number): string {
-  if (altDeg < 10) return 'very low';
-  if (altDeg < 25) return 'low';
-  if (altDeg < 50) return 'about half way up';
-  if (altDeg < 75) return 'high';
-  return 'almost overhead';
-}
+export { wayOf, heightOf } from './words';
 
-/** Fetch the star file. Stars are stored brightest first, so the first part of the file is all the eye can see. */
-export async function load(limit: number): Promise<SkyData> {
-  const bytes = limit * 20;
+/** How many stars the sky map's own file holds. They are stored brightest first, so this is every star the eye can see. */
+export const SKY_STARS = 7200;
+
+/** Fetch the stars the eye can see, their names and the constellation figures. */
+export async function load(): Promise<SkyData> {
   const [bin, names, figures] = await Promise.all([
-    fetch('/data/deep/stars.bin', { headers: { Range: `bytes=0-${bytes - 1}` } }).then((r) => r.arrayBuffer()),
+    fetch('/data/sky/stars.bin').then((r) => r.arrayBuffer()),
     fetch('/data/deep/stars.json').then((r) => r.json() as Promise<[number, string][]>),
     fetch('/data/deep/constellations.json').then((r) => r.json() as Promise<Figure[]>),
   ]);
-  // a server that ignores the range sends the whole file, which is cut down here
-  const stars = new Float32Array(bin.slice(0, Math.min(bin.byteLength, bytes) - (Math.min(bin.byteLength, bytes) % 20)));
-  return { stars, names: new Map(names), figures };
+  return { stars: new Float32Array(bin.slice(0, bin.byteLength - (bin.byteLength % 20))), names: new Map(names), figures };
 }
-
-export type { Vec };
