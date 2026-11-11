@@ -126,7 +126,7 @@ Nothing in these terms takes away any right you have by law that can't be taken 
 
 ## 14. Viruses and security
 
-We don't guarantee that the site is free from viruses or other harmful code, though we take sensible steps to keep it clean and the site doesn't load code from other people's servers. You are responsible for protecting your own devices. We aren't liable for damage caused by a virus or other harmful material that you pick up by using the site or by downloading anything from it, except where the law says we are.
+We don't guarantee that the site is free from viruses or other harmful code, though we take sensible steps to keep it clean and the only code the site loads from anyone else's servers is Cloudflare's visit-counting script, which you can switch off (see the [cookies and storage page](/cookies)). You are responsible for protecting your own devices. We aren't liable for damage caused by a virus or other harmful material that you pick up by using the site or by downloading anything from it, except where the law says we are.
 
 You must not attack the site, for example with a denial-of-service attack or with malicious code. If you do, we may report you to the relevant authorities and give them your details.
 
