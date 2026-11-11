@@ -25,6 +25,7 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
       <nav class="site-nav" aria-label="Main">
         <a href="/#bodies" aria-current={path === '/' ? undefined : undefined}>Bodies</a>
         <a href="/learn" aria-current={path.startsWith('/learn') ? 'page' : undefined}>Learn</a>
+        <a href="/sky" aria-current={path.startsWith('/sky') || path.startsWith('/stars') ? 'page' : undefined}>Sky</a>
         <a href="/atlas" aria-current={path.startsWith('/atlas') ? 'page' : undefined}>Atlas</a>
         <a href="/glossary" aria-current={path === '/glossary' ? 'page' : undefined}>Glossary</a>
         <a href="/sources" aria-current={path === '/sources' ? 'page' : undefined}>Sources</a>
