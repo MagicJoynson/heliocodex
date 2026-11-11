@@ -39,19 +39,19 @@ const gas = photoScene({
 
 // ---- 4. what cannot be seen
 const missing: Scene = {
-  caption: 'The mass of a cluster that can be seen, in its galaxies and its hot gas, beside the mass its gravity shows it must have: about ten times as much. A drawing of the idea; the split between galaxies and gas is only roughly shown.',
+  caption: 'The mass of a cluster that can be seen, in its galaxies and its hot gas, beside the mass its gravity shows it must have: about seven times as much. A drawing of the idea; the split between galaxies and gas is only roughly shown.',
   stillAt: 4,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.4);
-    const x0 = w * 0.1, bw = w * 0.8, y1 = h * 0.16, y2 = h * 0.46, bh = h * 0.1, k = ease(clamp((t - 1) / 2.2, 0, 1)), unit = bw / 11;
+    const x0 = w * 0.1, bw = w * 0.8, y1 = h * 0.16, y2 = h * 0.46, bh = h * 0.1, k = ease(clamp((t - 1) / 2.2, 0, 1)), unit = bw / 7;
     label(ctx, 'What can be seen', x0, y1 - 10, { align: 'left', colour: SOFT });
     ctx.fillStyle = '#e9c48a'; ctx.fillRect(x0, y1, unit * 0.25, bh); ctx.fillStyle = '#d0584a'; ctx.fillRect(x0 + unit * 0.25, y1, unit * 0.75, bh);
     label(ctx, 'Galaxies and hot gas', x0 + unit + 10, y1 + bh * 0.62, { align: 'left' });
     label(ctx, 'What gravity says is there', x0, y2 - 10, { align: 'left', colour: SOFT });
     ctx.fillStyle = '#e9c48a'; ctx.fillRect(x0, y2, unit * 0.25, bh); ctx.fillStyle = '#d0584a'; ctx.fillRect(x0 + unit * 0.25, y2, unit * 0.75, bh);
-    ctx.fillStyle = '#3d4a66'; ctx.fillRect(x0 + unit, y2, unit * 10 * k, bh);
-    if (k > 0.9) label(ctx, 'Dark matter', x0 + unit * 6, y2 + bh + 20, { align: 'center', colour: ACCENT });
-    say('Not enough to hold it together', 'About ten times more mass is there, unseen');
+    ctx.fillStyle = '#3d4a66'; ctx.fillRect(x0 + unit, y2, unit * 6 * k, bh);
+    if (k > 0.9) label(ctx, 'Dark matter', x0 + unit * 4, y2 + bh + 20, { align: 'center', colour: ACCENT });
+    say('Not enough to hold it together', 'About six times more mass is there, unseen');
   },
 };
 

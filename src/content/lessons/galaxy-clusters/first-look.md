@@ -11,7 +11,7 @@ A cluster is the largest thing gravity holds together. The Coma Cluster is more 
 
 The galaxies are not most of it. The space between them is filled with thin gas at 30 to 100 million degrees, far too hot to give out ordinary light. It shines in X-rays. This is an X-ray picture of the gas in another cluster, and that gas holds more matter than all the cluster's galaxies put together.
 
-Even the gas is not most of it. Add up the galaxies and the gas, and there is nowhere near enough gravity to stop the cluster flying apart. About ten times more mass is needed. Whatever supplies it gives out no light of any kind. It is called dark matter, and clusters are where it was first noticed.
+Even the gas is not most of it. Add up the galaxies and the gas, and there is nowhere near enough gravity to stop the cluster flying apart. About six times more mass is needed. Whatever supplies it gives out no light of any kind. It is called dark matter, and clusters are where it was first noticed.
 
 There is a way to weigh a cluster without trusting any of this. Its gravity bends the light of galaxies far behind it into streaks and arcs, and the more mass, the more bending. This cluster, Abell 370, is doing it. The arcs give the same answer: far more mass than can be seen.
 

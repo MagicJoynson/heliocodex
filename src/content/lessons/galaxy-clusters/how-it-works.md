@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "Allen and others, Improved constraints on dark energy from Chandra X-ray observations of the largest relaxed galaxy clusters (2008). Gas about 11 per cent of a cluster's mass", url: "https://arxiv.org/abs/0706.0033" }
   - { label: "Chandra X-ray Observatory, Groups and clusters of galaxies", url: "https://chandra.harvard.edu/xray_sources/galaxy_clusters.html" }
   - { label: "Chandra X-ray Observatory, 1E 0657-56: the Bullet Cluster (2006)", url: "https://chandra.harvard.edu/photo/2006/1e0657/" }
   - { label: "ESA/Hubble, The Coma Galaxy Cluster as seen by Hubble (2008)", url: "https://esahubble.org/images/heic0813a/" }
@@ -9,7 +10,7 @@ lastChecked: 2026-11-11
 |---|---|---|
 | Galaxies | Ordinary light | Hundreds to thousands of them, and the smallest share of the mass |
 | Hot gas between the galaxies | X-rays | More mass than all the galaxies together |
-| Dark matter | Only by its gravity | About ten times more again |
+| Dark matter | Only by its gravity | About six times as much as the galaxies and gas together |
 
 **Why the gas is so hot.** Gas falling into a cluster picks up enormous speed, and when clusters and groups run into each other the gas is squeezed and shocked. All that motion ends up as heat. The gas is very thin, far thinner than the best vacuum on the Earth, but a cluster is so large that there is a great deal of it.
 
