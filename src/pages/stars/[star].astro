@@ -3,7 +3,7 @@
 import Base from '../../layouts/Base.astro';
 import '../../styles/reading.css';
 import { pageStars, type PageStar } from '../../lib/sky/starlist';
-import { LY_PER_PC, temperature, tint, kind, nf, round2, distanceNote, DISTANCE_NOTES } from '../../lib/sky/star';
+import { LY_PER_PC, temperature, tint, kind, nf, round2, distanceNote, DISTANCE_NOTES, MODERN, placing, tidySpect } from '../../lib/sky/star';
 
 export function getStaticPaths() {
   return pageStars().map((star) => ({ params: { star: star.slug }, props: { star } }));
@@ -11,9 +11,9 @@ export function getStaticPaths() {
 const { star } = Astro.props as { star: PageStar };
 const ly = star.distPc * LY_PER_PC, kelvin = Math.round(temperature(star.bv) / 100) * 100, rgb = tint(star.bv).join(',');
 const { colour, stage } = kind(star.spect);
-const doubt = DISTANCE_NOTES[star.slug] ?? distanceNote(star.distPc);
+const modern = MODERN[star.slug], spect = tidySpect(star.spect);
+const doubt = modern?.note ?? DISTANCE_NOTES[star.slug] ?? distanceNote(star.distPc);
 const rank = star.index + 1, byEye = star.appMag <= 6.5, onChart = star.appMag < 4.5;
-const ord = (n: number) => `${n}${n % 100 > 10 && n % 100 < 14 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`;
 const lum = star.lumSun;
 const lumText = lum >= 1.5 ? `${round2(lum)} times as much visible light as the Sun` : lum > 0.67 ? 'about as much visible light as the Sun' : lum >= 0.01 ? `${round2(lum * 100)} per cent of the Sun's visible light` : `one ${round2(1 / lum)}th of the Sun's visible light`;
 const lead = [colour ? `${star.name} is ${colour}` : `${star.name} is a star`, star.constellation ? `, in the constellation ${star.constellation}.` : '.'].join('');
@@ -51,7 +51,7 @@ const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appM
       <div class="hang"><h2>How bright</h2></div>
       <div class="prose">
         <p class="big">{lum >= 1.5 ? `${round2(lum)} Suns` : lum > 0.67 ? 'About one Sun' : `${round2(lum)} of a Sun`}</p>
-        <p>It gives out {lumText}. {rank <= 20 ? `From the Earth it is the ${ord(rank)} brightest star in the night sky.` : rank <= 100 ? 'It is one of the hundred brightest stars in the night sky.' : ''} {sight}</p>
+        <p>It gives out {lumText}. {rank <= 20 ? `From the Earth it is ${placing(rank)} star in the night sky.` : rank <= 100 ? 'It is one of the hundred brightest stars in the night sky.' : ''} {sight}</p>
         <p>Astronomers put its brightness in our sky at magnitude {star.appMag.toFixed(2).replace('-', '−')}. Smaller numbers are brighter, and the faintest stars the eye can see are about 6.</p>
       </div>
     </section>
@@ -59,8 +59,8 @@ const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appM
     <section class="row">
       <div class="hang"><h2>How hot</h2></div>
       <div class="prose">
-        <p class="big">About {nf(kelvin)} K</p>
-        <p>That is the temperature of its surface, worked out from its colour. The Sun's is 5,772 K. Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>
+        <p class="big">{star.bv < -0.05 ? `Hotter than ${nf(Math.floor(kelvin / 1000) * 1000)} K` : `About ${nf(kelvin)} K`}</p>
+        <p>That is the temperature of its surface, worked out from its colour, so it is a guide and not a measurement. {star.bv < -0.05 ? 'For stars as blue as this one, colour is a poor thermometer: most of their light is ultraviolet, which the eye and this sum do not see, and the true figure can be far higher.' : 'It could be out by a few hundred degrees.'} The Sun's is 5,772 K. Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>
         <p class="swatches"><span><i style={`background:rgb(${rgb})`}></i>{star.name}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>
       </div>
     </section>
@@ -79,7 +79,7 @@ const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appM
           {star.catalogue && <div><dt>By constellation</dt><dd>{star.catalogue}</dd></div>}
           {star.hip && <div><dt>Hipparcos catalogue</dt><dd>HIP {star.hip}</dd></div>}
           {star.hd && <div><dt>Henry Draper catalogue</dt><dd>HD {star.hd}</dd></div>}
-          {star.spect && <div><dt>Spectral type</dt><dd>{star.spect}</dd></div>}
+          {spect && <div><dt>Spectral type</dt><dd>{spect}</dd></div>}
         </dl>
       </div>
     </section>
@@ -87,7 +87,7 @@ const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appM
     <section class="row small">
       <div class="hang"><h2>Where this comes from</h2></div>
       <div class="prose">
-        <p>Distance, brightness, colour and spectral type are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. Its distances are those measured by the Hipparcos satellite. The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the words are written for this site.</p>
+        <p>{modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. {modern ? <>The distance is from <a href={modern.url} rel="noopener">{modern.by}</a>, and the light the star gives out is worked out from that distance.</> : 'Its distances are those measured by the Hipparcos satellite.'} The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the words are written for this site.</p>
         <p>To read more: <a href="/learn/colour-and-brightness">Colour and brightness</a>, <a href="/learn/how-stars-live-and-die">How stars live and die</a>, <a href="/learn/measuring-distance">Measuring distance</a>.</p>
       </div>
     </section>
