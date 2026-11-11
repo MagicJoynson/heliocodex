@@ -1,0 +1,9 @@
+title: The Earth as a planet
+strand: planets
+order: 6
+summary: "Seen from outside, the Earth is one rocky planet among four. It is also the only one with seas on its surface, and the only place known to have life."
+scene: "A real photograph of the whole Earth taken on the way to the Moon, the inside of the Earth drawn to scale, how thin the sea and the air really are, and the southern lights seen from orbit."
+view: { target: earth }
+terms: [terrestrial-planet, differentiation, atmosphere, magnetic-field, magnetosphere, aurora, greenhouse-effect]
+needs: [three-kinds-of-planet]
+next: [air-and-the-greenhouse, the-moon, seasons]
