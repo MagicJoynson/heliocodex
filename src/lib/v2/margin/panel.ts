@@ -106,7 +106,9 @@ export function mountMargin(engine: Engine): void {
     const got = pick(ctx, data, who);
     // While real heights are missing the engine stands a generated world in for the real one and says so in the readout.
     const standIn = /^This ground is generated/.test(document.getElementById('gen')?.textContent ?? '');
-    const key = `${got.subject}|${ctx.band}|${ctx.near}|${standIn}`;
+    // the catalogue star the view has flown to, where the engine says so, and its page if it has one
+    const starAt = (ctx as Context & { star?: number }).star, meet = starAt === undefined ? undefined : data.stars?.[starAt];
+    const key = `${got.subject}|${ctx.band}|${ctx.near}|${standIn}|${meet?.[1] ?? ''}`;
     if (key === shownFor) { const d = p.querySelector('.m-dist'); if (d) d.textContent = howFar(ctx); return; }
     shownFor = key;
     const b = who(got.subject), near = who(ctx.near);
@@ -131,6 +133,7 @@ export function mountMargin(engine: Engine): void {
     } else if (near) {
       kids.push(el('p', { class: 'm-what' }, `The nearest world is ${theName(near.id)}.`), el('div', { class: 'm-acts' }, flyButton(near.id, `Go to ${theName(near.id)}`)));
     }
+    if (meet) kids.push(el('p', { class: 'm-what' }, `You are at ${meet[0]}.`), el('div', { class: 'm-acts' }, el('a', { class: 'm-act', href: `/stars/${meet[1]}`, target: '_blank', rel: 'noopener' }, `Meet ${meet[0]}`)));
     kids.push(el('h3', null, 'Worth knowing'));
     kids.push(got.facts.length ? el('ul', null, ...got.facts.map(factItem)) : el('p', { class: 'm-none' }, 'Nothing has been written about this place yet.'));
     if (got.wider.length) kids.push(el('h3', null, b ? 'And round about' : 'Nearby'), el('ul', null, ...got.wider.map(factItem)));

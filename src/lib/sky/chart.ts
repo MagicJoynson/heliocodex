@@ -54,7 +54,7 @@ export function draw(ctx: CanvasRenderingContext2D, size: number, data: SkyData,
   };
   ctx.clearRect(0, 0, size, size);
   // names are placed at the end, most important first, and one that would sit on another is left out
-  const wanted: { text: string; x: number; y: number; font: string; colour: string; centred: boolean; rank: number; endAt?: number }[] = [];
+  const wanted: { text: string; x: number; y: number; font: string; colour: string; centred: boolean; rank: number; endAt?: number; must?: number }[] = [];
   // the faintest star drawn: fewer on a small chart, so a phone is not a blur of dots
   const faintest = Math.min(6.3, 4.4 + size / 420);
 
@@ -134,7 +134,7 @@ export function draw(ctx: CanvasRenderingContext2D, size: number, data: SkyData,
     ctx.strokeStyle = ACCENT; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(px, py, r + 4, 0, Math.PI * 2); ctx.stroke();
     // another planet close on the right: this name goes on the left, so it does not sit on that planet's dot
     const crowded = seen.some((k) => k.id !== id && Math.abs(k.py - py) < 14 && k.px > px && k.px - px < 90);
-    wanted.push({ text: PLANET_NAMES[id], x: px + r + 9, y: py, font: bodyFont, colour: eye ? ACCENT : 'rgba(233,196,138,.7)', centred: false, rank: eye ? 0 : 1, endAt: crowded ? px - r - 9 : undefined });
+    wanted.push({ text: PLANET_NAMES[id], x: px + r + 9, y: py, font: bodyFont, colour: eye ? ACCENT : 'rgba(233,196,138,.7)', centred: false, rank: eye ? 0 : 1, endAt: crowded ? px - r - 9 : undefined, must: r + 9 });
     marks.push({ kind: 'planet', id, name: PLANET_NAMES[id], x: px, y: py, r: r + 4, altDeg: s.altDeg, azDeg: s.azDeg, au: p.au });
   }
 
@@ -151,7 +151,7 @@ export function draw(ctx: CanvasRenderingContext2D, size: number, data: SkyData,
     const k = 1 - 2 * moon.lit;
     ctx.ellipse(0, 0, Math.abs(k) * r, r, 0, Math.PI / 2, -Math.PI / 2, k > 0);
     ctx.fill(); ctx.restore();
-    wanted.push({ text: 'The Moon', x: px + r + 7, y: py, font: bodyFont, colour: `rgb(${INK})`, centred: false, rank: -1 });
+    wanted.push({ text: 'The Moon', x: px + r + 7, y: py, font: bodyFont, colour: `rgb(${INK})`, centred: false, rank: -1, must: r + 7 });
     marks.push({ kind: 'moon', id: 'moon', name: 'The Moon', x: px, y: py, r, altDeg: moon.altDeg, azDeg: moon.azDeg, lit: moon.lit, km: moon.km });
   }
   if (sun.altDeg > -1) {
@@ -165,11 +165,17 @@ export function draw(ctx: CanvasRenderingContext2D, size: number, data: SkyData,
   ctx.textBaseline = 'middle';
   for (const l of wanted.sort((a, b) => a.rank - b.rank)) {
     ctx.font = l.font;
-    const wide = ctx.measureText(l.text).width, x0 = l.endAt !== undefined ? l.endAt - wide : l.centred ? l.x - wide / 2 : l.x, box: [number, number, number, number] = [x0 - 3, l.y - 8, x0 + wide + 3, l.y + 8];
-    if (Math.hypot((box[0] + box[2]) / 2 - c, l.y - c) + wide / 2 > R - 4) continue;
-    if (taken.some((t) => box[0] < t[2] && box[2] > t[0] && box[1] < t[3] && box[3] > t[1])) continue;
-    taken.push(box);
-    ctx.textAlign = 'left'; ctx.fillStyle = l.colour; ctx.fillText(l.text, x0, l.y);
+    const wide = ctx.measureText(l.text).width, first = l.endAt !== undefined ? l.endAt - wide : l.centred ? l.x - wide / 2 : l.x;
+    // a planet or the Moon is always named: if the name will not go on the usual side it is tried on the other, then above and below
+    const dotX = l.must === undefined ? 0 : l.x - l.must, spots: [number, number][] = [[first, l.y]];
+    if (l.must !== undefined) spots.push([dotX + l.must, l.y], [dotX - l.must - wide, l.y], [dotX - wide / 2, l.y - l.must - 6], [dotX - wide / 2, l.y + l.must + 6]);
+    const boxOf = ([x, y]: [number, number]): [number, number, number, number] => [x - 3, y - 8, x + wide + 3, y + 8];
+    const inside = ([x, y]: [number, number]) => Math.max(Math.hypot(x - c, y - c), Math.hypot(x + wide - c, y - c)) < R - 4;
+    const free = (b: [number, number, number, number]) => !taken.some((t) => b[0] < t[2] && b[2] > t[0] && b[1] < t[3] && b[3] > t[1]);
+    const spot = spots.find((s) => inside(s) && free(boxOf(s))) ?? (l.must !== undefined ? spots.find(inside) : undefined);
+    if (!spot) continue;
+    taken.push(boxOf(spot));
+    ctx.textAlign = 'left'; ctx.fillStyle = l.colour; ctx.fillText(l.text, spot[0], spot[1]);
   }
   if (picked) {
     const now = marks.find((k) => k.id === picked.id);

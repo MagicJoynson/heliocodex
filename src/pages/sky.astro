@@ -6,11 +6,14 @@ import '../styles/reading.css';
 import { CITIES } from '../lib/sky/cities';
 import { pageStars } from '../lib/sky/starlist';
 import { SKY_STARS } from '../lib/sky/chart';
+import { MODERN, LY_PER_PC } from '../lib/sky/star';
 // which of the stars on the chart have a page of their own
 const pages = Object.fromEntries(pageStars().filter((s) => s.index < SKY_STARS).map((s) => [s.index, s.slug]));
+// stars whose distance here is a newer one than the star file's, so the card and the star's page agree
+const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((s) => [s.index, [s.distPc * LY_PER_PC, s.lumSun]]));
 ---
 <Base title="The sky tonight" path="/sky" description="The whole sky above you at this moment: the stars, the planets, the Moon and the constellations, worked out for where you are.">
-  <article class="sky reading" data-pages={JSON.stringify(pages)}>
+  <article class="sky reading" data-pages={JSON.stringify(pages)} data-newer={JSON.stringify(newer)}>
     <div class="sky-main">
       <header class="reading-head sky-head">
         <p class="label">The sky tonight</p>
@@ -112,6 +115,7 @@ const pages = Object.fromEntries(pageStars().filter((s) => s.index < SKY_STARS).
   const lat = $<HTMLInputElement>('sky-lat'), lon = $<HTMLInputElement>('sky-lon');
   const card = $('sky-card'), list = $('sky-list'), timeEl = $('sky-time'), note = $('sky-place-note');
   const pages = JSON.parse(document.querySelector<HTMLElement>('.sky')!.dataset.pages!) as Record<string, string>;
+  const newer = JSON.parse(document.querySelector<HTMLElement>('.sky')!.dataset.newer!) as Record<string, [number, number]>;
   const nf = (n: number, d = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d });
 
   let data: SkyData | null = null, marks: Mark[] = [], picked: Mark | null = null;
@@ -153,6 +157,7 @@ const pages = Object.fromEntries(pageStars().filter((s) => s.index < SKY_STARS).
     parts.push(el('h2', k.name || 'A star with no common name'));
     const lines: string[] = [`It is ${whereabouts(k)}, ${nf(k.altDeg)}° above the horizon.`];
     if (k.kind === 'star') {
+      if (newer[k.index!]) [k.ly, k.suns] = newer[k.index!];
       const year = when().getFullYear() - Math.round(k.ly!);
       // a year is only given where the distance is known well enough to name one
       const far = Number(k.ly!.toPrecision(2));

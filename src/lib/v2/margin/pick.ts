@@ -5,7 +5,11 @@
 export interface MLesson { id: string; title: string; strand: string; summary: string; target?: string; distanceKm?: number; terms: string[] }
 export interface MFact { id: string; text: string; about: string[]; basis: 'measured' | 'worked-out' | 'theory'; source: { label: string; url: string }; target?: string; distanceKm?: number }
 export interface MTerm { id: string; term: string; short: string; more?: string; lesson?: string }
-export interface MarginData { lessons: MLesson[]; facts: MFact[]; terms: MTerm[]; strands: Record<string, string> }
+export interface MarginData {
+  lessons: MLesson[]; facts: MFact[]; terms: MTerm[]; strands: Record<string, string>;
+  /** Stars that have a page of their own, by their index in the star file: name, then the page's slug. */
+  stars?: Record<string, [name: string, slug: string]>;
+}
 
 export interface Who { id: string; name: string; kind: string; parent: string | null }
 export interface Where { near: string; band: 'surface' | 'orbit' | 'system' | 'interstellar' | 'galactic' | 'cosmic'; km: number }

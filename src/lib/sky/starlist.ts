@@ -1,6 +1,6 @@
 // Read at build time only: the stars that have a page of their own, with where each one is.
 import { readFileSync } from 'node:fs';
-import { type Star, slugOf } from './star';
+import { type Star, slugOf, MODERN } from './star';
 
 export interface PageStar extends Star { slug: string; name: string; dir: [number, number, number]; constellation: string }
 
@@ -17,6 +17,12 @@ export function pageStars(): PageStar[] {
     const slug = slugOf(s.proper);
     if (!slug || seen.has(slug)) continue;
     seen.add(slug);
+    const modern = MODERN[slug];
+    if (modern) {
+      // the same light seen from farther off means a brighter star
+      const grow = (modern.pc / s.distPc) ** 2;
+      s.lumSun *= grow; s.absMag -= 2.5 * Math.log10(grow); s.distPc = modern.pc;
+    }
     // the star file's frame has y to the ecliptic pole; the sky sums want z there
     const x = bin.readFloatLE(s.index * 20), y = bin.readFloatLE(s.index * 20 + 4), z = bin.readFloatLE(s.index * 20 + 8), r = Math.hypot(x, y, z);
     out.push({ ...s, slug, name: s.proper, dir: [x / r, -z / r, y / r], constellation: names.get(s.con) ?? '' });

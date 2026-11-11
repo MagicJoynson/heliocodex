@@ -56,11 +56,26 @@ export function distanceNote(pc: number): string {
   return 'Distances this great are hard to measure, and this one could be out by a fifth or more.';
 }
 
+/** A spectral type as the catalogue gives it, without the trailing dots, plus signs and colons that only mark its doubts. */
+export const tidySpect = (spect: string | null) => (spect ?? '').replace(/[.+:\s]+$/, '').replace(/\s+/g, ' ');
+
+const ORDINALS = ['', '', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth'];
+/** "the brightest", "the second brightest", "the 14th brightest". */
+export const placing = (rank: number) => (rank === 1 ? 'the brightest' : rank <= 10 ? `the ${ORDINALS[rank]} brightest` : `the ${rank}th brightest`);
+
 /**
- * Famous far stars whose distance is argued over. Each note gives a newer measurement and who made it.
- * Betelgeuse: Joyce et al. 2020, ApJ 902, 63 (168 pc, +27 and -15). Deneb: Schiller and Przybilla 2008, A&A 479, 849 (802 pc, give or take 66).
+ * Stars for which a newer, sourced distance replaces the catalogue's. The star list applies it, and scales
+ * the star's brightness to match, so every page tells the same story.
+ * Betelgeuse: Joyce et al. 2020, ApJ 902, 63: 168 pc, +27 and -15.
  */
+export const MODERN: Record<string, { pc: number; by: string; url: string; note: string }> = {
+  betelgeuse: {
+    pc: 168, by: 'Joyce and others (2020)', url: 'https://arxiv.org/abs/2006.09837',
+    note: 'Betelgeuse is hard to place, because the star is so swollen that its disc is wider than the tiny shift in the sky used to measure distance. This figure comes from a 2020 study of the way the star pulses, and could be anywhere from about 500 to 640 light years. The Hipparcos satellite put it at about 500.',
+  },
+};
+
+/** Famous far stars whose distance is argued over, with no figure yet good enough to replace the catalogue's. Deneb: Schiller and Przybilla 2008, A&A 479, 849 (802 pc, give or take 66). */
 export const DISTANCE_NOTES: Record<string, string> = {
-  betelgeuse: 'Betelgeuse is hard to measure because it is so swollen that its disc is wider than the tiny shift used to find its distance. A 2020 study that weighed up how the star pulses put it at about 550 light years, give or take 70.',
   deneb: 'Deneb is one of the hardest bright stars to place. The satellite figure above is about 1,400 light years, but a 2008 study of its light put it at about 2,600. Nobody yet knows which is nearer the truth.',
 };
