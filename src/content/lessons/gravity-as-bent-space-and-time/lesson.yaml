@@ -6,4 +6,4 @@ scene: "Space bending round the Sun and a planet following the bend, the slow tu
 view: { target: sun }
 terms: [gravity, perihelion, ellipse, solar-eclipse, corona, black-hole, gravitational-wave, speed-of-light]
 needs: [what-gravity-is, space-and-time-are-not-fixed]
-next: [gravitational-waves, what-a-black-hole-is]
+next: [gravity-as-a-lens, gravitational-waves]
