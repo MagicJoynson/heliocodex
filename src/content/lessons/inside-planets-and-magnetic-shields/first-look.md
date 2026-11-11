@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "Wahl and others, Comparing Jupiter interior structure models to Juno gravity measurements (2017). Hydrogen turns metallic at about 80 to 90 per cent of Jupiter's radius", url: "https://agupubs.onlinelibrary.wiley.com/doi/10.1002/2017GL073160" }
   - { label: "NASA, Earth facts", url: "https://science.nasa.gov/earth/facts/" }
   - { label: "USGS, The shadow zone", url: "https://www.usgs.gov/media/videos/shadow-zone" }
   - { label: "NASA, Jupiter facts", url: "https://science.nasa.gov/jupiter/jupiter-facts/" }
@@ -16,6 +17,6 @@ Thousands of earthquakes, timed at stations all over the world, give the full pi
 
 The molten metal is always moving, and moving metal makes magnetism. So the whole Earth is a magnet, and its pull reaches far out into space. A thin, fast wind of particles blows from the Sun all the time. The Earth's magnetism turns most of it aside, and the wind in turn pushes the magnetism into the shape of a teardrop, blunt towards the Sun with a long tail behind.
 
-Jupiter has no iron sea, but it has a shield all the same. About halfway to its centre the hydrogen is squeezed so hard that it turns into a liquid that carries electricity as a metal does. That makes a magnet 16 to 54 times as strong as the Earth's. The blue glow in this picture is particles steered down onto Jupiter's north pole: lights like our northern lights, on a planet eleven times as wide.
+Jupiter has no iron sea, but it has a shield all the same. Less than a quarter of the way down to its centre, the hydrogen is squeezed so hard that it turns into a liquid that carries electricity as a metal does. That makes a magnet 16 to 54 times as strong as the Earth's. The blue glow in this picture is particles steered down onto Jupiter's north pole: lights like our northern lights, on a planet eleven times as wide.
 
 Mars shows what happens without one. Its rocks still hold traces of a magnetism it had about 4 billion years ago, but today it has no shield round the whole planet. A spacecraft called MAVEN watched the wind from the Sun knocking gas off the top of its air, and found that most of the air Mars ever had has been lost to space. What is left is too thin for water to stay liquid on the ground.
