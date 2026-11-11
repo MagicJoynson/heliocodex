@@ -73,7 +73,7 @@ const ringScene = photoScene({
 const cross = photoScene({
   src: '/img/learn/einstein-cross-hubble.jpg',
   caption: `A real photograph by the Hubble Space Telescope: the Einstein Cross. The four bright dots are four views of one quasar, and the glow between them is the middle of the galaxy bending its light. ${HUBBLE} Credit: ESA/Hubble and NASA, CC BY 4.0.`,
-  say: ['One quasar, seen four times', 'Its light has travelled for around 11 billion years'],
+  say: ['One quasar, seen four times', 'Its light set out about 10 billion years ago'],
   zoom: [0.9, 1.3], focus: [0.5, 0.5],
 });
 

@@ -18,7 +18,7 @@ lastChecked: 2026-11-11
 | Two clocks, 33 cm apart in height, 2010 | The higher one ran faster. Over a life of 79 years the difference would come to about 90 billionths of a second |
 | Clocks on navigation satellites | Fast by 45 millionths of a second a day from being higher up, and slow by 7 from their speed. Left alone, positions would drift by about 10 km a day |
 
-**The 1919 expeditions.** Two teams from Britain went to watch the eclipse, one to the island of Príncipe off West Africa and one to Sobral in Brazil. It lasted nearly seven minutes, the longest in more than 500 years. They photographed the stars round the darkened Sun and compared the plates with the same stars photographed at night. The original glass plates are lost. The picture in this lesson was made from a copy of one of the Sobral plates kept at an observatory in Heidelberg.
+**The 1919 expeditions.** Two teams from Britain went to watch the eclipse, one to the island of Príncipe off West Africa and one to Sobral in Brazil. The Sun was hidden for nearly seven minutes, one of the longest eclipses of the century. They photographed the stars round the darkened Sun and compared the plates with the same stars photographed at night. The original glass plates are lost. The picture in this lesson was made from a copy of one of the Sobral plates kept at an observatory in Heidelberg.
 
 **What came out of it.** Black holes, the expansion of the universe, the bending of light by galaxies and waves in space itself were all found first in Einstein's equations and only later in the sky. Each has a lesson of its own.
 
