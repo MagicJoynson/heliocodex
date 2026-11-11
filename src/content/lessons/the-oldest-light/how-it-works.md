@@ -24,6 +24,8 @@ lastChecked: 2026-11-11
 | Dark matter | About 25 per cent |
 | Dark energy | About 70 per cent |
 
+The later Planck spacecraft, with a sharper map, gave 13.8 billion years, which is the figure used elsewhere in these lessons. The two agree to within their margins.
+
 **How a pattern of spots can give an age.** Before the fog cleared, the hot gas rang like a bell. Gravity pulled it into the denser patches and the pressure of the light pushed it back out, over and over. When the fog cleared, the ringing stopped where it was and left spots of a favourite size. How big that size looks on the sky depends on how far the light has come and on what the universe is made of. Measure the spots, and those numbers follow.
 
 **Why it marks the edge.** The fog was opaque. No light from before it cleared can reach us, however good the telescope. To see further back takes a different messenger. See [Messengers other than light](/learn/messengers-other-than-light).
