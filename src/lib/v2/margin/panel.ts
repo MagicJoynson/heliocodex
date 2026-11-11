@@ -253,10 +253,13 @@ export function mountMargin(engine: Engine): void {
       const sheet = doc.querySelector('link[data-equations]')?.getAttribute('href');
       if (sheet && !document.querySelector('link[data-equations]')) document.head.append(el('link', { rel: 'stylesheet', href: sheet, 'data-equations': '' }));
       const parts: Node[] = [];
-      for (const sec of doc.querySelectorAll('section.row[id]')) {
-        const prose = sec.querySelector('.prose');
-        if (!prose) continue;
-        const copy = document.importNode(prose, true) as HTMLElement;
+      // A lesson in the visual style keeps its first look as a story of several short blocks, and
+      // its deeper levels on pages of their own, which are linked rather than copied in.
+      for (const sec of doc.querySelectorAll('section.row[id], section.story[id]')) {
+        const blocks = [...sec.querySelectorAll('.prose')];
+        if (!blocks.length) continue;
+        const copy = document.importNode(blocks[0], true) as HTMLElement;
+        for (const more of blocks.slice(1)) copy.append(...document.importNode(more, true).childNodes);
         copy.className = 'm-prose';
         copy.querySelectorAll('script, style, iframe, object, embed').forEach((n) => n.remove());
         copy.querySelectorAll('table').forEach((t) => { const w = el('div', { class: 'm-scroll', tabindex: '0' }); t.replaceWith(w); w.append(t); });
@@ -268,6 +271,8 @@ export function mountMargin(engine: Engine): void {
         const note = sec.querySelector('.hang .note')?.textContent ?? '';
         parts.push(el('h3', null, sec.querySelector('.hang h2')?.textContent ?? '', note ? el('small', null, note) : null), copy);
       }
+      const deeper = [...doc.querySelectorAll('a[data-level-link]')].map((a) => el('li', null, el('a', { href: a.getAttribute('href')!, target: '_blank', rel: 'noopener' }, a.querySelector('.deeper-name')?.textContent ?? ''), el('small', null, ` ${a.querySelector('.deeper-for')?.textContent ?? ''}`)));
+      if (deeper.length) parts.push(el('h3', null, 'Go deeper'), el('ul', null, ...deeper));
       const words = l.terms.map((t) => data!.terms.find((x) => x.id === t)).filter((t): t is MTerm => !!t);
       if (words.length) parts.push(el('h3', null, 'Words used here'), el('dl', null, ...words.map(termItem)));
       const sources = [...doc.querySelectorAll('.sources a[href]')].map((a) => el('li', null, el('a', { href: a.getAttribute('href')!, target: '_blank', rel: 'noopener', class: 'm-src' }, a.textContent ?? '')));

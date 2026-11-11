@@ -1,0 +1,88 @@
+---
+// One deeper level of a lesson, on a page of its own. Only lessons in the visual style have these;
+// the others still carry every level on /learn/<lesson>.
+import { render } from 'astro:content';
+import Reading from '../../../layouts/Reading.astro';
+import BlackHoleSizes from '../../../components/learn/BlackHoleSizes.astro';
+import '../../../styles/lesson.css';
+import { allLessons, STRAND_NAMES, LEVEL_NAMES, LEVEL_ORDER, levelOf, type Lesson } from '../../../lib/v2/margin/content';
+import { STORY_LESSONS, LEVEL_FIGURES } from '../../../lib/learn/stories';
+import equationStyles from 'katex/dist/katex.min.css?url';
+
+export async function getStaticPaths() {
+  const lessons = (await allLessons()).filter((l) => STORY_LESSONS.includes(l.id));
+  return lessons.flatMap((lesson) => lesson.levels.filter((e) => levelOf(e) !== 'first-look').map((entry) => ({ params: { lesson: lesson.id, level: levelOf(entry) }, props: { lesson, level: levelOf(entry) } })));
+}
+
+const { lesson, level } = Astro.props as { lesson: Lesson; level: string };
+const entry = lesson.levels.find((e) => levelOf(e) === level)!;
+const { Content } = await render(entry);
+const hasEquations = entry.rendered?.html.includes('class="katex');
+const have = lesson.levels.map(levelOf);
+const at = have.indexOf(level), before = have[at - 1], after = have[at + 1];
+const href = (id: string) => (id === 'first-look' ? `/learn/${lesson.id}` : `/learn/${lesson.id}/${id}`);
+const figure = LEVEL_FIGURES[`${lesson.id}/${level}`];
+const lessons = await allLessons();
+const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
+---
+<Reading title={`${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`} path={href(level)} description={`${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`}>
+  {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
+  <div class="level">
+    <header class="reading-head">
+      <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
+      <p class="of"><a href={`/learn/${lesson.id}`}>{lesson.data.title}</a></p>
+      <h1>{LEVEL_NAMES[level].name}</h1>
+      <p class="lead">{LEVEL_NAMES[level].reader}.</p>
+    </header>
+
+    <ol class="depths-nav" aria-label="Levels of this lesson">
+      {LEVEL_ORDER.map((id) => (
+        <li>
+          {have.includes(id)
+            ? <a href={href(id)} aria-current={id === level ? 'page' : undefined}>{LEVEL_NAMES[id].name}</a>
+            : <span class="absent">{LEVEL_NAMES[id].name}, still to be written</span>}
+        </li>
+      ))}
+    </ol>
+
+    {figure === 'black-hole-sizes' && <BlackHoleSizes />}
+
+    <section class="row" id={level}>
+      <div class="hang sticks">
+        <h2>{LEVEL_NAMES[level].name}</h2>
+        <p class="note">{LEVEL_NAMES[level].reader}</p>
+      </div>
+      <div class="prose"><Content /></div>
+    </section>
+
+    <section class="row small">
+      <div class="hang"><h2>Where this comes from</h2></div>
+      <div>
+        <ul class="plain-list sources">
+          {entry.data.sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}
+        </ul>
+        <p class="aside small-note">The words are written for this site. Sums in the text are worked from the figures in these sources.</p>
+      </div>
+    </section>
+
+    <nav class="row onward" aria-label="More of this lesson">
+      <div class="hang"><h2>Keep going</h2></div>
+      <ul class="plain-list">
+        {after && <li><span class="label">Deeper</span><a href={href(after)}>{LEVEL_NAMES[after].name}</a></li>}
+        {before && <li><span class="label">Back up a level</span><a href={href(before)}>{LEVEL_NAMES[before].name}</a></li>}
+        {lesson.data.next.map((id) => <li><span class="label">Next lesson</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+</Reading>
+
+<script>
+  // Wide tables scroll sideways on a phone and leave the page still.
+  document.querySelectorAll('.prose table').forEach((table) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'table-scroll';
+    wrap.tabIndex = 0;
+    table.replaceWith(wrap);
+    wrap.append(table);
+  });
+</script>

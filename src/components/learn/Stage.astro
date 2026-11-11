@@ -1,0 +1,12 @@
+---
+// A picture with its figures and its caption. The script that draws on it is the caller's.
+interface Props { class?: string }
+const { class: extra } = Astro.props;
+---
+<figure class:list={['stage-fig', extra]} data-stage>
+  <canvas aria-hidden="true"></canvas>
+  <figcaption>
+    <p class="say"><span data-say="1"></span><span data-say="2"></span></p>
+    <p class="cap" data-caption></p>
+  </figcaption>
+</figure>
