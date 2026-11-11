@@ -25,6 +25,8 @@ export interface Context {
   km: number;
   /** The engine's clock, ISO 8601 UTC. */
   timeIso: string;
+  /** Set while the camera is beside a catalogue star it flew to: its index in stars.bin (as in 'star:<n>'). */
+  star?: number;
 }
 
 /**
