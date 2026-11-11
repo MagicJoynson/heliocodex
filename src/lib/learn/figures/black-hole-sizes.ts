@@ -16,6 +16,8 @@ export const PRESETS: { name: string; suns: number }[] = [
   { name: 'The heaviest known', suns: 6.6e10 },
 ];
 type Shape = 'disc' | 'tall' | 'peak' | 'orbit';
+// Coin: Royal Mint, one penny specification, https://www.royalmint.com/discover/uk-coins/coin-design-and-specifications/one-penny-coin/
+// Everest: 8,848.86 m, the joint survey by Nepal and China announced in December 2020.
 const THINGS: { name: string; km: number; says: string; shape: Shape }[] = [
   { name: 'A 1p coin', km: 2.03e-5, says: '20 mm across', shape: 'disc' },
   { name: 'A front door', km: 0.002, says: '2 m high', shape: 'tall' },
@@ -44,7 +46,7 @@ export function massText(suns: number): string {
 
 export function sizes(mass: { suns: number }): Scene {
   return {
-    caption: 'A black hole and a familiar thing, drawn to the same scale. The width is 5.9 km for each mass of the Sun, from the formula in the physics level of this lesson.',
+    caption: 'A black hole and a familiar thing, drawn to the same scale. The width is 5.9 km for each mass of the Sun, from the formula in the physics level of this lesson. The 1p coin is 20.3 mm across (the Royal Mint) and Everest is 8,848.86 m high (the 2020 survey by Nepal and China).',
     draw({ ctx, w, h, say }) {
       const km = mass.suns * KM_PER_SUN;
       const thing = THINGS.reduce((best, x) => (Math.abs(Math.log(x.km / km)) < Math.abs(Math.log(best.km / km)) ? x : best));
