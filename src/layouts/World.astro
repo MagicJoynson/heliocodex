@@ -1,4 +1,5 @@
 ---
+import Analytics from '../components/Analytics.astro';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
  * driver. Everything you see (type, colour, layout, copy) belongs to the page that uses it.
@@ -15,6 +16,7 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(`/${world}`, Astro.site).toString()} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Analytics />
   </head>
   <body data-world={world}>
     <canvas id="journey" aria-hidden="true"></canvas>

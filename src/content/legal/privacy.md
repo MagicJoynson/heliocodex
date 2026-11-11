@@ -10,7 +10,7 @@ updated: 2026-11-11
 **The short version**
 
 - You don't need an account, and nothing on this site asks for your name, email address or any other detail about you.
-- This site sets no cookies, has no analytics and shows no adverts. Nothing you do on it is tracked or profiled.
+- This site sets no cookies and shows no adverts. It counts visits with Cloudflare Web Analytics, which uses no cookies and doesn't follow you from one visit to the next. You can switch even that off, and it respects your browser's Do Not Track and Global Privacy Control settings. Nothing you do here is profiled.
 - Our web host, Cloudflare, sees your IP address and basic technical details when your browser asks for a page. That is how every website works. We don't download, keep or look at those logs.
 - The sky map can use your position, but only if you tap "Use where I am" and your browser says yes. The position is worked out in your browser and is never sent to us. It is remembered on your device so that other pages can use it, and you can remove it with "Forget my place".
 - If you email us, we use what you send to reply and keep a record of the conversation.
@@ -69,6 +69,12 @@ This comes from your device. We don't combine it with anything else to work out 
 
 Cloudflare asks some browsers to send it a short report when a page fails to load because of a network fault. The report contains the address of the page, your IP address, your browser type and what went wrong. It is sent by your browser, not by any script of ours, only when something has failed, and only by browsers that support the feature. It lets Cloudflare find and fix faults on its network. You can't see these reports from our side and we don't use them.
 
+### Counting visits
+
+So that we can see which pages people read and whether the site loads quickly, we use Cloudflare Web Analytics. When a page loads, a small script from Cloudflare (served from static.cloudflareinsights.com) reads timing measurements from your browser and sends Cloudflare a short report. The report says which page was loaded, how long it took, and, from your browser and connection, roughly where in the world you are (the country), what kind of device and browser you use and which page sent you here. Cloudflare says the script does not set cookies or use your browser's storage, that the report doesn't carry your IP address into its records, and that it doesn't track individual visitors across the sites of its customers. We get the totals in a dashboard. We cannot see who any visit was.
+
+We don't use these figures for adverts, to build a profile of anyone or to work out who you are. If you would rather not be counted, you don't have to do anything if your browser sends a Do Not Track or Global Privacy Control signal, because the script is not loaded at all. Otherwise, use the switch on the [cookies and storage page](/cookies), which stops the script loading in that browser. The site works the same either way.
+
 ### The sky map, the star pages and "Use where I am"
 
 The sky map at /sky works out which stars, planets and constellations are above you from a place and a time. To do that it needs a place, and you can give it one in four ways:
@@ -92,7 +98,7 @@ We receive your email address, your name if your email shows it, the content of 
 
 ### What we don't collect
 
-There are no accounts, comments, forums, forms that send data to us, newsletters, surveys or competitions on this site. We don't use analytics, advertising, social media buttons, embedded videos or fingerprinting. We don't collect sensitive ("special category") data such as health, religious beliefs, ethnicity or sexual orientation, and we don't collect information about criminal convictions. We don't buy personal data from data brokers or anyone else. Our fonts, images, maps and scripts are all served from heliocodex.com, so loading a page doesn't send your details to Google or any other company.
+There are no accounts, comments, forums, forms that send data to us, newsletters, surveys or competitions on this site. We don't use advertising, social media buttons, embedded videos or fingerprinting, and our only analytics is the visit counting described above. We don't collect sensitive ("special category") data such as health, religious beliefs, ethnicity or sexual orientation, and we don't collect information about criminal convictions. We don't buy personal data from data brokers or anyone else. Our fonts, images, maps and own scripts are all served from heliocodex.com, so loading a page doesn't send your details to Google or any other company. The one exception is the visit-counting script from Cloudflare, which you can switch off.
 
 ## 5. How we use it and our lawful basis
 
@@ -102,6 +108,7 @@ Data protection law only lets us use personal data where we have a lawful basis.
 | --- | --- | --- | --- |
 | Deliver web pages and files to your browser | Server log data | Legitimate interests: running a website that works | Handled by Cloudflare for as long as it needs for this purpose, then deleted (see section 11). We keep none. |
 | Protect the site from attacks and abuse, and investigate faults | Server log data, network error reports | Legitimate interests: keeping the site and its visitors safe | As above |
+| Count visits and page speed, to see what is read and what is slow | Page loaded, load timings, country, device and browser type, referring page, as reported by Cloudflare Web Analytics | Legitimate interests: knowing which parts of the site help people and which don't work. You can object by switching it off (see section 7). | Held by Cloudflare as totals and charts for as long as it needs for this purpose. We don't download or keep individual reports. |
 | Read and reply to your emails and letters | Contact details, message content, attachments | Legitimate interests: answering people who contact us | Up to 24 months after our last exchange |
 | Look into corrections, ideas and feedback you send | Contact details, what you tell us | Legitimate interests: keeping the site accurate and improving it | Up to 24 months after our last exchange, or longer if we are working on it with you and you know that |
 | Keep accounting and tax records, if you ever pay us or we pay you | Names and details on invoices | Legal obligation (Companies Act 2006 and tax law) | 6 years from the end of the financial year they relate to |
@@ -129,16 +136,17 @@ You have the right to object to any use based on legitimate interests (see secti
 
 Cookies are small files a website saves on your device. Similar technologies include local storage, pixels and device fingerprinting. The Privacy and Electronic Communications Regulations 2003 (PECR) say a website must ask for your consent before storing or reading anything on your device, unless it's strictly necessary for a service you asked for or falls within another exception listed in the regulations. Since 5 February 2026 those exceptions include one for adapting how a website looks or works to your preferences, as long as you are told and can easily object.
 
-Heliocodex sets no cookies. It keeps two small things in your browser, both described in full on the [cookies and storage page](/cookies):
+Heliocodex sets no cookies. It keeps up to three small things in your browser, all described in full on the [cookies and storage page](/cookies):
 
 - the place you chose on the sky map, in local storage, so that the sky map and star pages can show your sky; and
-- a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method.
+- a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method; and
+- a note in local storage that says you have chosen not to be counted, which exists only if you use the switch on the cookies page.
 
-Neither one is used for advertising, measurement or tracking, and neither is sent to us. You can remove the first with **Forget my place** or by clearing this site's data in your browser. Because of that, there is no cookie banner.
+None of them is used for advertising or tracking, and none is sent to us. You can remove the first with **Forget my place** or by clearing this site's data in your browser.
 
 The site also reads a few facts about your device inside your browser, such as the size of the screen, whether you use a touch screen, how much memory and how many processor cores it has, whether it can run WebGPU or WebGL, whether you have asked for reduced motion and the time zone it is set to. They decide how detailed to make the 3D scenes and which city to guess. They stay in your browser.
 
-If we ever decide to add analytics or anything else that stores or reads information on your device, we'll update this section first and ask for your consent where the law requires it. Recent changes to PECR allow some low-risk analytics without consent, provided we tell you and give you a simple, free way to object. We'd explain any such use here before it started.
+Visit counting is covered by the exception in PECR for statistics, which came into force on 5 February 2026. It applies where the only purpose is to collect statistics to improve the site, the figures are shared with no one else, visitors are told, and they have a simple, free way to object. This page is the telling, the script doesn't load if your browser sends a Do Not Track or Global Privacy Control signal, and the switch on the cookies page is the way to object. Cloudflare's script uses your browser's performance measurements and, according to Cloudflare, doesn't store anything in your browser. If we ever decide to add anything else that stores or reads information on your device, we'll update this section first and ask for your consent where the law requires it. That is also why there is no cookie banner.
 
 ## 8. Marketing
 
@@ -154,7 +162,7 @@ These companies act as our processors. They may only use personal data on our in
 
 | Company | What they do for us | Contract and safeguards |
 | --- | --- | --- |
-| Cloudflare, Inc. (United States) | Hosts and delivers the website, protects it from attacks and keeps the server logs | Cloudflare customer data processing agreement |
+| Cloudflare, Inc. (United States) | Hosts and delivers the website, protects it from attacks, keeps the server logs and counts visits through Web Analytics | Cloudflare customer data processing agreement |
 | Google (Google Workspace) | Runs our email, including the addresses on this page, and stores our working documents | Google Cloud data processing addendum |
 
 ### Professional advisers
@@ -199,7 +207,7 @@ We use technical and organisational measures that are appropriate to the risk, i
 
 - serving the site over HTTPS, and redirecting any request made over plain HTTP, so pages can't be read or changed on their way to you;
 - collecting nothing from you that we don't need, which is the surest way to keep it safe;
-- keeping third-party scripts off the site, which removes a common route for data leaks;
+- keeping third-party scripts off the site, apart from the single Cloudflare visit-counting script, which you can switch off, which removes a common route for data leaks;
 - limiting access to our mailboxes and accounts to the people who need it;
 - keeping passwords in a password manager and never sharing them by email or chat;
 - choosing providers that offer strong security commitments and written data processing terms.
@@ -266,6 +274,7 @@ You also have the right to complain to the Information Commission, which regulat
 
 We review this policy at least once a year and whenever we change how the site handles personal data. If we make a change, we'll update this page before the change takes effect and change the date at the top. If a change significantly affects how we use data we already hold about you, and we have your contact details, we'll tell you directly. Earlier versions are available on request.
 
+- **11 November 2026.** Added visit counting with Cloudflare Web Analytics.
 - **11 November 2026.** First version, written for the launch of the new Heliocodex.
 
 ## 20. Contact us
