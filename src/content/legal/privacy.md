@@ -136,9 +136,10 @@ You have the right to object to any use based on legitimate interests (see secti
 
 Cookies are small files a website saves on your device. Similar technologies include local storage, pixels and device fingerprinting. The Privacy and Electronic Communications Regulations 2003 (PECR) say a website must ask for your consent before storing or reading anything on your device, unless it's strictly necessary for a service you asked for or falls within another exception listed in the regulations. Since 5 February 2026 those exceptions include one for adapting how a website looks or works to your preferences, as long as you are told and can easily object.
 
-Heliocodex sets no cookies. It keeps up to three small things in your browser, all described in full on the [cookies and storage page](/cookies):
+Heliocodex sets no cookies. It keeps up to four small things in your browser, all described in full on the [cookies and storage page](/cookies):
 
-- the place you chose on the sky map, in local storage, so that the sky map and star pages can show your sky; and
+- the place you chose on the sky map, in local storage, so that the sky map and star pages can show your sky;
+- your choices in the 3D view's View menu (planet sizes, motion and the map), in local storage, but only once you change one;
 - a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method; and
 - a note in local storage that says you have chosen not to be counted, which exists only if you use the switch on the cookies page.
 

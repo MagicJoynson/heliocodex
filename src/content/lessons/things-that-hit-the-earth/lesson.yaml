@@ -1,0 +1,9 @@
+title: Things that hit the Earth
+strand: small-bodies
+order: 5
+summary: "Rocks from space have hit the Earth before and will again. We now watch for them, and in 2022 a spacecraft moved one on purpose."
+scene: "Real photographs of a crater in Arizona from orbit and of the asteroid a spacecraft was flown into, a map of the buried crater in Mexico, how often each size of rock arrives, and the orbit that was changed."
+view: { target: earth }
+terms: [asteroid, near-earth-object, impact-crater, meteor, meteorite, orbital-period, comet]
+needs: [falling-rocks]
+next: [rubble-and-ice, comets]

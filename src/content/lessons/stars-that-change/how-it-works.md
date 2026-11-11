@@ -31,7 +31,7 @@ There are two quite different reasons why a star's light can change. Either the 
 | Algol | Two stars that eclipse | 2.867 days | About 3 times, for a few hours |
 | Betelgeuse | Red supergiant | Not regular | Usually a little; to about a third in early 2020 |
 
-The figures for how much each changes are in light the eye can see. Those for Mira and Algol are my own sums from the published magnitudes. Each step of one magnitude is a change of about 2.5 times. Mira usually goes from about magnitude 3 to about magnitude 10, which is seven steps, or about 600 times. Algol goes from 2.1 to 3.4, which comes to a little over 3 times.
+The figures for how much each changes are in light the eye can see. Those for Mira and Algol were worked out here from the published magnitudes. Each step of one magnitude is a change of about 2.5 times. Mira usually goes from about magnitude 3 to about magnitude 10, which is seven steps, or about 600 times. Algol goes from 2.1 to 3.4, which comes to a little over 3 times.
 
 **Why a star pulses.** The fusion in the star's core stays steady all the while. What changes is how easily the heat can get out through the outer layers. When those layers hold heat in, pressure builds beneath them and pushes them outwards. They swell past the point of balance, the heat escapes, the push dies away, and gravity pulls them back in. They fall past the point of balance too, and it all starts again. The star behaves like a weight bouncing on a spring.
 

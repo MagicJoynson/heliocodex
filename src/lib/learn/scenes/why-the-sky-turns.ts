@@ -27,7 +27,7 @@ const trails = photoScene({
 
 // ---- 2. it is you that moves
 const turnScene: Scene = {
-  caption: 'The Earth seen from above its north pole, turning from west to east and carrying one person round with it, from day into night and back. A drawing, not to scale: the speeds are my own sums from the Earth’s size and the length of its day.',
+  caption: 'The Earth seen from above its north pole, turning from west to east and carrying one person round with it, from day into night and back. A drawing, not to scale: the speeds were worked out here from the Earth’s size and the length of its day.',
   stillAt: 2,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.6);

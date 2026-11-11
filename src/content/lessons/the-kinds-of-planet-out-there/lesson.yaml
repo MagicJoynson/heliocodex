@@ -1,0 +1,9 @@
+title: The kinds of planet out there
+strand: other-worlds
+order: 3
+summary: "More than 6,000 planets are known round other stars, and most are nothing like ours. The commonest kind found so far is one the Solar System does not have."
+scene: "Every known planet round another star as a dot on one chart, by its size and the length of its year, then our own eight planets placed on it, the hot giants, the in-between worlds, and a real picture of a planet being born."
+view: { target: neighbourhood }
+terms: [exoplanet, hot-jupiter, super-earth, gas-giant, ice-giant, terrestrial-planet, tidal-locking, protoplanetary-disc]
+needs: [planets-round-other-stars, three-kinds-of-planet]
+next: [trappist-1, are-we-alone]

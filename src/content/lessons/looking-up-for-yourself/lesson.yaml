@@ -1,0 +1,9 @@
+title: Looking up for yourself
+strand: finding-your-way
+order: 8
+summary: "You need no telescope to begin. Find somewhere dark, give your eyes half an hour, and know what to look for."
+scene: "Stars coming into view as the eyes get used to the dark, a real picture of Europe's lights at night from space, a real photograph of the whole Milky Way, and the Moon."
+view: { target: earth }
+terms: [constellation, apparent-magnitude, milky-way, star-cluster, planet, meteor-shower]
+needs: [why-the-sky-turns]
+next: [constellations, the-stars-you-can-see, phases-and-eclipses]

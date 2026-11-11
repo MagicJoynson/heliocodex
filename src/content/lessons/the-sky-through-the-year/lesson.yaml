@@ -1,0 +1,9 @@
+title: The sky through the year
+strand: finding-your-way
+order: 7
+summary: "Winter and summer have different stars because the Earth's night side looks out a different way each season. The Sun's path among them is the zodiac."
+scene: "The Earth going round the Sun with its night side facing a different constellation each month, the Sun passing in front of the zodiac, a real photograph of the glow that marks its path, and the pole of the sky drifting over thousands of years."
+view: { target: neighbourhood }
+terms: [ecliptic, zodiac, constellation, precession, celestial-pole, equinox, sidereal-day]
+needs: [why-the-sky-turns]
+next: [constellations, seasons]

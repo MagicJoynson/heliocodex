@@ -37,11 +37,11 @@ export const PACKS: Pack[] = [
     blurb: 'For anyone who wants to go outside and understand what they are looking at: why the sky changes, what the patterns are, and which of the lights are which.',
     photo: { src: `${P}orion-nebula-hubble.jpg`, width: 1100, height: 1100, alt: 'A great glowing cloud of pink, orange and grey gas with a bright hollow near the middle.', caption: 'The Orion Nebula, which you can see by eye as the fuzzy middle "star" of Orion’s sword. Credit: NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Space Telescope Orion Treasury Project Team, CC BY 4.0.' },
     stages: [
-      { title: 'Getting your bearings', about: 'How far away things are, and the units used to say so.', lessons: ['how-big-is-space', 'measuring-distance'] },
-      { title: 'What changes, and why', about: 'The night, the year, the month, and the shadows that cause eclipses.', lessons: ['why-the-sky-turns', 'seasons', 'phases-and-eclipses', 'tides'] },
+      { title: 'Getting your bearings', about: 'How to look, how far away things are, and the units used to say so.', lessons: ['looking-up-for-yourself', 'how-big-is-space', 'measuring-distance'] },
+      { title: 'What changes, and why', about: 'The night, the year, the month, and the shadows that cause eclipses.', lessons: ['why-the-sky-turns', 'the-sky-through-the-year', 'seasons', 'phases-and-eclipses', 'tides'] },
       { title: 'The stars overhead', about: 'The patterns, the colours, and what the eye can and cannot see.', lessons: ['constellations', 'the-stars-you-can-see', 'colour-and-brightness', 'star-clusters'] },
     ],
-    coming: ['The sky through the year', 'Looking up for yourself'],
+    coming: [],
     look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The stars, planets and constellations over your own horizon at this moment.' }, { href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope.' }],
   },
   {
@@ -51,12 +51,12 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}sun-sunspots-sdo.jpg`, width: 1024, height: 990, alt: 'The whole Sun as an orange disc with a cluster of dark spots below the middle.', caption: 'The Sun in October 2014, with a group of sunspots wider than ten Earths. Credit: NASA/SDO.' },
     stages: [
       { title: 'The Sun', about: 'The star in the middle, which holds almost all of the mass.', lessons: ['what-the-sun-is', 'how-the-sun-shines', 'the-active-sun', 'the-suns-reach'] },
-      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
+      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'the-earth-as-a-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
       { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'the-moon', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
-      { title: 'The small things, and the edge', about: 'Asteroids, comets, falling rocks and the cloud that surrounds it all.', lessons: ['rubble-and-ice', 'comets', 'falling-rocks', 'the-oort-cloud'] },
+      { title: 'The small things, and the edge', about: 'Asteroids, comets, falling rocks and the cloud that surrounds it all.', lessons: ['rubble-and-ice', 'comets', 'falling-rocks', 'things-that-hit-the-earth', 'the-oort-cloud'] },
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
-    coming: ['The Earth as a planet', 'Inside planets and their magnetic shields', 'Things that hit the Earth'],
+    coming: ['Inside planets and their magnetic shields'],
     look: [{ href: '/', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
@@ -122,11 +122,11 @@ export const PACKS: Pack[] = [
     blurb: 'From our own galaxy outward to the largest structures there are, and back in time to the first few minutes.',
     photo: { src: `${P}m87-jet-hubble.jpg`, width: 1222, height: 1276, alt: 'A bright yellow galaxy centre with a narrow, knotted blue streak pointing away from it.', caption: 'The centre of the galaxy M87 and the jet thrown out from beside its black hole. Credit: The Hubble Heritage Team (STScI/AURA) and NASA/ESA, CC BY 4.0.' },
     stages: [
-      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
+      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
       { title: 'The biggest picture', about: 'How galaxies are spread through space, and how their distances are found.', lessons: ['the-distance-ladder', 'the-cosmic-web'] },
       { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'dark-matter-and-dark-energy'] },
     ],
-    coming: ['The stuff between the stars', 'The centre of the galaxy', 'Spiral arms', 'How galaxies form and change', 'Galaxy clusters', 'How we know there was a Big Bang', 'The history of the universe on one timeline', 'How it ends', 'How big is the universe'],
+    coming: ['The stuff between the stars', 'Spiral arms', 'How galaxies form and change', 'Galaxy clusters', 'How we know there was a Big Bang', 'The history of the universe on one timeline', 'How it ends', 'How big is the universe'],
     look: [{ href: '/?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
@@ -135,11 +135,11 @@ export const PACKS: Pack[] = [
     blurb: 'Planets round other stars, the places nearer home where there may be water, and the oldest question of all.',
     photo: { src: `${P}pale-blue-dot-voyager.jpg`, width: 1100, height: 1088, alt: 'A dark picture crossed by faint bands of light, with one tiny pale speck in the right-hand band.', caption: 'The only world known to have life, from 6 billion km away: the pale speck in the right-hand band of light. Voyager 1, 14 February 1990. Credit: NASA/JPL-Caltech.' },
     stages: [
-      { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'trappist-1'] },
+      { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'the-kinds-of-planet-out-there', 'trappist-1'] },
       { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'ocean-moons'] },
       { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
     ],
-    coming: ['The kinds of planet out there', 'The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
+    coming: ['The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
     look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];
