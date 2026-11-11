@@ -28,7 +28,7 @@ const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appM
         <h1>{star.name}</h1>
         <p class="lead">{lead} {stage}</p>
         <p class="star-links">
-          <a href={`/v2?go=star:${star.index}`}>Fly to it in 3D</a>
+          <a href={`/?go=star:${star.index}`}>Fly to it in 3D</a>
           {onChart && <a href={`/sky?star=${star.index}`}>Find it on the sky map</a>}
         </p>
       </div>

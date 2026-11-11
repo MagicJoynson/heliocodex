@@ -36,7 +36,7 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
     <header class="site-header">
       <a class="wordmark" href="/"><img src="/brand/heliocodex-lockup.svg" alt="Heliocodex" width="660" height="133" /></a>
       <nav class="site-nav" aria-label="Main">
-        <a href="/#bodies" aria-current={path === '/' ? undefined : undefined}>Bodies</a>
+        <a href="/bodies" aria-current={path === '/bodies' ? 'page' : undefined}>Bodies</a>
         <a href="/learn" aria-current={path.startsWith('/learn') ? 'page' : undefined}>Learn</a>
         <a href="/sky" aria-current={path.startsWith('/sky') || path.startsWith('/stars') ? 'page' : undefined}>Sky</a>
         <a href="/atlas" aria-current={path.startsWith('/atlas') ? 'page' : undefined}>Atlas</a>

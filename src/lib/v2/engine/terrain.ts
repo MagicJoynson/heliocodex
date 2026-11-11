@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { attribute, mix, positionGeometry, normalGeometry, uniform, vec3, float, smoothstep, transformNormalToView, length } from 'three/tsl';
+import { attribute, mix, positionGeometry, normalGeometry, uniform, vec2, vec3, float, smoothstep, transformNormalToView, length, atan, acos, fract, fwidth, select, texture, clamp } from 'three/tsl';
 import { buildTile, makeSource, tileIndex, tileSize, type SourceSpec, type TileData, type TileRequest } from './tilebuild';
 import { dot, len, norm, sub, type V3 } from './vec';
 
@@ -20,6 +20,10 @@ export interface TerrainOptions {
   split?: number;
   maxLevel?: number;
   maxTiles?: number;
+  /** the body's colours as an equirectangular map, laid on by direction from its centre */
+  map?: THREE.Texture;
+  /** turns the engine frame into the map's frame (y the spin pole, longitude 0 on x) */
+  toBody?: THREE.Matrix3;
 }
 
 interface Node extends TileRequest {
@@ -54,9 +58,23 @@ export function createTerrain(o: TerrainOptions) {
   const mat = new THREE.MeshStandardNodeMaterial({ roughness: 0.96, metalness: 0 });
   mat.positionNode = mix(positionGeometry, attribute('morph', 'vec3'), m);
   mat.normalNode = transformNormalToView(mix(normalGeometry, attribute('mnormal', 'vec3'), m).normalize()).normalize();
-  // grey ground, darker where it is steep
+  // darker where it is steep
   const flat = smoothstep(float(0.72), float(0.97), attribute('shade', 'float'));
-  mat.colorNode = mix(vec3(0.23, 0.225, 0.215), vec3(0.47, 0.455, 0.43), flat);
+  if (o.map) {
+    // the colour comes from the map, looked up by the direction from the body's centre
+    const centre = uniform(new THREE.Vector3()).onObjectUpdate(({ object }) => object?.userData.centre as THREE.Vector3);
+    const toBody = uniform(o.toBody ?? new THREE.Matrix3());
+    const d = toBody.mul(positionGeometry.add(centre)).normalize();
+    const lon = atan(d.z, d.x.negate()).div(Math.PI * 2);
+    // two ways of wrapping the longitude, keeping whichever has no jump here, so the seam leaves no line
+    const u1 = fract(lon), u2 = fract(lon.add(0.5)).sub(0.5);
+    const u = select(fwidth(u1).lessThanEqual(fwidth(u2).add(1e-6)), u1, u2);
+    const v = float(1).sub(acos(clamp(d.y, -1, 1)).div(Math.PI));
+    mat.colorNode = texture(o.map, vec2(u, v)).rgb.mul(mix(float(0.62), float(1), flat));
+  } else {
+    // plain grey ground
+    mat.colorNode = mix(vec3(0.23, 0.225, 0.215), vec3(0.47, 0.455, 0.43), flat);
+  }
 
   // ---- workers build the tiles off the main thread; if they fail, the main thread takes over
   const workers: Worker[] = [];
@@ -123,7 +141,7 @@ export function createTerrain(o: TerrainOptions) {
     const mesh = new THREE.Mesh(g, mat);
     mesh.visible = false;
     mesh.frustumCulled = false; // we cull ourselves, with double-precision spheres
-    mesh.userData = { camRel: new THREE.Vector3(), mLo: 0, mHi: 1 };
+    mesh.userData = { camRel: new THREE.Vector3(), mLo: 0, mHi: 1, centre: new THREE.Vector3(t.centre[0], t.centre[1], t.centre[2]) };
     n.mesh = mesh;
     group.add(mesh);
     live++;
