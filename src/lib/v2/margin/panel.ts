@@ -106,8 +106,8 @@ export function mountMargin(engine: Engine): void {
     const got = pick(ctx, data, who);
     // While real heights are missing the engine stands a generated world in for the real one and says so in the readout.
     const standIn = /^This ground is generated/.test(document.getElementById('gen')?.textContent ?? '');
-    // the catalogue star the view has flown to, where the engine says so, and its page if it has one
-    const starAt = (ctx as Context & { star?: number }).star, meet = starAt === undefined ? undefined : data.stars?.[starAt];
+    // the catalogue star the view has flown to, and its page if it has one
+    const meet = ctx.star === undefined ? undefined : data.stars?.[ctx.star];
     const key = `${got.subject}|${ctx.band}|${ctx.near}|${standIn}|${meet?.[1] ?? ''}`;
     if (key === shownFor) { const d = p.querySelector('.m-dist'); if (d) d.textContent = howFar(ctx); return; }
     shownFor = key;
