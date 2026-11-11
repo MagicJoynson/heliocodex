@@ -1,0 +1,9 @@
+title: The habitable zone
+strand: other-worlds
+order: 5
+summary: "The band round a star where a planet could keep liquid water on its surface. It is a useful first guide, and our own Solar System shows how much it leaves out."
+scene: "The Sun's habitable zone drawn to scale with the orbits of Venus, the Earth and Mars, real photographs of all three, the far smaller zone of a red dwarf, and a moon with liquid water well outside any zone."
+view: { target: sun }
+terms: [habitable-zone, greenhouse-effect, atmosphere, astronomical-unit, red-dwarf, tidal-heating, subsurface-ocean, exoplanet]
+needs: [air-and-the-greenhouse, planets-round-other-stars]
+next: [trappist-1, ocean-moons, are-we-alone]
