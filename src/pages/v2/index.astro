@@ -107,8 +107,10 @@ import Margin from '../../components/v2/Margin.astro';
             // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
             const go = params.get('go');
             // with ?low the engine arrives on its first frame, before createWorld has returned
+            // a star waits for the catalogue to load, for up to 15 seconds
+            const giveUp = performance.now() + 15_000;
             const goWhenReady = () => {
-              if (!world) { setTimeout(goWhenReady, 50); return; }
+              if (!world || (go && !world.canFlyTo(go) && go.startsWith('star:') && performance.now() < giveUp)) { setTimeout(goWhenReady, 100); return; }
               if (go && world.canFlyTo(go)) {
                 const d = Number(params.get('d'));
                 world.flyTo({ target: go, distanceKm: d > 0 ? d : undefined }).catch(() => {});
