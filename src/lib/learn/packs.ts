@@ -137,9 +137,9 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'the-kinds-of-planet-out-there', 'trappist-1'] },
       { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'the-habitable-zone', 'ocean-moons'] },
-      { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone', 'what-life-needs'] },
+      { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone', 'what-life-needs', 'looking-for-life-in-the-solar-system'] },
     ],
-    coming: ['Looking for life in the Solar System', 'Listening for someone else'],
+    coming: ['Listening for someone else'],
     look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];
