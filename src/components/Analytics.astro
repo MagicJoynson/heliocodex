@@ -12,7 +12,7 @@ import { ANALYTICS_TOKEN, OPT_OUT_KEY } from '../lib/analytics';
         if (localStorage.getItem(optOut) === '1') return;
       } catch (e) {}
       var s = document.createElement('script');
-      s.defer = true;
+      s.type = 'module';
       s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
       s.setAttribute('data-cf-beacon', JSON.stringify({ token: token }));
       document.head.appendChild(s);
