@@ -1,0 +1,9 @@
+title: Galaxy clusters
+strand: galaxies
+order: 6
+summary: "A cluster is hundreds or thousands of galaxies held together by gravity. Most of what is in one is not galaxies at all: it is hot gas and dark matter."
+scene: "Real photographs of the Coma Cluster and of a far cluster bending light, a real X-ray picture of the hot gas in a cluster, and drawings of how big a cluster is and how much of it cannot be seen."
+view: { target: cosmic-web }
+terms: [galaxy-cluster, galaxy, elliptical-galaxy, x-rays, dark-matter, gravitational-lensing, local-group, supercluster]
+needs: [kinds-of-galaxy, the-cosmic-web]
+next: [dark-matter-and-dark-energy, gravity-as-a-lens]

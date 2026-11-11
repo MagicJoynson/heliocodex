@@ -1,0 +1,9 @@
+title: How we know there was a Big Bang
+strand: the-universe
+order: 5
+summary: "Nobody watched the universe begin. Four separate lines of evidence, found in different ways by different people, all point to the same hot, dense start."
+scene: "A drawing of the expansion run backwards, the rule that further galaxies recede faster, the real map of the oldest light, the mix of the first elements, and a real photograph of galaxies seen as they were when the universe was young."
+view: { target: cmb }
+terms: [big-bang, redshift, hubble-constant, cosmic-microwave-background, big-bang-nucleosynthesis, helium, hydrogen, look-back-time]
+needs: [the-expanding-universe, the-first-minutes]
+next: [the-oldest-light, dark-matter-and-dark-energy]
