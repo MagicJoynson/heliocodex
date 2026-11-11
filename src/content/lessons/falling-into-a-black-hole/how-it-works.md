@@ -25,6 +25,8 @@ Had the black hole been spinning fast, NASA adds, the traveller on the fly-by wo
 
 **How far to trust this.** No instrument has been near a black hole, so nothing here has been watched happening. It rests on general relativity, which has passed every test set for it so far, including the picture at the top of this lesson, where the size of the bright ring came out as the theory said it would.
 
+<figure class="video" data-yt="chhcwk4-esM" data-title="NASA’s plunge into a black hole, explained"><figcaption><b>A computer simulation, with a spoken commentary.</b> The fall described in this lesson, as worked out on a NASA supercomputer: the view from the camera on the way in, across the edge and beyond. Credit: NASA’s Goddard Space Flight Center/J. Schnittman and B. Powell.</figcaption></figure>
+
 <figure class="photo">
   <img src="/img/learn/black-hole-disc-simulation-nasa.jpg" alt="A glowing orange disc of streaked gas seen at a slant, with a round black hole in the middle outlined by a thin bright ring." width="1024" height="700" loading="lazy" />
   <figcaption><b>A computer simulation, not a photograph.</b> A black hole and its disc of hot gas as general relativity says they would look, worked out at NASA in 2019. The colours were chosen. Credit: NASA's Goddard Space Flight Center/Jeremy Schnittman.</figcaption>
