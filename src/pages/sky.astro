@@ -6,15 +6,13 @@ import Base from '../layouts/Base.astro';
 import '../styles/reading.css';
 import { CITIES } from '../lib/sky/cities';
 import { pageStars } from '../lib/sky/starlist';
-import { SKY_STARS } from '../lib/sky/chart';
 import { MODERN, LY_PER_PC } from '../lib/sky/star';
 // which of the stars on the chart have a page of their own
-const pages = Object.fromEntries(pageStars().filter((s) => s.index < SKY_STARS).map((s) => [s.index, s.slug]));
 // stars whose distance here is a newer one than the star file's, so the card and the star's page agree
 const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((s) => [s.index, [s.distPc * LY_PER_PC, s.lumSun]]));
 ---
 <Base title="The sky tonight" path="/sky" description="The sky above you tonight: the stars, the planets, the Moon and the constellations, worked out for where you are. Turn round, look up, and touch anything to find out what it is.">
-  <article class="sky" data-pages={JSON.stringify(pages)} data-newer={JSON.stringify(newer)}>
+  <article class="sky" data-newer={JSON.stringify(newer)}>
     <div class="sky-view" id="sky-view">
       <canvas id="sky-canvas" role="img" aria-label="The sky as seen from the ground. The list under the picture says what is up."></canvas>
       <p class="sky-hold" id="sky-hold">Fetching the stars…</p>
@@ -94,7 +92,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
           <p>Slide the bar to move through the night and watch the sky turn. Touch any bright star, a planet or the Moon to find out what it is.</p>
           <p>"Whole sky" tips the view straight up, so the point overhead is in the middle and the horizon runs round the edge. East is then on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down.</p>
           <p>A bigger dot is a brighter star. The colours are real: blue-white stars are the hottest and orange ones the coolest. Things close to the ground may be hidden by houses, trees or haze.</p>
-          <p><a href="/stars">Meet a star</a> has a page for each of the named ones.</p>
+          <p><a href="/stars">Meet a star</a> has a page for every star on the map.</p>
         </div>
       </section>
 
@@ -127,7 +125,10 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   const place = $<HTMLSelectElement>('sky-place'), shift = $<HTMLInputElement>('sky-shift');
   const lat = $<HTMLInputElement>('sky-lat'), lon = $<HTMLInputElement>('sky-lon');
   const card = $('sky-card'), list = $('sky-list'), line = $('sky-line'), note = $('sky-place-note'), dayNote = $('sky-note'), hint = $('sky-hint');
-  const pages = JSON.parse(root.dataset.pages!) as Record<string, string>;
+  // a name and a page for every star, fetched once the map is up: see /data/sky/names.json
+  let every: (string | string[])[] = [];
+  const namesReady = fetch('/data/sky/names.json').then((r) => (r.ok ? r.json() : [])).then((d) => { every = d; }).catch(() => {});
+  const slug = (name: string) => name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const newer = JSON.parse(root.dataset.newer!) as Record<string, [number, number]>;
   const nf = (n: number, d = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d });
   const calm = matchMedia('(prefers-reduced-motion: reduce)');
@@ -268,7 +269,9 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     // while the time slides, only the line that says where it is needs to change
     if (!fresh) { const old = card.querySelector('.sky-card-text'); if (old && old.textContent !== first) old.textContent = first; return; }
     const parts: HTMLElement[] = [el('p', k.kind === 'star' ? 'A star' : k.kind === 'planet' ? 'A planet' : k.kind === 'moon' ? 'Our moon' : 'Our star', 'label')];
-    parts.push(el('h2', k.name || 'A star with no common name'));
+    const known = k.kind === 'star' ? every[k.index!] : undefined, called = k.name || (Array.isArray(known) ? known[0] : known) || '';
+    parts.push(el('h2', called || 'A star with no common name'));
+    if (k.kind === 'star' && !k.name && called) parts.push(el('p', Array.isArray(known) ? 'It has no name of its own. This is its name by constellation.' : 'It has no name of its own. This is its number in a catalogue of stars.', 'sky-card-text'));
     const lines: string[] = [first];
     if (k.kind === 'star') {
       if (newer[k.index!]) [k.ly, k.suns] = newer[k.index!];
@@ -286,7 +289,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     for (const l of lines) parts.push(el('p', l, 'sky-card-text'));
     const go = document.createElement('p'); go.className = 'sky-card-links';
     const link = (href: string, text: string) => { const a = document.createElement('a'); a.href = href; a.textContent = text; go.append(a); };
-    if (k.kind === 'star') { if (pages[k.index!]) link(`/stars/${pages[k.index!]}`, `Meet ${k.name}`); link(`/v2?go=star:${k.index}`, 'Fly to it in 3D'); }
+    if (k.kind === 'star') { if (called) link(Array.isArray(known) || !known ? `/stars/${Array.isArray(known) && known[1] ? known[1] : slug(called)}` : `/stars/catalogue?n=${k.index}`, called.length > 22 ? 'Meet this star' : `Meet ${called}`); link(`/v2?go=star:${k.index}`, 'Fly to it in 3D'); }
     if (k.kind === 'planet') { link(`/${k.id}`, `About ${PLANET_NAMES[k.id]}`); link(`/v2?go=${k.id}`, 'Fly to it in 3D'); }
     if (k.kind === 'moon') link('/v2?go=moon', 'Fly to it in 3D');
     if (k.kind === 'sun') link('/sun', 'About the Sun');
@@ -404,15 +407,15 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     data = d; hold.remove(); paint();
     // a star page can send its star here to be pointed out
     const asked = new URLSearchParams(location.search).get('star');
-    if (asked && /^\d+$/.test(asked)) {
+    if (asked && /^\d+$/.test(asked)) namesReady.then(() => {
       const looking = view;
       view = wholeSky(w, h, room); paint();
-      const found = marks.find((k) => k.id === `star:${asked}`), name = d.names.get(Number(asked));
+      const found = marks.find((k) => k.id === `star:${asked}`), known = every[Number(asked)], name = d.names.get(Number(asked)) ?? (Array.isArray(known) ? known[0] : known);
       view = looking;
       if (found) { view = { ...facing(found.azDeg), altDeg: Math.max(20, Math.min(80, found.altDeg)) }; paint(); const again = marks.find((k) => k.id === found.id); if (again) show(again); }
       else if (name) fill([el('p', 'A star', 'label'), el('h2', name), el('p', `${name} is below the horizon from ${from()} at this moment. Slide the time on, or choose another place, and touch it when it comes up.`, 'sky-card-text')]);
       hint.classList.add('gone'); render();
-    }
+    });
   }).catch(() => { hold.textContent = 'The stars could not be fetched. Check your connection and load the page again.'; });
 </script>
 

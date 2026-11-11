@@ -1,30 +1,28 @@
 ---
 // Meet a star: the star whose light is as old as you are, then every star that has a name.
-import { readFileSync } from 'node:fs';
 import Reading from '../../layouts/Reading.astro';
-import { pageStars } from '../../lib/sky/starlist';
-import { LY_PER_PC, tint, round2, type Star } from '../../lib/sky/star';
+import { properStars, allStars } from '../../lib/sky/starlist';
+import { LY_PER_PC, tint, round2, slugOf, starHref } from '../../lib/sky/star';
 import { declination } from '../../lib/sky/starlist';
 
-const stars = pageStars(), slugs = new Map(stars.map((s) => [s.index, s.slug]));
+const stars = properStars(), every = allStars();
+const groups = [...new Set(every.map((s) => s.constellation).filter(Boolean))].sort().map((name) => ({ name, count: every.filter((s) => s.constellation === name && s.appMag <= 6.5).length }));
 const brightest = [...stars].sort((a, b) => a.appMag - b.appMag).slice(0, 20);
 const nearest = [...stars].sort((a, b) => a.distPc - b.distPc).slice(0, 12);
 const letters = [...new Set(stars.map((s) => s.slug[0].toUpperCase()))].sort();
 const byLetter = letters.map((l) => ({ l, stars: stars.filter((s) => s.slug[0].toUpperCase() === l).sort((a, b) => a.slug.localeCompare(b.slug)) }));
 
 // for the birthday star: every star the eye can see within about 120 light years, named or not
-const meta = JSON.parse(readFileSync('public/data/deep/stars-meta.json', 'utf8')) as { fields: string[]; stars: unknown[][] };
-const near = meta.stars
-  .map((row) => Object.fromEntries(meta.fields.map((f, i) => [f, row[i]])) as unknown as Star)
+const near = every
   .filter((s) => s.appMag <= 6.5 && s.distPc * LY_PER_PC <= 121)
-  .map((s) => [s.proper || s.catalogue || (s.hip ? `HIP ${s.hip}` : `HD ${s.hd}`), Math.round(s.distPc * LY_PER_PC * 10) / 10, Math.round(s.appMag * 10) / 10, slugs.get(s.index) ?? '', s.index, Math.round(declination(s.index))]);
+  .map((s) => [s.name, Math.round(s.distPc * LY_PER_PC * 10) / 10, Math.round(s.appMag * 10) / 10, starHref(s), s.index, Math.round(declination(s.index))]);
 const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
 ---
-<Reading title="Meet a star" path="/stars" description={`Find the star whose light is as old as you are, and meet ${stars.length} stars that have names: how far each is, how bright, how hot, and where it is in your sky.`}>
+<Reading title="Meet a star" path="/stars" description={`Find the star whose light is as old as you are, and meet any of the ${every.length.toLocaleString('en-GB')} stars you can see: how far each is, how bright, how hot, and where it is in your sky.`}>
   <header class="reading-head">
     <p class="label">Meet a star</p>
     <h1>Pick one and say hello</h1>
-    <p class="lead">Every star you can see is a sun, with its own distance, colour and story. Here are {stars.length} that people have given names to. Start with the one whose light is as old as you are.</p>
+    <p class="lead">Every star you can see is a sun, with its own distance, colour and story. Every one the eye can see has a page here, {every.length.toLocaleString('en-GB')} in all. Only {stars.length} have been given a name. The rest go by a Greek letter, a number or their place in a catalogue. Start with the one whose light is as old as you are.</p>
   </header>
 
   <section class="row">
@@ -59,7 +57,7 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
   </section>
 
   <section class="row">
-    <div class="hang sticks"><h2>All of them</h2><p class="note">{stars.length} stars, in the order of the alphabet.</p></div>
+    <div class="hang sticks"><h2>The ones with names</h2><p class="note">{stars.length} stars, in the order of the alphabet.</p></div>
     <div class="all">
       {byLetter.map((g) => (
         <div class="letter">
@@ -68,6 +66,13 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
         </div>
       ))}
     </div>
+  </section>
+
+  <section class="row" id="constellations">
+    <div class="hang sticks"><h2>Every star, by constellation</h2><p class="note">The sky is divided into 88 constellations, and every star belongs to one. Each list has all its stars that the eye can see.</p></div>
+    <ul class="plain-list cons">
+      {groups.map((g) => <li><a href={`/stars/in/${slugOf(g.name)}`}>{g.name}</a><span>{g.count}</span></li>)}
+    </ul>
   </section>
 
   <section class="row small">
@@ -81,7 +86,7 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
 <script>
   import { CITIES, guess } from '../../lib/sky/cities';
   import { readPlace } from '../../lib/sky/remember';
-  type Near = [name: string, ly: number, mag: number, slug: string, index: number, dec: number];
+  type Near = [name: string, ly: number, mag: number, href: string, index: number, dec: number];
   const form = document.getElementById('age-form') as HTMLFormElement, out = document.getElementById('age-out')!;
   const near = JSON.parse(form.dataset.near!) as Near[];
   const p = (html: string) => { const e = document.createElement('p'); e.innerHTML = html; return e; };
@@ -102,16 +107,16 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     const top = (s: Near) => 90 - Math.abs(here.lat - s[5]), seen = (s: Near) => top(s) >= 15;
     const exact = near.filter((s) => Math.abs(s[1] - age) <= 0.5).sort((a, b) => Number(seen(b)) - Number(seen(a)) || a[2] - b[2]);
     const star = exact[0] ?? [...near].sort((a, b) => Math.abs(a[1] - age) - Math.abs(b[1] - age))[0];
-    const [name, ly, mag, slug, index] = star, from = here.name === 'Where you are' ? 'where you are' : here.name;
+    const [name, ly, mag, href, index] = star, from = here.name === 'Where you are' ? 'where you are' : here.name;
     const n = safe(name), sight = !seen(star) ? '' : mag <= 2 ? 'It is one of the bright stars, easy to pick out.' : mag <= 4.5 ? 'It is easy to see by eye on a clear night.' : 'It is faint, and needs a dark sky to see by eye.';
     const parts = [p(`<strong class="found">${n}</strong>`)];
     parts.push(p(exact.length
       ? `${n} is ${ly.toFixed(1)} light years away. The light you see from it tonight set off in about ${born}, around the time you were born, and has been on its way ever since. ${sight}`
       : `No star you can see by eye is exactly ${age} light years away. The closest match is ${n}, at ${ly.toFixed(1)} light years. ${sight}`));
     if (!seen(star)) parts.push(p(top(star) < 0 ? `It never rises from ${safe(from)}. You would have to travel ${here.lat > 0 ? 'south' : 'north'} to see it.` : `From ${safe(from)} it only just clears the horizon, so it is hard to see.`));
-    const links = [slug ? `<a href="/stars/${slug}">Meet ${n}</a>` : '', mag < 4.5 ? `<a href="/sky?star=${index}">Find it on the sky map</a>` : '', `<a href="/v2?go=star:${index}">Fly to it in 3D</a>`].filter(Boolean);
+    const links = [`<a href="${href}">Meet ${n}</a>`, mag < 4.5 ? `<a href="/sky?star=${index}">Find it on the sky map</a>` : '', `<a href="/v2?go=star:${index}">Fly to it in 3D</a>`].filter(Boolean);
     const row = p(links.join('')); row.className = 'age-links'; parts.push(row);
-    if (exact.length > 1) parts.push(p(`${exact.length - 1 === 1 ? 'One other star' : `${exact.length - 1} other stars`} you can see by eye ${exact.length - 1 === 1 ? 'is' : 'are'} at the same distance: ${exact.slice(1, 5).map((s) => (s[3] ? `<a href="/stars/${s[3]}">${safe(s[0])}</a>` : safe(s[0]))).join(', ')}${exact.length > 5 ? ' and more' : ''}.`));
+    if (exact.length > 1) parts.push(p(`${exact.length - 1 === 1 ? 'One other star' : `${exact.length - 1} other stars`} you can see by eye ${exact.length - 1 === 1 ? 'is' : 'are'} at the same distance: ${exact.slice(1, 5).map((s) => `<a href="${s[3]}">${safe(s[0])}</a>`).join(', ')}${exact.length > 5 ? ' and more' : ''}.`));
     if (age > 60) parts.push(p('For stars this far away the distance is known to about one light year, so the year is close but not exact.'));
     out.replaceChildren(...parts);
   });
@@ -137,4 +142,9 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
   .letter li { padding: .12rem 0; }
   .letter a { font: 300 1.04rem/1.5 var(--r-serif); text-decoration: none; color: var(--ink-soft); display: inline-block; padding: .18rem 0; }
   .letter a:hover { color: var(--accent); }
+  .cons { columns: 4 11rem; column-gap: 2.4rem; }
+  .cons li { break-inside: avoid; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .2rem 0; border-top: 1px solid var(--rule); }
+  .cons a { font: 300 1.04rem/1.5 var(--r-serif); text-decoration: none; color: var(--ink-soft); padding: .22rem 0; }
+  .cons a:hover { color: var(--accent); }
+  .cons span { font: 400 .72rem/1 var(--r-mono); color: var(--ink-faint); }
 </style>

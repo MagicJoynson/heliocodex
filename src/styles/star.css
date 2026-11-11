@@ -1,0 +1,26 @@
+/* A star's page: used by the pages built ahead of time and by the shared page for catalogue stars. */
+.star-head { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(16px, 4vw, 64px); align-items: center; margin-bottom: clamp(32px, 5vw, 64px); }
+.star-head .label { margin-bottom: 1.2rem; }
+.star-head h1 { font: 300 clamp(3rem, 9vw, 7rem)/.95 var(--r-serif); letter-spacing: -.03em; margin: 0 0 1.4rem; overflow-wrap: anywhere; }
+.star-head .lead { font: 300 clamp(1.12rem, 1rem + .45vw, 1.34rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0 0 1.6rem; max-width: 34rem; }
+.star-links { display: flex; flex-wrap: wrap; gap: .4rem 1.8rem; margin: 0; font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; }
+.star-links a { text-decoration: none; padding: .55rem 0; border-bottom: 1px solid var(--accent); }
+.star-face { margin: 0; }
+.star-face canvas { display: block; width: 100%; aspect-ratio: 1; max-height: 62svh; }
+.star-face figcaption { font: italic 300 .84rem/1.45 var(--r-serif); color: var(--ink-faint); text-align: center; max-width: 24rem; margin: 0 auto; }
+.star .prose .big { font: 300 clamp(2rem, 5vw, 3.2rem)/1.05 var(--r-serif); color: var(--ink); letter-spacing: -.01em; margin: 0 0 .9rem; font-variant-numeric: lining-nums; }
+.swatches { display: flex; flex-wrap: wrap; gap: .6rem 2rem; font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+.swatches span { display: inline-flex; align-items: center; gap: .6rem; }
+.swatches i { width: 1.4rem; height: 1.4rem; border-radius: 50%; display: inline-block; }
+.names { margin: 0; display: grid; gap: .7rem; }
+.names div { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 1rem; }
+.names dt { font: 400 .72rem/1.6 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+.names dd { margin: 0; color: var(--ink); }
+@media (max-width: 760px) {
+  .star-head { grid-template-columns: minmax(0, 1fr); }
+  .star-face { order: -1; }
+  .star-face canvas { max-height: 38svh; }
+  .names div { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+
+.star-head h1.long { font-size: clamp(2.2rem, 6vw, 4.6rem); }

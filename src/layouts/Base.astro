@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
-interface Props { title: string; description?: string; path?: string; accent?: string }
-const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent } = Astro.props;
+interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean }
+const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex } = Astro.props;
 const url = new URL(path, Astro.site).toString();
 const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
 ---
@@ -12,6 +12,7 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{full}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={url} />
     <meta property="og:title" content={full} />
     <meta property="og:description" content={description} />

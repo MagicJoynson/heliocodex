@@ -1,0 +1,44 @@
+---
+// One page shared by the stars known only by a catalogue number, about 5,600 of them. The star is
+// chosen by ?n=<its place in the star file> and its page is written in the browser from the same
+// words and sums as the pages built ahead of time.
+import Base from '../../layouts/Base.astro';
+import '../../styles/reading.css';
+import '../../styles/star.css';
+---
+<Base title="A catalogue star" path="/stars/catalogue" description="A star known by its number in a catalogue: how far it is, how bright, how hot, and where it is in your sky." noindex>
+  <article class="reading star" id="cat-star">
+    <header class="reading-head">
+      <p class="label"><a href="/stars">Meet a star</a></p>
+      <h1>Finding the star…</h1>
+      <p class="lead" id="cat-note">Most stars have no name, only a number in a catalogue. This page introduces any one of them.</p>
+      <noscript><p class="lead">This page needs JavaScript to look the star up. <a href="/stars">Meet a star</a> lists the stars that have pages of their own.</p></noscript>
+    </header>
+  </article>
+</Base>
+
+<script>
+  import { starPage, nameOf, type PageStar } from '../../lib/sky/star';
+  import { enliven } from '../../lib/sky/starpage';
+
+  const page = document.getElementById('cat-star')!, n = Number(new URLSearchParams(location.search).get('n') ?? NaN);
+  const fail = (title: string, why: string) => {
+    page.querySelector('h1')!.textContent = title;
+    document.getElementById('cat-note')!.innerHTML = `${why} <a href="/stars">Meet a star</a> lists every star by constellation.`;
+  };
+  if (!Number.isInteger(n) || n < 0) fail('No star chosen', 'This page shows one star at a time, picked from the sky map or from a constellation\'s list.');
+  else fetch('/data/stars/catalogue.json').then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).then((d: { fields: string[]; cons: Record<string, string>; stars: (string | number | null)[][] }) => {
+    const row = d.stars.find((s) => s[0] === n);
+    if (!row) return fail('Not in this list', 'That number is not one of the catalogue stars. It may be a star with a page of its own.');
+    const f = Object.fromEntries(d.fields.map((k, i) => [k, row[i]])) as Record<string, never>;
+    const constellation = d.cons[f.con] ?? '';
+    const base = { index: f.index, proper: '', catalogue: '', hip: f.hip, hd: f.hd, con: f.con, spect: f.spect, distPc: f.distPc, appMag: f.appMag, absMag: 0, bv: f.bv, lumSun: f.lumSun };
+    const star: PageStar = { ...base, name: nameOf(base, constellation).name, slug: '', dir: [f.east, f.north, f.up], constellation };
+    const made = starPage(star);
+    page.dataset.dir = star.dir.join(','); page.dataset.name = star.name; page.dataset.rgb = made.rgb; page.dataset.lum = String(star.lumSun);
+    page.innerHTML = made.html;
+    document.title = `${star.name} · Heliocodex`;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', made.description);
+    enliven(page);
+  }).catch(() => fail('The star list did not load', 'Check your connection and try again.'));
+</script>

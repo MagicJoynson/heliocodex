@@ -79,3 +79,81 @@ export const MODERN: Record<string, { pc: number; by: string; url: string; note:
 export const DISTANCE_NOTES: Record<string, string> = {
   deneb: 'Deneb is one of the hardest bright stars to place. The satellite figure above is about 1,400 light years, but a 2008 study of its light put it at about 2,600. Nobody yet knows which is nearer the truth.',
 };
+
+/** A star with the name it goes by here, where its page is, and where it is in the sky. */
+export interface PageStar extends Star {
+  /** The best name it has: its own name, else its name by constellation, else a catalogue number. */
+  name: string;
+  /** The last part of its own address under /stars/, or '' when it shares the catalogue page. */
+  slug: string;
+  dir: [number, number, number];
+  constellation: string;
+}
+
+/** The best name a star has, and whether that name is only a catalogue number. */
+export function nameOf(s: Star, constellation: string): { name: string; numbered: boolean } {
+  if (s.proper) return { name: s.proper, numbered: false };
+  if (s.catalogue) return { name: s.catalogue, numbered: false };
+  if (s.hip) return { name: `HIP ${s.hip}`, numbered: true };
+  if (s.hd) return { name: `HD ${s.hd}`, numbered: true };
+  return { name: constellation ? `An unnamed star in ${constellation}` : 'An unnamed star', numbered: true };
+}
+/** Where a star's page is. */
+export const starHref = (s: { slug: string; index: number }) => (s.slug ? `/stars/${s.slug}` : `/stars/catalogue?n=${s.index}`);
+
+const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+const BAYER = /^(Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda|Mu|Nu|Xi|Omicron|Pi|Rho|Sigma|Tau|Upsilon|Phi|Chi|Psi|Omega)\b/;
+
+/**
+ * A star's whole page, as the words and marks that go inside its <article>. The pages built ahead
+ * of time and the shared page for catalogue stars both use this, so every star is described the same way.
+ */
+export function starPage(star: PageStar): { html: string; description: string; rgb: string; byEye: boolean } {
+  const ly = star.distPc * LY_PER_PC, hasColour = star.bv !== null && star.bv !== undefined && !Number.isNaN(star.bv);
+  const kelvin = hasColour ? Math.round(temperature(star.bv) / 100) * 100 : 0, rgb = (hasColour ? tint(star.bv) : [236, 231, 220]).join(',');
+  const { colour, stage } = kind(star.spect), modern = MODERN[star.slug], spect = tidySpect(star.spect);
+  const doubt = modern?.note ?? DISTANCE_NOTES[star.slug] ?? distanceNote(star.distPc);
+  const rank = star.index + 1, byEye = star.appMag <= 6.5, onChart = star.appMag < 4.5, lum = star.lumSun, n = esc(star.name);
+  const unnamed = !star.proper && !star.catalogue && !star.hip && !star.hd, called = unnamed ? 'This star' : n, it = unnamed ? 'this star' : n;
+  const lumText = lum >= 1.5 ? `${round2(lum)} times as much visible light as the Sun` : lum > 0.67 ? 'about as much visible light as the Sun' : lum >= 0.01 ? `${round2(lum * 100)} per cent of the Sun's visible light` : `one ${round2(1 / lum)}th of the Sun's visible light`;
+  const lead = `${colour ? `${called} is ${colour}` : `${called} is a star`}${star.constellation ? `, in the constellation ${esc(star.constellation)}.` : '.'}`;
+  const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appMag <= 1.5 ? 'It is one of the brightest stars in the whole sky, easy to see even from a town.' : star.appMag <= 3.5 ? 'It is easy to see by eye on a clear night.' : star.appMag <= 5 ? 'It can be seen by eye away from bright lights.' : 'It can just be seen by eye from a really dark place.';
+  const row = (title: string, body: string, small = false) => `<section class="row${small ? ' small' : ''}"><div class="hang"><h2>${title}</h2></div><div class="prose">${body}</div></section>`;
+  const names: [string, string][] = [];
+  if (star.proper) names.push(['Its own name', esc(star.proper)]);
+  if (star.catalogue) names.push([BAYER.test(star.catalogue) ? 'By constellation (Bayer)' : /^\d/.test(star.catalogue) ? 'By constellation (Flamsteed)' : 'By constellation', esc(star.catalogue)]);
+  if (star.hip) names.push(['Hipparcos catalogue', `HIP ${star.hip}`]);
+  if (star.hd) names.push(['Henry Draper catalogue', `HD ${star.hd}`]);
+  if (spect) names.push(['Spectral type', esc(spect)]);
+  const whyNames = unnamed
+    ? '<p>It has no name and no catalogue number in the data this site uses. Stars like that are usually the fainter one of a close pair, listed under the brighter star beside it.</p>'
+    : !star.proper && !star.catalogue
+      ? '<p>Nobody has given this star a name of its own. Like most stars it goes by its number in a catalogue: a long list in which astronomers have measured and numbered the stars one by one.</p>'
+      : !star.proper
+        ? `<p>It has no name of its own. ${BAYER.test(star.catalogue) ? 'Its name by constellation is a Greek letter and the constellation it is in, a way of naming begun by Johann Bayer in 1603.' : /^\d/.test(star.catalogue) ? 'Its name by constellation is a number and the constellation it is in, from the catalogue of John Flamsteed, the first Astronomer Royal.' : 'It goes by a name made from the constellation it is in.'}</p>`
+        : '';
+  const html = [
+    `<header class="star-head"><div>
+      <p class="label"><a href="/stars">Meet a star</a>${star.constellation ? ` / <a href="/stars/in/${slugOf(star.constellation)}">${esc(star.constellation)}</a>` : ''}</p>
+      <h1${star.name.length > 14 ? ' class="long"' : ''}>${n}</h1>
+      <p class="lead">${lead} ${stage}</p>
+      <p class="star-links"><a href="/v2?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p>
+    </div>
+    <figure class="star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure></header>`,
+    row('How far', `<p class="big"><span data-ly="${star.distPc < 60 ? ly : ''}">${round2(ly)}</span> light years</p>
+      <p>The light you see from ${it} tonight set off <span data-left>about ${round2(ly)} years ago</span>. Everything we know about it is that much out of date.</p>${doubt ? `<p>${doubt}</p>` : ''}`),
+    row('How bright', `<p class="big">${lum >= 1.5 ? `${round2(lum)} Suns` : lum > 0.67 ? 'About one Sun' : `${round2(lum)} of a Sun`}</p>
+      <p>It gives out ${lumText}. ${unnamed ? '' : rank <= 20 ? `From the Earth it is ${placing(rank)} star in the night sky.` : rank <= 100 ? 'It is one of the hundred brightest stars in the night sky.' : ''} ${sight}</p>
+      <p>Astronomers put its brightness in our sky at magnitude ${star.appMag.toFixed(2).replace('-', '−')}. Smaller numbers are brighter, and the faintest stars the eye can see are about 6.</p>`),
+    hasColour
+      ? row('How hot', `<p class="big">${star.bv < -0.05 ? `Hotter than ${nf(Math.floor(kelvin / 1000) * 1000)} K` : `About ${nf(kelvin)} K`}</p>
+      <p>That is the temperature of its surface, worked out from its colour, so it is a guide and not a measurement. ${star.bv < -0.05 ? 'For stars as blue as this one, colour is a poor thermometer: most of their light is ultraviolet, which the eye and this sum do not see, and the true figure can be far higher.' : 'It could be out by a few hundred degrees.'} The Sun's is 5,772 K. Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>
+      <p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>`)
+      : row('How hot', `<p>Not known here. The catalogue this site uses has no colour measurement for this star, and colour is what the temperature is worked out from.${colour ? ` Its spectral type says it is ${colour}.` : ''}</p>`),
+    byEye ? row('In your sky now', '<p data-now>Working it out…</p>') : '',
+    row('Its names', `${whyNames}${names.length ? `<dl class="names">${names.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}${spect ? '' : '<p>Its spectral type, the code for what kind of star it is, is not in the catalogue.</p>'}`, true),
+    row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.</p>
+      <p>To read more: <a href="/learn/colour-and-brightness">Colour and brightness</a>, <a href="/learn/how-stars-live-and-die">How stars live and die</a>, <a href="/learn/measuring-distance">Measuring distance</a>.</p>`, true),
+  ].join('\n');
+  return { html, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${round2(ly)} light years away.`, rgb, byEye };
+}
