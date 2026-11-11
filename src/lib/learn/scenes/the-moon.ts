@@ -26,7 +26,7 @@ const near = photoScene({
 
 // ---- 2. true sizes, true distance
 const gapScene: Scene = {
-  caption: 'The Earth and the Moon at their true sizes and their true distance apart. The flash is light crossing the gap at its real speed, which takes 1.28 seconds (my own sum from the distance and the speed of light). A drawing, to scale.',
+  caption: 'The Earth and the Moon at their true sizes and their true distance apart. The flash is light crossing the gap at its real speed, which takes 1.28 seconds (worked out here from the distance and the speed of light). A drawing, to scale.',
   stillAt: 0.6,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.5);
