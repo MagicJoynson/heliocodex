@@ -323,6 +323,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     if (pc < 5e9) return { id: 'cosmic-web', band: 'cosmic' };
     return { id: 'cmb', band: 'cosmic' };
   }
+  let starAim = -1; // the catalogue star last flown to, or -1
   let lastCtx: Context | null = null, ctxAt = 0, ctxClock = 0, forceCtx = false;
   // the bodies that can be "near": the Sun, the planets, every moon with a measured size
   const SPHERES = ['sun', ...PLANETS, ...allBodies.filter((b) => b.kind === 'moon' && b.meanRadiusKm).map((b) => b.id)];
@@ -484,12 +485,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const h = Math.max(0, id === nearId ? f.alt : d - r);
       const fromSun = len(cam);
       const far = placeAt(fromSun, id);
+      // beside the star last flown to: within 0.05 pc (about 10,000 au) of it
+      const sp = starAim >= 0 ? starOf(`star:${starAim}`) : null;
+      const besideStar = sp && len(sub(sp, cam)) < 0.05 * PC ? starAim : -1;
       const band: Context['band'] = far ? far.band : h < 100_000 ? 'surface' : h < 30 * r ? 'orbit' : 'system';
       const km = (band === 'surface' || band === 'orbit' ? h : fromSun) / 1000;
       const t = performance.now();
       const clockMoved = Math.abs(system.timeMs - ctxClock) > 86_400_000;
-      if (forceCtx || !lastCtx || lastCtx.near !== (far ? far.id : id) || lastCtx.band !== band || (t - ctxAt > 1000 && (clockMoved || Math.abs(km - lastCtx.km) > lastCtx.km * 0.05))) {
-        lastCtx = { near: far ? far.id : id, band, km, timeIso: new Date(system.timeMs).toISOString() };
+      if (forceCtx || !lastCtx || lastCtx.near !== (far ? far.id : id) || lastCtx.band !== band || (lastCtx.star ?? -1) !== besideStar || (t - ctxAt > 1000 && (clockMoved || Math.abs(km - lastCtx.km) > lastCtx.km * 0.05))) {
+        lastCtx = { near: far ? far.id : id, band, km, timeIso: new Date(system.timeMs).toISOString(), ...(besideStar >= 0 ? { star: besideStar } : {}) };
         ctxAt = t; ctxClock = system.timeMs; forceCtx = false;
         for (const cb of contextCbs) guarded('context listener', () => cb(lastCtx!), () => contextCbs.delete(cb));
       }
@@ -554,6 +558,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (pendingFly) { pendingFly.reject(abort('replaced by another flight')); pendingFly = null; }
       if (view.timeIso) system.setTime(view.timeIso);
       const sp = starOf(id);
+      { const m = /^star:(\d+)$/.exec(id); starAim = sp && m ? Number(m[1]) : -1; }
       const P = PLACES[id] ?? (sp ? { centre: () => sp, dist: 2000 * AU, dir: () => norm(add(norm(scale(sp, -1)), [0, 0.15, 0])) } : undefined);
       if (P) {
         focusId = ''; focusHold = 0;
