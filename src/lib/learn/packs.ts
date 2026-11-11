@@ -38,10 +38,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}orion-nebula-hubble.jpg`, width: 1100, height: 1100, alt: 'A great glowing cloud of pink, orange and grey gas with a bright hollow near the middle.', caption: 'The Orion Nebula, which you can see by eye as the fuzzy middle "star" of Orion’s sword. Credit: NASA, ESA, M. Robberto (STScI/ESA) and the Hubble Space Telescope Orion Treasury Project Team, CC BY 4.0.' },
     stages: [
       { title: 'Getting your bearings', about: 'How far away things are, and the units used to say so.', lessons: ['how-big-is-space', 'measuring-distance'] },
-      { title: 'What changes, and why', about: 'The year, the month, and the shadows that cause eclipses.', lessons: ['seasons', 'phases-and-eclipses', 'tides'] },
+      { title: 'What changes, and why', about: 'The night, the year, the month, and the shadows that cause eclipses.', lessons: ['why-the-sky-turns', 'seasons', 'phases-and-eclipses', 'tides'] },
       { title: 'The stars overhead', about: 'The patterns, the colours, and what the eye can and cannot see.', lessons: ['constellations', 'the-stars-you-can-see', 'colour-and-brightness', 'star-clusters'] },
     ],
-    coming: ['Why the sky turns', 'The sky through the year', 'Looking up for yourself'],
+    coming: ['The sky through the year', 'Looking up for yourself'],
     look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The stars, planets and constellations over your own horizon at this moment.' }, { href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope.' }],
   },
   {
@@ -51,12 +51,12 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}sun-sunspots-sdo.jpg`, width: 1024, height: 990, alt: 'The whole Sun as an orange disc with a cluster of dark spots below the middle.', caption: 'The Sun in October 2014, with a group of sunspots wider than ten Earths. Credit: NASA/SDO.' },
     stages: [
       { title: 'The Sun', about: 'The star in the middle, which holds almost all of the mass.', lessons: ['what-the-sun-is', 'how-the-sun-shines', 'the-active-sun', 'the-suns-reach'] },
-      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
-      { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
+      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
+      { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'the-moon', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
       { title: 'The small things, and the edge', about: 'Asteroids, comets, falling rocks and the cloud that surrounds it all.', lessons: ['rubble-and-ice', 'comets', 'falling-rocks', 'the-oort-cloud'] },
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
-    coming: ['The Earth as a planet', 'The Moon', 'What counts as a planet', 'Inside planets and their magnetic shields', 'Things that hit the Earth'],
+    coming: ['The Earth as a planet', 'Inside planets and their magnetic shields', 'Things that hit the Earth'],
     look: [{ href: '/', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
@@ -67,11 +67,12 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'What a star is', about: 'Begin with the one star we can see close up.', lessons: ['what-the-sun-is', 'what-a-star-is', 'how-the-sun-shines'] },
       { title: 'Reading a star', about: 'Colour, brightness and distance: how anything is known about a point of light.', lessons: ['colour-and-brightness', 'reading-starlight', 'measuring-distance'] },
-      { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'the-stars-you-can-see', 'double-and-multiple-stars', 'star-clusters'] },
-      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'the-stars-you-can-see', 'double-and-multiple-stars', 'stars-that-change', 'star-clusters'] },
+      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'What stars leave us', about: 'Almost every atom heavier than helium was made by a star.', lessons: ['where-the-elements-come-from'] },
       { title: 'Stars as measuring sticks', about: 'How certain stars give the distances to other galaxies.', lessons: ['the-distance-ladder'] },
     ],
-    coming: ['Where the elements come from', 'Supernovae', 'Stars that change', 'Brown dwarfs', 'Red dwarfs, the commonest stars', 'Giants and supergiants'],
+    coming: ['Brown dwarfs', 'Red dwarfs, the commonest stars', 'Giants and supergiants'],
     look: [{ href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope, with its distance, colour and place in your sky.' }, { href: '/sky', text: 'Tonight’s sky', about: 'Find the stars from these lessons over your own horizon.' }],
   },
   {
@@ -81,10 +82,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}m87-black-hole-eht.jpg`, width: 1200, height: 1200, alt: 'A blurred orange ring, brighter along its lower edge, round a dark centre.', caption: 'The black hole in the galaxy M87, published on 10 April 2019. A photograph, not a drawing. Credit: EHT Collaboration, CC BY 4.0.' },
     stages: [
       { title: 'What you need first', about: 'Gravity, and why a star cannot last for ever.', lessons: ['what-gravity-is', 'how-stars-live-and-die'] },
-      { title: 'Three ways to end', about: 'Which one a star gets depends only on how heavy it is.', lessons: ['white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
-    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'Supernovae', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
+    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
     look: [{ href: '/?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {

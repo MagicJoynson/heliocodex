@@ -1,0 +1,9 @@
+title: What counts as a planet
+strand: planets
+order: 5
+summary: "For 76 years the Solar System had nine planets. In 2006 astronomers agreed on what the word means, and Pluto no longer fitted."
+scene: "A real photograph of Pluto from the spacecraft that flew past it, Pluto drawn to scale beside the Earth, the Moon and the other dwarf planets, the crowded belt its orbit runs through, and the three tests a planet has to pass."
+view: { target: pluto }
+terms: [planet, dwarf-planet, kuiper-belt, trans-neptunian-object, asteroid-belt, asteroid]
+needs: [three-kinds-of-planet]
+next: [rubble-and-ice, the-oort-cloud]

@@ -1,0 +1,9 @@
+title: The Moon
+strand: moons
+order: 4
+summary: "Our nearest neighbour: a quarter as wide as the Earth, made from the wreckage of a collision, and the only other world people have stood on."
+scene: "Real photographs of both faces of the Moon, the Earth and the Moon drawn to their true sizes and distance with light crossing between them, the collision that made the Moon, and a man standing on it in 1969."
+view: { target: moon }
+terms: [moon, tidal-locking, impact-crater, regolith, phase, tide]
+needs: [what-a-moon-is]
+next: [phases-and-eclipses, tides]
