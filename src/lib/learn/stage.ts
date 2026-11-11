@@ -22,6 +22,8 @@ export interface Scene {
   stillAt?: number;
   /** One sentence saying what is drawn and what it is based on. */
   caption: string;
+  /** Settles when anything the scene must fetch, such as a photograph, has arrived. */
+  ready?: Promise<unknown>;
 }
 
 export const INK = '#ece7dc', SOFT = '#c4bdaf', FAINT = '#8a8478', ACCENT = '#e9c48a', NIGHT = '#0b0b0c';
@@ -109,6 +111,7 @@ export function mount(host: HTMLElement, first: Scene): Mounted {
   calm.addEventListener('change', kick);
   document.fonts?.ready.then(kick);
   if (cap) cap.textContent = scene.caption;
+  scene.ready?.then(kick, kick);
   size();
   return {
     redraw: kick,
@@ -117,6 +120,9 @@ export function mount(host: HTMLElement, first: Scene): Mounted {
       scene = next; started = performance.now(); last1 = last2 = '';
       if (say1) say1.textContent = ''; if (say2) say2.textContent = '';
       if (cap) cap.textContent = next.caption;
+      next.ready?.then(kick, kick);
+      // one picture gives way to the next with a short fade, not a jump
+      if (!calm.matches) canvas.animate?.([{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: 'ease-out' });
       kick();
     },
     stop() { cancelAnimationFrame(raf); watch.disconnect(); sized.disconnect(); canvas.removeEventListener('pointermove', move); canvas.removeEventListener('pointerleave', leave); },

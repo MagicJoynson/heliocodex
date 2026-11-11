@@ -108,3 +108,9 @@ body:has(.lesson) { background: #0b0b0c; }
 .works-presets button { font: 400 .72rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); background: none; border: 0; border-bottom: 1px solid var(--rule); padding: .7rem 0 .55rem; cursor: pointer; }
 .works-presets button:hover, .works-presets button[aria-pressed='true'] { color: var(--accent); border-color: var(--accent); }
 @media (max-width: 760px) { .works { grid-template-columns: minmax(0, 1fr); } }
+
+/* a real photograph set into the text, with its credit */
+.prose figure.photo { margin: 2.2rem 0 2.4rem; }
+.prose figure.photo img { display: block; width: 100%; max-width: 34rem; height: auto; background: #000; }
+.prose figure.photo figcaption { font: italic 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .8rem; max-width: 34rem; }
+.prose figure.photo figcaption b { font: 400 .7rem/1 var(--r-mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: .5rem; }

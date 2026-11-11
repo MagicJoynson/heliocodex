@@ -236,7 +236,39 @@ const s2Scene: Scene = {
   },
 };
 
-// ---- 5. swap the Sun for a black hole
+// ---- 5. the real thing: the photograph of M87*
+const photo = typeof Image === 'undefined' ? null : new Image();
+const photoReady = new Promise<void>((done) => { if (!photo) return done(); photo.onload = photo.onerror = () => done(); photo.src = '/img/learn/m87-black-hole-eht.jpg'; });
+const photoScene: Scene = {
+  caption: 'A real photograph, not a drawing: the black hole at the centre of the galaxy M87, in radio waves, by the Event Horizon Telescope. Published 10 April 2019. Credit: EHT Collaboration, CC BY 4.0. The marks were added here; the black hole itself is about two fifths the width of the dark patch.',
+  stillAt: 9,
+  ready: photoReady,
+  draw({ ctx, w, h, t, say }) {
+    const s = Math.min(w, h * 1.05), cx = w / 2, cy = h * 0.48;
+    if (photo?.naturalWidth) {
+      // drifts slowly closer, then holds
+      const size = s * mix(0.98, 1.12, ease(t / 9));
+      ctx.drawImage(photo, cx - size / 2, cy - size / 2, size, size);
+      // the picture's own black edge is blended into the page
+      const edge = ctx.createRadialGradient(cx, cy, size * 0.34, cx, cy, size * 0.5);
+      edge.addColorStop(0, 'rgba(11,11,12,0)'); edge.addColorStop(1, 'rgba(11,11,12,1)');
+      ctx.fillStyle = edge; ctx.fillRect(0, 0, w, h);
+      const k = ease((t - 2.5) / 1.5), ring = size * 0.105;
+      if (k > 0) {
+        ctx.globalAlpha = k; ctx.strokeStyle = 'rgba(236,231,220,.55)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(cx + ring * 0.2, cy); ctx.lineTo(cx + size * 0.3, cy - size * 0.2); ctx.stroke();
+        label(ctx, 'The shadow', cx + size * 0.3 + 6, cy - size * 0.2, { colour: INK });
+        ctx.beginPath(); ctx.moveTo(cx - ring * 0.9, cy + ring * 1.1); ctx.lineTo(cx - size * 0.3, cy + size * 0.24); ctx.stroke();
+        label(ctx, 'Hot gas', cx - size * 0.3 - 6, cy + size * 0.24, { colour: INK, align: 'right' });
+        ctx.globalAlpha = 1;
+      }
+    } else label(ctx, 'Fetching the photograph', cx, cy, { align: 'center' });
+    label(ctx, 'Photograph', 14, 18, { colour: ACCENT });
+    say('M87*, 55 million light years away', 'The mass of 6.5 billion Suns');
+  },
+};
+
+// ---- 6. swap the Sun for a black hole
 const swapScene: Scene = {
   caption: 'The Earth\'s orbit with the Sun, then with a black hole of the same mass in its place. The orbit does not change. Sizes are not to scale.',
   stillAt: 9,
@@ -264,4 +296,4 @@ const swapScene: Scene = {
   },
 };
 
-export const scenes: Scene[] = [throwScene, squeezeScene, lightScene, s2Scene, swapScene];
+export const scenes: Scene[] = [throwScene, squeezeScene, lightScene, s2Scene, photoScene, swapScene];
