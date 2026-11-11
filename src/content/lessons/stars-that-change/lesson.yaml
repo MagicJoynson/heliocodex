@@ -1,0 +1,9 @@
+title: Stars that change
+strand: stars
+order: 11
+summary: "Some stars swell and shrink, some are hidden by a partner every few days, and in 2019 one of the brightest in the sky faded for months."
+scene: "A real photograph of a pulsing star lighting the dust round it, a star swelling and shrinking beside a graph of its light, two stars hiding each other in turn, and Betelgeuse before and after it dimmed."
+view: { target: neighbourhood }
+terms: [variable-star, cepheid, binary-star, red-giant, apparent-magnitude, luminosity, standard-candle]
+needs: [colour-and-brightness]
+next: [the-distance-ladder, double-and-multiple-stars]
