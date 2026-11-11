@@ -19,7 +19,7 @@ lastChecked: 2026-11-11
 | From one full Moon to the next | 29.5 days | |
 | In sunlight, and in the dark | About 127 °C, and about −173 °C | |
 
-The width is twice the radius NASA gives, and the fraction for the mass is one divided by NASA's 0.0123. Both are my own sums.
+The width is twice the radius NASA gives, and the fraction for the mass is one divided by NASA's 0.0123. Both were worked out here.
 
 <figure class="photo">
   <img src="/img/learn/moon-near-side-lro.jpg" alt="The whole face of the Moon in grey, with large dark smooth patches across the upper half and bright, heavily cratered ground in the lower half." width="1100" height="1100" loading="lazy" />

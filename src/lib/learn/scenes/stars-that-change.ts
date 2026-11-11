@@ -95,7 +95,7 @@ const betelgeuse = photoScene({
 
 // ---- 6. the Sun, for comparison
 const steadyScene: Scene = {
-  caption: 'How much the light of each star changes, drawn as bars. The whole bar is the star at its brightest, and the filled part is the light left at its faintest. The Sun’s change of about one part in a thousand is too small to show. Mira and Algol are my own sums from the published magnitudes.',
+  caption: 'How much the light of each star changes, drawn as bars. The whole bar is the star at its brightest, and the filled part is the light left at its faintest. The Sun’s change of about one part in a thousand is too small to show. Mira and Algol were worked out here from the published magnitudes.',
   stillAt: 3,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.35);
