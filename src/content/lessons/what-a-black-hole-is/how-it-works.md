@@ -3,6 +3,7 @@ sources:
   - { label: "NASA, Black holes", url: "https://science.nasa.gov/universe/black-holes/" }
   - { label: "NASA, Types of black hole", url: "https://science.nasa.gov/universe/black-holes/types/" }
   - { label: "ESO, First image of a black hole (2019). Photograph: EHT Collaboration, CC BY 4.0", url: "https://www.eso.org/public/news/eso1907/" }
+  - { label: "Event Horizon Telescope Collaboration, First M87 results, Paper I: the shadow of the supermassive black hole (2019)", url: "https://iopscience.iop.org/article/10.3847/2041-8213/ab0ec7" }
   - { label: "ESO, First image of the black hole at the heart of our galaxy (2022). Photograph: EHT Collaboration, CC BY 4.0", url: "https://www.eso.org/public/news/eso2208-eht-mw/" }
   - { label: "ESA/Hubble, the jet of M87. Photograph: The Hubble Heritage Team (STScI/AURA) and NASA/ESA, CC BY 4.0", url: "https://esahubble.org/images/opo0020a/" }
   - { label: "NASA, Where are Voyager 1 and Voyager 2 now", url: "https://science.nasa.gov/mission/voyager/where-are-voyager-1-and-voyager-2-now/" }

@@ -1,6 +1,7 @@
 ---
-// The sky above the visitor, now: every star the eye can see, the planets, the Moon and the
-// constellation figures, worked out in the page for their place and time.
+// The sky above the visitor: every star the eye can see, the planets, the Moon and the
+// constellation figures, worked out in the page for their place and time, and drawn the way the
+// sky is seen from the ground. The view can be turned, and tipped back to show the whole sky.
 import Base from '../layouts/Base.astro';
 import '../styles/reading.css';
 import { CITIES } from '../lib/sky/cities';
@@ -12,158 +13,270 @@ const pages = Object.fromEntries(pageStars().filter((s) => s.index < SKY_STARS).
 // stars whose distance here is a newer one than the star file's, so the card and the star's page agree
 const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((s) => [s.index, [s.distPc * LY_PER_PC, s.lumSun]]));
 ---
-<Base title="The sky tonight" path="/sky" description="The whole sky above you at this moment: the stars, the planets, the Moon and the constellations, worked out for where you are.">
-  <article class="sky reading" data-pages={JSON.stringify(pages)} data-newer={JSON.stringify(newer)}>
-    <div class="sky-main">
-      <header class="reading-head sky-head">
+<Base title="The sky tonight" path="/sky" description="The sky above you tonight: the stars, the planets, the Moon and the constellations, worked out for where you are. Turn round, look up, and touch anything to find out what it is.">
+  <article class="sky" data-pages={JSON.stringify(pages)} data-newer={JSON.stringify(newer)}>
+    <div class="sky-view" id="sky-view">
+      <canvas id="sky-canvas" role="img" aria-label="The sky as seen from the ground. The list under the picture says what is up."></canvas>
+      <p class="sky-hold" id="sky-hold">Fetching the stars…</p>
+
+      <header class="sky-head">
         <p class="label">The sky tonight</p>
         <h1>Look up</h1>
-        <p class="lead" id="sky-lead">This is the whole sky above you, with the point overhead in the middle and the horizon round the edge.</p>
+        <p class="sky-line" id="sky-line"></p>
+        <p class="sky-note" id="sky-note" hidden></p>
+        <p class="sky-hint" id="sky-hint">Drag to look round. Touch a star.</p>
       </header>
 
-      <div class="sky-chart">
-        <canvas id="sky-canvas" role="img" aria-label="A round chart of the sky. The list under the chart says what is up."></canvas>
-        <p class="sky-hold" id="sky-hold">Fetching the stars…</p>
-      </div>
+      <aside class="sky-card" id="sky-card" aria-live="polite" hidden></aside>
 
-      <aside class="sky-side">
-        <section class="sky-card" id="sky-card" aria-live="polite">
-          <p class="label">Touch a star</p>
-          <p class="sky-card-text">Touch or click any bright star, a planet or the Moon to find out what it is.</p>
-          <p class="sky-card-links"><a href="/stars">Meet a star</a></p>
-        </section>
+      <form class="sky-bar" id="sky-controls">
+        <div class="bar-when">
+          <input id="sky-shift" type="range" min="-720" max="720" step="5" value="0" aria-label="Earlier or later, up to twelve hours either way" />
+          <div class="bar-row">
+            <button type="button" data-step="-1440">A day back</button>
+            <button type="button" id="sky-now">Now</button>
+            <button type="button" id="sky-tonight">Tonight</button>
+            <button type="button" data-step="1440">A day on</button>
+          </div>
+        </div>
 
-        <form class="sky-controls" id="sky-controls">
-          <div class="field">
-            <label class="label" for="sky-place">Where</label>
-            <select id="sky-place">
-              {CITIES.map(([name], i) => <option value={i}>{name}</option>)}
-              <option value="here" hidden>Where I am</option>
-              <option value="typed" hidden>The place typed below</option>
-            </select>
-            <button type="button" id="sky-here">Use where I am</button>
-            <p class="hint" id="sky-place-note"></p>
-            <details>
-              <summary>Type a latitude and longitude</summary>
+        <div class="bar-look" role="group" aria-label="Which way to look">
+          <span class="label">Face</span>
+          <button type="button" data-face="0">North</button>
+          <button type="button" data-face="90">East</button>
+          <button type="button" data-face="180">South</button>
+          <button type="button" data-face="270">West</button>
+          <button type="button" id="sky-whole">Whole sky</button>
+        </div>
+
+        <div class="bar-more">
+          <details class="pop" id="pop-where">
+            <summary><span class="label">Where</span> <span id="sky-where-name">London</span></summary>
+            <div class="pop-body">
+              <label class="label" for="sky-place">Choose a city</label>
+              <select id="sky-place">
+                {CITIES.map(([name], i) => <option value={i}>{name}</option>)}
+                <option value="here" hidden>Where I am</option>
+                <option value="typed" hidden>The place typed below</option>
+              </select>
+              <button type="button" id="sky-here">Use where I am</button>
+              <button type="button" id="sky-forget" hidden>Forget my place</button>
+              <p class="hint" id="sky-place-note"></p>
+              <p class="hint">Your place stays in this browser and is never sent to us. <a href="/cookies">What is kept on your device</a>.</p>
               <div class="pair">
                 <label>Latitude, north is plus <input id="sky-lat" type="number" min="-90" max="90" step="0.01" inputmode="decimal" /></label>
                 <label>Longitude, east is plus <input id="sky-lon" type="number" min="-180" max="180" step="0.01" inputmode="decimal" /></label>
               </div>
-            </details>
-          </div>
-
-          <div class="field">
-            <label class="label" for="sky-shift">When</label>
-            <p class="sky-time" id="sky-time"></p>
-            <input id="sky-shift" type="range" min="-720" max="720" step="5" value="0" aria-label="Earlier or later, up to twelve hours either way" />
-            <div class="row-buttons">
-              <button type="button" data-step="-1440">A day back</button>
-              <button type="button" id="sky-now">Now</button>
-              <button type="button" data-step="1440">A day on</button>
             </div>
-          </div>
-
-          <fieldset class="field">
-            <legend class="label">Show</legend>
-            <label class="tick"><input type="checkbox" id="sky-figures" checked /> Constellation figures</label>
-            <label class="tick"><input type="checkbox" id="sky-names" checked /> Names</label>
-            <label class="tick"><input type="checkbox" id="sky-path" checked /> The path of the Sun and planets</label>
-          </fieldset>
-        </form>
-      </aside>
+          </details>
+          <details class="pop" id="pop-show">
+            <summary><span class="label">Show</span></summary>
+            <div class="pop-body">
+              <label class="tick"><input type="checkbox" id="sky-figures" checked /> Constellation figures</label>
+              <label class="tick"><input type="checkbox" id="sky-names" checked /> Names</label>
+              <label class="tick"><input type="checkbox" id="sky-path" checked /> The path of the Sun and planets</label>
+            </div>
+          </details>
+        </div>
+      </form>
     </div>
 
-    <section class="row">
-      <div class="hang"><h2>Up now</h2></div>
-      <div class="prose" id="sky-list"><p>Working it out…</p></div>
-    </section>
+    <div class="reading sky-rest">
+      <section class="row">
+        <div class="hang"><h2>Up now</h2></div>
+        <div class="prose" id="sky-list"><p>Working it out…</p></div>
+      </section>
 
-    <section class="row">
-      <div class="hang"><h2>How to read it</h2></div>
-      <div class="prose">
-        <p>Hold the chart over your head, or picture yourself lying on your back with your head to the north. The middle of the circle is the point straight above you. The edge is the horizon. East is on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down.</p>
-        <p>A bigger dot is a brighter star.  The colours are real: blue-white stars are the hottest and orange ones the coolest.</p>
-        <p>Things near the edge are low in the sky and may be hidden by houses, trees or haze.</p>
-      </div>
-    </section>
+      <section class="row">
+        <div class="hang"><h2>How to use it</h2></div>
+        <div class="prose">
+          <p>The picture shows the sky as you would see it standing outside, facing the way written on the ground at the foot of the view. Drag the picture to turn round or to look higher. Pinch, or roll the mouse wheel, to look closer.</p>
+          <p>Slide the bar to move through the night and watch the sky turn. Touch any bright star, a planet or the Moon to find out what it is.</p>
+          <p>"Whole sky" tips the view straight up, so the point overhead is in the middle and the horizon runs round the edge. East is then on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down.</p>
+          <p>A bigger dot is a brighter star. The colours are real: blue-white stars are the hottest and orange ones the coolest. Things close to the ground may be hidden by houses, trees or haze.</p>
+          <p><a href="/stars">Meet a star</a> has a page for each of the named ones.</p>
+        </div>
+      </section>
 
-    <section class="row small">
-      <div class="hang"><h2>How it is worked out</h2></div>
-      <div class="prose">
-        <p>Nothing here is looked up from a service. The page works out the sky itself from your place and the time on your device.</p>
-        <ul>
-          <li>Stars: places, distances, brightness and colour from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database</a> by David Nash (CC BY-SA 4.0), the same stars the 3D view uses.</li>
-          <li>Planets and the Sun: orbits from NASA/JPL Solar System Dynamics, the same sums as the rest of this site.</li>
-          <li>The Moon: the largest terms of the series in Jean Meeus, <cite>Astronomical Algorithms</cite>, chapter 47.</li>
-          <li>Constellation figures: from d3-celestial by Olaf Frohn.</li>
-        </ul>
-        <p>Checked against NASA's JPL Horizons service, the planets land within a fifth of a degree and the Moon within a tenth. A fifth of a degree is less than half the width of the full Moon. If you use "where I am", your position stays on your device. See <a href="/sources">Sources</a> for the files and their licences.</p>
-      </div>
-    </section>
+      <section class="row small">
+        <div class="hang"><h2>How it is worked out</h2></div>
+        <div class="prose">
+          <p>Nothing here is looked up from a service. The page works out the sky itself from your place and the time on your device.</p>
+          <ul>
+            <li>Stars: places, distances, brightness and colour from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database</a> by David Nash (CC BY-SA 4.0), the same stars the 3D view uses.</li>
+            <li>Planets and the Sun: orbits from NASA/JPL Solar System Dynamics, the same sums as the rest of this site.</li>
+            <li>The Moon: the largest terms of the series in Jean Meeus, <cite>Astronomical Algorithms</cite>, chapter 47.</li>
+            <li>Constellation figures: from d3-celestial by Olaf Frohn.</li>
+          </ul>
+          <p>Checked against NASA's JPL Horizons service, the planets land within a fifth of a degree and the Moon within a tenth. A fifth of a degree is less than half the width of the full Moon. The colour of the sky and the glow at dusk are drawn to give the feel of the hour, and are not measurements. If you use "where I am", your position stays on your device. See <a href="/sources">Sources</a> for the files and their licences.</p>
+        </div>
+      </section>
+    </div>
   </article>
 </Base>
 
 <script>
-  import { draw, load, wayOf, heightOf, PLANET_NAMES, type Mark, type SkyData } from '../lib/sky/chart';
-  import { moment } from '../lib/sky/place';
+  import { draw, load, wayOf, heightOf, PLANET_NAMES, wholeSky, type Mark, type SkyData, type View, type Room } from '../lib/sky/chart';
+  import { moment, toSky, sunFromEarth, planetFromEarth, moonSky, PLANETS, type Moment } from '../lib/sky/place';
   import { CITIES, guess } from '../lib/sky/cities';
-  import { readPlace, keepPlace } from '../lib/sky/remember';
+  import { readPlace, keepPlace, forgetPlace } from '../lib/sky/remember';
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const root = document.querySelector<HTMLElement>('.sky')!, box = $('sky-view');
   const canvas = $<HTMLCanvasElement>('sky-canvas'), ctx = canvas.getContext('2d')!;
   const place = $<HTMLSelectElement>('sky-place'), shift = $<HTMLInputElement>('sky-shift');
   const lat = $<HTMLInputElement>('sky-lat'), lon = $<HTMLInputElement>('sky-lon');
-  const card = $('sky-card'), list = $('sky-list'), timeEl = $('sky-time'), note = $('sky-place-note');
-  const pages = JSON.parse(document.querySelector<HTMLElement>('.sky')!.dataset.pages!) as Record<string, string>;
-  const newer = JSON.parse(document.querySelector<HTMLElement>('.sky')!.dataset.newer!) as Record<string, [number, number]>;
+  const card = $('sky-card'), list = $('sky-list'), line = $('sky-line'), note = $('sky-place-note'), dayNote = $('sky-note'), hint = $('sky-hint');
+  const pages = JSON.parse(root.dataset.pages!) as Record<string, string>;
+  const newer = JSON.parse(root.dataset.newer!) as Record<string, [number, number]>;
   const nf = (n: number, d = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: d, minimumFractionDigits: d });
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
 
   let data: SkyData | null = null, marks: Mark[] = [], picked: Mark | null = null;
-  let where = { name: '', lat: 0, lon: 0 }, dayShift = 0, size = 0;
+  let where = { name: '', lat: 0, lon: 0 }, dayShift = 0, w = 0, h = 0;
+  let view: View = { azDeg: 180, altDeg: 30, fovDeg: 100 };
+  let mom: Moment | null = null, momKey = '';
+  let room: Room = { foot: 0, clear: [] };
 
-  function setPlace(name: string, la: number, lo: number, why: string, chosen = true): void {
-    where = { name, lat: la, lon: lo };
-    if (chosen) keepPlace(where);
-    lat.value = la.toFixed(2); lon.value = lo.toFixed(2);
-    note.textContent = why;
-    render();
-  }
   const when = () => new Date(Date.now() + (Number(shift.value) + dayShift) * 60000);
+  /** The view for facing one way, with the ground a little way up from the foot of the picture. */
+  function facing(azDeg: number): View {
+    // the field is measured across the shorter side, so a tall phone sees far more sky upwards than sideways
+    return { azDeg, fovDeg: h > w * 1.15 ? 88 : 100, altDeg: 20 };
+  }
 
+  // ---- drawing, at most once a frame
+  let due = 0;
+  const render = () => { if (!due) due = requestAnimationFrame(paint); };
+  function paint(): void {
+    due = 0;
+    const t = when(), offset = Number(shift.value) + dayShift;
+    line.textContent = `${where.name}, ${t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}, ${t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}${offset === 0 ? ' (now)' : ''}`;
+    if (!data || !w) return;
+    const key = `${Math.floor(t.getTime() / 20000)}|${where.lat}|${where.lon}`;
+    if (key !== momKey || !mom) { mom = moment(t, where.lat, where.lon); momKey = key; upNow(mom); }
+    measure();
+    marks = draw(ctx, w, h, data, mom, view, { figures: $<HTMLInputElement>('sky-figures').checked, names: $<HTMLInputElement>('sky-names').checked, path: $<HTMLInputElement>('sky-path').checked }, picked, room);
+    if (picked && !card.hidden) { const again = marks.find((k) => k.id === picked!.id); if (again) show(again, false); }
+  }
   function fit(): void {
-    const box = canvas.parentElement!.getBoundingClientRect(), ratio = Math.min(devicePixelRatio || 1, 2);
-    size = Math.floor(box.width);
-    canvas.style.height = `${size}px`;
-    canvas.width = Math.round(size * ratio); canvas.height = Math.round(size * ratio);
+    const b = box.getBoundingClientRect(), ratio = Math.min(devicePixelRatio || 1, 2);
+    w = Math.floor(b.width); h = Math.floor(b.height);
+    canvas.width = Math.round(w * ratio); canvas.height = Math.round(h * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    measure();
+  }
+  /** Where the words and controls sit over the picture, so the sky is framed round them and no name is written under them. */
+  function measure(): void {
+    const b = box.getBoundingClientRect(), clear: Room['clear'] = [];
+    for (const e of [document.querySelector<HTMLElement>('.sky-head')!, card]) {
+      if (e.hidden) continue;
+      const r = e.getBoundingClientRect();
+      if (r.width) clear.push([r.left - b.left - 8, r.top - b.top - 8, r.right - b.left + 8, r.bottom - b.top + 8]);
+    }
+    // on a narrow screen the words run right across, so the round chart starts beneath them
+    const head = document.querySelector<HTMLElement>('.sky-head')!.getBoundingClientRect();
+    const last = (dayNote.hidden ? line : dayNote).getBoundingClientRect();
+    const top = head.width > b.width * 0.55 ? last.bottom - b.top - 6 : 0;
+    let foot = $('sky-controls').getBoundingClientRect().top - b.top + 34;
+    // and a card that runs right across the foot takes that room too, so what was touched stays in sight above it
+    const cr = card.getBoundingClientRect();
+    if (!card.hidden && cr.width > b.width * 0.55) foot = Math.min(foot, cr.top - b.top + 16);
+    room = { foot, clear, top };
   }
 
-  function render(): void {
-    const t = when();
-    timeEl.textContent = `${t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}, ${t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}${Number(shift.value) + dayShift === 0 ? ' (now)' : ''}`;
-    if (!data || !size) return;
-    const m = moment(t, where.lat, where.lon);
-    marks = draw(ctx, size, data, m, { figures: $<HTMLInputElement>('sky-figures').checked, names: $<HTMLInputElement>('sky-names').checked, path: $<HTMLInputElement>('sky-path').checked }, picked);
-    if (picked) { const again = marks.find((k) => k.id === picked!.id); if (again) show(again); }
-    upNow();
+  // ---- turning the view
+  let glide = 0;
+  function turnTo(next: View): void {
+    cancelAnimationFrame(glide);
+    if (calm.matches) { view = next; render(); return; }
+    const from = { ...view }, began = performance.now();
+    // go the short way round
+    const swing = ((next.azDeg - from.azDeg + 540) % 360) - 180;
+    const step = (now: number) => {
+      const x = Math.min(1, (now - began) / 700), k = x * x * (3 - 2 * x);
+      view = { azDeg: (from.azDeg + swing * k + 360) % 360, altDeg: from.altDeg + (next.altDeg - from.altDeg) * k, fovDeg: from.fovDeg + (next.fovDeg - from.fovDeg) * k };
+      render();
+      if (x < 1) glide = requestAnimationFrame(step);
+    };
+    glide = requestAnimationFrame(step);
   }
+  const fingers = new Map<number, { x: number; y: number }>();
+  let moved = 0, spread = 0;
+  canvas.addEventListener('pointerdown', (e) => {
+    canvas.setPointerCapture(e.pointerId); fingers.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0; cancelAnimationFrame(glide);
+    if (fingers.size === 2) { const [a, b] = [...fingers.values()]; spread = Math.hypot(a.x - b.x, a.y - b.y); }
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    const was = fingers.get(e.pointerId);
+    if (!was) return;
+    const dx = e.clientX - was.x, dy = e.clientY - was.y;
+    fingers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    moved += Math.abs(dx) + Math.abs(dy);
+    if (fingers.size === 2) {
+      const [a, b] = [...fingers.values()], now = Math.hypot(a.x - b.x, a.y - b.y);
+      if (spread > 0) view = { ...view, fovDeg: Math.max(30, Math.min(wholeSky(w, h, room).fovDeg, (view.fovDeg * spread) / now)) };
+      spread = now;
+    } else {
+      const perPx = view.fovDeg / Math.min(w, h);
+      view = { ...view, azDeg: (view.azDeg - (dx * perPx) / Math.max(0.35, Math.cos((view.altDeg * Math.PI) / 180)) + 360) % 360, altDeg: Math.max(4, Math.min(90, view.altDeg + dy * perPx)) };
+    }
+    if (moved > 12) hint.classList.add('gone');
+    render();
+  });
+  const lift = (e: PointerEvent) => {
+    const only = fingers.size === 1;
+    fingers.delete(e.pointerId);
+    if (only && moved < 8 && e.type === 'pointerup') pick(e);
+  };
+  canvas.addEventListener('pointerup', lift);
+  canvas.addEventListener('pointercancel', lift);
+  // the wheel looks closer only once the picture has been touched or clicked, so the page still scrolls past it
+  let engaged = false;
+  canvas.addEventListener('pointerdown', () => { engaged = true; });
+  document.addEventListener('pointerdown', (e) => { if (e.target !== canvas) engaged = false; });
+  canvas.addEventListener('wheel', (e) => {
+    if (!engaged && !e.ctrlKey) return;
+    e.preventDefault();
+    view = { ...view, fovDeg: Math.max(30, Math.min(wholeSky(w, h, room).fovDeg, view.fovDeg * Math.exp(e.deltaY * 0.0012))) };
+    render();
+  }, { passive: false });
+  canvas.tabIndex = 0;
+  canvas.addEventListener('keydown', (e) => {
+    const by = e.shiftKey ? 15 : 5;
+    if (e.key === 'ArrowLeft') view = { ...view, azDeg: (view.azDeg - by + 360) % 360 };
+    else if (e.key === 'ArrowRight') view = { ...view, azDeg: (view.azDeg + by) % 360 };
+    else if (e.key === 'ArrowUp') view = { ...view, altDeg: Math.min(90, view.altDeg + by) };
+    else if (e.key === 'ArrowDown') view = { ...view, altDeg: Math.max(4, view.altDeg - by) };
+    else return;
+    e.preventDefault(); render();
+  });
 
+  // ---- the card for whatever was touched
   const el = (tag: string, text?: string, cls?: string) => { const e = document.createElement(tag); if (text) e.textContent = text; if (cls) e.className = cls; return e; };
-  const whereabouts = (k: Mark) => `${heightOf(k.altDeg)} in the ${wayOf(k.azDeg)}`;
+  const whereabouts = (k: { altDeg: number; azDeg: number }) => `${heightOf(k.altDeg)} in the ${wayOf(k.azDeg)}`;
+  const from = () => (where.name === 'Where you are' ? 'where you are' : where.name);
 
-  function show(k: Mark): void {
+  function fill(parts: HTMLElement[]): void {
+    const shut = el('button', 'Close', 'sky-card-shut') as HTMLButtonElement; shut.type = 'button';
+    shut.addEventListener('click', () => { card.hidden = true; picked = null; render(); });
+    card.replaceChildren(shut, ...parts); card.hidden = false;
+  }
+  function show(k: Mark, fresh = true): void {
     picked = k;
+    const first = `It is ${whereabouts(k)}, ${nf(k.altDeg)}° above the horizon.`;
+    // while the time slides, only the line that says where it is needs to change
+    if (!fresh) { const old = card.querySelector('.sky-card-text'); if (old && old.textContent !== first) old.textContent = first; return; }
     const parts: HTMLElement[] = [el('p', k.kind === 'star' ? 'A star' : k.kind === 'planet' ? 'A planet' : k.kind === 'moon' ? 'Our moon' : 'Our star', 'label')];
     parts.push(el('h2', k.name || 'A star with no common name'));
-    const lines: string[] = [`It is ${whereabouts(k)}, ${nf(k.altDeg)}° above the horizon.`];
+    const lines: string[] = [first];
     if (k.kind === 'star') {
       if (newer[k.index!]) [k.ly, k.suns] = newer[k.index!];
       const year = when().getFullYear() - Math.round(k.ly!);
       // a year is only given where the distance is known well enough to name one
       const far = Number(k.ly!.toPrecision(2));
       lines.push(k.ly! < 200 ? `It is ${nf(k.ly!, k.ly! < 100 ? 1 : 0)} light years away. The light reaching you now left it in about ${year}.` : `It is about ${nf(far)} light years away. The light reaching you now left it about ${nf(far)} years ago.`);
-      lines.push(k.suns! >= 1.5 ? `It gives out about ${nf(k.suns!, k.suns! < 10 ? 1 : 0)} times as much visible light as the Sun.` : k.suns! > 0.67 ? 'It gives out about as much visible light as the Sun.' : `It gives out about ${nf(k.suns! * 100)} per cent of the Sun's visible light.`);
-      lines.push(`Brightness as seen from here: magnitude ${k.mag!.toFixed(1).replace('-', '−')}. Smaller numbers are brighter.`);
+      lines.push(k.suns! >= 1.5 ? `It gives out about ${nf(Number(k.suns!.toPrecision(2)))} times as much visible light as the Sun.` : k.suns! > 0.67 ? 'It gives out about as much visible light as the Sun.' : `It gives out about ${nf(k.suns! * 100)} per cent of the Sun's visible light.`);
     } else if (k.kind === 'planet') {
       lines.push(`It is ${nf(k.au! * 149.5978707, k.au! < 1 ? 1 : 0)} million km from the Earth at this moment, and its light takes ${nf(k.au! * 8.3168, k.au! < 3 ? 1 : 0)} minutes to arrive.`);
       if (k.id === 'uranus' || k.id === 'neptune') lines.push('It is too faint to see without binoculars or a telescope.');
@@ -178,36 +291,68 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     if (k.kind === 'moon') link('/v2?go=moon', 'Fly to it in 3D');
     if (k.kind === 'sun') link('/sun', 'About the Sun');
     if (go.childElementCount) parts.push(go);
-    card.replaceChildren(...parts);
+    fill(parts);
   }
 
-  function upNow(): void {
-    const planets = marks.filter((k) => k.kind === 'planet'), moon = marks.find((k) => k.kind === 'moon'), sun = marks.find((k) => k.kind === 'sun');
-    const stars = marks.filter((k) => k.kind === 'star' && k.name && k.mag! < 1.6 && k.altDeg > 5).sort((a, b) => a.mag! - b.mag!).slice(0, 8);
-    const out: HTMLElement[] = [];
-    if (sun && sun.altDeg > 0) out.push(el('p', `The Sun is up, ${whereabouts(sun)}, so the stars are hidden by daylight. The chart shows what is behind the blue. Move the time on to tonight to see your night sky.`));
-    const eye = planets.filter((k) => k.id !== 'uranus' && k.id !== 'neptune' && k.altDeg > 3);
-    out.push(el('p', eye.length ? `Planets you can see by eye: ${eye.map((k) => `${k.name}, ${whereabouts(k)}`).join('; ')}.` : 'No planet bright enough to see by eye is above the horizon at this moment.'));
-    out.push(el('p', moon && moon.altDeg > 0 ? `The Moon is up, ${whereabouts(moon)}, with ${nf(moon.lit! * 100)} per cent of its face lit.` : 'The Moon is below the horizon.'));
-    if (stars.length) out.push(el('p', `Brightest stars: ${stars.map((k) => `${k.name}, ${whereabouts(k)}`).join('; ')}.`));
-    list.replaceChildren(...out);
+  /** What is above the horizon, all round, in words. Worked out from the sums, not read off the picture, so it does not depend on which way the view is turned. */
+  function upNow(m: Moment): void {
+    const sun = toSky(sunFromEarth(m.T), m), moon = moonSky(m), out: string[] = [];
+    if (sun.altDeg > 0) out.push(`The Sun is up, ${whereabouts(sun)}, so the stars are hidden by daylight. The picture shows what is behind the blue. Choose "Tonight" to see the sky after dark.`);
+    const eye = PLANETS.filter((id) => id !== 'uranus' && id !== 'neptune').map((id) => ({ id, ...toSky(planetFromEarth(id, m.T).dir, m) })).filter((k) => k.altDeg > 3);
+    out.push(eye.length ? `Planets you can see by eye: ${eye.map((k) => `${PLANET_NAMES[k.id]}, ${whereabouts(k)}`).join('; ')}.` : 'No planet bright enough to see by eye is above the horizon at this moment.');
+    out.push(moon.altDeg > 0 ? `The Moon is up, ${whereabouts(moon)}, with ${nf(moon.lit * 100)} per cent of its face lit.` : 'The Moon is below the horizon.');
+    out.push('Turn the picture, or choose "Whole sky", and touch anything bright to find out what it is.');
+    list.replaceChildren(...out.map((t) => el('p', t)));
   }
 
   function pick(e: PointerEvent): void {
     const b = canvas.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
-    let best: Mark | null = null, gap = 26;
+    let best: Mark | null = null, gap = 28;
     for (const k of marks) {
       // planets and the Moon win over a star beside them
       const d = Math.hypot(k.x - x, k.y - y) - (k.kind === 'star' ? 0 : 8) + (k.kind === 'star' ? (k.mag ?? 5) * 1.5 : 0);
       if (d < gap) { gap = d; best = k; }
     }
-    if (best) { show(best); render(); }
+    if (best) { show(best); hint.classList.add('gone'); render(); }
   }
 
-  // ---- wiring
+  // ---- place and time
+  function setPlace(name: string, la: number, lo: number, why: string, chosen = true): void {
+    where = { name, lat: la, lon: lo };
+    if (chosen) keepPlace(where);
+    $('sky-forget').hidden = !readPlace();
+    lat.value = la.toFixed(2); lon.value = lo.toFixed(2);
+    note.textContent = why; $('sky-where-name').textContent = name;
+    render();
+  }
+  /** Minutes from now until it is properly dark, or 0 if it already is. Null where it does not get dark tonight. */
+  function untilDark(): number | null {
+    const sunAt = (mins: number) => { const m = moment(new Date(Date.now() + mins * 60000), where.lat, where.lon); return toSky(sunFromEarth(m.T), m).altDeg; };
+    if (sunAt(0) < -9) return 0;
+    for (let mins = 5; mins <= 1440; mins += 5) if (sunAt(mins) < -12) return mins;
+    return null;
+  }
+  function tonight(auto: boolean): void {
+    const wait = untilDark();
+    dayShift = 0;
+    if (wait === null) { shift.value = '0'; dayNote.textContent = `It does not get fully dark in ${from()} tonight, so this is the sky as it is now.`; dayNote.hidden = false; }
+    else {
+      const held = Math.min(720, wait); shift.value = String(held); dayShift = wait - held;
+      dayNote.hidden = wait === 0;
+      if (wait > 0) dayNote.textContent = auto ? 'It is still light where you are, so this is tonight, once it is dark. "Now" shows the sky at this moment.' : 'This is tonight, once it is dark.';
+    }
+    render();
+  }
+
   place.addEventListener('change', () => {
     const i = Number(place.value);
     if (!Number.isNaN(i)) setPlace(CITIES[i][0], CITIES[i][1], CITIES[i][2], '');
+  });
+  $('sky-forget').addEventListener('click', () => {
+    forgetPlace();
+    const g = guess();
+    place.value = String(g);
+    setPlace(CITIES[g][0], CITIES[g][1], CITIES[g][2], 'Forgotten. Nothing about your place is kept on this device now.', false);
   });
   $('sky-here').addEventListener('click', () => {
     if (!navigator.geolocation) { note.textContent = 'This device cannot say where it is. Choose a city or type a position.'; return; }
@@ -224,12 +369,20 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     place.querySelector<HTMLOptionElement>('option[value="typed"]')!.hidden = false; place.value = 'typed';
     setPlace('The place you typed', la, lo, '');
   });
-  shift.addEventListener('input', render);
-  $('sky-now').addEventListener('click', () => { shift.value = '0'; dayShift = 0; render(); });
-  for (const b of document.querySelectorAll<HTMLButtonElement>('#sky-controls [data-step]')) b.addEventListener('click', () => { dayShift += Number(b.dataset.step); render(); });
+  shift.addEventListener('input', () => { dayNote.hidden = true; render(); });
+  $('sky-now').addEventListener('click', () => { shift.value = '0'; dayShift = 0; dayNote.hidden = true; render(); });
+  $('sky-tonight').addEventListener('click', () => tonight(false));
+  for (const b of document.querySelectorAll<HTMLButtonElement>('#sky-controls [data-step]')) b.addEventListener('click', () => { dayShift += Number(b.dataset.step); dayNote.hidden = true; render(); });
+  for (const b of document.querySelectorAll<HTMLButtonElement>('#sky-controls [data-face]')) b.addEventListener('click', () => { hint.classList.add('gone'); turnTo(facing(Number(b.dataset.face))); });
+  $('sky-whole').addEventListener('click', () => { hint.classList.add('gone'); turnTo(wholeSky(w, h, room)); });
   for (const id of ['sky-figures', 'sky-names', 'sky-path']) $(id).addEventListener('change', render);
-  canvas.addEventListener('pointerup', pick);
-  new ResizeObserver(() => { fit(); render(); }).observe(canvas.parentElement!);
+  // one small panel open at a time, and a touch anywhere else shuts it
+  const pops = [...document.querySelectorAll<HTMLDetailsElement>('.pop')];
+  for (const p of pops) p.addEventListener('toggle', () => { if (p.open) for (const other of pops) if (other !== p) other.open = false; });
+  document.addEventListener('pointerdown', (e) => { for (const p of pops) if (p.open && !p.contains(e.target as Node)) p.open = false; });
+  $('sky-controls').addEventListener('submit', (e) => e.preventDefault());
+
+  new ResizeObserver(() => { const first = !w; fit(); if (first) view = facing(180); render(); }).observe(box);
   setInterval(() => { if (!document.hidden) render(); }, 30000);
   document.fonts?.ready.then(render);
 
@@ -243,56 +396,83 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     place.value = String(first);
     setPlace(CITIES[first][0], CITIES[first][1], CITIES[first][2], `Guessed from your device's clock. For your exact sky, choose "Use where I am".`, false);
   }
+  // by day the page opens on tonight's sky, since that is what people come for
+  tonight(true);
 
   const hold = $('sky-hold');
   load().then((d) => {
-    data = d; hold.remove(); render();
+    data = d; hold.remove(); paint();
     // a star page can send its star here to be pointed out
     const asked = new URLSearchParams(location.search).get('star');
     if (asked && /^\d+$/.test(asked)) {
+      const looking = view;
+      view = wholeSky(w, h, room); paint();
       const found = marks.find((k) => k.id === `star:${asked}`), name = d.names.get(Number(asked));
-      if (found) { show(found); render(); }
-      else if (name) card.replaceChildren(el('p', 'A star', 'label'), el('h2', name), el('p', `${name} is below the horizon from ${where.name === 'Where you are' ? 'where you are' : where.name} at this moment. Move the time on, or choose another place, and touch it when it comes up.`, 'sky-card-text'));
+      view = looking;
+      if (found) { view = { ...facing(found.azDeg), altDeg: Math.max(20, Math.min(80, found.altDeg)) }; paint(); const again = marks.find((k) => k.id === found.id); if (again) show(again); }
+      else if (name) fill([el('p', 'A star', 'label'), el('h2', name), el('p', `${name} is below the horizon from ${from()} at this moment. Slide the time on, or choose another place, and touch it when it comes up.`, 'sky-card-text')]);
+      hint.classList.add('gone'); render();
     }
   }).catch(() => { hold.textContent = 'The stars could not be fetched. Check your connection and load the page again.'; });
 </script>
 
 <style>
-  /* on a wide screen the chart stands beside the title, so the whole circle is seen without scrolling */
-  .sky { padding-top: clamp(16px, 2.4vw, 32px); }
-  .sky-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 21rem); grid-template-areas: 'chart head' 'chart side'; grid-template-rows: auto 1fr; gap: 1.6rem clamp(24px, 4vw, 56px); align-items: start; margin-bottom: clamp(40px, 6vw, 80px); }
-  .sky-head { grid-area: head; margin: 0; }
-  .sky-head h1 { font-size: clamp(2.4rem, 4.4vw, 3.6rem); margin-bottom: .9rem; }
-  .sky-head .lead { font-size: 1.08rem; }
-  .sky-head .label { margin-bottom: .8rem; }
-  .sky-chart { grid-area: chart; position: sticky; top: calc(var(--header-h) + 1rem); max-width: min(100%, calc(100svh - var(--header-h) - 2rem)); width: 100%; justify-self: center; }
-  .sky-side { grid-area: side; }
-  .sky-chart canvas { display: block; width: 100%; touch-action: manipulation; cursor: crosshair; }
-  .sky-hold { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: italic 300 1.1rem var(--r-serif); color: var(--ink-faint); }
-  .sky-side { display: grid; gap: 2rem; }
-  .sky-card { border-top: 1px solid var(--accent); padding-top: 1.1rem; min-height: 11rem; }
-  .sky-card h2 { font: italic 300 clamp(1.7rem, 3vw, 2.3rem)/1.1 var(--r-serif); margin: .5rem 0 .8rem; }
-  .sky-card-text { font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 .55rem; }
-  .sky-card-links { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; margin: 1rem 0 0; font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; }
-  .sky-card-links a { text-decoration: none; padding: .45rem 0; border-bottom: 1px solid var(--accent); }
-  .sky-controls { display: grid; gap: 1.6rem; }
-  .field { display: grid; gap: .6rem; border: 0; padding: 1.1rem 0 0; margin: 0; border-top: 1px solid var(--rule); min-width: 0; }
-  .field legend { padding: 0; float: left; width: 100%; }
-  .sky select, .sky input[type='number'] { font: 300 1.05rem var(--r-serif); color: var(--ink); background: #131315; border: 1px solid var(--rule); border-radius: 2px; padding: .55rem .6rem; width: 100%; min-height: 44px; }
-  .sky button { font: 400 .72rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--rule); padding: .9rem 0 .6rem; cursor: pointer; justify-self: start; min-height: 44px; }
-  .sky button:hover { color: var(--accent); border-color: var(--accent); }
-  .hint { font: italic 300 .92rem/1.4 var(--r-serif); color: var(--ink-faint); margin: 0; }
-  .sky details summary { font: 300 .98rem var(--r-serif); color: var(--ink-soft); cursor: pointer; padding: .4rem 0; }
-  .pair { display: grid; gap: .7rem; margin-top: .5rem; }
-  .pair label { display: grid; gap: .3rem; font: 300 .95rem var(--r-serif); color: var(--ink-soft); }
-  .sky-time { font: 300 1.15rem/1.35 var(--r-serif); color: var(--ink); margin: 0; font-variant-numeric: tabular-nums lining-nums; }
-  .sky input[type='range'] { width: 100%; accent-color: #e9c48a; height: 32px; margin: 0; }
-  .row-buttons { display: flex; flex-wrap: wrap; gap: 0 1.6rem; }
-  .tick { display: flex; gap: .6rem; align-items: center; font: 300 1.02rem var(--r-serif); color: var(--ink-soft); min-height: 36px; }
+  .sky { --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a; --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace; --rule: rgba(236, 231, 220, .16); color: var(--ink); }
+  .sky-view { position: relative; height: calc(100svh - var(--header-h)); min-height: 520px; overflow: hidden; background: #06070b; }
+  .sky-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline-offset: -3px; }
+  .sky-view canvas:active { cursor: grabbing; }
+  .sky-hold { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: italic 300 1.1rem var(--r-serif); color: var(--ink-faint); pointer-events: none; }
+  .sky .label { font: 400 .7rem/1.2 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
+
+  .sky-head { position: absolute; left: var(--gutter); top: clamp(16px, 3vh, 32px); max-width: min(19.5rem, 100% - 2 * var(--gutter)); pointer-events: none; text-shadow: 0 0 18px #06070b, 0 0 6px #06070b; }
+  .sky-head h1 { font: 300 clamp(2.2rem, 4.4vw, 3.4rem)/1 var(--r-serif); letter-spacing: -.02em; margin: .5rem 0 .6rem; }
+  .sky-line { font: 300 1.06rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0; font-variant-numeric: tabular-nums lining-nums; }
+  .sky-note { font: italic 300 .95rem/1.45 var(--r-serif); color: var(--accent); margin: .5rem 0 0; max-width: 24rem; }
+  .sky-hint { margin: .9rem 0 0; font: 400 .7rem/1.5 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); transition: opacity .6s ease; }
+  .sky-hint:global(.gone) { opacity: 0; }
+
+  .sky-card { position: absolute; right: var(--gutter); top: clamp(16px, 3vh, 32px); width: min(21rem, calc(100% - 2 * var(--gutter))); background: rgba(9, 10, 14, .94); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1.1rem 1.2rem 1.2rem; }
+  .sky-card :global(h2) { font: italic 300 clamp(1.6rem, 3vw, 2.1rem)/1.1 var(--r-serif); margin: .5rem 0 .7rem; padding-right: 3.4rem; }
+  .sky-card :global(.sky-card-text) { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 .5rem; max-width: none; }
+  .sky-card :global(.sky-card-links) { display: flex; flex-wrap: wrap; gap: .3rem 1.4rem; margin: .8rem 0 0; font: 400 .72rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .sky-card :global(.sky-card-links a) { color: var(--ink); text-decoration: none; padding: .45rem 0; border-bottom: 1px solid var(--accent); }
+  .sky-card :global(.sky-card-shut) { position: absolute; right: .9rem; top: .35rem; }
+
+  .sky-bar { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) auto auto; align-items: end; gap: .4rem clamp(20px, 3vw, 48px); padding: 2.2rem var(--gutter) .7rem; background: linear-gradient(to top, rgba(6, 7, 11, .96) 55%, rgba(6, 7, 11, 0)); pointer-events: none; }
+  .sky-bar > * { pointer-events: auto; }
+  .sky :global(button), .pop summary { font: 400 .7rem/1 var(--r-mono); letter-spacing: .09em; text-transform: uppercase; color: var(--ink-soft); background: none; border: 0; border-bottom: 1px solid var(--rule); padding: .85rem 0 .55rem; cursor: pointer; min-height: 40px; white-space: nowrap; }
+  .sky :global(button:hover), .pop summary:hover, .pop[open] summary { color: var(--accent); border-color: var(--accent); }
+  .bar-when { display: grid; gap: 0; min-width: 0; }
+  .bar-when input { width: 100%; accent-color: #e9c48a; height: 28px; margin: 0; }
+  .bar-row, .bar-look, .bar-more { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 1.3rem; }
+  .pop { position: relative; }
+  .pop summary { list-style: none; display: block; }
+  .pop summary::-webkit-details-marker { display: none; }
+  .pop summary .label { color: inherit; font-size: inherit; }
+  .pop summary #sky-where-name { color: var(--ink); }
+  .pop-body { position: absolute; right: 0; bottom: calc(100% + .6rem); width: min(19rem, calc(100vw - 2 * var(--gutter))); background: rgba(9, 10, 14, .97); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1rem 1.1rem 1.1rem; display: grid; gap: .7rem; z-index: 3; }
+  .sky select, .sky input[type='number'] { font: 300 1.02rem var(--r-serif); color: var(--ink); background: #131315; border: 1px solid var(--rule); border-radius: 2px; padding: .5rem .6rem; width: 100%; min-height: 44px; }
+  .pop-body button { justify-self: start; }
+  .hint { font: italic 300 .9rem/1.4 var(--r-serif); color: var(--ink-faint); margin: 0; }
+  .hint:empty { display: none; }
+  .pair { display: grid; gap: .6rem; }
+  .pair label { display: grid; gap: .3rem; font: 300 .92rem var(--r-serif); color: var(--ink-soft); }
+  .tick { display: flex; gap: .6rem; align-items: center; font: 300 1rem var(--r-serif); color: var(--ink-soft); min-height: 36px; }
   .tick input { accent-color: #e9c48a; width: 18px; height: 18px; }
+  .sky-rest { padding-top: clamp(40px, 6vw, 80px); }
+
   @media (max-width: 900px) {
-    .sky-main { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'head' 'chart' 'side'; grid-template-rows: auto; }
-    .sky-chart { position: relative; top: 0; }
-    .sky-card { min-height: 0; }
+    .sky-bar { grid-template-columns: minmax(0, 1fr) auto; padding-bottom: .5rem; }
+    .bar-when { grid-column: 1 / -1; }
+    .bar-row { justify-content: space-between; }
+    .bar-look, .bar-more { gap: 0 1rem; }
+    .bar-look .label { display: none; }
+    .sky-card { top: auto; right: var(--gutter); left: var(--gutter); bottom: 10.6rem; width: auto; max-height: 46%; overflow: auto; }
+    .sky-head h1 { font-size: 2rem; margin: .3rem 0 .4rem; }
+    .sky-line { font-size: .98rem; }
+  }
+  @media (max-width: 420px) {
+    .sky :global(button), .pop summary { font-size: .64rem; letter-spacing: .06em; }
+    .bar-look, .bar-more { gap: 0 .7rem; }
   }
 </style>
