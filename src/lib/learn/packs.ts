@@ -97,8 +97,9 @@ export const PACKS: Pack[] = [
       { title: 'The idea', about: 'What gravity is, and why an orbit is a fall that never lands.', lessons: ['what-gravity-is', 'what-an-orbit-is', 'keplers-laws'] },
       { title: 'What it does', about: 'Tides, moons kept in step, and places where pulls balance.', lessons: ['tides', 'moons-in-step', 'balance-points'] },
       { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['leaving-and-arriving', 'gravitational-waves'] },
+      { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed'] },
     ],
-    coming: ['Space and time are not fixed', 'Gravity as bent space and time', 'Gravity as a lens', 'How a rocket works'],
+    coming: ['Gravity as bent space and time', 'Gravity as a lens', 'How a rocket works'],
     look: [{ href: '/', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
   },
   {
