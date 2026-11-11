@@ -28,7 +28,7 @@ const crater = photoScene({
 const yucatan = photoScene({
   src: '/img/learn/chicxulub-yucatan-heights.jpg',
   caption: 'Not a photograph: a map of the height of the land in the north of Mexico’s Yucatán Peninsula, measured by radar from the Space Shuttle in February 2000. The colours show height, green lowest. The faint dark arc is the buried edge of the Chicxulub crater. Credit: NASA/JPL. The mark was added here.',
-  say: ['The edge of a crater 180 kilometres wide', 'About 65 million years old, and almost rubbed out'],
+  say: ['The edge of a crater 180 kilometres wide', 'About 66 million years old, and almost rubbed out'],
   zoom: [0.96, 1.03], tag: 'Radar map',
   pointers: [{ at: [0.36, 0.41], to: [0.3, 0.16], text: 'The edge of the crater', align: 'left' }],
 });

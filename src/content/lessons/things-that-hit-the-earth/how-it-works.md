@@ -4,6 +4,7 @@ sources:
   - { label: "NASA, Shaded relief with height as colour, Yucatán Peninsula (PIA03379)", url: "https://science.nasa.gov/photojournal/shaded-relief-with-height-as-color-yucatan-peninsula-mexico" }
   - { label: "NASA, DART’s final images prior to impact", url: "https://www.nasa.gov/solar-system/darts-final-images-prior-to-impact/" }
   - { label: "NASA, DART mission impact changed asteroid’s motion in space", url: "https://www.nasa.gov/news-release/nasa-confirms-dart-mission-impact-changed-asteroids-motion-in-space/" }
+  - { label: "Renne and others 2013, Science 339, 684: the date of the Chicxulub impact, 66 million years ago", url: "https://ui.adsabs.harvard.edu/abs/2013Sci...339..684R/abstract" }
   - { label: "NASA, Hubble sees boulders escaping from asteroid Dimorphos", url: "https://science.nasa.gov/missions/hubble/hubble-sees-boulders-escaping-from-asteroid-dimorphos/" }
   - { label: "ESA, Hera", url: "https://www.esa.int/Space_Safety/Hera" }
   - { label: "NASA/JPL, Small-Body Database (counts on 11 November 2026)", url: "https://ssd.jpl.nasa.gov/tools/sbdb_query.html" }
@@ -23,7 +24,7 @@ lastChecked: 2026-11-11
 
 | When and where | What happened |
 |---|---|
-| About 65 million years ago, Mexico | The Chicxulub crater, about 180 km wide. Linked to the loss of more than 70 per cent of species |
+| About 66 million years ago, Mexico | The Chicxulub crater, about 180 km wide. Linked to the loss of more than 70 per cent of species |
 | About 50,000 years ago, Arizona | Meteor Crater, 1.2 km wide and 180 m deep, from an object 30 to 50 m across |
 | 1908, Tunguska, Siberia | An object less than 100 metres across probably burst in the air. Trees were knocked flat over hundreds of square miles |
 | 15 February 2013, Chelyabinsk, Russia | A house-sized asteroid burst in the air with the force of about 440,000 tonnes of TNT. Hundreds were hurt, mostly by broken glass |

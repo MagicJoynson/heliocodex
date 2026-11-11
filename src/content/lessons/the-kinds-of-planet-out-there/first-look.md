@@ -6,7 +6,7 @@ sources:
   - { label: "NASA, Super-Earths", url: "https://science.nasa.gov/exoplanets/super-earth/" }
   - { label: "ESO, First confirmed image of a newborn planet caught with the VLT (2018)", url: "https://www.eso.org/public/news/eso1821/" }
 ---
-Every dot here is a real planet going round another star. There are more than 6,000 of them. Each is placed by two things that have been measured: how wide it is, and how long it takes to go once round its star. Small planets are at the bottom and giants at the top. Short years are on the left and long ones on the right.
+Every dot here is a real planet going round another star. There are more than 6,000 of them, as NASA's list stood on 11 November 2026. Each is placed by two things that have been measured: how wide it is, and how long it takes to go once round its star. Small planets are at the bottom and giants at the top. Short years are on the left and long ones on the right.
 
 Now put our own eight planets on the same chart. They sit off to one side, where there are hardly any dots. Most of the planets found so far are far closer to their stars than ours are. More than four in every five have a year shorter than Mercury's 88 days.
 
