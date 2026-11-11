@@ -191,7 +191,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
       <p class="label"><a href="/stars">Meet a star</a>${star.constellation ? ` / <a href="/stars/in/${slugOf(star.constellation)}">${esc(star.constellation)}</a>` : ''}</p>
       <h1${star.name.length > 14 ? ' class="long"' : ''}>${n}</h1>
       <p class="lead">${lead} ${stage}${mate ? ` It is listed as a companion of ${mate}, right beside it in the sky.` : ''}</p>
-      <p class="star-links"><a href="/v2?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p>
+      <p class="star-links"><a href="/?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p>
     </div>
     <figure class="star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure></header>`,
     row('How far', `<p class="big"><span data-ly="${star.distPc < 60 ? ly : ''}">${round2(ly)}</span> light years</p>

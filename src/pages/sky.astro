@@ -289,9 +289,9 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     for (const l of lines) parts.push(el('p', l, 'sky-card-text'));
     const go = document.createElement('p'); go.className = 'sky-card-links';
     const link = (href: string, text: string) => { const a = document.createElement('a'); a.href = href; a.textContent = text; go.append(a); };
-    if (k.kind === 'star') { if (called) link(Array.isArray(known) || !known ? `/stars/${Array.isArray(known) && known[1] ? known[1] : slug(called)}` : `/stars/catalogue?n=${k.index}`, called.length > 22 ? 'Meet this star' : `Meet ${called}`); link(`/v2?go=star:${k.index}`, 'Fly to it in 3D'); }
-    if (k.kind === 'planet') { link(`/${k.id}`, `About ${PLANET_NAMES[k.id]}`); link(`/v2?go=${k.id}`, 'Fly to it in 3D'); }
-    if (k.kind === 'moon') link('/v2?go=moon', 'Fly to it in 3D');
+    if (k.kind === 'star') { if (called) link(Array.isArray(known) || !known ? `/stars/${Array.isArray(known) && known[1] ? known[1] : slug(called)}` : `/stars/catalogue?n=${k.index}`, called.length > 22 ? 'Meet this star' : `Meet ${called}`); link(`/?go=star:${k.index}`, 'Fly to it in 3D'); }
+    if (k.kind === 'planet') { link(`/${k.id}`, `About ${PLANET_NAMES[k.id]}`); link(`/?go=${k.id}`, 'Fly to it in 3D'); }
+    if (k.kind === 'moon') link('/?go=moon', 'Fly to it in 3D');
     if (k.kind === 'sun') link('/sun', 'About the Sun');
     if (go.childElementCount) parts.push(go);
     fill(parts);

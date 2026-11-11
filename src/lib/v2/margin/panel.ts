@@ -114,10 +114,10 @@ export function mountMargin(engine: Engine): void {
     const b = who(got.subject), near = who(ctx.near);
     const kids: Kids = [
       el('p', { class: 'm-kicker' }, KICKER[got.subject] ?? BAND[ctx.band]),
-      el('h2', null, standIn ? 'The test world' : nameOf(got.subject)),
+      el('h2', null, nameOf(got.subject)),
       el('p', { class: 'm-dist' }, howFar(ctx)),
     ];
-    if (standIn) kids.push(el('p', { class: 'm-drawn' }, `Standing in for ${theName(got.subject)}. This ground is generated, not measured. What follows is about the real ${nameOf(got.subject)}.`));
+    if (standIn) kids.push(el('p', { class: 'm-drawn' }, `The colours are ${theName(got.subject)}'s own, from orbiting cameras. The hills and valleys under you are generated for now, not measured, so they will not match the real map.`));
     if (b) {
       kids.push(el('p', { class: 'm-what' }, whatIs(b)));
       if (b.look.type === 'impression') kids.push(el('p', { class: 'm-drawn' }, b.look.note));

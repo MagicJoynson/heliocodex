@@ -114,7 +114,7 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
       ? `${n} is ${ly.toFixed(1)} light years away. The light you see from it tonight set off in about ${born}, around the time you were born, and has been on its way ever since. ${sight}`
       : `No star you can see by eye is exactly ${age} light years away. The closest match is ${n}, at ${ly.toFixed(1)} light years. ${sight}`));
     if (!seen(star)) parts.push(p(top(star) < 0 ? `It never rises from ${safe(from)}. You would have to travel ${here.lat > 0 ? 'south' : 'north'} to see it.` : `From ${safe(from)} it only just clears the horizon, so it is hard to see.`));
-    const links = [`<a href="${href}">Meet ${n}</a>`, mag < 4.5 ? `<a href="/sky?star=${index}">Find it on the sky map</a>` : '', `<a href="/v2?go=star:${index}">Fly to it in 3D</a>`].filter(Boolean);
+    const links = [`<a href="${href}">Meet ${n}</a>`, mag < 4.5 ? `<a href="/sky?star=${index}">Find it on the sky map</a>` : '', `<a href="/?go=star:${index}">Fly to it in 3D</a>`].filter(Boolean);
     const row = p(links.join('')); row.className = 'age-links'; parts.push(row);
     if (exact.length > 1) parts.push(p(`${exact.length - 1 === 1 ? 'One other star' : `${exact.length - 1} other stars`} you can see by eye ${exact.length - 1 === 1 ? 'is' : 'are'} at the same distance: ${exact.slice(1, 5).map((s) => `<a href="${s[3]}">${safe(s[0])}</a>`).join(', ')}${exact.length > 5 ? ' and more' : ''}.`));
     if (age > 60) parts.push(p('For stars this far away the distance is known to about one light year, so the year is close but not exact.'));
