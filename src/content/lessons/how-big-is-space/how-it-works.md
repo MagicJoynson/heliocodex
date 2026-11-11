@@ -26,3 +26,8 @@ The first is how much room there is between the planets and the stars. The plane
 The second is that the jumps do not get smaller. From the Solar System to the nearest star is a factor of about ten thousand. From there to the far side of the galaxy is another ten thousand or so. From our galaxy to the next large one is a factor of twenty-five, which sounds modest until you remember what it is twenty-five times.
 
 The last line of the table needs a note. The universe is 13.8 billion years old, yet the furthest light we can see comes from matter that is now about 46 billion light years away, because space has kept stretching while the light was on its way.
+
+<figure class="photo">
+  <img src="/img/learn/pale-blue-dot-voyager.jpg" alt="A dark picture crossed by faint bands of light, with one tiny pale speck in the right-hand band." width="1100" height="1088" loading="lazy" />
+  <figcaption><b>A photograph.</b> The Earth from 6 billion km away, taken by Voyager 1 on 14 February 1990. The Earth is the pale speck part of the way down the right-hand band of light. The bands are sunlight scattered inside the camera. Credit: NASA/JPL-Caltech.</figcaption>
+</figure>

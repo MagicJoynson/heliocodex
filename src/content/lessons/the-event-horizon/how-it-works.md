@@ -19,6 +19,11 @@ Nobody has been near a black hole, and no probe could report back from inside on
 
 **Just outside.** At one and a half times the radius of the horizon, gravity bends light so strongly that it can travel in a circle. Gas can orbit steadily only further out again, beyond about three times the horizon's radius if the black hole is not spinning. Inside that, gas drops in.
 
+<figure class="photo">
+  <img src="/img/learn/m87-polarised-eht.jpg" alt="An orange ring round a dark centre, combed with fine curved lines that sweep round it." width="1090" height="1100" loading="lazy" />
+  <figcaption><b>A photograph.</b> The black hole in M87 again, published on 24 March 2021. The fine lines show which way the radio waves are polarised, and they trace the magnetic field in the hot gas just outside the edge. Credit: EHT Collaboration, CC BY 4.0.</figcaption>
+</figure>
+
 **The pictures.** A network of radio telescopes spread across the Earth, working as one dish the size of the planet, has made images of two black holes: the one in the galaxy M87, published in 2019, and the one at the centre of our own galaxy, published in 2022. Each shows a bright ring with a dark centre. The ring is light from hot gas, bent round the black hole on its way to us. The dark centre is the black hole's shadow. Bending makes the shadow look about two and a half times wider than the horizon itself. The size of both rings matched what general relativity had predicted from the masses.
 
 **The middle.** The theory says that everything which falls in ends at a single point of endless density, the singularity. Few physicists believe that as it stands. It is more likely a sign that general relativity stops working there, and that a theory joining gravity to the physics of the very small, which nobody yet has, is needed.
