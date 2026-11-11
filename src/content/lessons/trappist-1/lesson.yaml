@@ -6,4 +6,4 @@ scene: "The seven planets on their real orbits round the red star, with Mercury'
 view: { target: neighbourhood }
 terms: [exoplanet, red-dwarf, transit, resonance, habitable-zone, tidal-locking, atmosphere]
 needs: [planets-round-other-stars]
-next: []
+next: [the-kinds-of-planet-out-there]

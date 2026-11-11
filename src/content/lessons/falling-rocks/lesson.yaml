@@ -6,4 +6,4 @@ scene: "The Earth crossing the trail of dust left along a comet's orbit, with th
 view: { target: earth, distanceKm: 60000, highlight: [meteor-shower] }
 terms: [meteoroid, meteor, meteorite, meteor-shower, impact-crater, near-earth-object, asteroid, comet]
 needs: [rubble-and-ice]
-next: []
+next: [things-that-hit-the-earth]
