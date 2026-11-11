@@ -1,0 +1,9 @@
+title: Spiral arms
+strand: the-galaxy
+order: 4
+summary: "The arms of a spiral galaxy are not fixed strings of stars. They are patterns that stars pass through, lit up by the young stars born inside them."
+scene: "Real photographs of the Whirlpool Galaxy, a barred spiral and a galaxy much like our own, with moving drawings of why an arm made of fixed stars would wind up and how a pattern can stay while the stars move on."
+view: { target: milky-way }
+terms: [spiral-galaxy, milky-way, galaxy, nebula, star-cluster, molecular-cloud, orbital-period]
+needs: [the-milky-way, the-stuff-between-the-stars]
+next: [kinds-of-galaxy, when-galaxies-collide]

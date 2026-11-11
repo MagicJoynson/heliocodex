@@ -122,11 +122,11 @@ export const PACKS: Pack[] = [
     blurb: 'From our own galaxy outward to the largest structures there are, and back in time to the first few minutes.',
     photo: { src: `${P}m87-jet-hubble.jpg`, width: 1222, height: 1276, alt: 'A bright yellow galaxy centre with a narrow, knotted blue streak pointing away from it.', caption: 'The centre of the galaxy M87 and the jet thrown out from beside its black hole. Credit: The Hubble Heritage Team (STScI/AURA) and NASA/ESA, CC BY 4.0.' },
     stages: [
-      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
+      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-stuff-between-the-stars', 'spiral-arms', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
       { title: 'The biggest picture', about: 'How galaxies are spread through space, and how their distances are found.', lessons: ['the-distance-ladder', 'the-cosmic-web'] },
       { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'dark-matter-and-dark-energy'] },
     ],
-    coming: ['The stuff between the stars', 'Spiral arms', 'How galaxies form and change', 'Galaxy clusters', 'How we know there was a Big Bang', 'The history of the universe on one timeline', 'How it ends', 'How big is the universe'],
+    coming: ['How galaxies form and change', 'Galaxy clusters', 'How we know there was a Big Bang', 'The history of the universe on one timeline', 'How it ends', 'How big is the universe'],
     look: [{ href: '/?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
@@ -136,10 +136,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}pale-blue-dot-voyager.jpg`, width: 1100, height: 1088, alt: 'A dark picture crossed by faint bands of light, with one tiny pale speck in the right-hand band.', caption: 'The only world known to have life, from 6 billion km away: the pale speck in the right-hand band of light. Voyager 1, 14 February 1990. Credit: NASA/JPL-Caltech.' },
     stages: [
       { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'the-kinds-of-planet-out-there', 'trappist-1'] },
-      { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'ocean-moons'] },
+      { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'the-habitable-zone', 'ocean-moons'] },
       { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
     ],
-    coming: ['The habitable zone', 'What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
+    coming: ['What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
     look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];
