@@ -1,0 +1,9 @@
+title: Supernovae
+strand: stars
+order: 9
+summary: "A supernova is a star blowing up. There are two ways it can happen, and for a few weeks one can outshine a whole galaxy."
+scene: "A heavy star's core falling in and the blast that follows, a white dwarf fed by its partner until it explodes, and real photographs of what is left."
+view: { target: milky-way }
+terms: [supernova, white-dwarf, chandrasekhar-limit, neutron-star, neutrino, nebula, black-hole]
+needs: [how-stars-live-and-die]
+next: [neutron-stars-and-pulsars, the-distance-ladder]

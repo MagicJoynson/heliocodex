@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import Reading from '../../layouts/Reading.astro';
 import LessonStory from '../../components/learn/LessonStory.astro';
+import PackLinks from '../../components/learn/PackLinks.astro';
 import { STORY_LESSONS } from '../../lib/learn/stories';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
 import equationStyles from 'katex/dist/katex.min.css?url';
@@ -95,6 +96,8 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
       <p class="aside small-note">The words are written for this site. Sums in the text are worked from the figures in these sources.</p>
     </div>
   </section>
+
+  <PackLinks lesson={lesson.id} titles={Object.fromEntries(lessons.map((l) => [l.id, l.data.title]))} />
 
   {(lesson.data.needs.length > 0 || lesson.data.next.length > 0) && (
     <nav class="row onward" aria-label="Other lessons">

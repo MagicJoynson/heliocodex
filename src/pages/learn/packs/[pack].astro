@@ -1,0 +1,110 @@
+---
+import Reading from '../../../layouts/Reading.astro';
+import { allLessons } from '../../../lib/v2/margin/content';
+import { STORY_LESSONS } from '../../../lib/learn/stories';
+import { PACKS, packLessons, type Pack } from '../../../lib/learn/packs';
+
+export function getStaticPaths() {
+  return PACKS.map((pack) => ({ params: { pack: pack.id }, props: { pack } }));
+}
+const { pack } = Astro.props as { pack: Pack };
+const lessons = await allLessons();
+const find = (id: string) => {
+  const l = lessons.find((x) => x.id === id);
+  if (!l) throw new Error(`Pack "${pack.id}" lists the lesson "${id}", which does not exist`);
+  return l;
+};
+const ids = packLessons(pack);
+if (new Set(ids).size !== ids.length) throw new Error(`Pack "${pack.id}" lists a lesson twice`);
+let n = 0;
+const stages = pack.stages.map((s) => ({ ...s, lessons: s.lessons.map((id) => ({ ...find(id), number: ++n })) }));
+const deeper = ids.filter((id) => find(id).levels.length > 1).length;
+const others = PACKS.filter((p) => p.id !== pack.id);
+---
+<Reading title={pack.name} path={`/learn/packs/${pack.id}`} description={pack.blurb}>
+  <header class="reading-head pack-head">
+    <div>
+      <p class="label"><a href="/learn">Learn</a> / Lesson packs</p>
+      <h1>{pack.name}</h1>
+      <p class="lead">{pack.blurb}</p>
+      <p class="count">{ids.length} lessons in {stages.length} parts. {deeper === ids.length ? 'Every one' : `${deeper} of them`} can be read again at a deeper level.</p>
+      <p><a class="begin" href={`/learn/${ids[0]}`}>Begin with lesson 1</a></p>
+    </div>
+    <figure>
+      <img src={pack.photo.src} alt={pack.photo.alt} width={pack.photo.width} height={pack.photo.height} />
+      <figcaption><b>A photograph.</b> {pack.photo.caption}</figcaption>
+    </figure>
+  </header>
+
+  {stages.map((s, i) => (
+    <section class="row">
+      <div class="hang">
+        <p class="label">Part {i + 1}</p>
+        <h2>{s.title}</h2>
+        <p class="about">{s.about}</p>
+      </div>
+      <ol class="plain-list lessons">
+        {s.lessons.map((l) => (
+          <li>
+            <span class="num">{l.number}</span>
+            <div>
+              <a href={`/learn/${l.id}`}>{l.data.title}</a>
+              <p>{l.data.summary}</p>
+              {STORY_LESSONS.includes(l.id) && <p class="tag">With moving pictures and photographs</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+
+  {pack.coming.length > 0 && (
+    <section class="row quiet">
+      <div class="hang"><h2>Still being written</h2></div>
+      <div>
+        <p class="coming">This pack is not finished. These lessons are planned and will be added to it: {pack.coming.join(', ')}.</p>
+      </div>
+    </section>
+  )}
+
+  <section class="row">
+    <div class="hang"><h2>Go and look</h2></div>
+    <ul class="plain-list looks">
+      {pack.look.map((l) => <li><a href={l.href}>{l.text}</a><p>{l.about}</p></li>)}
+    </ul>
+  </section>
+
+  <nav class="row small" aria-label="Other lesson packs">
+    <div class="hang"><h2>Other packs</h2></div>
+    <ul class="plain-list others">
+      {others.map((p) => <li><a href={`/learn/packs/${p.id}`}>{p.name}</a></li>)}
+    </ul>
+  </nav>
+</Reading>
+
+<style>
+  .pack-head { display: grid; gap: 2.5rem; align-items: start; max-width: none; }
+  .pack-head > div { max-width: 36rem; }
+  .pack-head figure { margin: 0; }
+  .pack-head img { display: block; width: 100%; height: auto; max-height: 26rem; object-fit: cover; background: #000; }
+  .pack-head figcaption { font: italic 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .7rem; }
+  .pack-head figcaption b { font: 400 .7rem/1 var(--r-mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: .5rem; }
+  .count { font: 400 .78rem/1.6 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); margin: 1.4rem 0 1.2rem; }
+  .begin { font: 400 .8rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding-bottom: .5rem; border-bottom: 1px solid var(--accent); }
+  .begin:hover { color: var(--accent); }
+  @media (min-width: 900px) { .pack-head { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3.5rem; } }
+  .hang .label { margin: 0 0 .4rem; }
+  .about { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); margin: .5rem 0 0; }
+  .lessons, .looks { display: grid; gap: 1.6rem; }
+  .lessons li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .4rem; align-items: baseline; }
+  .num { font: 400 .8rem/1 var(--r-mono); color: var(--accent); }
+  .lessons a, .looks a { font: 400 1.32rem/1.25 var(--r-serif); color: var(--ink); text-decoration: none; background: linear-gradient(rgba(233,196,138,.5), rgba(233,196,138,.5)) 0 100% / 0 1px no-repeat; transition: background-size .3s ease; }
+  .lessons a:hover, .looks a:hover { background-size: 100% 1px; }
+  .lessons p, .looks p, .coming { font: 300 1.06rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .25rem 0 0; }
+  .lessons .tag { font: 400 .68rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin-top: .45rem; }
+  .coming { margin: 0; color: var(--ink-faint); }
+  .quiet h2 { color: var(--ink-faint); }
+  .others { display: flex; flex-wrap: wrap; gap: .6rem 1.8rem; }
+  .others a { font: 400 1.05rem/1.4 var(--r-serif); }
+  @media (prefers-reduced-motion: reduce) { .lessons a, .looks a { transition: none; } }
+</style>
