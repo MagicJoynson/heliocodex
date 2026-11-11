@@ -55,7 +55,9 @@ export function photoScene(o: PhotoOptions): Scene {
       const wide = o.hero && w > 760, roomX = wide ? w * 0.34 : 0, roomW = w - roomX;
       const fit = o.cover || o.hero ? Math.max(roomW / ratio, h) : Math.min(roomW / ratio, h * 0.98);
       const ph = fit * z, pw = ph * ratio, [fx, fy] = o.focus ?? [0.5, 0.5];
-      const x = roomX + roomW / 2 - pw * fx, y = h * (o.hero ? 0.5 : 0.49) - ph * fy;
+      let x = roomX + roomW / 2 - pw * fx, y = h * (o.hero ? 0.5 : 0.49) - ph * fy;
+      // a picture that fills its room never shows a bare strip along one side
+      if (o.cover || o.hero) { if (pw >= roomW) x = clamp(x, roomX + roomW - pw, roomX); if (ph >= h) y = clamp(y, h - ph, 0); }
       ctx.drawImage(img, x, y, pw, ph);
       // the edges of the photograph are melted into the page, so it never sits in a hard box
       const soft = Math.min(w, h) * (o.hero ? 0.3 : 0.12);
@@ -73,9 +75,12 @@ export function photoScene(o: PhotoOptions): Scene {
       if (k > 0 && o.pointers) {
         ctx.globalAlpha = k;
         for (const q of o.pointers) {
-          const ax = x + pw * q.at[0], ay = y + ph * q.at[1], bx = clamp(x + pw * q.to[0], 12, w - 12), by = clamp(y + ph * q.to[1], 30, h - 12);
-          ctx.strokeStyle = 'rgba(236,231,220,.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+          const ax = x + pw * q.at[0], ay = y + ph * q.at[1], by = clamp(y + ph * q.to[1], 30, h - 12);
+          let bx = clamp(x + pw * q.to[0], 12, w - 12);
           const right = (q.align ?? (bx > ax ? 'left' : 'right')) === 'left';
+          ctx.font = '400 11px "IBM Plex Mono", monospace'; const tw = ctx.measureText(q.text.toUpperCase()).width + 12;
+          bx = right ? Math.min(bx, w - tw) : Math.max(bx, tw);
+          ctx.strokeStyle = 'rgba(236,231,220,.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
           ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 6;
           label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right' });
           ctx.shadowBlur = 0;

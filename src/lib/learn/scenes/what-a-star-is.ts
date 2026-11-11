@@ -23,7 +23,7 @@ const sunsScene: Scene = {
     ctx.save(); ctx.translate(cx, cy); ctx.scale(1 + k * 0.5, 1 + k * 0.5); ctx.translate(-cx, -cy); backdrop(ctx, w, h, 1 - 0.75 * k); ctx.restore();
     const r = (s * 0.26) * Math.pow(1 / 4000, 1 - k);
     if (r > 1.4) sun(ctx, cx, cy, r, 1, '255,196,120'); else { dot(ctx, cx, cy, 1.5, '#ffe2b0'); if (k < 0.05) ring(ctx, cx, cy, 12, 'rgba(233,196,138,.6)'); }
-    if (k > 0.96) { globe(ctx, cx - s * 0.36, cy + s * 0.16, 3); label(ctx, 'A planet of its own, perhaps', cx - s * 0.36 + 9, cy + s * 0.16 + 12); }
+    if (k > 0.96) { globe(ctx, cx - s * 0.4, cy + s * 0.3, 3); label(ctx, 'A planet of its own, perhaps', cx - s * 0.4 + 9, cy + s * 0.3 + 12); }
     say(k < 0.05 ? 'One star among thousands' : k < 1 ? 'Closer' : 'Up close, a sun', 'Ours looks different only because we live beside it');
   },
 };
@@ -89,9 +89,9 @@ const sizesScene: Scene = {
       const r = (b.suns * sunPx) / 2, cx = at + r, cy = base - r; at += r * 2 + gap + (i < 2 ? 26 * (1 - k) : 0);
       if (cx - r > w + 10) return;
       if (r > 0.6) globe(ctx, cx, cy, r, b.lit, b.dark); else dot(ctx, cx, cy, 0.8, `rgb(${b.lit})`);
-      const show = i === 3 ? k > 0.6 : r > 2.5 || (i === 2 && k > 0.9);
+      const show = i === 3 ? k > 0.6 : i === 2 ? r > 6 || k > 0.9 : k < 0.1;
       if (show) {
-        const lx = i === 3 ? Math.min(cx, w * 0.6) : cx, ly = i === 3 ? Math.max(cy - r - 16, h * 0.16) : base + 18;
+        const lx = i === 3 ? Math.min(cx, w * 0.6) : cx, ly = i === 3 ? Math.max(cy - r - 16, h * 0.16) : base + 18 + (i === 1 && w <= 520 ? 15 : 0);
         ctx.shadowColor = '#000'; ctx.shadowBlur = i === 3 ? 6 : 0;
         label(ctx, b.name, lx, ly, { align: 'center', colour: i === 2 ? ACCENT : INK }); if (b.note && w > 520) label(ctx, b.note, lx, ly + 15, { align: 'center' });
         ctx.shadowBlur = 0;

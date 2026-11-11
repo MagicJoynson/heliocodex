@@ -23,4 +23,9 @@ The squeeze makes the centre hot and dense. In the Sun's core it is nearly 16 mi
 
 The last column is the surprise. A heavy star has more fuel, but it burns it far faster, so it dies young. A red dwarf sips its fuel so slowly that none has ever yet run out: the universe, at 13.8 billion years, is not old enough. The figures for red dwarfs come from computer models of stars, because nobody can watch one grow old.
 
+<figure class="photo">
+  <img src="/img/learn/omega-centauri-hubble.jpg" alt="A field packed with thousands of stars: many yellow-white, some bright blue, some orange and red." width="1100" height="562" loading="lazy" />
+  <figcaption><b>A photograph.</b> About 100,000 stars in the heart of the cluster Omega Centauri, by the Hubble Space Telescope in 2009. The colours are real. The red and orange stars are giants near the end of their lives, the blue ones are hot, and the many yellow-white ones are stars like the Sun. Credit: NASA, ESA and the Hubble SM4 ERO Team, CC BY 4.0.</figcaption>
+</figure>
+
 **What is common.** Small stars are common and large ones are rare. About three in every four stars near the Sun are red dwarfs, and not one of them can be seen without a telescope. The bright stars that make up the constellations are the unusual ones: they are either close or very powerful.

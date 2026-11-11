@@ -22,7 +22,7 @@ export const lens: Scene = {
     if (Math.sin(a) < 0) moon();
     globe(ctx, cx, cy, Math.max(R, 3));
     if (Math.sin(a) >= 0) moon();
-    label(ctx, 'Moon', mx + 8, my - 8, { colour: SOFT });
+    label(ctx, 'Moon', mx > w - 60 ? mx - 8 : mx + 8, my - 8, { colour: SOFT, align: mx > w - 60 ? 'right' : 'left' });
   },
 };
 
@@ -119,7 +119,7 @@ const farScene: Scene = {
     for (const [km, name] of HEIGHTS) {
       const r = 1 + km / R_EARTH, p = 1 / (r * r);
       dot(ctx, X(r), Y(p), 2.6, INK);
-      if (w > 520 || km !== 20_200) label(ctx, `${name}: ${nf(p * 100, p < 0.1 ? 1 : 0)}%`, X(r) + 7, Y(p) - 11, { colour: SOFT });
+      if (w > 520 || km !== 20_200) { const end = X(r) > w * 0.7; label(ctx, `${name}: ${nf(p * 100, p < 0.1 ? 1 : 0)}%`, X(r) + (end ? 0 : 7), Y(p) - (end ? 24 : 11), { colour: SOFT, align: end ? 'right' : 'left' }); }
     }
     const loop = 13, k = ease(((t % loop) - 0.6) / 9), r = 1 + k * (reach - 1), p = 1 / (r * r);
     line(ctx, [X(r), base, X(r), Y(p)], 'rgba(233,196,138,.5)');

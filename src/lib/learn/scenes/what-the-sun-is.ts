@@ -28,7 +28,8 @@ const closeScene: Scene = {
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, 9, 0, TAU); ctx.fill();
       if (k > 0.97) { line(ctx, [cx + 14, cy - 14, cx + 40, cy - 40], 'rgba(236,231,220,.5)'); label(ctx, 'The Sun', cx + 46, cy - 42, { colour: ACCENT }); }
     }
-    say(far < 1.05 ? 'The Sun from the Earth' : `${nf(far < 100 ? Math.round(far * 10) / 10 : Math.round(far / (far > 10000 ? 1000 : 10)) * (far > 10000 ? 1000 : 10), far < 100 ? 1 : 0)} times further away`, k >= 1 ? 'From the nearest star, the Sun is one more star in the sky' : `${nf(Math.pow(far, 2) < 1e6 ? Math.round(far * far) : Number((far * far).toPrecision(2)))} times fainter`);
+    const round = (n: number) => Number(n.toPrecision(2)), big = (n: number) => (n >= 1e9 ? `${nf(round(n / 1e9), 1).replace(/\.0$/, '')} billion` : n >= 1e6 ? `${nf(round(n / 1e6), 1).replace(/\.0$/, '')} million` : nf(round(n)));
+    say(far < 1.05 ? 'The Sun from the Earth' : `${big(far)} times further away`, k >= 1 ? 'From the nearest star, the Sun is one more star in the sky' : far < 1.05 ? 'Close enough to light the day' : `${big(far * far)} times fainter`);
   },
 };
 
@@ -54,11 +55,11 @@ const bigScene: Scene = {
   stillAt: 12,
   draw({ ctx, w, h, t, say }) {
     const s = Math.min(w, h * 0.9), R = s * 0.4, cx = w / 2, cy = h * 0.42, loop = 16, n = Math.floor(clamp(((t % loop) - 0.8) / 7) * 109), e = (2 * R) / 109;
-    const g = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R); g.addColorStop(0, 'rgba(255,214,140,.5)'); g.addColorStop(0.85, 'rgba(255,170,80,.34)'); g.addColorStop(1, 'rgba(255,150,60,.2)');
+    const g = ctx.createRadialGradient(cx, cy, R * 0.2, cx, cy, R); g.addColorStop(0, 'rgba(255,224,150,.95)'); g.addColorStop(0.85, 'rgba(255,176,80,.85)'); g.addColorStop(1, 'rgba(240,130,50,.7)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.fill();
     ring(ctx, cx, cy, R, 'rgba(255,200,120,.5)');
-    for (let i = 0; i < n; i++) dot(ctx, cx - R + e * (i + 0.5), cy, Math.max(e / 2 - 0.35, 0.7), i === n - 1 ? '#bcd6ff' : '#5d8fd6');
-    label(ctx, `${n} Earth${n === 1 ? '' : 's'}`, cx, cy - 16, { align: 'center', colour: INK });
+    for (let i = 0; i < n; i++) dot(ctx, cx - R + e * (i + 0.5), cy, Math.max(e / 2 - 0.35, 0.7), i === n - 1 ? '#e8f1ff' : '#2f5fa8');
+    label(ctx, `${n} Earth${n === 1 ? '' : 's'}`, cx, cy - 16, { align: 'center', colour: '#1a0d05' });
     // the mass bar
     const x0 = w * 0.1, x1 = w * 0.9, y = h * 0.93, k = ease(((t % loop) - 8.5) / 2);
     if (k > 0) {
@@ -103,10 +104,10 @@ const insideScene: Scene = {
     for (let i = 0; i < n; i++) pts.push(cx + walker[i * 2] * R, cy + walker[i * 2 + 1] * R);
     if (pts.length > 3) { line(ctx, pts, 'rgba(60,30,10,.75)', 1); dot(ctx, pts[pts.length - 2], pts[pts.length - 1], 2.6, '#201008'); }
     if (x > 12.5) { const k = clamp((x - 12.5) / 1.2), a = Math.atan2(walker[walker.length - 1], walker[walker.length - 2]); line(ctx, [cx + Math.cos(a) * R, cy + Math.sin(a) * R, cx + Math.cos(a) * (R + k * s * 0.3), cy + Math.sin(a) * (R + k * s * 0.3)], ACCENT, 1.4); }
-    const tag = (text: string, r: number, a: number) => { ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 5; label(ctx, text, cx + Math.cos(a) * r * R, cy + Math.sin(a) * r * R, { align: 'center', colour: '#1a0d05', size: w < 520 ? 9 : 11 }); ctx.shadowBlur = 0; };
+    const tag = (text: string, r: number, a: number) => { ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 5; label(ctx, text, cx + Math.cos(a) * r * R, Math.max(cy + Math.sin(a) * r * R, cy - R + 14), { align: 'center', colour: '#1a0d05', size: w < 520 ? 9 : 11 }); ctx.shadowBlur = 0; };
     ctx.shadowColor = 'transparent';
     label(ctx, 'Core', cx, cy - R * 0.12, { align: 'center', colour: '#3a2408' });
-    tag('Light struggles out', 0.48, -Math.PI / 2); tag('Gas boils up and sinks', 0.85, -Math.PI / 2);
+    tag('Light struggles out', 0.48, -Math.PI / 2); tag(w < 520 ? 'Boiling gas' : 'Gas boils up and sinks', 0.85, -Math.PI / 2);
     say(x < 12.5 ? 'In the core: 15.7 million degrees' : 'Out at last: 8 minutes 19 seconds to the Earth', x < 12.5 ? 'Light made here takes many thousands of years to get out' : 'after many thousands of years inside the Sun');
   },
 };

@@ -62,7 +62,7 @@ const denseScene: Scene = {
   caption: 'What one sugar cube of different things would weigh, on a ladder where each step up is ten times heavier. The figures for the Sun\'s centre and the neutron star are the lesson\'s. The white dwarf\'s is a typical one.',
   stillAt: 13,
   draw({ ctx, w, h, t, say }) {
-    const x = w * 0.2, top = h * 0.1, base = h * 0.88, loop = 17, at = clamp(((t % loop) - 0.8) / 11) * 15, Y = (p: number) => base - (p / 15) * (base - top);
+    const x = w * (w < 520 ? 0.08 : 0.2), top = h * 0.1, base = h * 0.88, loop = 17, at = clamp(((t % loop) - 0.8) / 11) * 15, Y = (p: number) => base - (p / 15) * (base - top);
     line(ctx, [x, base, x, top], 'rgba(236,231,220,.25)');
     for (let p = 0; p <= 15; p++) line(ctx, [x - (p % 3 ? 3 : 6), Y(p), x, Y(p)], 'rgba(236,231,220,.3)');
     line(ctx, [x, base, x, Y(at)], ACCENT, 2);
@@ -70,10 +70,11 @@ const denseScene: Scene = {
     LADDER.forEach(([name, p], i) => {
       const on = at >= p; if (on) last = i;
       dot(ctx, x, Y(p), 3.2, on ? ACCENT : 'rgba(236,231,220,.3)');
-      label(ctx, name, x + 14, Y(p) - 7, { colour: on ? INK : FAINT }); label(ctx, WEIGHTS[i], x + 14, Y(p) + 8, { colour: on ? SOFT : 'rgba(138,132,120,.5)' });
+      if (h < 420) label(ctx, `${name}: ${WEIGHTS[i]}`, x + 14, Y(p), { colour: on ? INK : FAINT });
+      else { label(ctx, name, x + 14, Y(p) - 7, { colour: on ? INK : FAINT }); label(ctx, WEIGHTS[i], x + 14, Y(p) + 8, { colour: on ? SOFT : 'rgba(138,132,120,.5)' }); }
     });
     // the cube itself
-    const c = Math.min(w, h) * 0.05, bx = w * 0.72, by = h * 0.47;
+    const c = Math.min(w, h) * 0.05, bx = w * (w < 520 ? 0.82 : 0.72), by = h * (w < 520 ? 0.6 : 0.47);
     ctx.fillStyle = `rgba(${Math.round(mix(120, 207, at / 15))},${Math.round(mix(160, 224, at / 15))},255,.9)`; ctx.fillRect(bx - c / 2, by - c / 2, c, c);
     label(ctx, 'One sugar cube', bx, by + c / 2 + 16, { align: 'center' });
     say(`A sugar cube of this: ${WEIGHTS[last]}`, last === 4 ? 'As much as a mountain' : `${LADDER[last][0]}`);
