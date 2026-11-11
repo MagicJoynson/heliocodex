@@ -47,14 +47,16 @@ p { margin: 0 0 1em; max-width: 66ch; }
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
 }
-.wordmark { font: 400 1.25rem var(--serif); text-decoration: none; letter-spacing: 0.01em; }
-.wordmark span { color: var(--accent); }
+.wordmark { display: block; line-height: 0; text-decoration: none; }
+.wordmark img { display: block; height: 28px; width: auto; }
 .site-nav { display: flex; gap: 20px; font-size: 0.9rem; }
 .site-nav a { text-decoration: none; color: var(--ink-soft); }
 .site-nav a:hover, .site-nav a[aria-current] { color: var(--ink); }
-@media (max-width: 460px) { .site-nav { gap: 11px; font-size: 0.8rem; } .wordmark { font-size: 1.06rem; } }
+@media (max-width: 460px) { .site-nav { gap: 11px; font-size: 0.8rem; } .wordmark img { height: 22px; } }
 /* on phones six links do not fit; Sources is also linked from the foot of every page */
 @media (max-width: 480px) { .site-nav a[href='/sources'] { display: none; } }
+@media (max-width: 380px) { .site-nav { gap: 9px; } .wordmark img { height: 18px; } }
+.site-header { column-gap: 14px; }
 
 /* footer */
 .site-footer { border-top: 1px solid var(--line); padding: 40px var(--gutter) 56px; color: var(--ink-faint); font-size: 0.85rem; }
