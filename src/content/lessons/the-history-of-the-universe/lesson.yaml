@@ -1,0 +1,9 @@
+title: The history of the universe on one timeline
+strand: the-universe
+order: 6
+summary: "13.8 billion years, from the first light to this evening, squeezed into a single calendar year so that the gaps between events can be felt."
+scene: "A timeline of the whole history of the universe drawn to scale, real pictures of the oldest light, the first galaxies, the Sun and the Earth, each with its date in a one-year calendar, and the last day of that year hour by hour."
+view: { target: cmb }
+terms: [big-bang, cosmic-microwave-background, cosmic-dark-ages, galaxy, star, look-back-time, power-of-ten]
+needs: [the-first-minutes, how-we-know-there-was-a-big-bang]
+next: [the-oldest-light, how-the-planets-formed]
