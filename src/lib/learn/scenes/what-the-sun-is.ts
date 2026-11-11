@@ -3,7 +3,7 @@
  * times further than the Sun; the Sun is 109 Earths wide and holds 99.86% of the Solar System's
  * mass; the core is the inner quarter of the radius and the radiative zone reaches 70% of it.
  */
-import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label, stars, rng, nf } from '../stage';
+import { type Scene, INK, SOFT, ACCENT, clamp, ease, label, stars, rng, nf } from '../stage';
 import { TAU, photoScene, sun, dot, ring, line } from '../kit';
 
 const backdrop = stars(170, 41);
@@ -35,7 +35,7 @@ const closeScene: Scene = {
 // ---- 2. no ground, and a real look at the surface
 const surface = photoScene({
   src: '/img/learn/sun-sunspots-sdo.jpg',
-  caption: 'A real photograph: the Sun in ordinary light on 23 October 2014, by NASA\'s Solar Dynamics Observatory. The dark patches are sunspots, cooler than the gas round them. This group was the largest for 24 years, about 130,000 km across. Credit: NASA/SDO. The marks and the Earth for size were added here.',
+  caption: 'A real photograph: the Sun in ordinary light in October 2014, by NASA\'s Solar Dynamics Observatory. The dark patches are sunspots, cooler than the gas round them. This group was the largest for 24 years, about 130,000 km across. Credit: NASA/SDO. The marks and the Earth for size were added here.',
   say: ['The edge looks sharp, but it is gas all the way', 'It is only where the gas becomes too thick to see into'],
   zoom: [0.96, 1.04],
   pointers: [{ at: [0.49, 0.665], to: [0.3, 0.86], text: 'Sunspots' }, { at: [0.905, 0.25], to: [0.99, 0.12], text: 'Not a surface', align: 'right' }],
@@ -108,7 +108,6 @@ const insideScene: Scene = {
     label(ctx, 'Core', cx, cy - R * 0.12, { align: 'center', colour: '#3a2408' });
     tag('Light struggles out', 0.48, -Math.PI / 2); tag('Gas boils up and sinks', 0.85, -Math.PI / 2);
     say(x < 12.5 ? 'In the core: 15.7 million degrees' : 'Out at last: 8 minutes 19 seconds to the Earth', x < 12.5 ? 'Light made here takes many thousands of years to get out' : 'after many thousands of years inside the Sun');
-    void FAINT;
   },
 };
 

@@ -2,7 +2,7 @@
  * Pictures for the lesson "What a star is". Sizes used: Jupiter is a tenth of the Sun's width (NASA),
  * Proxima Centauri about a seventh (ESO), and the red supergiant Antares about 700 times (ESO, 2017).
  */
-import { type Scene, INK, SOFT, ACCENT, clamp, ease, mix, label, stars, rng, nf } from '../stage';
+import { type Scene, INK, SOFT, ACCENT, clamp, ease, mix, label, stars, rng } from '../stage';
 import { TAU, photoScene, globe, sun, dot, ring } from '../kit';
 
 const backdrop = stars(260, 77);
@@ -99,7 +99,6 @@ const sizesScene: Scene = {
       if (i === 3 && k > 0.9) { ring(ctx, cx, cy, (2 * 1.524 * 107.5 * sunPx) / 2, 'rgba(11,11,12,.55)', 1, [3, 5]); ctx.fillStyle = 'rgba(11,11,12,.8)'; ctx.font = '400 11px "IBM Plex Mono", monospace'; ctx.textAlign = 'center'; ctx.fillText('THE ORBIT OF MARS, FOR SIZE', cx, cy + 1.524 * 107.5 * sunPx - 12); }
     });
     say(k < 0.05 ? 'The smallest stars are hardly wider than Jupiter' : k < 1 ? 'Pulling back' : 'Antares: about 700 Suns wide', k >= 1 ? 'The Sun is the dot at the left' : 'All to the same scale');
-    void nf;
   },
 };
 
