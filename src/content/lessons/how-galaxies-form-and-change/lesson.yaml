@@ -1,0 +1,9 @@
+title: How galaxies form and change
+strand: galaxies
+order: 7
+summary: "Galaxies were not always as they are now. They began small and ragged, grew by pulling in gas and swallowing each other, and made most of their stars long ago."
+scene: "Real photographs of the earliest galaxies from the Hubble and Webb telescopes, real photographs of galaxies at three ages set side by side, and drawings of small galaxies joining and of how fast stars have been made."
+view: { target: cosmic-web }
+terms: [galaxy, look-back-time, dark-matter, galaxy-merger, spiral-galaxy, elliptical-galaxy, redshift, milky-way]
+needs: [kinds-of-galaxy, when-galaxies-collide]
+next: [galaxy-clusters, the-history-of-the-universe]
