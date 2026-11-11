@@ -3,6 +3,7 @@
 // changes as each paragraph comes past. The deeper levels are pages of their own, linked below.
 import Base from '../../layouts/Base.astro';
 import Stage from './Stage.astro';
+import PackLinks from './PackLinks.astro';
 import '../../styles/reading.css';
 import '../../styles/lesson.css';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
@@ -98,6 +99,8 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
           <p class="aside small-note">The words are written for this site. The pictures are drawn by the page from the figures in the lesson, and each one says underneath what it is based on.</p>
         </div>
       </section>
+
+      <PackLinks lesson={lesson.id} titles={Object.fromEntries(lessons.map((l) => [l.id, l.data.title]))} />
 
       {(lesson.data.needs.length > 0 || lesson.data.next.length > 0) && (
         <nav class="row onward" aria-label="Other lessons">

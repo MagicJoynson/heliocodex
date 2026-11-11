@@ -1,0 +1,31 @@
+---
+// Where this lesson sits in each pack it belongs to, with the lesson before and after it there.
+import { packsOf } from '../../lib/learn/packs';
+interface Props { lesson: string; titles: Record<string, string> }
+const { lesson, titles } = Astro.props;
+const mine = packsOf(lesson);
+---
+{mine.length > 0 && (
+  <nav class="row packs-in" aria-label="Lesson packs this lesson is part of">
+    <div class="hang"><h2>Part of a pack</h2></div>
+    <ul class="plain-list">
+      {mine.map(({ pack, place, of, before, after }) => (
+        <li>
+          <span class="label">Lesson {place} of {of}</span>
+          <a class="pack-name" href={`/learn/packs/${pack.id}`}>{pack.name}</a>
+          <p>
+            {before && <span>Before this: <a href={`/learn/${before}`}>{titles[before]}</a>. </span>}
+            {after ? <span>Next in the pack: <a href={`/learn/${after}`}>{titles[after]}</a>.</span> : <span>This is the last lesson in the pack.</span>}
+          </p>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .packs-in ul { display: grid; gap: 1.4rem; }
+  .packs-in li { display: grid; gap: .2rem; }
+  .pack-name { font: 400 1.25rem/1.25 var(--r-serif); }
+  .packs-in p { font: 300 1.02rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .15rem 0 0; }
+</style>
