@@ -59,6 +59,9 @@ p { margin: 0 0 1em; max-width: 66ch; }
 /* footer */
 .site-footer { border-top: 1px solid var(--line); padding: 40px var(--gutter) 56px; color: var(--ink-faint); font-size: 0.85rem; }
 .site-footer p { max-width: 80ch; }
+.site-footer .legal-links { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; margin-top: 1rem; }
+.site-footer .legal-links a { color: inherit; text-underline-offset: .18em; }
+.site-footer .legal-links a:hover { color: var(--ink, #ece7dc); }
 
 /* scene */
 .stage { position: relative; height: calc(100svh - var(--header-h)); min-height: 460px; overflow: hidden; }
