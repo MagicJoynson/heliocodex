@@ -111,7 +111,7 @@ const data = {
                 <td data-label="Tilt">{m.tiltUnknown ? <span class="unknown">not known</span> : `${m.tilt < 10 ? m.tilt.toFixed(1) : Math.round(m.tilt)}°`}</td>
                 <td data-label="Width">{m.meanRadiusKm ? fmtKm(m.meanRadiusKm * 2) : <span class="unknown">not measured</span>}</td>
                 <td data-label="Found">{year.get(m.id) ?? ''}</td>
-                <td class="go">{canPlace(m.orbit) && <a href={`/v2?go=${m.id}`} aria-label={`Fly to ${m.name} in 3D`}>Fly there</a>}</td>
+                <td class="go">{canPlace(m.orbit) && <a href={`/?go=${m.id}`} aria-label={`Fly to ${m.name} in 3D`}>Fly there</a>}</td>
               </tr>
             ))}
           </tbody>
