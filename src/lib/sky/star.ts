@@ -41,6 +41,29 @@ export function kind(given: string | null): { colour: string; stage: string } {
   return { colour, stage };
 }
 
+const ORDER = 'OBAFGKM';
+/** The class of star a colour index belongs to, as a place in O B A F G K M. */
+const classOfColour = (bv: number) => { const i = [-0.3, -0.02, 0.3, 0.58, 0.81, 1.4].findIndex((lim) => bv < lim); return i < 0 ? 6 : i; };
+/**
+ * What kind of star this is, in words, from its spectral type and its measured colour together.
+ * The catalogue's type is not always the star's own: for a close pair it can be a blend, a guess
+ * (marked with a colon) or the companion's. So the colour words come from the measured colour when
+ * the type is marked as doubtful or joint, or when the two cannot both be right: the type is more than
+ * one class cooler than the colour (dust between us and a star only ever reddens it), or a nearby
+ * star's type is more than two classes hotter than its colour (more than dust could do close by).
+ */
+export function reading(spect: string | null, bv: number | null, distPc: number): { colour: string; stage: string; type: string; fromColour: boolean } {
+  const given = (spect ?? '').trim(), plain = kind(spect), type = /comp/i.test(given) ? 'Composite: two stars measured as one' : tidySpect(spect);
+  const letter = given.replace(/^sd/, '')[0]?.toUpperCase() ?? '', at = ORDER.indexOf(letter);
+  if (bv === null || bv === undefined || Number.isNaN(bv) || /^D/.test(given)) return { ...plain, type, fromColour: false };
+  const seen = classOfColour(bv), doubtful = /:|comp|\+/i.test(given), apart = at < 0 ? 0 : at - seen;
+  const wrong = apart > 1 || (apart < -2 && distPc < 200);
+  if (!doubtful && !wrong && at >= 0) return { ...plain, type, fromColour: false };
+  // a blended or guessed type says nothing sure about the star's stage of life either
+  const stage = /:|comp/i.test(given) || wrong ? '' : kind(given.split('+')[0]).stage;
+  return { colour: CLASSES[ORDER[seen]], stage, type: wrong && !/comp/i.test(given) ? '' : type, fromColour: at >= 0 && at !== seen };
+}
+
 export const nf = (n: number, digits = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: digits, minimumFractionDigits: digits });
 /** A figure rounded to two significant digits, so it does not claim more than is known. */
 export function round2(n: number): string {
@@ -88,6 +111,10 @@ export interface PageStar extends Star {
   slug: string;
   dir: [number, number, number];
   constellation: string;
+  /** Its place among the stars by brightness in our sky, counting each star system once. */
+  rank?: number;
+  /** For a star listed only as the second star of a named one: that star's name and page. */
+  companionOf?: { name: string; href: string };
 }
 
 /** The best name a star has, and whether that name is only a catalogue number. */
@@ -111,10 +138,11 @@ const BAYER = /^(Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda
 export function starPage(star: PageStar): { html: string; description: string; rgb: string; byEye: boolean } {
   const ly = star.distPc * LY_PER_PC, hasColour = star.bv !== null && star.bv !== undefined && !Number.isNaN(star.bv);
   const kelvin = hasColour ? Math.round(temperature(star.bv) / 100) * 100 : 0, rgb = (hasColour ? tint(star.bv) : [236, 231, 220]).join(',');
-  const { colour, stage } = kind(star.spect), modern = MODERN[star.slug], spect = tidySpect(star.spect);
+  const { colour, stage, type: spect } = reading(star.spect, star.bv, star.distPc), modern = MODERN[star.slug];
   const doubt = modern?.note ?? DISTANCE_NOTES[star.slug] ?? distanceNote(star.distPc);
-  const rank = star.index + 1, byEye = star.appMag <= 6.5, onChart = star.appMag < 4.5, lum = star.lumSun, n = esc(star.name);
+  const rank = star.rank ?? star.index + 1, byEye = star.appMag <= 6.5, onChart = star.appMag < 4.5, lum = star.lumSun, n = esc(star.name);
   const unnamed = !star.proper && !star.catalogue && !star.hip && !star.hd, called = unnamed ? 'This star' : n, it = unnamed ? 'this star' : n;
+  const mate = star.companionOf ? `<a href="${star.companionOf.href}">${esc(star.companionOf.name)}</a>` : '';
   const lumText = lum >= 1.5 ? `${round2(lum)} times as much visible light as the Sun` : lum > 0.67 ? 'about as much visible light as the Sun' : lum >= 0.01 ? `${round2(lum * 100)} per cent of the Sun's visible light` : `one ${round2(1 / lum)}th of the Sun's visible light`;
   const lead = `${colour ? `${called} is ${colour}` : `${called} is a star`}${star.constellation ? `, in the constellation ${esc(star.constellation)}.` : '.'}`;
   const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appMag <= 1.5 ? 'It is one of the brightest stars in the whole sky, easy to see even from a town.' : star.appMag <= 3.5 ? 'It is easy to see by eye on a clear night.' : star.appMag <= 5 ? 'It can be seen by eye away from bright lights.' : 'It can just be seen by eye from a really dark place.';
@@ -126,7 +154,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
   if (star.hd) names.push(['Henry Draper catalogue', `HD ${star.hd}`]);
   if (spect) names.push(['Spectral type', esc(spect)]);
   const whyNames = unnamed
-    ? '<p>It has no name and no catalogue number in the data this site uses. Stars like that are usually the fainter one of a close pair, listed under the brighter star beside it.</p>'
+    ? mate ? `<p>It has no name or number of its own in the data this site uses. It is listed there as a second star of ${mate}, right beside it in the sky and too close to tell apart by eye.</p>` : '<p>It has no name and no catalogue number in the data this site uses. Stars like that are usually the fainter one of a close pair, listed under the brighter star beside it.</p>'
     : !star.proper && !star.catalogue
       ? '<p>Nobody has given this star a name of its own. Like most stars it goes by its number in a catalogue: a long list in which astronomers have measured and numbered the stars one by one.</p>'
       : !star.proper
@@ -136,7 +164,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
     `<header class="star-head"><div>
       <p class="label"><a href="/stars">Meet a star</a>${star.constellation ? ` / <a href="/stars/in/${slugOf(star.constellation)}">${esc(star.constellation)}</a>` : ''}</p>
       <h1${star.name.length > 14 ? ' class="long"' : ''}>${n}</h1>
-      <p class="lead">${lead} ${stage}</p>
+      <p class="lead">${lead} ${stage}${mate ? ` It is listed as a companion of ${mate}, right beside it in the sky.` : ''}</p>
       <p class="star-links"><a href="/v2?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p>
     </div>
     <figure class="star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure></header>`,
@@ -151,7 +179,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
       <p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>`)
       : row('How hot', `<p>Not known here. The catalogue this site uses has no colour measurement for this star, and colour is what the temperature is worked out from.${colour ? ` Its spectral type says it is ${colour}.` : ''}</p>`),
     byEye ? row('In your sky now', '<p data-now>Working it out…</p>') : '',
-    row('Its names', `${whyNames}${names.length ? `<dl class="names">${names.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}${spect ? '' : '<p>Its spectral type, the code for what kind of star it is, is not in the catalogue.</p>'}`, true),
+    row('Its names', `${whyNames}${names.length ? `<dl class="names">${names.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}${spect ? '' : (star.spect ?? '').trim() ? '<p>The catalogue\'s spectral type for it does not match its measured colour, most likely because it belongs to a companion star, so it is left out here.</p>' : '<p>Its spectral type, the code for what kind of star it is, is not in the catalogue.</p>'}`, true),
     row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.</p>
       <p>To read more: <a href="/learn/colour-and-brightness">Colour and brightness</a>, <a href="/learn/how-stars-live-and-die">How stars live and die</a>, <a href="/learn/measuring-distance">Measuring distance</a>.</p>`, true),
   ].join('\n');

@@ -271,7 +271,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     const parts: HTMLElement[] = [el('p', k.kind === 'star' ? 'A star' : k.kind === 'planet' ? 'A planet' : k.kind === 'moon' ? 'Our moon' : 'Our star', 'label')];
     const known = k.kind === 'star' ? every[k.index!] : undefined, called = k.name || (Array.isArray(known) ? known[0] : known) || '';
     parts.push(el('h2', called || 'A star with no common name'));
-    if (k.kind === 'star' && !k.name && called) parts.push(el('p', Array.isArray(known) ? 'It has no name of its own. This is its name by constellation.' : 'It has no name of its own. This is its number in a catalogue of stars.', 'sky-card-text'));
+    if (k.kind === 'star' && !k.name && called && !/^An? /.test(called)) parts.push(el('p', Array.isArray(known) ? 'It has no name of its own. This is its name by constellation.' : 'It has no name of its own. This is its number in a catalogue of stars.', 'sky-card-text'));
     const lines: string[] = [first];
     if (k.kind === 'star') {
       if (newer[k.index!]) [k.ly, k.suns] = newer[k.index!];

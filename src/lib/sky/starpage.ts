@@ -16,7 +16,7 @@ export function enliven(page: HTMLElement): void {
   const now = page.querySelector<HTMLElement>('[data-now]');
   if (now) {
     const first = guess(), saved = readPlace() ?? { name: CITIES[first][0], lat: CITIES[first][1], lon: CITIES[first][2] };
-    const dir = page.dataset.dir!.split(',').map(Number) as Vec, given = page.dataset.name!, name = given.startsWith('An unnamed') ? 'This star' : given;
+    const dir = page.dataset.dir!.split(',').map(Number) as Vec, given = page.dataset.name!, name = /^An? (unnamed|companion)/.test(given) ? 'This star' : given;
     const s = toSky(dir, moment(new Date(), saved.lat, saved.lon));
     // how high it gets and how low it sinks as the sky turns, from its height over a day
     let top = -90, low = 90;
