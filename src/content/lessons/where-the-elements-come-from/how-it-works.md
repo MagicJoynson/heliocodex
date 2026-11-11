@@ -33,7 +33,7 @@ Many elements come from more than one of these. The chart shows sulphur and calc
 | Oxygen | Silicon and sulphur | 2 billion kelvins | 2 years |
 | Silicon | Iron | 3.3 billion kelvins | A few days |
 
-These figures are NASA's, for a heavy star. The Sun's core is at about 15 million kelvins, so the last step happens at more than 200 times that temperature (my own sum: 3.3 billion divided by 15 million is 220).
+These figures are NASA's, for a heavy star. The Sun's core is at about 15 million kelvins, so the last step happens at more than 200 times that temperature (worked out here: 3.3 billion divided by 15 million is 220).
 
 **Why it stops at iron.** Joining small nuclei together gives out energy, and that energy is what holds a star up. Iron has the most tightly bound nucleus of all, so fusing iron gives nothing back. Once the core is iron the star has no fuel left there, and the collapse described in the lesson on supernovae follows.
 

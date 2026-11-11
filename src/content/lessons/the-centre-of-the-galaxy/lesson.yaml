@@ -1,0 +1,9 @@
+title: The centre of the galaxy
+strand: the-galaxy
+order: 2
+summary: "The middle of the Milky Way is hidden behind dust. Seen in other kinds of light, it is a crowd of stars whirling round a black hole of four million Suns."
+scene: "Real photographs looking towards the centre of the galaxy in ordinary light and in infrared, the stars crowded at the very middle, one star's sixteen-year orbit, and the picture of the black hole itself."
+view: { target: milky-way }
+terms: [milky-way, supermassive-black-hole, infrared, light-year, event-horizon, interferometer, redshift]
+needs: [the-milky-way, what-a-black-hole-is]
+next: [active-galaxies-and-quasars, the-event-horizon]

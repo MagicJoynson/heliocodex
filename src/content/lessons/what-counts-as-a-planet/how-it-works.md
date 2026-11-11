@@ -3,6 +3,8 @@ sources:
   - { label: "NASA, Dwarf planets", url: "https://science.nasa.gov/dwarf-planets/" }
   - { label: "NASA, Pluto facts", url: "https://science.nasa.gov/dwarf-planets/pluto/facts/" }
   - { label: "NASA, Ceres facts", url: "https://science.nasa.gov/dwarf-planets/ceres/facts/" }
+  - { label: "ESO, Faraway Eris is Pluto’s twin (2011): the size of Eris", url: "https://www.eso.org/public/news/eso1142/" }
+  - { label: "Ortiz and others 2017, Nature 550, 219: the size, shape, density and ring of Haumea", url: "https://doi.org/10.1038/nature24051" }
   - { label: "International Astronomical Union, result of the 2006 General Assembly votes", url: "https://www.iau.org/news/pressreleases/detail/iau0603/" }
   - { label: "NASA, The rich colour variations of Pluto (PIA19952)", url: "https://images.nasa.gov/details/PIA19952" }
   - { label: "NASA, High resolution Ceres view (PIA21906)", url: "https://images.nasa.gov/details/PIA21906" }
@@ -34,13 +36,13 @@ A moon fails the first test, because it goes round a planet. That is why our Moo
 |---|---|---|---|
 | Ceres | The asteroid belt, between Mars and Jupiter | About 950 km | 1801 |
 | Pluto | Beyond Neptune | 2,377 km | 1930 |
-| Haumea | Beyond Neptune | About 1,740 km at its widest | 2003 or 2004 (two teams claim it) |
+| Haumea | Beyond Neptune | About 2,300 km at its longest, but shaped like an egg and only about 1,000 km through its shortest way | 2003 or 2004 (two teams claim it) |
 | Makemake | Beyond Neptune | About 1,430 km | 2005 |
-| Eris | Beyond Neptune, further out than Pluto | About 2,400 km | 2005 |
+| Eris | Beyond Neptune, further out than Pluto | 2,326 km | 2005 |
 
-For comparison, the Moon is 3,476 km wide and the Earth 12,742 km. The width of Ceres is twice the radius NASA gives, which is my own sum.
+For comparison, the Moon is 3,476 km wide and the Earth 12,742 km. The width of Ceres is twice the radius NASA gives, worked out here. The size of Eris was measured in 2010 by timing how long it hid a star, and Haumea's in 2017 in the same way.
 
-**Eris.** Eris was found on 5 January 2005 by Mike Brown, Chad Trujillo and David Rabinowitz, on pictures taken at Palomar Observatory in 2003. It is about the same size as Pluto and lies much further from the Sun. Its discovery is what forced the question.
+**Eris.** Eris was found on 5 January 2005 by Mike Brown, Chad Trujillo and David Rabinowitz, on pictures taken at Palomar Observatory in 2003. It is very nearly the size of Pluto, about 50 km narrower, and lies much further from the Sun. Its discovery is what forced the question.
 
 <figure class="photo">
   <img src="/img/learn/ceres-dawn.jpg" alt="A grey, round, heavily cratered world, with a small cluster of brilliant white spots inside one crater near the middle." width="1100" height="1100" loading="lazy" />

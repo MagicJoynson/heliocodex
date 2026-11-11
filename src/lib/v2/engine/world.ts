@@ -5,11 +5,11 @@ import { createDeep, PC, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } fro
 import { createTerrain } from './terrain';
 import { loadDemSpec } from './dem';
 import type { SourceSpec } from './tilebuild';
-import { createFlight } from './flight';
+import { createFlight, type Focus } from './flight';
 import { createSystem } from './system';
 import { POLES } from '../atlas/kepler';
 import { positionAU, centuriesSinceJ2000 } from '../../orbit';
-import { AU, add, len, norm, scale, sub, cross, smooth, type V3 } from './vec';
+import { AU, add, len, norm, scale, sub, cross, smooth, slerp, dot as vdot, type V3 } from './vec';
 import type { Context, Engine, Layer, View } from './index';
 
 /**
@@ -22,7 +22,7 @@ import type { Context, Engine, Layer, View } from './index';
 export interface Readout {
   alt: number; // metres above the ground
   speed: number; // m/s
-  mode: 'idle' | 'cruise' | 'free';
+  mode: 'idle' | 'orbit' | 'cruise' | 'free';
   arriving: number; // 0..1 through the cruise
   target: string;
   dist: number; // to the target's surface, metres
@@ -47,7 +47,7 @@ export function pickQuality(): Quality {
   return { tier: 3, scale: 1, split: 2.5, maxTiles: 680, antialias: devicePixelRatio <= 1.25, target: 17, maxPx: 5e6 };
 }
 
-export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; forceWebGL?: boolean; quality?: Quality }) {
+export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; onJump?: () => void; onFocus?: (id: string, name: string) => void; forceWebGL?: boolean; quality?: Quality }) {
   const quality = o.quality ?? pickQuality();
   // Reversed-z only gains precision with a float depth buffer, which three.js gives us on WebGPU.
   // On WebGL 2 the canvas depth is 24-bit integer, so there a logarithmic buffer is the better choice.
@@ -179,7 +179,6 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     bodyFrame.setFromMatrix4(new THREE.Matrix4().makeRotationY(-W).multiply(H.transpose()));
   }
   for (const p of PLANETS) {
-    if (p === bodySlug) continue;
     const map = loader.load(`/textures/${TEX[p]}`);
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
@@ -239,24 +238,58 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const camera = new THREE.PerspectiveCamera(55, 1, 1, 1e13);
 
   const flight = createFlight(o.canvas);
+  let reduced = false;
+  const fwdOf = (): V3 => { const v = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.q); return [v.x, v.y, v.z]; };
+  // a click or tap on a body (or its name) goes there
+  flight.onTap((x, y) => {
+    if (flight.mode === 'cruise') return;
+    const rect = o.canvas.getBoundingClientRect();
+    const pxPerRad = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    const inv = flight.q.clone().invert();
+    let best = '', bestScore = Infinity;
+    const ids = ['sun', ...PLANETS, ...allBodies.filter((b) => b.kind === 'moon' && b.meanRadiusKm && system.pos(b.id)).map((b) => b.id)];
+    for (const id of ids) {
+      if (id === focusKey && flight.mode !== 'free') continue;
+      const r = sub(posOf(id), flight.pos);
+      const d = len(r);
+      const v = new THREE.Vector3(r[0], r[1], r[2]).applyQuaternion(inv);
+      if (v.z >= 0) continue;
+      const sx = rect.left + ((v.x / -v.z) * pxPerRad) + rect.width / 2, sy = rect.top - ((v.y / -v.z) * pxPerRad) + rect.height / 2;
+      const rpx = (radOf(id) * sizeBoost(id, d) / d) * pxPerRad;
+      // a moon is only worth picking once it is more than a speck beside its planet
+      const isMoon = !PLANETS.includes(id) && id !== 'sun';
+      if (isMoon && rpx < 2) continue;
+      const off = Math.hypot(sx - x, sy - y);
+      // names sit just to the right of their planet, so the hit area stretches that way for planets
+      const reach = Math.max(isMoon ? 16 : 26, rpx + 8) + (!isMoon && sx < x && sx > x - 90 && Math.abs(sy - y) < 16 ? 90 : 0);
+      if (off > reach) continue;
+      const score = off - rpx + (isMoon ? 12 : 0);
+      if (score < bestScore) { bestScore = score; best = id; }
+    }
+    if (best) engine.flyTo({ target: best }).catch(() => {});
+  });
 
-  // ---- the way in: from beyond Neptune, about 46 au from the Sun, to a high orbit over the test world
+  // ---- the way in: the whole Solar System from 30 au, looking down at it from about 30° above the
+  // planets' plane. Entering slides and zooms straight in to Mars from the same side: nothing turns.
   const north: V3 = [0, 1, 0];
   const toSun = norm(sub(sunPos, bodyPos));
   const side = norm(cross(toSun, north));
-  const startDir = norm(add(add(scale(norm(bodyPos), 0.75), scale(north, 0.55)), scale(side, 0.25)));
-  const start = scale(startDir, 46 * AU);
-  const endDir = norm(add(add(scale(toSun, 0.7), scale(side, 0.6)), scale(north, 0.3)));
-
-  flight.place(start, sub(bodyPos, start));
+  const enterDir = norm(add(add(scale(toSun, 0.7), scale(side, 0.55)), scale(north, 0.62)));
+  const focusOf = (id: string): Focus => id === bodySlug
+    ? { centre: () => bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) }
+    : { centre: () => posOf(id), radius: radOf(id) };
+  const sunFocus: Focus = { centre: () => sunPos, radius: 695_700_000 };
+  flight.orbitAt(sunFocus, 30 * AU, enterDir, true);
+  let entered = false;
+  let focusName = 'the Sun', focusKey = 'sun';
   if (params.has('low')) {
     // testing: start low over the ground, already flying yourself
     // late afternoon: the Sun low, so the ground shows its shape
     const d = norm(add(scale(toSun, 0.28), side));
     const h = Number(params.get('low')) || 2000;
-    const p = add(bodyPos, scale(d, terrain.radius + terrain.groundAt(d) + h));
-    flight.place(p, norm(add(scale(toSun, 1), scale(d, -0.3))), d);
-    flight.setFree();
+    flight.orbitAt(focusOf(bodySlug), terrain.radius + terrain.groundAt(d) + h, d);
+    focusKey = bodySlug; focusName = 'Mars';
+    entered = true;
   }
 
   // ---- size and resolution, with a governor that trades sharpness for a steady frame rate
@@ -349,6 +382,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // bodies nobody has measured are treated as 1 km across, so there is still a floor to stop at
   const radOf = (id: string) => (id === 'sun' ? 695_700_000 : id === bodySlug ? terrain.radius : radiusOf(id) || 1000);
   /**
+   * Bigger planets: drawn at least about 2.7° across, however far away, so they can be seen and
+   * clicked. Up close (within about 40 of its own radii) each is its true size again, so nothing
+   * you land on is ever out of scale.
+   */
+  let bigger = false;
+  const sizeBoost = (id: string, d: number) => (bigger && PLANETS.includes(id) ? Math.max(1, (d * 0.024) / radOf(id)) : 1);
+  /**
    * The body that matters most from here: the one that looks biggest. The current one is kept until
    * another looks a quarter bigger, so the choice cannot flicker on the line between two.
    */
@@ -421,9 +461,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0 });
     // a cruise has ended (even one so short it started and finished within this frame)
     nearest(flight.pos); // for next frame
-    if (cruising && f.mode === 'free') { cruising = false; forceCtx = true; if (pendingFly) { pendingFly.resolve(); pendingFly = null; } }
+    if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } }
     lastMode = f.mode;
-    if (f.mode === 'free' && !arrived) { arrived = true; o.onArrive?.(); }
+    if (entered && !arrived && f.mode !== 'cruise' && f.mode !== 'idle') { arrived = true; o.onArrive?.(); }
     const cam = flight.pos;
     camera.quaternion.copy(flight.q);
     camera.position.set(0, 0, 0);
@@ -448,7 +488,14 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     orbitMat.opacity = 0.22 * wide;
     orbits.visible = wide > 0.005;
     if (orbits.visible) orbits.position.set(-cam[0], -cam[1], -cam[2]);
-    const extra = wide > 0.005 ? PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), alpha: wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1) })) : undefined;
+    // names: in the wide views, and for any planet that is no more than a dot from here, so there is always something to click
+    const pxPerRad0 = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    const named = (p: string) => {
+      const d = len(sub(planetPos[p], cam));
+      const px = (radOf(p) * sizeBoost(p, d) / d) * pxPerRad0;
+      return p === focusKey && d < radOf(p) * 400 ? 0 : (1 - smooth(14, 40, px)) * (1 - smooth(800, 3000, fromSunAU));
+    };
+    const extra = PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), alpha: Math.max(wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1), named(p) * 0.9) })).filter((x) => x.alpha > 0.01);
     deep.update({ cam, quaternion: camera.quaternion, fovDeg: camera.fov, heightPx: o.canvas.clientHeight, widthPx: o.canvas.clientWidth, starGain: sky.starGain.value, extra });
 
     // light: from the Sun's direction (only the direction matters)
@@ -460,10 +507,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const pxPerRad = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
     // a dwarf planet, asteroid or comet you fly to gets a plain globe of its own (moons are drawn by their layer)
     if (focusId && !globes.has(focusId) && ['dwarf', 'asteroid', 'comet'].includes(system.body(focusId)?.kind ?? '') && radOf(focusId)) makeGlobe(focusId, radOf(focusId));
+    let marsBoosted = false;
     for (const [p, g] of globes) {
       const r = sub(posOf(p), cam);
       const d = len(r);
-      g.visible = (radOf(p) / d) * pxPerRad > 1.5;
+      const k = sizeBoost(p, d);
+      g.scale.setScalar(k);
+      g.visible = (radOf(p) * k / d) * pxPerRad > 1.5;
+      // Mars has walkable ground of its own: its plain globe only stands in while it is drawn bigger than life
+      if (p === bodySlug) { marsBoosted = k > 1.02; g.visible &&= marsBoosted; }
       if (g.visible) g.position.set(r[0], r[1], r[2]);
     }
     const jd = system.jd();
@@ -484,13 +536,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     for (const l of layers) guarded(`layer ${l.name}`, () => l.update?.(rel, jd), () => { layers.delete(l); guarded('detach', () => l.detach?.(), () => {}); });
 
     // too far to be more than a point of light: let the glint stand in
-    const tiny = terrain.radius / dBody < 0.0004;
+    const tiny = terrain.radius / dBody < 0.0004 || sizeBoost(bodySlug, dBody) > 1.02;
     if (!tiny) stats = terrain.update(bodyRel, camera);
 
     renderer.clear();
     renderer.render(sky.scene, sky.camera);
     renderer.clearDepth();
-    terrain.group.visible = !tiny;
+    terrain.group.visible = !tiny && !marsBoosted;
     renderer.render(local, camera);
 
     // tell the margin where we are, when that changes (and the distance at most once a second)
@@ -517,13 +569,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     }
 
     const now = performance.now();
-    if (now - readoutAt < 120 && f.mode === 'free') return;
+    if (now - readoutAt < 120 && f.mode !== 'cruise') return;
     const farNow = placeAt(len(cam), nearId);
     readoutAt = now;
     o.onReadout?.({
       alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
       target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
-      dist: f.alt,
+      dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
       note: (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${Math.round(1000 / frameAvg)} fps · ${ratio.toFixed(2)}x`,
@@ -577,35 +629,36 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const sp = starOf(id);
       { const m = /^star:(\d+)$/.exec(id); starAim = sp && m ? Number(m[1]) : -1; }
       const P = PLACES[id] ?? (sp ? { centre: () => sp, dist: 2000 * AU, dir: () => norm(add(norm(scale(sp, -1)), [0, 0.15, 0])) } : undefined);
+      const secs = reduced ? 0 : opts?.secs ?? -1;
       if (P) {
         focusId = ''; focusHold = 0;
-        const from: V3 = [...flight.pos] as V3;
-        const endDist = view.distanceKm ? view.distanceKm * 1000 : P.dist;
-        const ratio = Math.max(1.0001, Math.max(len(sub(from, P.centre())), endDist) / Math.max(1, Math.min(len(sub(from, P.centre())), endDist)));
-        const secs = Math.max(0.01, opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3)));
-        flight.startCruise({ from, target: P.centre, endDist, endDir: P.dir(), secs, aimOffset: 0 });
-        cruising = true;
-        return new Promise<void>((resolve, reject) => { pendingFly = { resolve, reject }; });
+        focusKey = id; focusName = PLACE_NAMES[id] ?? (sp ? 'the star' : id);
+        const c = P.centre();
+        flight.startCruise({ to: len(c) < 1 ? sunFocus : { centre: () => c, radius: 0 }, endDist: view.distanceKm ? view.distanceKm * 1000 : P.dist, endDir: P.dir(), secs });
+      } else {
+        const target = (): V3 => posOf(id);
+        const measured = id === 'sun' || id === bodySlug || radiusOf(id) > 0;
+        const r = radOf(id);
+        focusId = PLANETS.includes(id) || id === 'sun' ? '' : id;
+        // a body with no measured size: stand off 200 km, since nobody knows how big it is
+        const endDist = view.distanceKm ? view.distanceKm * 1000 : measured ? r * (id === 'sun' ? 8 : 3) : 200_000;
+        focusHold = endDist * 4;
+        focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? PLANET_NAMES[id] ?? id;
+        // arrive from the side you are looking from, unless that side is in shadow: then turn only as far as it takes to see it lit
+        const tg = target();
+        const toS = norm(sub(sunPos, tg));
+        const now = norm(sub(flight.pos, tg));
+        let endDir: V3 = now;
+        if (id !== 'sun' && len(toS) > 0 && vdot(now, toS) < 0.3) {
+          const lit = norm(add(add(scale(toS, 0.7), scale(norm(cross(toS, north)), 0.55)), scale(north, 0.45)));
+          let lo = 0, hi = 1;
+          for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (vdot(norm(slerp(now, lit, m)), toS) < 0.3) lo = m; else hi = m; }
+          endDir = norm(slerp(now, lit, hi));
+        }
+        flight.startCruise({ to: id === bodySlug ? focusOf(id) : { centre: target, radius: measured ? r : 0 }, endDist, endDir, secs });
       }
-      const target = (): V3 => (id === 'sun' ? sunPos : planetPos[id] ?? system.pos(id) ?? sunPos);
-      const measured = id === 'sun' || id === bodySlug || radiusOf(id) > 0;
-      const r = radOf(id);
-      focusId = PLANETS.includes(id) || id === 'sun' ? '' : id;
-      // a body with no measured size: stand off 200 km, since nobody knows how big it is
-      const endDist = view.distanceKm ? view.distanceKm * 1000 : measured ? r * (id === 'sun' ? 8 : 3) : 200_000;
-      focusHold = endDist * 4;
-      const tg = target();
-      const toS = norm(sub(sunPos, tg));
-      // arrive on the lit side, a little above the ecliptic
-      const sideways = norm(cross(len(toS) ? toS : [1, 0, 0], north));
-      const dir = id === 'sun' ? norm(add(norm(sub(flight.pos, tg)), [0, 0.3, 0])) : norm(add(add(scale(toS, 0.7), scale(sideways, 0.6)), scale(north, 0.3)));
-      const from: V3 = [...flight.pos] as V3;
-      // longer trips take longer, but never more than half a minute
-      const ratio = Math.max(1.0001, len(sub(from, tg)) / endDist);
-      const secs = Math.max(0.01, opts?.secs ?? Math.min(30, Math.max(4, 2.2 * Math.log10(ratio) + 3)));
-      const avoid = () => ['sun', ...PLANETS].filter((b) => b !== id).map((b) => ({ c: posOf(b), r: radOf(b) }));
-      flight.startCruise({ from, target, endDist, endDir: dir, secs, aimOffset: 0, avoid });
       cruising = true;
+      if (reduced) o.onJump?.();
       return new Promise<void>((resolve, reject) => { pendingFly = { resolve, reject }; });
     },
     registerLayer(layer: Layer) {
@@ -623,10 +676,31 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   return {
     ...engine,
-    enter(secs = 16) {
+    enter(secs = 7) {
       if (pendingFly) { pendingFly.reject(abort('replaced by the way in')); pendingFly = null; }
-      flight.startCruise({ from: start, target: () => bodyPos, endDist: terrain.radius * 2.6, endDir, secs, aimOffset: 0 });
+      entered = true;
+      focusKey = bodySlug; focusName = 'Mars';
+      flight.startCruise({ to: focusOf(bodySlug), endDist: terrain.radius * 3.2, endDir: enterDir, secs: reduced ? 0 : secs });
       cruising = true;
+      if (reduced) o.onJump?.();
+    },
+    /** + (positive) and − on screen */
+    zoom(steps: number) { flight.zoom(steps); },
+    /** planets drawn bigger than life, so the whole system can be seen and clicked */
+    setBigger(v: boolean) { bigger = v; },
+    /** reduced motion: every trip is a jump hidden by a quick fade, and nothing drifts */
+    setReduced(v: boolean) { reduced = v; flight.setReduced(v); },
+    /** fly yourself (true) or go back to circling what is nearest (false) */
+    setFree(v: boolean) {
+      if (v) flight.setFree();
+      else if (flight.mode === 'free') { const id = nearNow; focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? id; flight.backToOrbit(focusOf(id)); o.onFocus?.(focusKey, focusName); }
+    },
+    get mode() { return flight.mode; },
+    get focus() { return { id: focusKey, name: focusName }; },
+    /** for the minimap: the planets and you, seen from above the Sun, in metres in the engine frame */
+    mapState() {
+      const f = fwdOf();
+      return { cam: [...flight.pos] as V3, heading: [f[0], f[2]] as [number, number], planets: PLANETS.map((p) => ({ id: p, name: PLANET_NAMES[p], at: [...planetPos[p]] as V3 })), focus: focusKey, place: placeAt(len(flight.pos), nearNow)?.id ?? null };
     },
     skip() { flight.skipCruise(); },
     setPad: flight.setPad,

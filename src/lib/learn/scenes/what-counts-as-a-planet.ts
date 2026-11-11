@@ -25,9 +25,9 @@ const pluto = photoScene({
 });
 
 // ---- 2. the odd one out, to scale
-const SIZES: [string, number, string][] = [['The Earth', 12742, ''], ['The Moon', 3476, '#b9b6ae'], ['Eris', 2400, '#d8d4cc'], ['Pluto', 2377, '#c9a98c'], ['Haumea', 1740, '#cfcac0'], ['Makemake', 1430, '#b98a6a'], ['Ceres', 952, '#8d8a84']];
+const SIZES: [string, number, string][] = [['The Earth', 12742, ''], ['The Moon', 3476, '#b9b6ae'], ['Pluto', 2377, '#c9a98c'], ['Eris', 2326, '#d8d4cc'], ['Haumea', 2322, '#cfcac0'], ['Makemake', 1430, '#b98a6a'], ['Ceres', 952, '#8d8a84']];
 const lineUp: Scene = {
-  caption: 'The Earth, the Moon and the five named dwarf planets, drawn to scale by width. Haumea is really stretched, like an egg, and is drawn here as a ball of its greatest width. A drawing.',
+  caption: 'The Earth, the Moon and the five named dwarf planets, drawn to scale by width. Haumea is stretched like an egg, and is drawn at its greatest length and its least width. A drawing.',
   stillAt: 1,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.45);
@@ -37,11 +37,13 @@ const lineUp: Scene = {
     label(ctx, 'The Earth', ex, narrow ? ey - re - 10 : base + 16, { align: 'center' });
     const rest = SIZES.slice(1), gap = narrow ? w * 0.03 : w * 0.035; let x = narrow ? w * 0.05 : w * 0.04 + re * 2 + gap; const y = narrow ? h * 0.78 : base;
     rest.forEach(([name, wide, colour], j) => {
-      const r = (wide / 2) * km; x += r; dot(ctx, x, y - r, r, colour); if (j + 1 === i) ring(ctx, x, y - r, r + 4, ACCENT);
+      const r = (wide / 2) * km; x += r;
+      if (name === 'Haumea') { const ry = 513 * km; ctx.fillStyle = colour; ctx.beginPath(); ctx.ellipse(x, y - ry, r, ry, 0, 0, TAU); ctx.fill(); if (j + 1 === i) { ctx.strokeStyle = ACCENT; ctx.lineWidth = 1; ctx.beginPath(); ctx.ellipse(x, y - ry, r + 4, ry + 4, 0, 0, TAU); ctx.stroke(); } }
+      else { dot(ctx, x, y - r, r, colour); if (j + 1 === i) ring(ctx, x, y - r, r + 4, ACCENT); }
       label(ctx, name, x, y + 14 + (j % 2 ? 12 : 0), { align: 'center', colour: j + 1 === i ? ACCENT : SOFT }); x += r + gap;
     });
     const [name, wide] = SIZES[i];
-    say(`${name}: ${wide > 2390 && wide < 2410 || wide < 2000 ? 'about ' : ''}${nf(wide)} kilometres wide`, name === 'Pluto' ? 'Two thirds the width of our Moon' : name === 'The Moon' ? 'Our own Moon is bigger than every dwarf planet' : name === 'Eris' ? 'Very nearly the size of Pluto, and further out' : 'A dwarf planet');
+    say(`${name}: ${wide === 2322 || wide < 2000 ? 'about ' : ''}${nf(wide === 2322 ? 2300 : wide)} kilometres ${name === 'Haumea' ? 'long' : 'wide'}`, name === 'Pluto' ? 'Two thirds the width of our Moon' : name === 'The Moon' ? 'Our own Moon is bigger than every dwarf planet' : name === 'Eris' ? 'Very nearly the size of Pluto, and further out' : name === 'Haumea' ? 'Spun into the shape of an egg' : 'A dwarf planet');
   },
 };
 

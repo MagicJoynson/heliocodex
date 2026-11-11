@@ -36,6 +36,8 @@ export interface PhotoOptions {
   /** For the top of a page: keep the picture to the right, clear of the words. */
   hero?: boolean;
   pointers?: Pointer[];
+  /** The small word in the corner, for a picture that is real data but not a photograph. */
+  tag?: string;
   /** Anything more to draw over the photograph. `box` is where it was put: left, top, width, height. */
   over?(f: Frame, box: [number, number, number, number]): void;
 }
@@ -88,7 +90,7 @@ export function photoScene(o: PhotoOptions): Scene {
         ctx.globalAlpha = 1;
       }
       o.over?.(f, [x, y, pw, ph]);
-      if (!o.hero) label(ctx, 'Photograph', 14, 18, { colour: ACCENT });
+      if (!o.hero) label(ctx, o.tag ?? 'Photograph', 14, 18, { colour: ACCENT });
       f.say(o.say[0], o.say[1] ?? '');
     },
   };

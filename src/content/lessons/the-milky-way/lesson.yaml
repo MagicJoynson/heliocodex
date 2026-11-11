@@ -6,4 +6,4 @@ scene: "The view pulls back from the Sun until the whole disc is in sight, with 
 view: { target: milky-way }
 terms: [milky-way, galaxy, spiral-galaxy, light-year, black-hole, parallax, dark-matter]
 needs: [how-big-is-space, what-a-star-is]
-next: [kinds-of-galaxy]
+next: [the-centre-of-the-galaxy, kinds-of-galaxy]
