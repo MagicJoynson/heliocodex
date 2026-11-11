@@ -41,7 +41,7 @@ import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places, D3_CELESTIAL } from '../lib/v2
     <section class="entry">
       <h2>Where the planets are</h2>
       <div class="entry-body">
-        <p>The model on the <a href="/">front page</a> places each planet from the mean orbital elements in <a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">Keplerian Elements for Approximate Positions of the Major Planets</a> (NASA/JPL Solar System Dynamics, Table 1, good from 1800 to 2050). That puts each planet within a fraction of a degree of where it really is, plenty for a picture, though it is not a full ephemeris.</p>
+        <p>The model on the <a href="/bodies">Bodies page</a> places each planet from the mean orbital elements in <a href="https://ssd.jpl.nasa.gov/planets/approx_pos.html">Keplerian Elements for Approximate Positions of the Major Planets</a> (NASA/JPL Solar System Dynamics, Table 1, good from 1800 to 2050). That puts each planet within a fraction of a degree of where it really is, plenty for a picture, though it is not a full ephemeris.</p>
         <p>Where a page says where the Sun stands in another world’s sky, the angle comes from <a href="https://ssd.jpl.nasa.gov/horizons/">JPL Horizons</a>: the sub-solar latitude on 9 November 2026 was 74.3° north on Uranus and 19.5° south on Neptune.</p>
       </div>
     </section>
@@ -72,7 +72,7 @@ import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places, D3_CELESTIAL } from '../lib/v2
     <section class="entry" id="beyond">
       <h2>Beyond the Solar System</h2>
       <div class="entry-body">
-        <p>The <a href="/v2">3D view</a> can leave the planets behind and go out as far as the oldest light. What it shows on the way is built from four sets of measurements:</p>
+        <p>The <a href="/">3D view</a> can leave the planets behind and go out as far as the oldest light. What it shows on the way is built from four sets of measurements:</p>
         <ul class="drawn-list">
           <li><span>The stars</span> About 109,000 stars, each at its measured distance, from the <a href={HYG.url}>HYG star database, version 4.4</a>, put together by David Nash from the Hipparcos, Yale and Gliese catalogues. It is shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0</a> licence. Our star file, <a href="/data/deep/stars.bin">stars.bin</a>, is made from it and is shared under the same licence. It keeps each star’s place, brightness and colour and leaves out the stars whose distance is unknown or too great to trust.</li>
           <li><span>Nearby galaxies</span> About a hundred galaxies in and around the Local Group, with their places, distances and brightness, from <a href={MCCONNACHIE.url}>McConnachie 2012</a>, “The observed properties of dwarf galaxies in and around the Local Group”, Astronomical Journal 144, 4.</li>

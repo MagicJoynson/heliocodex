@@ -92,7 +92,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const spec: SourceSpec = demOk
     ? await loadDemSpec(demBase, demBody)
     : { kind: 'test', radius: RADII.mars, seed: 7 };
-  const terrain = createTerrain({ spec, split: quality.split, maxTiles: quality.maxTiles });
+  // Mars wears its real colours (Viking and MGS mosaics); its shape here is still generated. The frame is filled in below.
+  const bodyFrame = new THREE.Matrix3();
+  let bodyMap: THREE.Texture | undefined;
+  if (!demOk) {
+    bodyMap = new THREE.TextureLoader().load('/textures/4k_mars.webp');
+    bodyMap.colorSpace = THREE.SRGBColorSpace;
+    bodyMap.anisotropy = 8;
+  }
+  const terrain = createTerrain({ spec, split: quality.split, maxTiles: quality.maxTiles, map: bodyMap, toBody: bodyFrame });
   await terrain.ready;
 
   // ---- scenes: the space layer first, then the local scene with depth
@@ -160,6 +168,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     local.add(holder);
     globes.set(id, holder);
     return holder;
+  }
+  // the walkable Mars does not turn: it keeps the face it had when the page opened
+  {
+    const Y = poleOf(bodySlug), X0 = nodeOf(bodySlug);
+    const X = X0.sub(Y.clone().multiplyScalar(X0.dot(Y))).normalize();
+    const H = new THREE.Matrix4().makeBasis(X, Y, new THREE.Vector3().crossVectors(X, Y));
+    const [w0, rate] = SPIN[bodySlug];
+    const W = THREE.MathUtils.degToRad((w0 + rate * (system.jd() - 2451545)) % 360);
+    bodyFrame.setFromMatrix4(new THREE.Matrix4().makeRotationY(-W).multiply(H.transpose()));
   }
   for (const p of PLANETS) {
     if (p === bodySlug) continue;
@@ -505,7 +522,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     readoutAt = now;
     o.onReadout?.({
       alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
-      target: farNow ? PLACE_NAMES[farNow.id] : nearId === bodySlug ? 'the test world' : system.body(nearId)?.name ?? nearId,
+      target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
       dist: f.alt,
       far: !!farNow,
       note: (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),

@@ -1,0 +1,45 @@
+---
+// Every star of one constellation that the site knows: all those the eye can see, and any fainter ones with names.
+import Reading from '../../../layouts/Reading.astro';
+import { allStars, type PageStar } from '../../../lib/sky/starlist';
+import { LY_PER_PC, tint, round2, slugOf, starHref } from '../../../lib/sky/star';
+
+export function getStaticPaths() {
+  const groups = new Map<string, PageStar[]>();
+  for (const s of allStars()) if (s.constellation) groups.set(s.constellation, [...(groups.get(s.constellation) ?? []), s]);
+  return [...groups].map(([name, stars]) => ({ params: { con: slugOf(name) }, props: { name, stars: stars.sort((a, b) => a.appMag - b.appMag) } }));
+}
+const { name, stars } = Astro.props as { name: string; stars: PageStar[] };
+const byEye = stars.filter((s) => s.appMag <= 6.5).length, own = stars.filter((s) => s.proper).length;
+const dot = (s: PageStar) => `background:rgb(${(s.bv === null ? [236, 231, 220] : tint(s.bv)).join(',')})`;
+const sight = (m: number) => (m <= 1.5 ? 'One of the brightest in the sky' : m <= 3.5 ? 'Easy to see' : m <= 5 ? 'Seen away from bright lights' : m <= 6.5 ? 'Just seen from a dark place' : 'Needs a telescope');
+---
+<Reading title={`The stars of ${name}`} path={`/stars/in/${slugOf(name)}`} description={`All ${byEye} stars in the constellation ${name} that the eye can see, brightest first, each with a page of its own.`}>
+  <header class="reading-head">
+    <p class="label"><a href="/stars">Meet a star</a> / Constellations</p>
+    <h1>{name}</h1>
+    <p class="lead">{byEye} stars in {name} can be seen by eye from a dark place. {own === 0 ? 'None of them has a name of its own.' : own === 1 ? 'One has a name of its own.' : `${own} have names of their own.`} The rest go by a Greek letter, a number, or their place in a catalogue. Here is every one, brightest first.</p>
+  </header>
+  <section class="row">
+    <div class="hang sticks"><h2>Its stars</h2><p class="note">{stars.length} in all. The dot shows each star's colour.</p></div>
+    <ol class="plain-list con-list">
+      {stars.map((s) => (
+        <li><i style={dot(s)}></i><a href={starHref(s)}>{s.name}</a><span>{sight(s.appMag)}, {round2(s.distPc * LY_PER_PC)} light years</span></li>
+      ))}
+    </ol>
+  </section>
+  <section class="row small">
+    <div class="hang"><h2>Where this comes from</h2></div>
+    <div class="prose">
+      <p>The stars and their measurements are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. Which constellation a star belongs to follows the boundaries drawn by the International Astronomical Union, as that database gives them. To see what is up tonight, open <a href="/sky">the sky map</a>.</p>
+    </div>
+  </section>
+</Reading>
+
+<style>
+  .con-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0 2.4rem; }
+  .con-list li { display: grid; grid-template-columns: 1rem minmax(0, 1fr); column-gap: .8rem; align-items: baseline; padding: .6rem 0; border-top: 1px solid var(--rule); }
+  .con-list i { width: .6rem; height: .6rem; border-radius: 50%; align-self: center; grid-row: 1; }
+  .con-list a { font: 300 1.14rem/1.25 var(--r-serif); text-decoration: none; overflow-wrap: anywhere; }
+  .con-list span { grid-column: 2; font: 300 .9rem/1.4 var(--r-serif); color: var(--ink-faint); }
+</style>
