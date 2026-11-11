@@ -111,8 +111,9 @@ export const PACKS: Pack[] = [
       { title: 'What light carries', about: 'The only messenger we have from almost everywhere.', lessons: ['light-the-only-messenger', 'the-whole-spectrum'] },
       { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight'] },
       { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'measuring-distance', 'the-distance-ladder'] },
+      { title: 'Beyond light', about: 'Particles and ripples that bring news light cannot.', lessons: ['messengers-other-than-light'] },
     ],
-    coming: ['Messengers other than light', 'Telescopes in space', 'Redshift and the Doppler effect'],
+    coming: ['Telescopes in space', 'Redshift and the Doppler effect'],
     look: [{ href: '/sources', text: 'Where the pictures come from', about: 'Every photograph on the site, with who took it and how.' }],
   },
   {
