@@ -25,3 +25,15 @@ Once it is going fast enough, a spacecraft can switch its engines off. There is 
 </figure>
 
 To go to another planet, you do not aim at where the planet is now. You aim at where it will be when you arrive, months later, like throwing a ball to someone who is running.
+
+**Why sideways?** Isaac Newton explained it with a cannon on a very high mountain. Fire the ball level and it curves down and lands. Fire it faster and it lands further away. Fire it fast enough and the ground curves away beneath it as fast as it falls. The ball is still falling, but it never lands. That is an orbit. At 28,000 km an hour a spacecraft would cover the distance from London to New York in about 12 minutes, and it goes right round the Earth 15 or 16 times a day (both are sums).
+
+**Astronauts float, but gravity has not gone.** At the height of the Space Station the Earth's pull is still about nine tenths as strong as on the ground. The crew float because they and the station are falling together, all the time, round the Earth. It is the feeling at the top of a fairground drop, but it never ends.
+
+**Rockets do not push on the air.** This is a common mistake. A rocket works by throwing gas out of the back as fast as it can, and the gas pushes the rocket forward as it leaves. It is like standing on a skateboard and throwing a heavy ball away from you. A rocket works better in empty space than in air.
+
+**A free push from the Earth.** The Earth spins towards the east, and at the equator the ground is moving at about 1,670 km an hour. A rocket launched eastwards starts with that speed for nothing. That is why nearly all rockets fly east, and why Europe launches from French Guiana in South America, close to the equator.
+
+**Coming home.** All the speed that the rocket gave has to be lost again, and there is no fuel left to do it with. The air does the job. A returning capsule hits the top of the air blunt end first and is slowed by drag, and its heat shield glows at thousands of degrees. A crew coming back from the Moon meets the air at about 40,000 km an hour.
+
+**How long the trips take.** The Moon is about three days away. Mars is seven to nine months. New Horizons, one of the fastest craft ever launched, took nine and a half years to reach Pluto. Nearly all of that time is spent coasting with the engines off.
