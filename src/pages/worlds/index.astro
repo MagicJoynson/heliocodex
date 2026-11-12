@@ -5,6 +5,8 @@ import Reading from '../../layouts/Reading.astro';
 import { outlineWorlds, PLANET_PAGES, sunAu, AU_KM } from '../../lib/worlds';
 import { body } from '../../data/bodies/index';
 import { moonCount } from '../../data/moon-counts';
+import { WORLD_PAGES } from '../../data/world-pages';
+const written = (id: string) => !!WORLD_PAGES[id];
 
 const LO = Math.log10(0.3), HI = Math.log10(700);
 const f = (au: number) => (Math.log10(Math.min(700, Math.max(0.3, au))) - LO) / (HI - LO);
@@ -41,7 +43,9 @@ const ZONES = [
   { name: 'Far out', from: 100, to: 700, about: 'Long paths that reach far beyond the planets.' },
 ];
 const ticks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
-const built = planets.length + 1, outlines = outlineWorlds.length;
+const nWritten = outlineWorlds.filter((b) => written(b.id)).length;
+const WRITTEN_NAMES = outlineWorlds.filter((b) => written(b.id)).map((b) => b.name).join(', ').replace(/, ([^,]*)$/, ' and $1');
+const built = planets.length + 1 + nWritten, outlines = outlineWorlds.length - nWritten;
 
 // The phone map runs down the page, the Sun at the top. Marks sit in narrow columns on the left;
 // every name sits in a column on the right at the height of its world, pushed down only as far as
@@ -51,12 +55,12 @@ const VH = 2700, VT = 36, STRETCH = 700, SL = Math.log10(1.5), SH6 = Math.log10(
 const vy = (au: number) => VT + f(au) * VH + STRETCH * Math.min(1, Math.max(0, (Math.log10(au) - SL) / (SH6 - SL)));
 const VEND = VT + VH + STRETCH;
 const LX = 200;
-type VL = { id: string; href: string; name: string; sub?: string; subs?: { id: string; name: string }[]; y: number; mx: number; my: number; out: boolean };
+type VL = { id: string; href: string; name: string; sub?: string; subs?: { id: string; name: string; w?: boolean }[]; y: number; mx: number; my: number; out: boolean };
 const vlabels: VL[] = [];
 const vmarks: { kind: string; mx: number; y1: number; y2: number; ya: number; d: number; out: boolean; off?: boolean }[] = [];
 for (const p of P) {
   vmarks.push({ kind: 'planet', mx: 52, y1: vy(p.a), y2: vy(p.a), ya: vy(p.a), d: p.d, out: false });
-  vlabels.push({ id: p.id, href: `/${p.id}`, name: p.name, subs: p.moons.map((m) => ({ id: m.id, name: m.name })), y: vy(p.a), mx: 52, my: vy(p.a), out: false });
+  vlabels.push({ id: p.id, href: `/${p.id}`, name: p.name, subs: p.moons.map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), y: vy(p.a), mx: 52, my: vy(p.a), out: false });
 }
 const COLS: Record<string, [number, number]> = { asteroid: [70, 3], comet: [128, 4], dwarf: [164, 4] };
 for (const l of LANES) l.rows.forEach((r, i) => {
@@ -77,7 +81,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   <header class="w-head">
     <p class="label">Worlds</p>
     <h1>Every world, by distance from the Sun</h1>
-    <p class="lead">The Sun and its eight planets have full pages. The larger moons, the dwarf planets and the asteroids and comets on the atlas have outline pages: their measured orbits and sizes now, the rest still being written.</p>
+    <p class="lead">The Sun, its eight planets and {nWritten} of the great moons ({WRITTEN_NAMES}) have full pages. The other larger moons, the dwarf planets and the asteroids and comets on the atlas have outline pages: their measured orbits and sizes now, the rest still being written.</p>
     <p class="w-key"><span class="k-built">Written</span> {built} pages <span class="k-out">Outline</span> {outlines} pages</p>
   </header>
 
@@ -91,7 +95,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
           <li style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}`}>
             <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
             <span class="wp-au">{fmtAu(p.a)} au</span>
-            {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
+            {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li class:list={[{ written: written(m.id) }]}><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
           </li>
         ))}
       </ol>
@@ -128,7 +132,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
           <li class:list={[{ out: l.out }]} style={`top:${l.y}px`}>
             <a href={l.href}>{l.name}</a>
             {l.sub && <small>{l.sub}</small>}
-            {l.subs && l.subs.length > 0 && <span class="vl-moons">{l.out ? 'Moon: ' : 'Moons: '}{l.subs.map((m, i) => <>{i > 0 && ', '}<a href={`/worlds/${m.id}`}>{m.name}</a></>)}</span>}
+            {l.subs && l.subs.length > 0 && <span class="vl-moons">{l.out ? 'Moon: ' : 'Moons: '}{l.subs.map((m, i) => <>{i > 0 && ', '}<a class:list={[{ w: m.w }]} href={`/worlds/${m.id}`}>{m.name}</a></>)}</span>}
           </li>
         ))}
       </ol>
@@ -170,6 +174,8 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: .1rem; padding-top: calc(var(--skip) * 1.06rem); }
   .wp-moons a { display: flex; align-items: center; gap: .35rem; font: 400 .8rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
   .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
+  .wp-moons li.written a { color: var(--ink); }
+  .wp-moons li.written a::before { background: var(--accent); }
   .wm-lane { position: relative; margin-top: 1rem; }
   .lane-h { font: 400 .7rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 .5rem -2.2rem; }
   .lane-h small { font: 300 .9rem/1 var(--r-serif); letter-spacing: 0; text-transform: none; color: var(--ink-faint); margin-left: .5rem; }
@@ -213,6 +219,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
     .wm-vl small { margin-left: .4rem; font: 400 .58rem/14px var(--r-mono); color: var(--ink-faint); }
     .wm-vl .vl-moons { display: block; font: 300 .8rem/14px var(--r-serif); color: var(--ink-faint); }
     .wm-vl .vl-moons a { color: var(--ink-soft); }
+    .wm-vl .vl-moons a.w { color: var(--ink); font-weight: 400; }
     .wm-key { grid-template-columns: minmax(0, 1fr); }
     .v-note { display: inline; }
   }

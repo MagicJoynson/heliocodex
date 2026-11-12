@@ -7,12 +7,14 @@ import { body } from '../../data/bodies/index';
 import { plates } from '../../lib/v2/atlas/plates';
 import { fmt } from '../../lib/format';
 import type { Body } from '../../lib/v2/atlas/types';
+import { WORLD_PAGES } from '../../data/world-pages';
 
 export function getStaticPaths() {
   return outlineWorlds.map((b) => ({ params: { id: b.id } }));
 }
 const { id } = Astro.params as { id: string };
 const b = body(id)! as Body;
+const page = WORLD_PAGES[id];
 const o = b.orbit as { aKm: number; e: number; iDeg: number; periodDays?: number };
 const parent = b.parent ? body(b.parent) : null;
 const round = b.parent === 'sun';
@@ -68,12 +70,12 @@ const parCx = parEdge - parR;
 const meR = Math.max(1.2, rMe * sk), meCx = parEdge + 50 + meR;
 const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 ---
-<Reading title={b.name} path={`/worlds/${b.id}`} description={`${kindLine}. ${outSays}. Outline page: being written.`}>
+<Reading title={b.name} path={`/worlds/${b.id}`} description={page ? `${kindLine}: what it looks like, what it is made of, how it was found and what is still unknown.` : `${kindLine}. ${outSays}. Outline page: being written.`}>
   <article class="world-outline">
     <header class="wo-head">
       <p class="label"><a href="/worlds">Every world</a> / {kindLine}</p>
       <h1>{b.name}</h1>
-      <p class="wo-badge"><span>Outline</span> The numbers here are measured. The rest of this page is being written.</p>
+      {!page && <p class="wo-badge"><span>Outline</span> The numbers here are measured. The rest of this page is being written.</p>}
     </header>
     <div class="wo-body">
       <figure class="wo-orbit">
@@ -107,7 +109,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
               <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />
               <circle cx={meCx} cy={scy} r={meR} fill="url(#shade)" />
               {cmp && <circle cx={moonCx} cy={scy} r={moonR} class="s-moon" />}
-              <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `The edge of ${nameOf(b.parent)}` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
+              <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `${nameOf(b.parent).replace(/^the /, 'The ')}’s edge` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
               <text x={meCx} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
               {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
             </svg>
@@ -116,11 +118,28 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
         )}
       </div>
     </div>
-    <section class="wo-todo" aria-labelledby="todo-h">
+    {page ? (
+      <div class="wo-full">
+        <figure class="wo-photo">
+          <img src={page.picture.src} alt={page.picture.alt} width={page.picture.width} height={page.picture.height} loading="lazy" />
+          <figcaption set:html={page.picture.caption} />
+        </figure>
+        <div class="wo-text">
+          {page.chapters.map((c) => (
+            <section class="wo-ch">
+              <h2>{c.title}</h2>
+              {c.paras.map((t) => <p>{t}</p>)}
+            </section>
+          ))}
+        </div>
+      </div>
+    ) : (
+      <section class="wo-todo" aria-labelledby="todo-h">
       <h2 id="todo-h">Still being written</h2>
       <ol>{CHAPTERS[b.kind].map((c) => <li>{c}</li>)}</ol>
     </section>
-    <p class="wo-src">Sources: {b.sources.map((s, i) => <>{i > 0 && '; '}<a href={s.url} rel="noopener">{s.label}</a></>)}.</p>
+    )}
+    <p class="wo-src">Sources: {[...(page?.sources ?? []), ...b.sources].map((s, i) => <>{i > 0 && '; '}<a href={s.url} rel="noopener">{s.label}</a></>)}.</p>
   </article>
 </Reading>
 
@@ -143,7 +162,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
   .wo-size svg { width: 100%; height: auto; display: block; }
   .wo-size .s-par { fill: #2a2722; stroke: rgba(233,196,138,.45); }
   .wo-size .s-moon { fill: none; stroke: rgba(236,231,220,.55); stroke-dasharray: 3 4; }
-  .wo-size .s-t { font: 400 14px var(--r-mono); fill: var(--ink-faint); }
+  .wo-size .s-t { font: 400 20px var(--r-mono); fill: var(--ink-faint); }
   .wo-size .s-t.me { fill: var(--ink); }
   .wo-size figcaption, .wo-orbit figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
   .wo-facts dl { margin: 0; }
@@ -157,6 +176,14 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
   .wo-todo h2 { font: 400 .72rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 1rem; }
   .wo-todo ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: .6rem 2rem; }
   .wo-todo li { font: 300 1.1rem/1.4 var(--r-serif); color: var(--ink-faint); }
+  .wo-full { margin-top: clamp(40px, 6vw, 72px); display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 40rem); gap: clamp(24px, 4vw, 64px); align-items: start; }
+  .wo-photo { margin: 0; position: sticky; top: 5rem; }
+  .wo-photo img { width: 100%; height: auto; display: block; border-radius: 2px; }
+  .wo-photo figcaption { font: 300 .88rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
+  .wo-ch + .wo-ch { margin-top: 2.2rem; }
+  .wo-ch h2 { font: 400 clamp(1.4rem, 1.2rem + .6vw, 1.8rem)/1.2 var(--r-serif); margin: 0 0 .8rem; }
+  .wo-ch p { font: 300 clamp(1.06rem, 1rem + .25vw, 1.2rem)/1.65 var(--r-serif); color: var(--ink-soft); margin: 0 0 1rem; max-width: 40rem; }
+  @media (max-width: 800px) { .wo-full { grid-template-columns: minmax(0, 1fr); } .wo-photo { position: static; max-width: 24rem; } }
   .wo-src { font: 300 .88rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; }
   @media (max-width: 800px) { .wo-body { grid-template-columns: minmax(0, 1fr); } .wo-facts dl div { grid-template-columns: 6.5rem minmax(0, 1fr); } }
 </style>
