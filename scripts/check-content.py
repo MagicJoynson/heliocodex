@@ -68,6 +68,11 @@ for f in facts:
     for x in f['about']:
         if x not in targets and x not in lessons and x not in landmarks: bad.append(f'fact {f["id"]}: about has "{x}", which is not a body, a place, a landmark or a lesson')
 
+# every video needs its poster kept on our own server, so nothing loads from YouTube before Play
+for f in glob.glob(path('src', 'content', 'lessons', '*', '*.md')):
+    for vid in re.findall(r'data-yt="([^"]+)"', open(f, encoding='utf-8').read()):
+        if not re.fullmatch(r'[\w-]{11}', vid): bad.append(f'{f}: video id {vid!r} is not an 11-character YouTube id')
+        elif not os.path.exists(path('public', 'img', 'video', vid + '.jpg')): bad.append(f'{f}: video {vid} has no poster at public/img/video/{vid}.jpg')
 for b in bad: print(b)
 print(f'{len(lessons)} lessons, {len(terms)} glossary terms, {len(facts)} facts, {len(targets)} places to point at: ' + (f'{len(bad)} broken links' if bad else 'all links hold'))
 sys.exit(1 if bad else 0)
