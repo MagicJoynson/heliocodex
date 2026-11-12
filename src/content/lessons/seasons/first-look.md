@@ -24,5 +24,5 @@ The southern half of the world gets the opposite. Christmas in Australia is in m
 
 <figure class="photo">
   <img src="/img/learn/charts/daylight-in-london.svg" alt="A chart of a curve rising from under 8 hours in December to over 16 hours in June and falling again." width="800" height="470" loading="lazy" />
-  <figcaption><b>A chart.</b> Hours of daylight in London through the year, from sunrise to sunset. The lean of the Earth more than doubles the length of the day between December and June. Worked out here from the tilt of the Earth and the latitude of London.</figcaption>
+  <figcaption><b>A chart.</b> Hours of daylight in London through the year, from sunrise to sunset. The lean of the Earth more than doubles the length of the day between December and June. Worked out here from the tilt of the Earth and the latitude of London, allowing for the width of the Sun and the way the air bends its light near the horizon. Without those two, the June day would come out about a quarter of an hour shorter.</figcaption>
 </figure>
