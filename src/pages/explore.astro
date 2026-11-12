@@ -1,0 +1,578 @@
+---
+import Analytics from '../components/Analytics.astro';
+import '@fontsource/spectral/200.css';
+import '@fontsource/spectral/300.css';
+import '@fontsource/spectral/300-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import Margin from '../components/v2/Margin.astro';
+const site = Astro.site!;
+const title = 'Explore in 3D · Heliocodex';
+const description = 'Fly through the Solar System at its true size and distance, from beyond Neptune down to the ground of Mars, then out past the stars to the oldest light there is. With lessons for wherever you are.';
+import { sections } from '../lib/nav';
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL('/explore', site).toString()} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL('/explore', site).toString()} />
+    <meta property="og:site_name" content="Heliocodex" />
+    <meta property="og:image" content={new URL('/brand/heliocodex-social-card-1200x630.png', site).toString()} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Heliocodex: an amber Sun with a small dark world crossing it" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#000000" />
+    <Analytics />
+  </head>
+  <body>
+    <canvas id="space" tabindex="-1" aria-label="The Solar System at its true size and distance. Everything shown here is also on the Planets, Learn, Sky and Atlas pages, and the controls below work from the keyboard."></canvas>
+    <div class="veil" id="veil" aria-hidden="true"></div>
+
+    <header class="top">
+      <a class="mark" href="/" aria-label="Heliocodex, home"><img src="/brand/heliocodex-lockup.svg" alt="" width="660" height="133" /></a>
+      <nav class="pages" aria-label="Sections">
+        {sections.filter((x) => x.href !== '/explore').map((x) => <a href={x.href}>{x.label}</a>)}
+      </nav>
+      <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+    </header>
+    <nav class="menu" id="menu" aria-label="Sections" hidden>
+      <a href="/"><b>Home</b><span>Where to start</span></a>
+      {sections.filter((x) => x.href !== '/explore').map((x) => <a href={x.href}><b>{x.label}</b><span>{x.about}</span></a>)}
+      <a href="/sources"><b>Sources</b><span>Where every number comes from</span></a>
+    </nav>
+
+    <section class="threshold" id="threshold">
+      <p class="name">Heliocodex</p>
+      <p class="line">The Sun and its worlds at their true size and distance. Go in to Mars, click any planet to visit it, then keep going, past the stars, out to the oldest light there is.</p>
+      <button class="aperture" id="enter" type="button" aria-label="Enter">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="ring outer" cx="100" cy="100" r="96" />
+          <circle class="ring inner" cx="100" cy="100" r="78" />
+          <g class="ticks"></g>
+        </svg>
+        <span class="word">Enter</span>
+      </button>
+      <p class="note" id="status">Loading the Solar System…</p>
+      <div class="nope" id="nope" hidden>
+        <p>This browser cannot draw the 3D view, but the rest of Heliocodex works without it.</p>
+        <p class="links"><a href="/learn">Learn</a><a href="/bodies">Bodies</a><a href="/sky">Tonight’s sky</a><a href="/atlas">Atlas</a></p>
+      </div>
+      <noscript><p class="nope-ns">The 3D view needs JavaScript. Everything else is on the <a href="/learn">Learn</a>, <a href="/bodies">Bodies</a>, <a href="/sky">Sky</a> and <a href="/atlas">Atlas</a> pages.</p></noscript>
+    </section>
+
+    <!-- where you are: a map of the Solar System from above, and what you are looking at -->
+    <section class="where" id="where" aria-labelledby="where-h">
+      <h2 class="where-h" id="where-h"><span class="where-k">Looking at</span> <span id="where-name">Mars</span></h2>
+      <p class="where-d" id="where-d"></p>
+      <canvas class="map" id="map" width="180" height="180" role="img" aria-label="A map of the Solar System seen from above, with you marked"></canvas>
+    </section>
+
+    <div class="hud" id="hud">
+      <div class="readout" aria-hidden="true">
+        <span class="k" id="r-k">Height above Mars</span>
+        <span class="v" id="r-v">—</span>
+        <span class="k2" id="r-k2"></span>
+      </div>
+      <button type="button" class="skip" id="skip">Skip ahead</button>
+    </div>
+
+    <!-- the controls: always in the same place, all reachable by keyboard -->
+    <div class="controls" id="controls" role="toolbar" aria-label="3D view controls">
+      <div class="zoom">
+        <button type="button" id="z-in" aria-label="Closer" title="Closer (W or +)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg></button>
+        <button type="button" id="z-out" aria-label="Further away" title="Further away (S or −)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12" /></svg></button>
+      </div>
+      <div class="pop" id="goto">
+        <button type="button" class="pill" id="goto-btn" aria-expanded="false" aria-controls="goto-list">Go to</button>
+        <nav class="sheet goto-list" id="goto-list" aria-label="Go to" hidden></nav>
+      </div>
+      <div class="pop" id="view">
+        <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet">View</button>
+        <div class="sheet view-sheet" id="view-sheet" role="group" aria-label="View settings" hidden>
+          <fieldset>
+            <legend>Planet sizes</legend>
+            <label><input type="radio" name="size" value="true" checked /> True size <small>tiny dots from far away, as they really are</small></label>
+            <label><input type="radio" name="size" value="big" /> Easier to see <small>drawn bigger from far off, true size up close</small></label>
+          </fieldset>
+          <fieldset>
+            <legend>Motion</legend>
+            <label><input type="radio" name="motion" value="full" checked /> Smooth trips <small>a short glide from place to place</small></label>
+            <label><input type="radio" name="motion" value="reduced" /> Reduced motion <small>a quick fade instead of moving</small></label>
+          </fieldset>
+          <fieldset>
+            <legend>Map</legend>
+            <label><input type="checkbox" id="show-map" checked /> Show the map</label>
+          </fieldset>
+          <button type="button" class="free-btn" id="free-btn" aria-pressed="false">Fly yourself</button>
+          <dl class="keys">
+            <div><dt>Turn round</dt><dd>drag, or the arrow keys, or A and D</dd></div>
+            <div><dt>Closer and further</dt><dd>scroll, pinch, W and S, or + and −</dd></div>
+            <div><dt>Go to a planet</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
+            <div><dt>Fly yourself</dt><dd>F, then W A S D, E and Q. Esc stops</dd></div>
+            <div><dt>The Codex</dt><dd>M</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to turn round · Scroll to zoom · Click a planet to go there</span><span class="coarse-only">Drag to turn · Pinch to zoom · Tap a planet to go there</span></p>
+    <p class="sr" id="said" role="status" aria-live="polite"></p>
+
+    <div class="pad" id="pad" aria-hidden="true"><span>Fly</span><i></i><span>Back</span></div>
+    <p class="tech" id="tech"></p>
+    <p class="gen" id="gen"></p>
+    <Margin />
+
+    <script>
+      import { createWorld } from '../lib/v2/engine/world';
+      const $ = (id: string) => document.getElementById(id)!;
+      const body = document.body;
+
+      const ticks = document.querySelector('.ticks')!;
+      for (let i = 0; i < 120; i++) {
+        const a = (i / 120) * Math.PI * 2, long = i % 10 === 0;
+        const r1 = 86, r2 = long ? 92 : 89;
+        const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        l.setAttribute('x1', String(100 + Math.cos(a) * r1)); l.setAttribute('y1', String(100 + Math.sin(a) * r1));
+        l.setAttribute('x2', String(100 + Math.cos(a) * r2)); l.setAttribute('y2', String(100 + Math.sin(a) * r2));
+        ticks.appendChild(l);
+      }
+
+      // ---- the menu, for narrow screens; works before the 3D view has loaded
+      const menu = $('menu'), menuBtn = $('menu-btn');
+      const shutMenu = () => { menu.hidden = true; menuBtn.setAttribute('aria-expanded', 'false'); };
+      menuBtn.addEventListener('click', () => { const open = menu.hidden; menu.hidden = !open; menuBtn.setAttribute('aria-expanded', String(open)); if (open) (menu.querySelector('a') as HTMLElement).focus(); });
+      addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { shutMenu(); menuBtn.focus(); } });
+      addEventListener('pointerdown', (e) => { if (!menu.hidden && !menu.contains(e.target as Node) && e.target !== menuBtn) shutMenu(); });
+
+      // ---- settings, kept in this browser only (see the cookies page)
+      const KEY = 'heliocodex-view';
+      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean };
+      let prefs: Prefs = {};
+      try { prefs = JSON.parse(localStorage.getItem(KEY) ?? '{}') ?? {}; } catch {}
+      const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
+      const systemReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reducedNow = () => prefs.reduced ?? systemReduced;
+
+      const AU = 149_597_870_700;
+      const LY = 9.4607304725808e15;
+      const fmt = (m: number) => {
+        if (m > 1e9 * LY) return `${(m / LY / 1e9).toLocaleString('en-GB', { maximumFractionDigits: 1 })} billion light years`;
+        if (m > 1e6 * LY) return `${(m / LY / 1e6).toLocaleString('en-GB', { maximumFractionDigits: 1 })} million light years`;
+        if (m > 0.05 * LY) return `${(m / LY).toLocaleString('en-GB', { maximumFractionDigits: m > 100 * LY ? 0 : 2 })} light years`;
+        if (m > 0.1 * AU) return `${(m / AU).toFixed(m > 10 * AU ? 1 : 2)} au`;
+        if (m > 1e9) return `${(m / 1e9).toFixed(1)} million km`;
+        if (m > 10_000) return `${Math.round(m / 1000).toLocaleString('en-GB')} km`;
+        if (m > 1000) return `${(m / 1000).toFixed(2)} km`;
+        return `${Math.max(0, Math.round(m)).toLocaleString('en-GB')} m`;
+      };
+      const fmtSpeed = (v: number) => (v > 3e9 ? `${fmt(v)} a second` : v > 1000 ? `${(v / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km a second` : `${Math.round(v)} m a second`);
+      const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+
+      const params = new URLSearchParams(location.search);
+      let world: Awaited<ReturnType<typeof createWorld>>;
+      const startedAt = performance.now();
+      try {
+        world = await createWorld({
+          canvas: $('space') as HTMLCanvasElement,
+          forceWebGL: params.has('gl') || (() => { try { return sessionStorage.getItem('hc-gl') === '1'; } catch { return false; } })(),
+          onReadout(r) {
+            if (r.mode === 'cruise') {
+              $('r-k').textContent = `On the way to ${world?.focus.name ?? r.target}`;
+              $('r-v').textContent = fmt(r.dist);
+              $('r-k2').textContent = '';
+            } else {
+              const name = world?.focus.name ?? r.target;
+              // circling: how far from what you are looking at; flying yourself: how high above the ground
+              $('r-k').textContent = r.far ? 'Distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
+              $('r-v').textContent = fmt(r.mode === 'free' || r.far ? r.alt : r.dist);
+              $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : '';
+            }
+            $('tech').textContent = r.tech;
+            $('gen').textContent = r.note ?? '';
+            body.classList.toggle('far', !!r.far);
+            body.classList.toggle('free', r.mode === 'free');
+            $('free-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
+          },
+          onFocus(_id, name) {
+            $('where-name').textContent = cap(name);
+            $('said').textContent = `Now at ${name}.`;
+          },
+          onJump() {
+            // reduced motion: the view has jumped; let it come up out of black instead
+            const v = $('veil');
+            v.classList.remove('lift'); void v.offsetWidth; v.classList.add('lift');
+          },
+          onArrive() {
+            body.classList.add('in', 'arrived');
+            $('hint').classList.add('show');
+            setTimeout(() => $('hint').classList.remove('show'), 9000);
+            // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
+            const go = params.get('go');
+            // a star waits for the catalogue to load, for up to 15 seconds
+            const giveUp = performance.now() + 15_000;
+            const goWhenReady = () => {
+              if (!world || (go && !world.canFlyTo(go) && go.startsWith('star:') && performance.now() < giveUp)) { setTimeout(goWhenReady, 100); return; }
+              if (go && world.canFlyTo(go)) {
+                const d = Number(params.get('d'));
+                world.flyTo({ target: go, distanceKm: d > 0 ? d : undefined }).catch(() => {});
+              }
+            };
+            if (go) goWhenReady();
+          },
+          onLost() {
+            // WebGPU that dies straight after starting is a driver problem: try once more on WebGL 2
+            const early = performance.now() - startedAt < 15_000;
+            let tried = false;
+            try { tried = sessionStorage.getItem('hc-gl') === '1'; sessionStorage.setItem('hc-gl', '1'); } catch {}
+            if (early && !params.has('gl') && !tried) { params.set('gl', ''); location.search = params.toString(); return; }
+            $('status').textContent = 'The graphics stopped. Reload the page to carry on.';
+            body.classList.remove('in', 'arrived');
+          },
+        });
+        world.setReduced(reducedNow());
+        world.setBigger(!!prefs.big);
+        $('status').textContent = params.has('debug') ? `Ready · ${world.backend} · ${world.depthMode}` : matchMedia('(pointer: coarse)').matches ? 'Tap the ring to go in' : 'Click the ring, or press Enter';
+        // every moon, where it really is; loaded after the engine is running
+        import('../lib/v2/layers/moons').then(async ({ createMoonsLayer }) => {
+          const { allBodies } = await import('../data/bodies/index');
+          world.registerLayer(createMoonsLayer(allBodies));
+        });
+        // the guide: lessons, facts, glossary and atlas for wherever you are
+        import('../lib/v2/margin/panel').then(({ mountMargin }) => mountMargin(world));
+        // testing: ?debug exposes the engine to scripts
+        if (params.has('debug')) { (window as unknown as { __w: typeof world }).__w = world; body.classList.add('debug'); }
+        // testing: ?t=2017-06-01 sets the clock
+        if (params.get('t')) world.setTime(params.get('t'));
+      } catch (e) {
+        $('status').hidden = true;
+        $('enter').hidden = true;
+        $('nope').hidden = false;
+        console.error(e);
+        throw e;
+      }
+
+      // ---- pop-up sheets: Go to and View. One open at a time; Esc or a click elsewhere shuts them.
+      const pops = ['goto', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : 'view-sheet') }));
+      const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
+      for (const p of pops) p.btn.addEventListener('click', () => {
+        const open = p.sheet.hidden;
+        shutPops(p.sheet);
+        p.sheet.hidden = !open; p.btn.setAttribute('aria-expanded', String(open));
+        if (open) (p.sheet.querySelector('button, input') as HTMLElement | null)?.focus();
+      });
+      addEventListener('keydown', (e) => { if (e.key === 'Escape') { const o = pops.find((p) => !p.sheet.hidden); if (o) { shutPops(); o.btn.focus(); } } });
+      addEventListener('pointerdown', (e) => { if (!pops.some((p) => p.wrap.contains(e.target as Node))) shutPops(); });
+
+      // Go to: the places, in groups
+      const PLACES: [string, [string, string][]][] = [
+        ['The Sun and planets', [['sun', 'The Sun'], ['mercury', 'Mercury'], ['venus', 'Venus'], ['earth', 'Earth'], ['mars', 'Mars'], ['jupiter', 'Jupiter'], ['saturn', 'Saturn'], ['uranus', 'Uranus'], ['neptune', 'Neptune']]],
+        ['Moons and dwarfs', [['moon', 'The Moon'], ['io', 'Io'], ['europa', 'Europa'], ['titan', 'Titan'], ['pluto', 'Pluto']]],
+        ['Further out', [['solar-system', 'The whole Solar System'], ['oort-cloud', 'The Oort cloud'], ['neighbourhood', 'Our neighbour stars'], ['night-sky', 'Every star you can see'], ['milky-way', 'The Milky Way'], ['local-group', 'The Local Group'], ['cosmic-web', 'The cosmic web'], ['cmb', 'The oldest light']]],
+      ];
+      const list = $('goto-list');
+      for (const [head, places] of PLACES) {
+        const h = document.createElement('p'); h.className = 'goto-h'; h.textContent = head; list.appendChild(h);
+        const row = document.createElement('div'); row.className = 'goto-row';
+        for (const [id, name] of places) {
+          if (!world.canFlyTo(id)) continue;
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = name;
+          b.addEventListener('click', () => { shutPops(); goTo(id); });
+          row.appendChild(b);
+        }
+        list.appendChild(row);
+      }
+      function goTo(id: string) {
+        if (!body.classList.contains('in')) return;
+        world.flyTo({ target: id }).catch(() => {});
+      }
+
+      // View: sizes, motion, the map, flying yourself
+      const sizeIn = document.querySelectorAll<HTMLInputElement>('input[name="size"]');
+      const motionIn = document.querySelectorAll<HTMLInputElement>('input[name="motion"]');
+      for (const i of sizeIn) { i.checked = (i.value === 'big') === !!prefs.big; i.addEventListener('change', () => { prefs.big = i.value === 'big'; world.setBigger(prefs.big); save(); }); }
+      for (const i of motionIn) { i.checked = (i.value === 'reduced') === reducedNow(); i.addEventListener('change', () => { prefs.reduced = i.value === 'reduced'; world.setReduced(prefs.reduced); body.classList.toggle('calm', prefs.reduced); save(); }); }
+      body.classList.toggle('calm', reducedNow());
+      const showMap = $('show-map') as HTMLInputElement;
+      showMap.checked = prefs.map !== false;
+      body.classList.toggle('no-map', !showMap.checked);
+      showMap.addEventListener('change', () => { prefs.map = showMap.checked; body.classList.toggle('no-map', !showMap.checked); save(); });
+      $('free-btn').addEventListener('click', () => { world.setFree(world.mode !== 'free'); shutPops(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
+
+      // zoom buttons: a press is one step; holding keeps going
+      for (const [id, dir] of [['z-in', 1], ['z-out', -1]] as const) {
+        const b = $(id);
+        let hold = 0;
+        const stop = () => { clearInterval(hold); hold = 0; };
+        b.addEventListener('pointerdown', (e) => { e.preventDefault(); world.zoom(dir); stop(); hold = window.setInterval(() => world.zoom(dir * 0.35), 120); });
+        b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
+        b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); world.zoom(dir); } });
+      }
+
+      // keys of the page's own: F to fly yourself, Esc to stop, [ and ] for the planet before and after
+      const ORDER = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+      addEventListener('keydown', (e) => {
+        if (!body.classList.contains('arrived') || e.metaKey || e.ctrlKey || e.altKey) return;
+        const t = e.target as HTMLElement;
+        if (t?.closest?.('input, textarea, select, .margin')) return;
+        if (e.code === 'KeyF') world.setFree(world.mode !== 'free');
+        else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
+        else if (e.key === '[' || e.key === ']') {
+          const i = ORDER.indexOf(world.focus.id);
+          const n = i < 0 ? (e.key === ']' ? 0 : ORDER.length - 1) : (i + (e.key === ']' ? 1 : ORDER.length - 1)) % ORDER.length;
+          goTo(ORDER[n]);
+        }
+      });
+
+      // ---- the map: the Solar System from above, on a stretched scale so Mercury and Neptune both fit
+      const map = $('map') as HTMLCanvasElement;
+      const mctx = map.getContext('2d')!;
+      const COL: Record<string, string> = { mercury: '#a8a29a', venus: '#e6cf9c', earth: '#7aa9da', mars: '#d4714a', jupiter: '#d9b48c', saturn: '#e2cf98', uranus: '#9fd5db', neptune: '#7190e2' };
+      const EDGE = 34; // au at the rim
+      const rr = (au: number) => Math.log10(1 + au / 0.22) / Math.log10(1 + EDGE / 0.22);
+      let hits: { id: string; x: number; y: number }[] = [];
+      function drawMap() {
+        if (body.classList.contains('no-map') || !body.classList.contains('in')) return;
+        const css = map.clientWidth || 160, dpr = Math.min(devicePixelRatio || 1, 2);
+        if (map.width !== Math.round(css * dpr)) { map.width = map.height = Math.round(css * dpr); }
+        const S = map.width, R = S / 2 - 8 * dpr, c = S / 2;
+        mctx.setTransform(1, 0, 0, 1, 0, 0);
+        mctx.clearRect(0, 0, S, S);
+        const st = world.mapState();
+        const at = (p: number[]) => { const au = Math.hypot(p[0], p[2]) / AU; const k = au > 0 ? (rr(Math.min(au, EDGE)) * R) / au : 0; return [c + (p[0] / AU) * k, c + (p[2] / AU) * k, au] as const; };
+        // orbits, faint
+        mctx.lineWidth = 1 * dpr;
+        for (const p of st.planets) {
+          const r = rr(Math.hypot(p.at[0], p.at[2]) / AU) * R;
+          mctx.strokeStyle = 'rgba(236,231,220,0.13)';
+          mctx.beginPath(); mctx.arc(c, c, r, 0, Math.PI * 2); mctx.stroke();
+        }
+        // the Sun
+        mctx.fillStyle = '#ffcf7a'; mctx.beginPath(); mctx.arc(c, c, 3.2 * dpr, 0, Math.PI * 2); mctx.fill();
+        hits = [{ id: 'sun', x: c / dpr, y: c / dpr }];
+        // the planets
+        for (const p of st.planets) {
+          const [x, y] = at(p.at);
+          const isF = p.id === st.focus;
+          mctx.fillStyle = COL[p.id];
+          mctx.beginPath(); mctx.arc(x, y, (isF ? 3.4 : 2.6) * dpr, 0, Math.PI * 2); mctx.fill();
+          if (isF) { mctx.strokeStyle = '#f1c98e'; mctx.lineWidth = 1.2 * dpr; mctx.beginPath(); mctx.arc(x, y, 6.5 * dpr, 0, Math.PI * 2); mctx.stroke(); }
+          hits.push({ id: p.id, x: x / dpr, y: y / dpr });
+        }
+        // you, and which way you are facing
+        const [yx, yy, yau] = at(st.cam);
+        const hl = Math.hypot(st.heading[0], st.heading[1]);
+        mctx.save();
+        mctx.translate(yx, yy);
+        if (hl > 0.15) {
+          const a = Math.atan2(st.heading[1], st.heading[0]);
+          mctx.rotate(a);
+          mctx.fillStyle = 'rgba(241,201,142,0.28)';
+          mctx.beginPath(); mctx.moveTo(0, 0); mctx.arc(0, 0, 16 * dpr, -0.45, 0.45); mctx.closePath(); mctx.fill();
+        }
+        mctx.restore();
+        mctx.fillStyle = '#fff'; mctx.strokeStyle = '#000'; mctx.lineWidth = 2 * dpr;
+        mctx.beginPath(); mctx.arc(yx, yy, 3 * dpr, 0, Math.PI * 2); mctx.stroke(); mctx.fill();
+        // beyond the rim: say how far
+        const far = yau > EDGE;
+        $('where-d').textContent = far ? `You are ${fmt(Math.hypot(...st.cam))} from the Sun, off this map` : `${fmt(Math.hypot(...st.cam))} from the Sun`;
+        map.classList.toggle('beyond', far);
+      }
+      setInterval(drawMap, 120);
+      map.addEventListener('click', (e) => {
+        const r = map.getBoundingClientRect();
+        const x = e.clientX - r.left, y = e.clientY - r.top;
+        let best = '', bd = 14;
+        for (const h of hits) { const d = Math.hypot(h.x - x, h.y - y); if (d < bd) { bd = d; best = h.id; } }
+        if (best) goTo(best);
+      });
+
+      // ---- going in
+      const ap = $('enter');
+      function go() {
+        if (body.classList.contains('in')) return;
+        const r = ap.getBoundingClientRect();
+        const [sx, sy] = world.sunScreen();
+        ap.style.setProperty('--dx', `${sx - (r.left + r.width / 2)}px`);
+        ap.style.setProperty('--dy', `${sy - (r.top + r.height / 2)}px`);
+        body.classList.add('in');
+        setTimeout(() => world.enter(7), reducedNow() ? 300 : 700);
+      }
+      ap.addEventListener('click', go);
+      addEventListener('keydown', (e) => { if (e.key === 'Enter' && !body.classList.contains('in') && !(e.target as HTMLElement)?.closest?.('a, button')) go(); });
+      $('skip').addEventListener('click', () => world.skip());
+
+      // the touch pad, while flying yourself: top half flies forward, bottom half back
+      const pad = $('pad');
+      const padAt = (e: PointerEvent) => {
+        const r = pad.getBoundingClientRect();
+        world.setPad((e.clientY - r.top) / r.height < 0.5 ? 1 : -1);
+      };
+      pad.addEventListener('pointerdown', (e) => { pad.setPointerCapture(e.pointerId); padAt(e); pad.classList.add('on'); });
+      pad.addEventListener('pointermove', (e) => { if (pad.hasPointerCapture(e.pointerId)) padAt(e); });
+      const off = () => { world.setPad(0); pad.classList.remove('on'); };
+      pad.addEventListener('pointerup', off);
+      pad.addEventListener('pointercancel', off);
+
+      if (params.has('low')) body.classList.add('in', 'arrived');
+    </script>
+
+    <style is:global>
+      :root { --ink: #ece7dc; --soft: #b9b2a5; --faint: #8a847a; --warm: #f1c98e; --line: rgba(236,231,220,.22); --glass: rgba(9,9,11,.82); --serif: 'Spectral', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace; --gut: clamp(16px, 3vw, 32px); --top: max(clamp(12px, 2.4vh, 22px), env(safe-area-inset-top)); --bot: max(clamp(14px, 3vh, 28px), env(safe-area-inset-bottom)); }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; background: #000; color: var(--ink); overflow: hidden; }
+      body { font-family: var(--serif); -webkit-font-smoothing: antialiased; }
+      button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+      :focus-visible { outline: 2px solid var(--warm); outline-offset: 3px; }
+      #space { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+      .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+      /* a black veil that lifts after a jump, for reduced motion */
+      .veil { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 1; }
+      .veil.lift { animation: lift .45s ease-out; }
+      @keyframes lift { from { opacity: 1; } to { opacity: 0; } }
+
+      /* ---- the header: the way to every other part of the site, always there */
+      .top { position: fixed; z-index: 40; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 20px; padding: var(--top) var(--gut) 28px; background: linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,0)); pointer-events: none; }
+      .top > * { pointer-events: auto; }
+      .mark { display: block; flex: none; }
+      .mark img { display: block; height: 24px; width: auto; }
+      body:not(.in) .mark { opacity: 0; pointer-events: none; }
+      .mark { transition: opacity 1s ease .6s; }
+      .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
+      .pages a, .menu-btn { font: 400 .74rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
+      .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
+      .menu-btn { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; background: var(--glass); }
+      .menu { position: fixed; z-index: 41; top: calc(var(--top) + 52px); right: var(--gut); width: min(22rem, calc(100vw - 2 * var(--gut))); background: rgba(9,9,11,.96); border: 1px solid var(--line); padding: 6px 0; }
+      .menu[hidden] { display: none; }
+      .menu a { display: grid; gap: 3px; padding: 12px 18px; text-decoration: none; color: var(--ink); border-bottom: 1px solid rgba(236,231,220,.07); }
+      .menu a:last-child { border-bottom: 0; }
+      .menu b { font: 400 1.1rem/1.2 var(--serif); }
+      .menu span { font: 300 .9rem/1.35 var(--serif); color: var(--faint); }
+      .menu a:hover, .menu a:focus-visible { background: rgba(241,201,142,.08); outline: none; }
+      .menu a:hover b, .menu a:focus-visible b { color: var(--warm); }
+      @media (max-width: 860px) { .pages { display: none; } .menu-btn { display: block; } }
+      body.margin-open .top { z-index: 28; }
+      body.margin-open .pages, body.margin-open .menu-btn { visibility: hidden; }
+
+      /* ---- threshold */
+      .threshold::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 46% 40% at 50% 46%, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%); transition: opacity 1s ease; }
+      body.in .threshold::before { opacity: 0; }
+      .threshold { position: fixed; inset: 0; z-index: 2; display: grid; place-content: center; justify-items: center; text-align: center; padding: 24px; transition: opacity 1s ease .2s; }
+      .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; }
+      .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; }
+      .aperture { position: relative; width: clamp(150px, 22vmin, 210px); aspect-ratio: 1; display: grid; place-items: center; transition: transform .8s cubic-bezier(.6,0,.3,1), opacity .5s ease .4s; }
+      .aperture svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+      .ring { fill: none; stroke: rgba(236,231,220,.55); stroke-width: .8; vector-effect: non-scaling-stroke; transition: stroke .4s, r .8s cubic-bezier(.6,0,.3,1); }
+      .ring.inner { stroke: rgba(236,231,220,.22); }
+      .ticks line { stroke: rgba(236,231,220,.35); stroke-width: .7; vector-effect: non-scaling-stroke; }
+      .word { font: 400 .78rem/1 var(--mono); letter-spacing: .32em; text-transform: uppercase; padding-left: .32em; transition: opacity .3s; }
+      .aperture:hover .ring.outer, .aperture:focus-visible .ring.outer { stroke: var(--warm); }
+      .aperture:hover .word, .aperture:focus-visible .word { color: var(--warm); }
+      .aperture:focus-visible { outline: none; }
+      .aperture::after { content: ''; position: absolute; inset: 47%; border-radius: 50%; background: radial-gradient(circle, #fff6e6 0%, rgba(255,214,150,.6) 35%, rgba(255,180,90,0) 70%); opacity: 0; transition: opacity .5s ease .3s, inset .8s cubic-bezier(.6,0,.3,1); }
+      .note { margin: clamp(28px, 5vh, 48px) 0 0; font: 400 .72rem/1.5 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase; }
+      .nope { max-width: 26em; margin-top: 8px; }
+      .nope p, .nope-ns { font: 300 1.05rem/1.55 var(--serif); color: var(--soft); margin: 0 0 1rem; }
+      .nope .links { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; }
+      .nope a, .nope-ns a { color: var(--warm); }
+      .nope .links a { font: 400 .72rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid rgba(241,201,142,.4); padding-bottom: 4px; }
+      body.in .name, body.in .line, body.in .note { opacity: 0; transition: opacity .4s ease; }
+      body.in .word { opacity: 0; }
+      body.in .ring.outer { r: 3; } body.in .ring.inner { r: 1; }
+      body.in .ticks { opacity: 0; transition: opacity .3s; }
+      body.in .aperture { transform: translate(var(--dx, 0), var(--dy, 0)) scale(.35); opacity: 0; }
+      body.in .aperture::after { opacity: 1; inset: 42%; }
+      body.in .threshold { pointer-events: none; }
+      body.calm .aperture, body.calm .ring, body.calm .aperture::after { transition-duration: .01s !important; }
+      body.calm.in .aperture { transform: none; }
+
+      /* ---- where you are */
+      .where { position: fixed; z-index: 20; left: var(--gut); top: calc(var(--top) + 54px); width: 178px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
+      body.arrived .where { opacity: 1; pointer-events: auto; }
+      .where-h { margin: 0; font: 300 1.25rem/1.2 var(--serif); text-shadow: 0 1px 10px #000; }
+      .where-k { display: block; font: 400 .64rem/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+      .where-d { margin: 2px 0 8px; font: 300 .9rem/1.35 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; min-height: 1.2em; }
+      .map { display: block; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(16,16,20,.88), rgba(8,8,10,.88)); border: 1px solid var(--line); cursor: pointer; }
+      body.no-map .map { display: none; }
+      @media (max-width: 600px) { .where { width: 120px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8rem; } .map { width: 104px; height: 104px; } }
+
+      /* ---- readout */
+      .hud { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; padding: 0 var(--gut) var(--bot); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1s ease .8s; pointer-events: none; }
+      body.in .hud { opacity: 1; }
+      .readout { display: grid; gap: .3rem; text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
+      .readout .k, .readout .k2 { font: 400 .68rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+      .readout .v { font: 200 clamp(1.8rem, 4.4vw, 3rem)/1 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+      .skip { pointer-events: auto; font: 400 .7rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); border-bottom: 1px solid rgba(236,231,220,.3); padding: 10px 0 3px; margin-bottom: 70px; }
+      body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
+
+      /* ---- controls */
+      .controls { position: fixed; z-index: 31; right: var(--gut); bottom: var(--bot); display: flex; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
+      body.arrived .controls { opacity: 1; pointer-events: auto; }
+      .zoom { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 26px; background: var(--glass); overflow: hidden; }
+      .zoom button { width: 48px; height: 48px; display: grid; place-items: center; color: var(--ink); }
+      .zoom button + button { border-top: 1px solid rgba(236,231,220,.14); }
+      .zoom svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.6; fill: none; stroke-linecap: round; }
+      .zoom button:hover, .zoom button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
+      .pop { position: relative; }
+      .pill { font: 400 .74rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 15px 18px; min-height: 48px; }
+      .pill:hover, .pill:focus-visible, .pill[aria-expanded="true"] { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
+      .sheet { position: absolute; right: 0; bottom: calc(100% + 10px); width: min(22rem, calc(100vw - 2 * var(--gut))); max-height: min(66vh, 36rem); overflow-y: auto; padding: 16px 18px 8px; background: rgba(9,9,11,.96); border: 1px solid var(--line); }
+      .sheet[hidden] { display: none; }
+      .goto-h { font: 400 .64rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin: 0 0 6px; }
+      .goto-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-bottom: 14px; }
+      .goto-row button { text-align: left; font: 300 1.02rem/1.25 var(--serif); color: var(--soft); padding: 8px 0; border-bottom: 1px solid rgba(236,231,220,.08); }
+      .goto-row button:hover, .goto-row button:focus-visible { color: var(--warm); outline: none; }
+      .view-sheet fieldset { border: 0; margin: 0 0 14px; padding: 0; }
+      .view-sheet legend { font: 400 .64rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; padding: 0; }
+      .view-sheet label { display: block; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 6px 0 6px 28px; position: relative; cursor: pointer; }
+      .view-sheet label small { display: block; font-size: .85rem; color: var(--faint); }
+      .view-sheet input { position: absolute; left: 0; top: 9px; accent-color: #f1c98e; width: 16px; height: 16px; margin: 0; }
+      .free-btn { width: 100%; font: 400 .72rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 13px 16px; margin: 2px 0 14px; }
+      .free-btn[aria-pressed="true"] { color: #111; background: var(--warm); border-color: var(--warm); }
+      .keys { margin: 0 0 8px; border-top: 1px solid rgba(236,231,220,.1); padding-top: 10px; }
+      .keys div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 10px; padding: 4px 0; }
+      .keys dt { font: 400 .62rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
+      .keys dd { margin: 0; font: 300 .9rem/1.35 var(--serif); color: var(--soft); }
+      @media (pointer: coarse) { .keys { display: none; } }
+      @media (max-width: 760px) { body.margin-open .controls { opacity: 0; pointer-events: none; } }
+
+      /* a hint, once, after arriving */
+      .hint { position: fixed; z-index: 15; left: 50%; bottom: calc(var(--bot) + 124px); transform: translateX(-50%); margin: 0; padding: 10px 16px; max-width: calc(100vw - 32px); text-align: center; font: 300 1rem/1.4 var(--serif); color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; opacity: 0; pointer-events: none; transition: opacity .8s ease; width: max-content; }
+      .hint.show { opacity: 1; }
+      .coarse-only { display: none; }
+      @media (pointer: coarse) { .coarse-only { display: inline; } .fine-only { display: none; } }
+
+      /* the touch pad, only while flying yourself */
+      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 64px; height: 150px; border: 1px solid var(--line); border-radius: 32px; background: rgba(9,9,11,.5); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+      .pad span { font: 400 .6rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+      .pad i { width: 22px; height: 1px; background: rgba(236,231,220,.3); }
+      .pad.on { border-color: var(--warm); }
+      @media (pointer: coarse) { body.arrived.free .pad { display: flex; } }
+
+      /* testing only */
+      .tech, .gen { display: none; } body.debug .tech, body.debug .gen { display: block; }
+      .tech { position: fixed; z-index: 5; right: var(--gut); top: calc(var(--top) + 48px); margin: 0; max-width: 60vw; text-align: right; font: 400 .6rem/1.5 var(--mono); letter-spacing: .06em; color: rgba(236,231,220,.38); pointer-events: none; }
+      .gen { position: fixed; z-index: 5; left: var(--gut); bottom: 4px; margin: 0; font: italic 300 .8rem/1.4 var(--serif); color: var(--faint); pointer-events: none; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ticks { animation: none; }
+        .aperture, .ring, .aperture::after { transition-duration: .01s !important; }
+        body.in .aperture { transform: none; }
+      }
+    </style>
+  </body>
+</html>

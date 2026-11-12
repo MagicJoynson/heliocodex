@@ -1,0 +1,9 @@
+title: Listening for someone else
+strand: life
+order: 4
+summary: "Since 1960 radio telescopes have listened for a signal from another civilisation. Nothing confirmed has been heard. That silence is itself a puzzle."
+scene: "Drawings of what a made signal would look like and of the strongest candidate ever recorded, real photographs of the star cluster a message was sent to and of the record carried by the Voyager spacecraft, and a drawing to scale of how far our own signals have gone."
+view: { target: milky-way }
+terms: [radio-waves, frequency, light-year, globular-cluster, milky-way, speed-of-light, hydrogen]
+needs: [are-we-alone, what-life-needs]
+next: [how-planets-are-found, the-habitable-zone]

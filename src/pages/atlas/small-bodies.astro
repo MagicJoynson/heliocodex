@@ -151,7 +151,7 @@ const two = (v: number) => v.toFixed(2);
               <td data-label="One orbit">{fmtYears(w.orbit.periodDays)}</td>
               <td data-label="Tilt">{w.tilt < 10 ? w.tilt.toFixed(1) : Math.round(w.tilt)}°</td>
               <td data-label="Width">{w.meanRadiusKm ? fmtKm(w.meanRadiusKm * 2) : <span class="unknown">not given</span>}</td>
-              <td class="go"><a href={`/?go=${w.id}`} aria-label={`Fly to ${w.name} in 3D`}>Fly there</a></td>
+              <td class="go"><a href={`/explore?go=${w.id}`} aria-label={`Fly to ${w.name} in 3D`}>Fly there</a></td>
             </tr>
           ))}
         </tbody>

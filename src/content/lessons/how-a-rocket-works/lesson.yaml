@@ -1,0 +1,9 @@
+title: How a rocket works
+strand: exploring-space
+order: 1
+summary: "A rocket moves by throwing hot gas out of its back. Reaching orbit takes so much speed that nine tenths of a big rocket is fuel, and most of it is dropped on the way."
+scene: "A drawing of gas leaving one way and the rocket going the other, real photographs of the first liquid-fuel rocket in 1926, of the Saturn V leaving for the Moon and of a booster landing, a bar to scale of what a Moon rocket is made of, and a drawing of stages falling away."
+view: { target: earth }
+terms: [gravity, mass, weight, orbit, orbital-velocity, escape-velocity]
+needs: [what-an-orbit-is]
+next: [leaving-and-arriving, the-first-journeys]

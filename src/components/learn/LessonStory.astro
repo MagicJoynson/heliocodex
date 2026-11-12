@@ -4,6 +4,7 @@
 import Base from '../../layouts/Base.astro';
 import Stage from './Stage.astro';
 import PackLinks from './PackLinks.astro';
+import VideoEmbeds from '../VideoEmbeds.astro';
 import '../../styles/reading.css';
 import '../../styles/lesson.css';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
@@ -113,6 +114,7 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
       )}
     </div>
   </article>
+  <VideoEmbeds />
 </Base>
 
 <script>

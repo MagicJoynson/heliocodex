@@ -1,0 +1,9 @@
+title: "The first journeys: Sputnik, Gagarin and the Moon"
+strand: exploring-space
+order: 2
+summary: "From a beeping metal ball in 1957 to twelve people on the Moon took fifteen years. Then nobody left Earth orbit for more than half a century, until 2026."
+scene: "Real photographs of a replica of Sputnik, of the Earth rising over the Moon, of Buzz Aldrin on the Moon, of the six landing sites and of the Earth setting behind the Moon in 2026, with a drawing to scale of the first flight round the Earth."
+view: { target: moon }
+terms: [orbit, orbital-period, moon, regolith, free-fall]
+needs: [how-a-rocket-works, what-an-orbit-is]
+next: [robot-explorers, the-moon]

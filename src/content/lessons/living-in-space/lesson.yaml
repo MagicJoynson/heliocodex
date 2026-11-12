@@ -1,0 +1,9 @@
+title: "Living in space"
+strand: exploring-space
+order: 4
+summary: "People have lived aboard the International Space Station without a break since November 2000. Floating is fun, but the human body was built for the ground."
+scene: "Real photographs of the International Space Station, of astronauts floating, running and looking down from its great window, and of the first person to fly free of a spacecraft, with a chart of the sixteen sunrises the crew see each day."
+view: { target: earth }
+terms: [free-fall, orbit, gravity, weight, orbital-period]
+needs: [what-an-orbit-is]
+next: [the-first-journeys, the-earth-as-a-planet]

@@ -1,0 +1,9 @@
+title: "Robot explorers"
+strand: exploring-space
+order: 3
+summary: "No person has been further than the Moon. Everything known from close up about the planets, their moons, comets and asteroids was found by machines sent in our place."
+scene: "A line to scale of how far people and machines have gone, and real photographs of Neptune from Voyager 2, of a rover being lowered onto Mars, of a rover's picture of itself, of Saturn from behind and of dust brought back from an asteroid."
+view: { target: saturn }
+terms: [gravity-assist, light-time, heliopause, asteroid, orbit, transfer-orbit]
+needs: [leaving-and-arriving]
+next: [living-in-space, looking-for-life-in-the-solar-system]

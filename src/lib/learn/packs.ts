@@ -29,7 +29,7 @@ export const PACKS: Pack[] = [
       { title: 'Everything else', about: 'Our galaxy, and the universe it is one small part of.', lessons: ['the-milky-way', 'the-expanding-universe'] },
     ],
     coming: [],
-    look: [{ href: '/', text: 'Fly through it in 3D', about: 'From the Sun out to the oldest light, with everything where it is measured to be.' }, { href: '/sky', text: 'Tonight’s sky', about: 'What is overhead where you are, right now.' }],
+    look: [{ href: '/explore', text: 'Fly through it in 3D', about: 'From the Sun out to the oldest light, with everything where it is measured to be.' }, { href: '/sky', text: 'Tonight’s sky', about: 'What is overhead where you are, right now.' }],
   },
   {
     id: 'the-night-sky',
@@ -57,7 +57,7 @@ export const PACKS: Pack[] = [
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
     coming: [],
-    look: [{ href: '/', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
+    look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
     id: 'stars',
@@ -86,7 +86,7 @@ export const PACKS: Pack[] = [
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'falling-into-a-black-hole', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
     coming: ['Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
-    look: [{ href: '/?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
+    look: [{ href: '/explore?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
     id: 'gravity',
@@ -96,11 +96,11 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'The idea', about: 'What gravity is, and why an orbit is a fall that never lands.', lessons: ['what-gravity-is', 'what-an-orbit-is', 'keplers-laws'] },
       { title: 'What it does', about: 'Tides, moons kept in step, and places where pulls balance.', lessons: ['tides', 'moons-in-step', 'balance-points'] },
-      { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['leaving-and-arriving', 'gravitational-waves'] },
+      { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['how-a-rocket-works', 'leaving-and-arriving', 'gravitational-waves'] },
       { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed', 'gravity-as-bent-space-and-time', 'gravity-as-a-lens'] },
     ],
-    coming: ['How a rocket works'],
-    look: [{ href: '/', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
+    coming: [],
+    look: [{ href: '/explore', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
   },
   {
     id: 'light',
@@ -124,10 +124,10 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-stuff-between-the-stars', 'spiral-arms', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'how-galaxies-form-and-change', 'active-galaxies-and-quasars'] },
       { title: 'The biggest picture', about: 'How galaxies are spread through space, and how their distances are found.', lessons: ['the-distance-ladder', 'the-cosmic-web', 'galaxy-clusters'] },
-      { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy', 'how-it-all-ends'] },
+      { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy', 'how-big-is-the-universe', 'how-it-all-ends'] },
     ],
-    coming: ['How big is the universe'],
-    look: [{ href: '/?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
+    coming: [],
+    look: [{ href: '/explore?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
     id: 'other-worlds-and-life',
@@ -137,10 +137,23 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'the-kinds-of-planet-out-there', 'trappist-1'] },
       { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'the-habitable-zone', 'ocean-moons'] },
-      { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
+      { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone', 'what-life-needs', 'looking-for-life-in-the-solar-system', 'listening-for-someone-else'] },
     ],
-    coming: ['What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
-    look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
+    coming: [],
+    look: [{ href: '/explore?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
+  },
+  {
+    id: 'exploring-space',
+    name: 'Going there',
+    blurb: 'How people and machines leave the Earth, where they have been so far, and what it is like to live off the planet.',
+    photo: { src: `${P}earthset-artemis-ii.jpg`, width: 1100, height: 733, alt: 'The blue and white Earth, half hidden, sinking behind the grey cratered edge of the Moon.', caption: 'The Earth setting behind the far side of the Moon, photographed by the crew of Artemis II on 6 April 2026. Credit: NASA.' },
+    stages: [
+      { title: 'Getting off the ground', about: 'What a rocket does, what an orbit is, and how a spacecraft finds its way to another world.', lessons: ['how-a-rocket-works', 'what-an-orbit-is', 'leaving-and-arriving'] },
+      { title: 'Where we have been', about: 'People as far as the Moon, and machines to every planet and beyond.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers'] },
+      { title: 'Staying there', about: 'Life aboard the Space Station, and what the body makes of it.', lessons: ['living-in-space'] },
+    ],
+    coming: ['Telescopes in space', 'Going back to the Moon, and on to Mars'],
+    look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
   },
 ];
 

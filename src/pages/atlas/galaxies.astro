@@ -78,7 +78,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
       <p class="note">What is measured: the Sun is {fmtLy(R0_PC * LY_PER_PC)} from the centre, the middle of the galaxy is a bar of old stars, and the arms wind outward at a shallow slant. The model is built from those figures: four arms slanted at {milkyWay.pitchDeg}°, a bar {fmtLy(milkyWay.bar.halfPc * 2 * LY_PER_PC)} long turned 30° from our line of sight, and the short Local arm that the Sun sits in.</p>
       <p class="note">The small ring round the Sun is 2,000 light years in radius. Nearly every star you can see by eye is inside it.</p>
       <p class="note scale">The drawing is {fmtLy(MW_HALF * 2 * LY_PER_PC)} across.</p>
-      <p class="note print-hide"><a href="/?go=milky-way">See the same model in 3D</a></p>
+      <p class="note print-hide"><a href="/explore?go=milky-way">See the same model in 3D</a></p>
     </div>
     <figure class="plate-holder">
       <DeepPlate id="milky-way" numeral="I" title="The Milky Way from above" rings={mwRings} model="A model, not a map" footLeft="Seen from the north side of the disc" footRight="The same model as the 3D view"
@@ -124,7 +124,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
       <p class="note">Andromeda is about 2.5 million light years away ({Math.round(andromeda.kpc)} kiloparsecs in the catalogue), the furthest thing most people can see without a telescope. It and the Milky Way are falling towards each other.</p>
       <p class="note">A ring instead of a dot means the catalogue gives no brightness for that galaxy.</p>
       <p class="note scale">The drawing is {fmtLy(lyOfKpc(3000))} across. The catalogue’s other {outside} galaxies are further off than that, just beyond the group. They are in the 3D view.</p>
-      <p class="note print-hide"><a href="/?go=local-group">See the Local Group in 3D</a></p>
+      <p class="note print-hide"><a href="/explore?go=local-group">See the Local Group in 3D</a></p>
     </div>
     <figure class="plate-holder">
       <DeepPlate id="local-group" numeral="III" title="The Local Group" rings={group.ringList} footLeft="Seen from the north side of the Milky Way’s disc" footRight="McConnachie 2012"
@@ -143,7 +143,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
       <p class="note">Step back two hundred times more. Each dot is now a whole galaxy: {webGalaxies.length.toLocaleString('en-GB')} of them, in a slice of space {fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick with us in the middle. Galaxies are not scattered evenly. They gather into clusters and threads, with great empty voids between.</p>
       <p class="note"><strong>Three things here are not real.</strong> The dots thin out towards the edge only because faint galaxies far away were too dim for the survey. Along a narrow line to the left and right of the middle there are fewer dots, because the Milky Way’s own disc hides what lies behind it. And a rich cluster is smeared into a streak pointing at us, because distance is worked out from speed and the galaxies in a cluster are also flying round each other.</p>
       <p class="note scale">The drawing is {fmtLy(lyOfMpc(WEB_HALF * 2))} across.</p>
-      <p class="note print-hide"><a href="/?go=cosmic-web">See the cosmic web in 3D</a></p>
+      <p class="note print-hide"><a href="/explore?go=cosmic-web">See the cosmic web in 3D</a></p>
     </div>
     <figure class="plate-holder">
       <DeepPlate id="web" numeral="IV" title="Galaxies out to a billion light years" rings={webRings} footLeft={`A slice ${fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick`} footRight="2MASS Redshift Survey"
