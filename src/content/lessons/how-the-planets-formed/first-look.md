@@ -2,6 +2,7 @@
 sources:
   - { label: "NASA, Solar System facts", url: "https://science.nasa.gov/solar-system/solar-system-facts/" }
   - { label: "ESO, ALMA image of the disc around HL Tauri", url: "https://www.eso.org/public/news/eso1436/" }
+  - { label: "Wikipedia, Formation and evolution of the Solar System (age from meteorites)", url: "https://en.wikipedia.org/wiki/Formation_and_evolution_of_the_Solar_System" }
 ---
 The Sun and its planets were all made together, about 4.6 billion years ago, from one cloud of gas and dust.
 
@@ -20,3 +21,23 @@ In the disc, grains of dust bumped into each other and stuck. Specks became pebb
 </figure>
 
 That is why the planets all go round the Sun the same way, and nearly in the same flat plane. They are what is left of the disc.
+
+**Where the cloud came from.** The cloud was mostly hydrogen and helium, left from the beginning of the universe. Mixed into it was a little dust: rock, metal, soot and ice made by earlier stars that had lived and died before the Sun. Everything solid in the Solar System, the Earth and you included, was built from that small share of dust.
+
+**Why a disc?** Spin a ball of pizza dough and it spreads out flat. A turning cloud that shrinks does the same. It can fall in freely along its axis, but round its middle the spin holds it out. A spinning skater who pulls in her arms turns faster for the same reason, and the cloud turned faster as it shrank.
+
+**The Sun took nearly everything.** More than 99 parts in every 100 of the cloud ended up in the Sun. All the planets, moons, asteroids and comets together are the scraps.
+
+**Rock near the Sun, giants far out.** Close to the young Sun it was too hot for ice. Only rock and metal could stay solid there, and there is not much of either, so the four inner planets are small and rocky. Further out it was cold enough for ice as well. With far more solid stuff to build from, the outer planets grew large enough to pull in gas, and became giants.
+
+**The leftovers are still here.** Not everything was swept up. The asteroids are rocky pieces that never joined a planet. The comets are icy ones from the cold outer parts. Every meteorite is a sample of the stuff the planets were made from.
+
+**How anyone knows when.** Some meteorites have never been melted since they formed. Their oldest grains can be dated by the slow decay of radioactive atoms inside them, which works like a clock. They come out at 4,567 million years.
+
+**How long it took.** Very little time, for something so old. The disc of gas lasted only a few million years, and the giant planets had to be finished before it went. The Earth took longer, some tens of millions of years, and its last great collision made the Moon.
+
+**Common mistakes.**
+
+- *The planets were thrown out of the Sun.* They formed beside it, from the same cloud, at the same time.
+- *The Sun captured its planets as they drifted by.* Captured bodies would go round in all directions and at all angles. The planets all go the same way in the same flat plane.
+- *All planetary systems look like ours.* Thousands are now known, and most are arranged differently. The same process can end in many ways.
