@@ -67,12 +67,12 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'What a star is', about: 'Begin with the one star we can see close up.', lessons: ['what-the-sun-is', 'what-a-star-is', 'how-the-sun-shines'] },
       { title: 'Reading a star', about: 'Colour, brightness and distance: how anything is known about a point of light.', lessons: ['colour-and-brightness', 'reading-starlight', 'measuring-distance'] },
-      { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'the-stars-you-can-see', 'double-and-multiple-stars', 'stars-that-change', 'star-clusters'] },
+      { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'red-dwarfs', 'brown-dwarfs', 'the-stars-you-can-see', 'double-and-multiple-stars', 'stars-that-change', 'star-clusters'] },
       { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'What stars leave us', about: 'Almost every atom heavier than helium was made by a star.', lessons: ['where-the-elements-come-from'] },
       { title: 'Stars as measuring sticks', about: 'How certain stars give the distances to other galaxies.', lessons: ['the-distance-ladder'] },
     ],
-    coming: ['Brown dwarfs', 'Red dwarfs, the commonest stars', 'Giants and supergiants'],
+    coming: ['Giants and supergiants'],
     look: [{ href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope, with its distance, colour and place in your sky.' }, { href: '/sky', text: 'Tonight’s sky', about: 'Find the stars from these lessons over your own horizon.' }],
   },
   {
@@ -109,11 +109,11 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}antares-surface-vlti.jpg`, width: 1100, height: 1100, alt: 'A blurred orange disc with brighter and darker patches, on black.', caption: 'The face of another star: Antares, 550 light years away, built up from four telescopes working as one. Credit: ESO/K. Ohnaka, CC BY 4.0.' },
     stages: [
       { title: 'What light carries', about: 'The only messenger we have from almost everywhere.', lessons: ['light-the-only-messenger', 'the-whole-spectrum'] },
-      { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight'] },
-      { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'measuring-distance', 'the-distance-ladder'] },
+      { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight', 'redshift-and-the-doppler-effect'] },
+      { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'telescopes-in-space', 'measuring-distance', 'the-distance-ladder'] },
       { title: 'Beyond light', about: 'Particles and ripples that bring news light cannot.', lessons: ['messengers-other-than-light'] },
     ],
-    coming: ['Telescopes in space', 'Redshift and the Doppler effect'],
+    coming: [],
     look: [{ href: '/sources', text: 'Where the pictures come from', about: 'Every photograph on the site, with who took it and how.' }],
   },
   {
@@ -149,10 +149,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}earthset-artemis-ii.jpg`, width: 1100, height: 733, alt: 'The blue and white Earth, half hidden, sinking behind the grey cratered edge of the Moon.', caption: 'The Earth setting behind the far side of the Moon, photographed by the crew of Artemis II on 6 April 2026. Credit: NASA.' },
     stages: [
       { title: 'Getting off the ground', about: 'What a rocket does, what an orbit is, and how a spacecraft finds its way to another world.', lessons: ['how-a-rocket-works', 'what-an-orbit-is', 'leaving-and-arriving'] },
-      { title: 'Where we have been', about: 'People as far as the Moon, and machines to every planet and beyond.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers'] },
+      { title: 'Where we have been', about: 'People as far as the Moon, machines to every planet and beyond, and telescopes above the air.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers', 'telescopes-in-space'] },
       { title: 'Staying there', about: 'Life aboard the Space Station, and what the body makes of it.', lessons: ['living-in-space'] },
     ],
-    coming: ['Telescopes in space', 'Going back to the Moon, and on to Mars'],
+    coming: ['Going back to the Moon, and on to Mars'],
     look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
   },
   {

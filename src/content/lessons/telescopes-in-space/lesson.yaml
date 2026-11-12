@@ -1,0 +1,9 @@
+title: "Telescopes in space"
+strand: light
+order: 5
+summary: "The air blocks most kinds of light and blurs the rest. Lifting a telescope above it costs a fortune, and has changed what is known about almost everything."
+scene: "A diagram of which kinds of light reach the ground, real photographs of Hubble in orbit and of Webb's gold mirror, the same galaxy before and after Hubble's repair, the same cloud seen by Hubble and by Webb, and Webb's first deep picture."
+view: { target: earth, distanceKm: 3000000, highlight: [webb, hubble] }
+terms: [aperture, wavelength, infrared, ultraviolet, x-rays, gamma-rays, lagrange-point, look-back-time]
+needs: [telescopes, the-whole-spectrum]
+next: [balance-points, messengers-other-than-light]

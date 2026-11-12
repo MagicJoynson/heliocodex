@@ -6,4 +6,4 @@ scene: "The Sun shrinks to a point among its neighbours: every star in the catal
 view: { target: neighbourhood }
 terms: [star, light-year, parallax, parsec, red-dwarf, luminosity, exoplanet, habitable-zone]
 needs: [what-a-star-is, measuring-distance]
-next: [the-stars-you-can-see, planets-round-other-stars]
+next: [red-dwarfs, the-stars-you-can-see, planets-round-other-stars]

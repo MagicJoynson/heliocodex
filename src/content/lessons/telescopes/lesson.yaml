@@ -6,4 +6,4 @@ scene: "A human eye, Galileo's telescope, Hubble's mirror, Webb's mirror and the
 view: { target: earth, distanceKm: 3000000, highlight: [webb, hubble] }
 terms: [aperture, arcsecond, wavelength, infrared, radio-waves, look-back-time, apparent-magnitude]
 needs: [the-whole-spectrum]
-next: []
+next: [telescopes-in-space]
