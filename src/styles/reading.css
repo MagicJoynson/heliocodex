@@ -83,3 +83,15 @@ body:has(.reading) { background: #0b0b0c; }
   .prose > table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .prose > table th, .prose > table td { white-space: nowrap; }
 }
+
+/* an index page's opening: the words on the left, a real picture behind them on the right, fading into the page */
+.reading-head.with-pic { position: relative; max-width: none; min-height: clamp(18rem, 34vw, 30rem); display: grid; align-content: end; isolation: isolate; }
+.reading-head.with-pic > * { max-width: 44rem; }
+.reading-head.with-pic::before { content: ''; position: absolute; z-index: -1; top: calc(-1 * clamp(48px, 8vw, 104px)); right: calc(-1 * var(--gutter)); bottom: -2rem; width: min(62%, 52rem);
+  background: var(--pic) center / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent), linear-gradient(to top, transparent, #000 30%); mask-image: linear-gradient(to left, #000 35%, transparent);
+  opacity: .85; }
+@media (max-width: 760px) {
+  .reading-head.with-pic { min-height: 0; padding-top: 9rem; }
+  .reading-head.with-pic::before { width: auto; left: calc(-1 * var(--gutter)); bottom: 45%; -webkit-mask-image: linear-gradient(to top, transparent, #000 60%); mask-image: linear-gradient(to top, transparent, #000 60%); opacity: .7; }
+}

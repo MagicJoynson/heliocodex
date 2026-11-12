@@ -1,6 +1,6 @@
 ---
 import Analytics from '../components/Analytics.astro';
-import { sections } from '../lib/nav';
+import { sections, groups } from '../lib/nav';
 import SiteFooter from '../components/SiteFooter.astro';
 import { allLessons } from '../lib/v2/margin/content';
 import { bodies } from '../data/bodies';
@@ -51,13 +51,13 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
     <header class="top">
       <a class="mark" href="/"><img src="/brand/heliocodex-lockup.svg" alt="Heliocodex" width="660" height="133" /></a>
       <nav class="wnav" aria-label="Main">
-        {sections.map((x) => <a href={x.href} aria-current={x.href === '/bodies' ? 'page' : undefined}>{x.href === '/bodies' ? 'All planets' : x.label}</a>)}
+        {groups.map((g) => <span class="wgroup" data-group={g.id}>{g.sections.map((x) => <a href={x.href} aria-current={x.href === '/bodies' ? 'page' : undefined}>{x.label}</a>)}</span>)}
       </nav>
       <button type="button" class="wmenu-btn" aria-expanded="false" aria-controls="wmenu">Menu</button>
     </header>
     <nav class="wmenu" id="wmenu" aria-label="Main" hidden>
       <a href="/">Home</a>
-      {sections.map((x) => <a href={x.href}>{x.href === '/bodies' ? 'All planets' : x.label}</a>)}
+      {groups.map((g) => <><p class="wmenu-h">{g.name}</p>{g.sections.map((x) => <a href={x.href}>{x.label}</a>)}</>)}
     </nav>
 
     <aside class="altitude" aria-hidden="true">
@@ -184,6 +184,16 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .top a { color: var(--ink); text-decoration: none; text-shadow: 0 1px 10px rgba(0,0,0,.55); }
       .wnav { display: flex; gap: clamp(12px, 1.6vw, 22px); }
       .wnav a { color: var(--ink-soft); }
+      /* the opening words sit over the brightest view of the planet: a soft shade behind them keeps them readable */
+      main > .beat:first-of-type { position: relative; isolation: isolate; }
+      main > .beat:first-of-type::before { content: ''; position: absolute; z-index: -1; inset: -10vh -6vw -6vh -6vw; pointer-events: none;
+        background: radial-gradient(ellipse 60% 70% at 18% 55%, rgba(0,0,0,.62), rgba(0,0,0,.35) 45%, transparent 75%); }
+      main > .beat:first-of-type :is(h1, p) { text-shadow: 0 1px 3px rgba(0,0,0,.55), 0 2px 24px rgba(0,0,0,.55); }
+      @media (max-width: 760px) { main > .beat:first-of-type::before { background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.4) 55%, transparent 90%); } }
+      .wgroup { display: flex; gap: clamp(12px, 1.6vw, 22px); }
+      .wgroup + .wgroup { padding-left: clamp(12px, 1.6vw, 22px); border-left: 1px solid rgba(255,255,255,.22); }
+      .wgroup[data-group='explore'] a { color: var(--ink); }
+      .wmenu-h { font: 400 .64rem/1 var(--mono); letter-spacing: .14em; color: var(--ink-faint, #8a8478); margin: 12px 16px 2px; }
       .wnav a[aria-current] { color: var(--ink); }
       .wmenu-btn { display: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink); background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
       .wmenu { position: fixed; z-index: 11; top: 58px; right: var(--pad); display: grid; min-width: 14rem; background: rgba(8,8,10,.96); border: 1px solid rgba(255,255,255,.16); padding: 6px 0; font: 400 .78rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }

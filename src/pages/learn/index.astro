@@ -17,19 +17,28 @@ const thumb = (l: (typeof lessons)[number]) => {
   const pack = PACKS.find((p) => packLessons(p).includes(l.id));
   return pack ? pack.photo.src : '';
 };
+const first = PACKS[0];
 const levelCount = Math.max(...lessons.map((l) => l.levels.length));
 ---
 <Reading title="Learn" path="/learn" description="Short lessons on how space works, from why there are seasons to what the Sun is made of. Each one can be read at more than one depth.">
-  <header class="reading-head">
+  <header class="reading-head with-pic" style="--pic: url(/img/learn/orion-nebula-hubble.jpg)">
     <p class="label">Learn</p>
     <h1>How it all works</h1>
     <p class="lead">Short lessons, each written more than once. Start with the first look, which needs nothing but curiosity. If you want the numbers and the reasons, the next level down is on the same page.</p>
   </header>
 
-  <nav class="jump" aria-label="On this page">
-    <a href="#packs">Lesson packs</a>
-    {written.map((s) => <a href={`#s-${s.id}`}>{s.name} <span>{s.lessons.length}</span></a>)}
-  </nav>
+  <section class="start" aria-labelledby="start-h">
+    <a class="start-pic" href={`/learn/packs/${first.id}`} tabindex="-1" aria-hidden="true"><img src={first.photo.src} alt="" width={first.photo.width} height={first.photo.height} /></a>
+    <div class="start-words">
+      <p class="label">New here? Start here</p>
+      <h2 id="start-h">{first.name}</h2>
+      <p class="start-line">{first.blurb} {packLessons(first).length} lessons, about five minutes each.</p>
+      <p class="start-go">
+        <a class="start-btn" href={`/learn/${packLessons(first)[0]}`}>Begin the first lesson</a>
+        <a class="start-link" href={`/learn/packs/${first.id}`}>See the whole pack</a>
+      </p>
+    </div>
+  </section>
 
   <section class="row wide" id="packs">
     <div class="hang">
@@ -37,7 +46,7 @@ const levelCount = Math.max(...lessons.map((l) => l.levels.length));
       <p class="about">Everything on one subject, in the best order to read it.</p>
     </div>
     <ul class="cards">
-      {PACKS.map((p) => (
+      {PACKS.slice(1).map((p) => (
         <li>
           <a href={`/learn/packs/${p.id}`}>
             <span class="pic"><img src={p.photo.src} alt="" width={p.photo.width} height={p.photo.height} loading="lazy" /></span>
@@ -48,6 +57,16 @@ const levelCount = Math.max(...lessons.map((l) => l.levels.length));
         </li>
       ))}
     </ul>
+  </section>
+
+  <section class="row wide" id="subjects">
+    <div class="hang">
+      <h2>Every lesson, by subject</h2>
+      <p class="about">{lessons.length} lessons in {written.length} subjects.</p>
+    </div>
+    <ol class="subject-index">
+      {written.map((s) => <li><a href={`#s-${s.id}`}>{s.name}</a><span>{s.lessons.length}</span></li>)}
+    </ol>
   </section>
 
   {written.map((s) => (
@@ -99,6 +118,20 @@ const levelCount = Math.max(...lessons.map((l) => l.levels.length));
   .pack-list span { font: 400 1.32rem/1.25 var(--r-serif); }
   .pack-list a:hover span { color: var(--accent); }
   .pack-list p { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .35rem 0 0; }
+  .start { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2rem 3.5rem; align-items: center; padding: 2.6rem 0 3rem; border-top: 1px solid var(--rule); }
+  .start-pic { display: block; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 4px; background: #000; }
+  .start-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .start h2 { font: 300 clamp(2rem, 3.6vw, 3rem)/1.05 var(--r-serif); letter-spacing: -.015em; margin: .7rem 0 .9rem; }
+  .start-line { font: 300 1.14rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0; }
+  .start-go { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; margin: 1.6rem 0 0; font: 400 .76rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; }
+  .start-btn { padding: 15px 22px; border-radius: 999px; background: var(--accent); color: #160f05 !important; text-decoration: none; }
+  .start-btn:hover { background: #f3d4a2; }
+  .start-link { text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+  @media (max-width: 760px) { .start { grid-template-columns: 1fr; } }
+  .subject-index { list-style: none; margin: 0; padding: 0; columns: 3 15rem; column-gap: 2.4rem; }
+  .subject-index li { break-inside: avoid; display: flex; justify-content: space-between; gap: 1rem; padding: .6rem 0; border-top: 1px solid var(--rule); }
+  .subject-index a { font: 400 1.12rem/1.3 var(--r-serif); text-decoration: none; }
+  .subject-index span { font: 400 .78rem/1.6 var(--r-mono); color: var(--ink-faint); }
   .jump { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
   .jump a { font: 400 .74rem/1 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 999px; padding: .6rem .9rem; }
   .jump a:hover { color: var(--accent); border-color: var(--accent); }

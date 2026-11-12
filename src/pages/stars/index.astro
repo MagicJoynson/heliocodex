@@ -19,7 +19,7 @@ const near = every
 const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
 ---
 <Reading title="Meet a star" path="/stars" description={`Find the star whose light is as old as you are, and meet any of the ${every.length.toLocaleString('en-GB')} stars you can see: how far each is, how bright, how hot, and where it is in your sky.`}>
-  <header class="reading-head">
+  <header class="reading-head with-pic" style="--pic: url(/img/learn/omega-centauri-hubble.jpg)">
     <p class="label">Meet a star</p>
     <h1>Pick one and say hello</h1>
     <p class="lead">Every star you can see is a sun, with its own distance, colour and story. Every one the eye can see has a page here, {every.length.toLocaleString('en-GB')} in all. Only {stars.length} have been given a name. The rest go by a Greek letter, a number or their place in a catalogue. Start with the one whose light is as old as you are.</p>
