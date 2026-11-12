@@ -1,4 +1,5 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/instrument-serif/400.css';
 import '@fontsource/instrument-serif/400-italic.css';
@@ -28,6 +29,7 @@ const rows: [string, string][] = [
       <p class="kicker">Seventh planet · 19.2 au from the Sun</p>
       <h1>Uranus</h1>
       <p class="lead">The planet that goes round the Sun lying on its side. It was the first one ever found with a telescope, and only one spacecraft has been to see it. Keep going and you will sink into the haze at 45° north, where at the moment the Sun never sets.</p>
+      <WorldGlance world="uranus" />
     </div>
   </section>
 

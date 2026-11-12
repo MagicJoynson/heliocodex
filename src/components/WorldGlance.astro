@@ -1,0 +1,33 @@
+---
+// The first screen of a world page: five numbers to keep, and the two ways on (the reference block at the
+// end of the page, and the 3D view), in the same instrument lettering as the altitude ruler beside it.
+import facts from '../data/facts.json';
+import { moonCount } from '../data/moon-counts';
+import { fmt, daysToYear, hoursToDay } from '../lib/format';
+interface Props { world: string }
+const { world } = Astro.props;
+const p = (facts.planets as unknown as Record<string, { physical: Record<string, number>; elements: { a_au: number } }>)[world];
+const n = moonCount(world);
+const items: [string, string][] = world === 'sun'
+  ? [['Wide', '109 Earths'], ['Surface', 'about 5,500 °C'], ['Light to us', '8 min 19 s']]
+  : [
+      ['From the Sun', `${p.elements.a_au < 10 ? p.elements.a_au.toFixed(2).replace(/\.?0+$/, '') : p.elements.a_au.toFixed(1)} au`],
+      ['Wide', `${fmt(p.physical.radius_mean_km / 6371, 2)} Earths`],
+      ['Day', hoursToDay(p.physical.day_hours)],
+      ['Year', daysToYear(p.physical.orbit_period_days)],
+      ['Moons', n === 0 ? 'none' : String(n)],
+    ];
+---
+<div class="wglance">
+  <dl>{items.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+  <p class="wg-go"><a href="#more-h">All the numbers and lessons</a><a href={`/explore?go=${world}`}>In 3D</a></p>
+</div>
+<style>
+  .wglance { margin-top: 1.6rem; font-family: 'IBM Plex Mono', ui-monospace, monospace; text-shadow: 0 0 10px rgba(0,0,0,.9), 0 1px 2px rgba(0,0,0,.9); }
+  .wglance dl { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin: 0; }
+  .wglance dt { font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(236,231,220,.62); margin: 0 0 .25rem; }
+  .wglance dd { margin: 0; font-size: .82rem; color: #ece7dc; white-space: nowrap; }
+  .wg-go { display: flex; flex-wrap: wrap; gap: .4rem 1.4rem; margin: 1.1rem 0 0; }
+  .wg-go a { font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: #ece7dc; text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.6); padding-bottom: 3px; pointer-events: auto; }
+  .wg-go a:hover { color: #e9c48a; }
+</style>

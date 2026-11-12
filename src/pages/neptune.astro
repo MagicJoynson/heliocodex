@@ -1,4 +1,5 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource-variable/big-shoulders-display/wght';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -28,6 +29,7 @@ const rows: [string, string][] = [
       <p class="kicker">Eighth planet · 30 au from the Sun</p>
       <h1>Neptune</h1>
       <p class="lead">The farthest planet, thirty times as far from the Sun as we are, and the windiest. Fall in and you will come out above the clouds at 29° north, the same latitude where Voyager 2 photographed long white streaks throwing shadows on the cloud below.</p>
+      <WorldGlance world="neptune" />
     </div>
   </section>
 

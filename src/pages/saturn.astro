@@ -1,4 +1,5 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/italiana';
 import '@fontsource-variable/eb-garamond';
@@ -27,6 +28,7 @@ const rows: [string, string][] = [
       <p class="kicker">Sixth planet · 9.5 au from the Sun</p>
       <h1>Saturn</h1>
       <p class="lead">Nine times as wide as Earth and so light for its size that it would float, given a big enough bath. Fall towards it and the rings stop being a picture and become a roof.</p>
+      <WorldGlance world="saturn" />
     </div>
   </section>
 

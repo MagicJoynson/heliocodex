@@ -1,4 +1,5 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/bevan';
 import '@fontsource-variable/libre-franklin';
@@ -26,6 +27,7 @@ const rows: [string, string][] = [
       <p class="kicker">Fifth planet · 5.2 au from the Sun</p>
       <h1>Jupiter</h1>
       <p class="lead">Two and a half times heavier than everything else that orbits the Sun, put together. There is no ground to land on, so this time you will fall into the sky.</p>
+      <WorldGlance world="jupiter" />
     </div>
   </section>
 

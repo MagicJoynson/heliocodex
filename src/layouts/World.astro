@@ -238,6 +238,8 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
     </script>
 
     <style is:global>
+      /* the first screen: words that cross a bright planet keep a soft dark edge so they stay readable */
+      .beat[data-p="0"] .copy .kicker, .beat[data-p="0"] .copy .lead { text-shadow: 0 0 14px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.9); }
       :root { --pad: clamp(20px, 6vw, 88px); }
       * { box-sizing: border-box; }
       html { background: var(--night); }

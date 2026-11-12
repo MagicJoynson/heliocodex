@@ -1,4 +1,5 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
 import '@fontsource-variable/fraunces/full';
 import '@fontsource-variable/fraunces/full-italic';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -22,6 +23,7 @@ const rows: [string, string][] = [
       <p class="kicker">Our star · 1 au away</p>
       <h1>The Sun</h1>
       <p class="lead">A ball of hot gas 109 times as wide as the Earth, holding almost everything in the solar system. Keep scrolling and you will drop to a few thousand kilometres above its surface, drifting towards a sunspot.</p>
+      <WorldGlance world="sun" />
     </div>
   </section>
 
