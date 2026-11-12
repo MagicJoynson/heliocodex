@@ -1,0 +1,9 @@
+title: "Do black holes last for ever?"
+strand: stellar-remnants
+order: 7
+summary: "Nothing gets out of a black hole, and yet theory says each one glows very faintly and will slowly shrink away to nothing. Nobody has seen it happen."
+scene: "The real picture of a black hole's shadow, a real photograph of Stephen Hawking, a chart of how cold black holes are, a moving diagram of one shrinking faster and faster to a final flash, a chart of the unimaginable times involved, and a real map of the sky in gamma rays, where the flashes are being looked for."
+view: { target: milky-way }
+terms: [black-hole, event-horizon, kelvin, cosmic-microwave-background, gamma-rays, mass, photon, supermassive-black-hole]
+needs: [the-event-horizon]
+next: [how-it-all-ends, falling-into-a-black-hole]
