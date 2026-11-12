@@ -1,4 +1,5 @@
 import type { PlateSpec } from './types';
+import { moonCount, MOONS_AS_OF_TEXT } from '../../../../data/moon-counts';
 
 const JPL = [
   { label: 'NASA/JPL Solar System Dynamics, planetary satellites: orbits fitted to JPL Horizons positions, 2000 to 2040', url: 'https://ssd.jpl.nasa.gov/sats/elem/' },
@@ -11,7 +12,7 @@ const JPL = [
 export const saturn: PlateSpec = {
   parent: 'saturn',
   title: 'The moons of Saturn',
-  lead: 'Saturn has 292 known moons, more than every other planet put together. Twenty-four keep close, among and beyond the rings. The other 268 are small captured bodies far out, and most of them go round backwards.',
+  lead: `Saturn has ${moonCount('saturn')} known moons in JPL's list as of ${MOONS_AS_OF_TEXT}, more than every other planet put together. Twenty-four keep close, among and beyond the rings. The other ${moonCount('saturn') - 24} are small captured bodies far out, and most of them go round backwards.`,
   equatorKm: 60268,
   rings: [
     { name: 'D ring', innerKm: 66900, outerKm: 74510, faint: true },

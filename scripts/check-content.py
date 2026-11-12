@@ -73,6 +73,16 @@ for f in glob.glob(path('src', 'content', 'lessons', '*', '*.md')):
     for vid in re.findall(r'data-yt="([^"]+)"', open(f, encoding='utf-8').read()):
         if not re.fullmatch(r'[\w-]{11}', vid): bad.append(f'{f}: video id {vid!r} is not an 11-character YouTube id')
         elif not os.path.exists(path('public', 'img', 'video', vid + '.jpg')): bad.append(f'{f}: video {vid} has no poster at public/img/video/{vid}.jpg')
+
+# a moon count written into a lesson or a fact must match the one dated list every page counts from
+moon_list = json.load(open(path('src', 'data', 'bodies', 'moons.json'), encoding='utf-8'))['moons']
+moon_n = {}
+for m in moon_list: moon_n[m['parent']] = moon_n.get(m['parent'], 0) + 1
+for f in glob.glob(path('src', 'content', '**', '*.md'), recursive=True) + glob.glob(path('src', 'content', '**', '*.yaml'), recursive=True):
+    text = open(f, encoding='utf-8').read()
+    for world in ('jupiter', 'saturn', 'uranus', 'neptune', 'pluto'):
+        for n in re.findall(world.capitalize() + r"[^.]{0,40}?\b(\d{1,3}) (?:known |confirmed )?moons", text):
+            if int(n) != moon_n.get(world): bad.append(f'{os.path.relpath(f, ROOT)}: says {world.capitalize()} has {n} moons; the list in src/data/bodies/moons.json has {moon_n.get(world)}')
 for b in bad: print(b)
 print(f'{len(lessons)} lessons, {len(terms)} glossary terms, {len(facts)} facts, {len(targets)} places to point at: ' + (f'{len(bad)} broken links' if bad else 'all links hold'))
 sys.exit(1 if bad else 0)

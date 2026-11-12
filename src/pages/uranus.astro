@@ -1,4 +1,5 @@
 ---
+import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/instrument-serif/400.css';
 import '@fontsource/instrument-serif/400-italic.css';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -6,7 +7,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear } from '../lib/format';
 
-const p = facts.planets.uranus.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.uranus.physical, moons: moonCount('uranus') } as unknown as Record<string, number>;
 const e = facts.planets.uranus.elements;
 const rows: [string, string][] = [
   ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
@@ -18,7 +19,7 @@ const rows: [string, string][] = [
   ['A day', '17 h 14 min, turning backwards'],
   ['Axial tilt', `${p.obliquity_deg}°`],
   ['Coldest air measured', '−224 °C'],
-  ['Known moons (NASA)', `${p.moons}`],
+  [`Known moons, ${MOONS_AS_OF_TEXT}`, `${p.moons}`],
 ];
 ---
 <World world="uranus" title="Uranus" description="Drop into the blue-green haze of Uranus, the planet that rolls round the Sun on its side. Real NASA data and Voyager 2 images." readout="Pressure">

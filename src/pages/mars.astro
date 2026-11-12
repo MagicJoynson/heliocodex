@@ -1,4 +1,5 @@
 ---
+import { moonCount } from '../data/moon-counts';
 import '@fontsource/young-serif';
 import '@fontsource-variable/literata';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -6,7 +7,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 
-const p = facts.planets.mars.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.mars.physical, moons: moonCount('mars') } as unknown as Record<string, number>;
 const e = facts.planets.mars.elements;
 const rows: [string, string][] = [
   ['Radius', `${fmt(p.radius_mean_km)} km`],
