@@ -6,4 +6,4 @@ scene: "A chart of the 60 nearest stars, a real photograph of Proxima Centauri, 
 view: { target: neighbourhood }
 terms: [red-dwarf, main-sequence, luminosity, nuclear-fusion, habitable-zone, tidal-locking, exoplanet, white-dwarf]
 needs: [what-a-star-is, the-nearest-stars]
-next: [trappist-1, how-stars-live-and-die]
+next: [brown-dwarfs, trappist-1, how-stars-live-and-die]

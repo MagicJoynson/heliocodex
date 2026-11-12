@@ -47,7 +47,7 @@ const sizes: Scene = {
     ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, h * 0.76); ctx.clip(); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, y, R, 0, TAU); ctx.fill(); ctx.restore();
     const items: [string, string, number, string][] = [['Proxima', 'a seventh of the Sun', 0.15, RED], ['TRAPPIST-1', 'a ninth', 0.119, '#d9603f'], ['Jupiter', 'a planet', 0.1005, '#c9a47c']];
     items.forEach(([name, note, rr, colour], i) => {
-      const x = w * (0.47 + i * 0.2), r = R * rr * k;
+      const x = w * (0.46 + i * 0.22), r = R * rr * k;
       if (i < 2) glow(ctx, x, y, r, colour, 1.18); else dot(ctx, x, y, r, colour);
       label(ctx, name, x, y + R * 0.15 + 20, { align: 'center', colour: '#fff', size: wide ? 12 : 11 });
       if (wide) label(ctx, note, x, y + R * 0.15 + 36, { align: 'center', colour: SOFT, size: 11 });
