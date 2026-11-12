@@ -109,11 +109,11 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}antares-surface-vlti.jpg`, width: 1100, height: 1100, alt: 'A blurred orange disc with brighter and darker patches, on black.', caption: 'The face of another star: Antares, 550 light years away, built up from four telescopes working as one. Credit: ESO/K. Ohnaka, CC BY 4.0.' },
     stages: [
       { title: 'What light carries', about: 'The only messenger we have from almost everywhere.', lessons: ['light-the-only-messenger', 'the-whole-spectrum'] },
-      { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight'] },
+      { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight', 'redshift-and-the-doppler-effect'] },
       { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'telescopes-in-space', 'measuring-distance', 'the-distance-ladder'] },
       { title: 'Beyond light', about: 'Particles and ripples that bring news light cannot.', lessons: ['messengers-other-than-light'] },
     ],
-    coming: ['Redshift and the Doppler effect'],
+    coming: [],
     look: [{ href: '/sources', text: 'Where the pictures come from', about: 'Every photograph on the site, with who took it and how.' }],
   },
   {

@@ -1,0 +1,9 @@
+title: "Redshift and the Doppler effect"
+strand: light
+order: 6
+summary: "A siren drops in pitch as it passes you. Light does the same thing, and that small shift is how the speed of a star and the growth of the universe are measured."
+scene: "A moving drawing of sound waves bunching up ahead of a siren, a diagram of the dark lines in a spectrum sliding to the red and the blue, a real photograph of the Andromeda galaxy, a moving drawing of light being stretched as space grows, a real picture of one of the most distant galaxies known, and a moving drawing of a star swung to and fro by its planet."
+view: { target: cmb }
+terms: [redshift, doppler-shift, spectral-line, spectrum, wavelength, frequency, hubble-constant, look-back-time]
+needs: [reading-starlight]
+next: [the-expanding-universe, how-planets-are-found]
