@@ -96,10 +96,10 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'The idea', about: 'What gravity is, and why an orbit is a fall that never lands.', lessons: ['what-gravity-is', 'what-an-orbit-is', 'keplers-laws'] },
       { title: 'What it does', about: 'Tides, moons kept in step, and places where pulls balance.', lessons: ['tides', 'moons-in-step', 'balance-points'] },
-      { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['leaving-and-arriving', 'gravitational-waves'] },
+      { title: 'Using it, and its limits', about: 'How spacecraft travel, and what happens when gravity itself makes waves.', lessons: ['how-a-rocket-works', 'leaving-and-arriving', 'gravitational-waves'] },
       { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed', 'gravity-as-bent-space-and-time', 'gravity-as-a-lens'] },
     ],
-    coming: ['How a rocket works'],
+    coming: [],
     look: [{ href: '/explore', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
   },
   {
@@ -141,6 +141,19 @@ export const PACKS: Pack[] = [
     ],
     coming: [],
     look: [{ href: '/explore?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
+  },
+  {
+    id: 'exploring-space',
+    name: 'Going there',
+    blurb: 'How people and machines leave the Earth, where they have been so far, and what it is like to live off the planet.',
+    photo: { src: `${P}earthset-artemis-ii.jpg`, width: 1100, height: 733, alt: 'The blue and white Earth, half hidden, sinking behind the grey cratered edge of the Moon.', caption: 'The Earth setting behind the far side of the Moon, photographed by the crew of Artemis II on 6 April 2026. Credit: NASA.' },
+    stages: [
+      { title: 'Getting off the ground', about: 'What a rocket does, what an orbit is, and how a spacecraft finds its way to another world.', lessons: ['how-a-rocket-works', 'what-an-orbit-is', 'leaving-and-arriving'] },
+      { title: 'Where we have been', about: 'People as far as the Moon, and machines to every planet and beyond.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers'] },
+      { title: 'Staying there', about: 'Life aboard the Space Station, and what the body makes of it.', lessons: ['living-in-space'] },
+    ],
+    coming: ['Telescopes in space', 'Going back to the Moon, and on to Mars'],
+    look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
   },
 ];
 
