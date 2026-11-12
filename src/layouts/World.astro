@@ -83,13 +83,13 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
     <header class="top">
       <a class="mark" href="/"><img src="/brand/heliocodex-lockup.svg" alt="Heliocodex" width="660" height="133" /></a>
       <nav class="wnav" aria-label="Main">
-        {groups.map((g) => <span class="wgroup" data-group={g.id}>{g.sections.map((x) => <a href={x.href} aria-current={x.href === '/bodies' ? 'page' : undefined}>{x.label}</a>)}</span>)}
+        {groups.map((g) => <span class="wgroup" data-group={g.id}>{g.sections.map((x) => <a href={x.href} data-outline={x.outline ? "" : undefined} aria-current={x.href === "/bodies" ? "page" : undefined}>{x.label}</a>)}</span>)}
       </nav>
       <button type="button" class="wmenu-btn" aria-expanded="false" aria-controls="wmenu">Menu</button>
     </header>
     <nav class="wmenu" id="wmenu" aria-label="Main" hidden>
       <a href="/">Home</a>
-      {groups.map((g) => <><p class="wmenu-h">{g.name}</p>{g.sections.map((x) => <a href={x.href}>{x.label}</a>)}</>)}
+      {groups.map((g) => <><p class="wmenu-h">{g.name}</p>{g.sections.map((x) => <a href={x.href} data-outline={x.outline ? "" : undefined}>{x.label}</a>)}</>)}
     </nav>
 
     <aside class="altitude" aria-hidden="true">

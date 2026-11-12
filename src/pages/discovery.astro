@@ -1,0 +1,108 @@
+---
+// Discovery: the missions, people and telescopes that found things out. Outline: each entry is a line on
+// its own scale now, and will get its own page. Nothing is said about them here beyond names, years, sizes.
+import Reading from '../layouts/Reading.astro';
+import { MISSIONS, PEOPLE, TELESCOPES } from '../data/plan';
+
+// missions: launch years along a line, each in the first lane where it does not touch the one before
+const Y0 = 1955, Y1 = 2027;
+const mx = (y: number) => ((y - Y0) / (Y1 - Y0)) * 100;
+const lanes: number[] = [];
+const ms = [...MISSIONS].sort((a, b) => a.year - b.year).map((m) => {
+  const at = mx(m.year), w = Math.max(m.name.length * 0.66, (m.to.length + 7) * 0.5) + 2.5;
+  const flip = at > 70;
+  const from = flip ? at - w : at, to = flip ? at : at + w;
+  let lane = lanes.findIndex((end) => end < from);
+  if (lane < 0) { lane = lanes.length; lanes.push(0); }
+  lanes[lane] = to;
+  return { ...m, at, lane, flip };
+});
+// people: lifetimes as bars
+const P0 = 1450, P1 = 2030;
+const px = (y: number) => ((y - P0) / (P1 - P0)) * 100;
+const people = [...PEOPLE].sort((a, b) => a.born - b.born);
+// telescopes: mirrors to scale against each other
+const most = Math.max(...TELESCOPES.map((t) => t.metres));
+const scopes = [...TELESCOPES].sort((a, b) => a.metres - b.metres);
+---
+<Reading title="Discovery" path="/discovery" description="The missions, people and telescopes behind what we know. Outline: each will get its own page.">
+  <header class="d-head">
+    <p class="label">Discovery</p>
+    <h1>Who found it out, and with what</h1>
+    <p class="lead">The spacecraft, the people and the telescopes behind everything else on this site. Each one here will get its own page; for now this is the outline, set out on the scale that suits it.</p>
+    <p class="d-badge"><span>Outline</span> Names, years and sizes only. The pages are being written.</p>
+  </header>
+
+  <section class="d-part" aria-labelledby="m-h">
+    <h2 id="m-h">Missions, by the year they set off</h2>
+    <div class="m-line" style={`--lanes:${lanes.length}`}>
+      {[1960, 1970, 1980, 1990, 2000, 2010, 2020].map((y) => <i style={`--x:${mx(y)}`}><b>{y}</b></i>)}
+      {ms.map((m) => <span class:list={['m-item', { flip: m.flip }]} style={`--x:${m.at};--l:${m.lane}`} title={`${m.name}, ${m.year}: ${m.to}`}><em>{m.name}</em><small>{m.year} · {m.to}</small></span>)}
+    </div>
+  </section>
+
+  <section class="d-part" aria-labelledby="p-h">
+    <h2 id="p-h">People, by their lifetimes</h2>
+    <div class="p-chart">
+      {[1500, 1600, 1700, 1800, 1900, 2000].map((y) => <i style={`--x:${px(y)}`}><b>{y}</b></i>)}
+      {people.map((p) => (
+        <div class:list={['p-row', { flip: px(p.died ?? 2026) > 72 }]} style={`--a:${px(p.born)};--b:${px(p.died ?? 2026)}`}>
+          <span class="p-bar" /><span class="p-name">{p.name}</span><span class="p-years">{p.born}–{p.died ?? ''}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="d-part" aria-labelledby="t-h">
+    <h2 id="t-h">Telescopes, by the width of their main mirror</h2>
+    <div class="t-row">
+      {scopes.map((t) => (
+        <figure class="t-scope" style={`--d:${(t.metres / most) * 100}`}>
+          <span class:list={['t-disc', t.kind]} />
+          <figcaption><em>{t.name}</em><small>{t.metres} m{t.year ? ` · ${t.kind === 'space' ? 'launched' : 'first light'} ${t.year}` : ' · being built'}</small></figcaption>
+        </figure>
+      ))}
+    </div>
+    <p class="t-note">Circles to scale against one another. Gold: on the ground; blue: in space.</p>
+  </section>
+</Reading>
+
+<style>
+  .d-head { max-width: 48rem; margin-bottom: clamp(32px, 5vw, 56px); }
+  .d-head h1 { font: 300 clamp(2.4rem, 5.5vw, 4.2rem)/1.04 var(--r-serif); margin: .6rem 0 1rem; text-wrap: balance; }
+  .d-head .lead { font: 300 clamp(1.08rem, 1rem + .3vw, 1.25rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
+  .d-badge { display: flex; gap: .8rem; align-items: center; font: 300 1rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 1.2rem 0 0; }
+  .d-badge span { font: 400 .66rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); border: 1px dashed var(--accent); padding: .4rem .55rem; border-radius: 2px; }
+  .d-part { margin: 0 0 clamp(48px, 7vw, 88px); }
+  .d-part h2 { font: 400 1.5rem/1.2 var(--r-serif); margin: 0 0 1.6rem; }
+  .m-line { position: relative; height: calc(var(--lanes) * 3.1rem + 2.4rem); border-top: 1px solid var(--rule); }
+  .m-line i, .p-chart i { position: absolute; left: calc(var(--x) * 1%); top: 0; bottom: 0; width: 1px; background: rgba(236,231,220,.06); font-style: normal; }
+  .m-line i b, .p-chart i b { position: absolute; top: -1.3rem; transform: translateX(-50%); font: 400 .64rem/1 var(--r-mono); color: var(--ink-faint); font-weight: 400; }
+  .m-item { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--l) * 3.1rem + .8rem); display: grid; gap: .15rem; padding-left: .6rem; border-left: 1px dashed rgba(233,196,138,.6); white-space: nowrap; }
+  .m-item.flip { transform: translateX(-100%); padding: 0 .6rem 0 0; border-left: 0; border-right: 1px dashed rgba(233,196,138,.6); text-align: right; }
+  .m-item em { font: 400 .98rem/1.1 var(--r-serif); font-style: normal; color: var(--ink-soft); }
+  .m-item small { font: 400 .6rem/1.2 var(--r-mono); color: var(--ink-faint); letter-spacing: .04em; }
+  .p-chart { position: relative; border-top: 1px solid var(--rule); padding-top: .8rem; display: grid; gap: .35rem; }
+  .p-row { position: relative; height: 1.5rem; }
+  .p-bar { position: absolute; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); top: .2rem; height: 1.1rem; border: 1px dashed rgba(233,196,138,.55); border-radius: 2px; background: rgba(233,196,138,.06); }
+  .p-name { position: absolute; left: calc(var(--b) * 1% + .6rem); top: .1rem; font: 400 .98rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
+  .p-years { position: absolute; left: calc(var(--a) * 1% + .4rem); top: .4rem; font: 400 .6rem/1.2 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
+  .p-row.flip .p-name { left: auto; right: calc(100% - var(--a) * 1% + .6rem); }
+  .t-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.6rem 2.2rem; }
+  .t-scope { margin: 0; display: grid; justify-items: center; gap: .7rem; width: min(100%, max(7rem, calc(var(--d) * .28rem + 4rem))); text-align: center; }
+  .t-disc { display: block; width: min(calc(100vw - 4rem), max(4px, calc(var(--d) * .28rem))); aspect-ratio: 1; border-radius: 50%; border: 1px dashed rgba(233,196,138,.8); background: rgba(233,196,138,.08); }
+  .t-disc.space { border-color: rgba(142,174,255,.8); background: rgba(142,174,255,.08); }
+  .t-scope em { display: block; font: 400 .98rem/1.2 var(--r-serif); font-style: normal; color: var(--ink-soft); }
+  .t-scope small { display: block; font: 400 .62rem/1.3 var(--r-mono); color: var(--ink-faint); margin-top: .2rem; }
+  .t-note { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 1.4rem; }
+  @media (max-width: 760px) {
+    .m-line { height: auto; border-top: 0; display: grid; gap: .8rem; }
+    .m-line i { display: none; }
+    .m-item, .m-item.flip { position: static; transform: none; text-align: left; border-right: 0; border-left: 1px dashed rgba(233,196,138,.6); padding: 0 0 0 .6rem; }
+    .p-chart i { display: none; }
+    .p-row { height: 3rem; }
+    .p-bar { top: 1.7rem; height: .7rem; }
+    .p-name, .p-row.flip .p-name { left: 0; right: auto; top: 0; }
+    .p-years { left: auto; right: 0; top: .2rem; }
+  }
+</style>

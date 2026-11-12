@@ -181,3 +181,6 @@ p { margin: 0 0 1em; max-width: 66ch; }
 .quick li { margin: 6px 0; }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* a section that is laid out but still being written: a small dashed ring after its name in every menu */
+a[data-outline]::after { content: ''; display: inline-block; width: 6px; height: 6px; margin-left: 6px; vertical-align: .15em; border: 1px dashed currentColor; border-radius: 50%; opacity: .8; }

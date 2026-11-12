@@ -1,4 +1,5 @@
 ---
+import { PLANNED_LESSONS, plannedCount } from '../../data/plan';
 import Reading from '../../layouts/Reading.astro';
 import { PACKS, packLessons } from '../../lib/learn/packs';
 import { PLACES, IDEAS, TICKS, along } from '../../lib/learn/map';
@@ -7,6 +8,7 @@ import { allLessons, allTerms, allFacts, STRAND_NAMES } from '../../lib/v2/margi
 const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
 const inStrand = (id: string) => lessons.filter((l) => l.data.strand === id);
 const count = (n: number) => `${n} ${n === 1 ? 'lesson' : 'lessons'}`;
+const planned = (id: string) => PLANNED_LESSONS[id]?.length ?? 0;
 // nearer places glow the colour of sunlight, the farthest the cold blue of very old light
 const tint = (t: number) => `color-mix(in oklab, #f0c27a, #8eaeff ${Math.round(t * 100)}%)`;
 const places = PLACES.map((p) => {
@@ -24,7 +26,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
   <header class="reading-head with-pic" style="--pic: url(/img/learn/orion-nebula-hubble.jpg)">
     <p class="label">Learn</p>
     <h1>How it all works</h1>
-    <p class="lead">{lessons.length} short lessons, each written at more than one depth. The first look needs nothing but curiosity; the next level down has the numbers and the reasons.</p>
+    <p class="lead">{lessons.length} short lessons, with {plannedCount} more outlined and being written, each written at more than one depth. The first look needs nothing but curiosity; the next level down has the numbers and the reasons.</p>
   </header>
 
   <section class="start" aria-labelledby="start-h">
@@ -54,7 +56,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
         <li>
           <a href={`/learn/subject/${p.strand}`} style={`--a:${p.a};--b:${p.b};--tint:${p.tint}`}>
             <span class="p-name">{p.name}</span>
-            <span class="p-count">{count(p.lessons.length)}</span>
+            <span class="p-count">{count(p.lessons.length)}{planned(p.strand) > 0 && <span class="outline-n"> + {planned(p.strand)} outlined</span>}</span>
             <span class="p-track" aria-hidden="true">{ticks.map((t) => <i style={`--x:${along(t.s)}`} />)}<span class:list={['p-bar', { dot: p.b - p.a < 0.012 }]} /></span>
             <span class="p-reach">{p.reach}</span>
           </a>
@@ -71,7 +73,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
         {ideas.map((i) => (
           <li>
             <a class="i-name" href={`/learn/subject/${i.id}`}>{i.name}</a>
-            <span class="i-count">{i.lessons.length}</span>
+            <span class="i-count">{i.lessons.length}{planned(i.id) > 0 && <span class="outline-n"> + {planned(i.id)}</span>}</span>
             <p>{i.lessons.slice(0, 3).map((l) => l.data.title).join(' · ')}</p>
           </li>
         ))}
@@ -183,4 +185,5 @@ const ticks = TICKS.filter((t) => t.s > 1);
     .d-name { font-size: .95rem; }
   }
   @media (prefers-reduced-motion: reduce) { .p-bar, .disc { transition: none; } }
+  .outline-n { color: var(--accent); opacity: .85; }
 </style>
