@@ -2,6 +2,8 @@
 sources:
   - { label: "NASA, the planets", url: "https://science.nasa.gov/solar-system/planets/" }
   - { label: "NASA NSSDC planetary fact sheets", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/" }
+  - { label: "NASA, Galileo's probe into Jupiter", url: "https://science.nasa.gov/mission/galileo-jupiter-atmospheric-probe/" }
+  - { label: "Wikipedia, IAU definition of planet", url: "https://en.wikipedia.org/wiki/IAU_definition_of_planet" }
 ---
 The eight planets fall into three groups.
 
@@ -32,3 +34,15 @@ The groups are in that order outward from the Sun, and that is no accident. Clos
   <img src="/img/learn/charts/planet-sizes-to-scale.svg" alt="Eight circles in a row to scale: four tiny ones marked rock, two huge ones marked gas and two middling ones marked ice." width="800" height="380" loading="lazy" />
   <figcaption><b>A chart.</b> The eight planets in order from the Sun, with their widths to scale. The gaps between them are not to scale. Jupiter is eleven Earths wide. Widths from NASA's planetary fact sheets.</figcaption>
 </figure>
+
+**How different in size?** Very. Jupiter is 11 times as wide as the Earth, and about 1,300 Earths would fit inside it. It has more than twice the mass of all the other planets put together. The Earth is the largest of the four rocky planets, and it is still small next to the smallest giant: Neptune is nearly four times as wide.
+
+**What happens if you fall into a gas giant?** One machine has tried. On 7 December 1995 a probe from NASA's Galileo spacecraft dropped into Jupiter on a parachute. It never reached anything to land on. It sent measurements for 58 minutes as it sank through the clouds, and went silent about 180 km down, where the pressure was already 23 times the air pressure on Earth and still climbing. Below that it melted, and then boiled away.
+
+**"Ice" does not mean cold.** The name of the third group misleads. Astronomers call water, ammonia and methane "ices" because they freeze easily out in the cold of space. Inside Uranus and Neptune the same stuff is at thousands of degrees and under enormous pressure. It is a hot, thick fluid, nothing like an ice cube.
+
+**What the giants share.** All four giant planets have rings, though only Saturn's are bright. All four have many moons. The four rocky planets have three moons between them, and no rings.
+
+**Why is Pluto not on the list?** Pluto was called the ninth planet from 1930 until 24 August 2006. By then astronomers had found other small icy bodies like it beyond Neptune, one of them about the same size. They agreed that a planet has to be big enough to have cleared other bodies out of its path round the Sun. Pluto has not, so it is now called a dwarf planet.
+
+**A common mistake.** A gas giant is not a cloud you could fly through and come out the other side. A few hundred kilometres down the gas is already as thick as a liquid, and it only gets denser. Most of Jupiter is closer to a hot ocean of hydrogen than to air.
