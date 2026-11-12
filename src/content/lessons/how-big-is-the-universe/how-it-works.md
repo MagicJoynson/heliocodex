@@ -16,7 +16,7 @@ lastChecked: 2026-11-11
 | How far off was its source when the light left? | About 42 million light years |
 | How far off is that source now? | About 46 billion light years |
 
-The third is the one meant when the observable universe is said to be 46 billion light years in radius. It is about 3.4 times the figure most people expect, and about 1,100 times the distance at the start (both are sums).
+The third is the one meant when the observable universe is said to be 46 billion light years in radius. It is about 3.3 times the figure most people expect, and about 1,100 times the distance at the start (both are sums).
 
 **Does that break the speed of light?** No. Nothing travels through space faster than light. But space itself can stretch, and when there is a great deal of space between two galaxies, the gap between them can grow faster than light could cross it. Tamara Davis and Charles Lineweaver set this out in 2003 and showed that many of the galaxies already in our pictures are, and always have been, moving away faster than light in this sense.
 
@@ -32,7 +32,7 @@ The third is the one meant when the observable universe is said to be 46 billion
 
 **How sure is the 46?** The figure is not measured with a ruler. It is worked out from the history of the expansion, which depends on how much matter and dark energy there is, and those come from the oldest light. There is a known disagreement of a few per cent between the rate of expansion found that way and the rate found from nearby galaxies. Until that is settled, the size carries about the same uncertainty.
 
-**How many galaxies?** A study in 2016 estimated two trillion. Most of those were not seen. They were small, faint galaxies of the early universe, added in by calculation, and many have since merged into larger ones. In 2021 the New Horizons spacecraft, far out beyond Pluto where the sky is darkest, measured how much light all the galaxies together give out. It found about half as much as that study had assumed. That measurement limits the total light, not the number: the missing galaxies could simply be fainter than was thought. The count of galaxies bright enough to photograph is a few hundred billion, and how many faint ones there are beyond that is an open question.
+**How many galaxies?** A study in 2016 estimated two trillion. Most of those were not seen. They were small, faint galaxies of the early universe, added in by calculation, and many have since merged into larger ones. In 2021 the New Horizons spacecraft, far out beyond Pluto where the sky is darkest, measured how much light all the galaxies together give out. It found that this light is far less than two trillion galaxies would give, if they were as bright as that study assumed. So either there are fewer galaxies, or the unseen ones are fainter. The count of galaxies bright enough to photograph is a few hundred billion, and how many faint ones there are beyond that is an open question.
 
 **A view that will not last.** Because of the second edge, the sky is slowly emptying. In about a hundred billion years every galaxy outside our own small group will have faded from view, and so will the oldest light, stretched too far to detect. Astronomers living then would see one island of stars in an empty dark, and would have no way of finding out that the universe is expanding or that it had a beginning. We happen to live at a time when the evidence can still be seen.
 

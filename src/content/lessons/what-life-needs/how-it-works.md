@@ -56,7 +56,7 @@ Every one of these still needs liquid water. Nothing has been found that lives w
 
 **How life might be spotted from far away.** Nobody can visit a planet round another star, but its air can be read from its light. A living planet changes its air. The Earth's air is one fifth oxygen only because plants and microbes keep making it. Without them it would be gone within a few million years. Oxygen and methane found together would be a strong hint, since the two destroy each other and something must be making both.
 
-In 2025 a team reported possible signs of a gas called dimethyl sulphide in the air of a planet named K2-18b. On the Earth that gas is made only by living things. Other astronomers looked at the same data and were not persuaded that the gas is there at all. A claim like this needs several independent checks before it means anything.
+In 2025 a team reported possible signs of a gas called dimethyl sulphide in the air of a planet named K2-18b. On the Earth that gas is made almost entirely by living things. Other astronomers looked at the same data and were not persuaded that the gas is there at all. A claim like this needs several independent checks before it means anything.
 
 **Common mistakes.**
 

@@ -46,7 +46,10 @@ const built = planets.length + 1, outlines = outlineWorlds.length;
 // The phone map runs down the page, the Sun at the top. Marks sit in narrow columns on the left;
 // every name sits in a column on the right at the height of its world, pushed down only as far as
 // it must be to stay clear of the name above, with a thin line back to its mark.
-const VH = 2700, VT = 36, vy = (au: number) => VT + f(au) * VH;
+// the stretch from 1.5 to 6 au, where the asteroids and short-period comets crowd, is drawn longer
+const VH = 2700, VT = 36, STRETCH = 700, SL = Math.log10(1.5), SH6 = Math.log10(6);
+const vy = (au: number) => VT + f(au) * VH + STRETCH * Math.min(1, Math.max(0, (Math.log10(au) - SL) / (SH6 - SL)));
+const VEND = VT + VH + STRETCH;
 const LX = 200;
 type VL = { id: string; href: string; name: string; sub?: string; subs?: { id: string; name: string }[]; y: number; mx: number; my: number; out: boolean };
 const vlabels: VL[] = [];
@@ -68,7 +71,7 @@ for (const l of vlabels) {
   l.y = Math.max(l.y - 9, floor);
   floor = l.y + 3 + 17 + (lines - 1) * 14;
 }
-const VTOTAL = Math.max(VT + VH + 30, floor + 20);
+const VTOTAL = Math.max(VEND + 30, floor + 20);
 ---
 <Reading title="Every world" path="/worlds" description={`Every world on the site, by distance from the Sun: ${built} with full pages and ${outlines} outline pages still being written.`}>
   <header class="w-head">
@@ -112,12 +115,12 @@ const VTOTAL = Math.max(VT + VH + 30, floor + 20);
       <svg class="wm-vs" width={LX} height={VTOTAL} viewBox={`0 0 ${LX} ${VTOTAL}`} aria-hidden="true">
         {ZONES.map((z, i) => i % 2 ? <rect x="44" y={vy(z.from)} width={LX - 44} height={vy(z.to) - vy(z.from)} class="vz" /> : null)}
         <circle cx="52" cy="10" r="14" class="vsun" />
-        <line x1="44" y1={VT} x2="44" y2={VT + VH} class="vax" />
+        <line x1="44" y1={VT} x2="44" y2={VEND} class="vax" />
         {ticks.map((t) => <g><line x1="40" x2="44" y1={vy(t)} y2={vy(t)} class="vax" /><text x="37" y={vy(t) + 3.5} class="vt">{t}</text></g>)}
         <text x="37" y={VT - 6} class="vt">au</text>
         {vmarks.map((m) => m.kind === 'planet'
           ? <circle cx={m.mx} cy={m.ya} r={m.d / 2} class="vp" />
-          : <g class:list={['vm', m.kind]}><line x1={m.mx} x2={m.mx} y1={m.y1} y2={m.off ? VT + VH + 14 : m.y2} />{m.off && <path d={`M${m.mx - 3} ${VT + VH + 8} L${m.mx} ${VT + VH + 14} L${m.mx + 3} ${VT + VH + 8}`} />}<circle cx={m.mx} cy={m.ya} r={m.d / 2} /></g>)}
+          : <g class:list={['vm', m.kind]}><line x1={m.mx} x2={m.mx} y1={m.y1} y2={m.off ? VEND + 14 : m.y2} />{m.off && <path d={`M${m.mx - 3} ${VEND + 8} L${m.mx} ${VEND + 14} L${m.mx + 3} ${VEND + 8}`} />}<circle cx={m.mx} cy={m.ya} r={m.d / 2} /></g>)}
         {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 9}, ${LX} ${l.y + 9}`} />)}
       </svg>
       <ol class="wm-vl">
@@ -131,7 +134,7 @@ const VTOTAL = Math.max(VT + VH + 30, floor + 20);
       </ol>
     </div>
 
-    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Each line runs from the nearest point of a world’s path to the farthest, with the dot at its average distance. Planets are solid and have full pages; everything hollow has an outline page still being written. Sedna’s path runs on past the edge, to about 1,000 au.</figcaption>
+    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Each line runs from the nearest point of a world’s path to the farthest, with the dot at its average distance. Planets are solid and have full pages; everything hollow has an outline page still being written. Sedna’s path runs on past the edge, to about 1,000 au.<span class="v-note"> On this narrow screen the stretch from 1.5 to 6 au is drawn longer than the rest, to make room for the names there.</span></figcaption>
   </figure>
 
   <dl class="wm-key">
@@ -190,6 +193,7 @@ const VTOTAL = Math.max(VT + VH + 30, floor + 20);
   .wm-key dd { margin: .3rem 0 0; font: 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); }
   .w-more { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; }
   .wm-v { display: none; }
+  .v-note { display: none; }
   @media (max-width: 860px) {
     .wm-field { display: none; }
     .wm-v { display: block; position: relative; height: var(--vh); }
@@ -210,5 +214,6 @@ const VTOTAL = Math.max(VT + VH + 30, floor + 20);
     .wm-vl .vl-moons { display: block; font: 300 .8rem/14px var(--r-serif); color: var(--ink-faint); }
     .wm-vl .vl-moons a { color: var(--ink-soft); }
     .wm-key { grid-template-columns: minmax(0, 1fr); }
+    .v-note { display: inline; }
   }
 </style>

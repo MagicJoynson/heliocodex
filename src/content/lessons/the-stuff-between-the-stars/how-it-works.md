@@ -29,11 +29,11 @@ lastChecked: 2026-11-11
 **Molecules.** In the coldest clouds, atoms join into molecules. Hundreds of different kinds have been found in space by the radio waves they give out, the largest of them built of 60 or 70 carbon atoms.
 
 <figure class="photo">
-  <img src="/img/learn/charts/how-empty-space-is.svg" alt="A chart of four bars: air in a room, 10 million million million atoms in a cubic centimetre; a thick cloud between the stars, 1,000 or more; space between the stars on average, about 1; space round the Sun, about 0.1." width="800" height="506" loading="lazy" />
+  <img src="/img/learn/charts/how-empty-space-is.svg" alt="A chart of four bars: air in a room, 50 million million million atoms in a cubic centimetre; a thick cloud between the stars, 1,000 or more; space between the stars on average, about 1; space round the Sun, about 0.1." width="800" height="506" loading="lazy" />
   <figcaption><b>A chart.</b> How many atoms there are in a cubic centimetre. The bars are drawn by powers of ten: the bar for air would otherwise be longer than the Solar System is wide.</figcaption>
 </figure>
 
-**A worked example: how empty.** Spread evenly, the gas of the Galaxy would come to about one atom in each cubic centimetre. The air you are breathing has about 10 million million million. Even the thickest clouds between the stars are a better vacuum than any pump on the Earth can make.
+**A worked example: how empty.** Spread evenly, the gas of the Galaxy would come to about one atom in each cubic centimetre. The air you are breathing has about 50 million million million (a sum from its density). Even the thickest clouds between the stars are a better vacuum than any pump on the Earth can make.
 
 Yet the volumes are so vast that it adds up. A ball of average space two light years across holds about three times the mass of Jupiter in gas (a sum). Near the Sun the gas is thinner than average, about a tenth of an atom in each cubic centimetre, and a ball reaching from here to the nearest star holds about a fiftieth of the mass of the Sun (a sum). To make a star, gravity has to gather gas from a region many light years across.
 

@@ -38,7 +38,7 @@ Nature uses them too. Thousands of asteroids are gathered at two of Jupiter's ba
 
 **The view from the far point.** The point on the other side of the Earth, away from the Sun, is where Webb lives. The Sun, the Earth and the Moon are all behind it in the same direction, so one sunshade keeps the heat and glare of all three off its mirror.
 
-**Found on paper first.** Joseph-Louis Lagrange worked the points out in 1772 with nothing but mathematics. Nobody knew whether nature made use of them. Then in 1906 a German astronomer, Max Wolf, found an asteroid travelling round the Sun on Jupiter's own orbit, a sixth of a lap ahead of the planet, exactly where Lagrange had said something could stay. More than 15,000 are now known at Jupiter's two steady points.
+**Found on paper first.** Joseph-Louis Lagrange worked the points out in 1772 with nothing but mathematics. Nobody knew whether nature made use of them. Then in 1906 a German astronomer, Max Wolf, found an asteroid travelling round the Sun on Jupiter's own orbit, a sixth of a lap ahead of the planet, exactly where Lagrange had said something could stay. Thousands are now known at Jupiter's two steady points.
 
 **The Moon has them too.** Every pair of bodies has its own set of five. In 2018 China placed a relay satellite near the balance point beyond the Moon. From there it could see both the Earth and the far side of the Moon, and it passed radio messages to and from the first lander on the far side, which could never have been reached directly.
 

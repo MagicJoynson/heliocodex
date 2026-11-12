@@ -29,7 +29,7 @@ A neutron star is one of the three things a star can leave behind when it dies. 
   <figcaption><b>A photograph.</b> The heart of the Crab Nebula, by the Hubble Space Telescope. The pulsar is the right-hand one of the two bright stars near the middle. The rings round it are waves driven outward by its spin. Credit: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall), CC BY 4.0.</figcaption>
 </figure>
 
-**The Crab.** The Crab Nebula is the cloud left by the supernova of 1054, about 6,500 light years away and six light years across. The pulsar at its centre turns 30 times a second. For a ball 20 km across, that means a point on its equator is moving at nearly 1,900 km every second (a sum).
+**The Crab.** The Crab Nebula is the cloud left by the supernova of 1054, about 6,500 light years away and about 11 light years across. The pulsar at its centre turns 30 times a second. For a ball 20 km across, that means a point on its equator is moving at nearly 1,900 km every second (a sum).
 
 **How they were found.** In 1967, at Cambridge, Jocelyn Bell and Antony Hewish picked up a radio source that pulsed at extremely regular intervals. Nothing like it was known. It turned out to be a spinning neutron star, and the discovery proved that such stars exist. Hewish shared the Nobel Prize in Physics in 1974 for his part in the discovery.
 
