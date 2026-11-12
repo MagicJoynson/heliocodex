@@ -106,7 +106,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
         <div class="more-go">
           <a class="more-btn" href={`/explore?go=${world}`}>See {world === 'sun' ? 'the Sun' : world === 'earth' ? 'the Earth' : title} in 3D</a>
           {near.map((b) => <a class="more-link" href={`/${b.slug}`}>{order.indexOf(b.slug) < i ? '← ' : ''}{nameOf(b)}{order.indexOf(b.slug) > i ? ' →' : ''}</a>)}
-          <a class="more-link" href="/bodies">All planets</a>
+          <a class="more-link" href="/worlds">The whole Solar System</a>
         </div>
         <div class="glance">
           <figure class="g-size">
@@ -125,13 +125,10 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
               <figcaption>Its place among the eight planets. Each step out is twice as far from the Sun as the last.</figcaption>
             </figure>
           )}
-          <dl class="g-facts">
-            {glance.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
-          </dl>
         </div>
         <p class="more-go more-go2">
           {moonChart && <a class="more-link" href={moonChart}>Chart of its {n === 1 ? 'moon' : 'moons'}</a>}
-          <a class="more-link" href={world === 'sun' ? '/bodies#sun' : `/bodies#${world}`}>Next to the other planets</a>
+          <a class="more-link" href="/worlds">Next to the other worlds</a>
           <a class="more-link" href="/sky">Find it in tonight's sky</a>
         </p>
         {about.length > 0 && (

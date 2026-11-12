@@ -3,6 +3,7 @@
 // full; the rest have outline pages built from their measured orbits, marked as outlines.
 import Reading from '../../layouts/Reading.astro';
 import { outlineWorlds, PLANET_PAGES, sunAu, AU_KM } from '../../lib/worlds';
+import { SHOW_OUTLINES } from '../../lib/site';
 import { body } from '../../data/bodies/index';
 import { moonCount } from '../../data/moon-counts';
 import { WORLD_PAGES } from '../../data/world-pages';
@@ -44,8 +45,6 @@ const ZONES = [
 ];
 const ticks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
 const nWritten = outlineWorlds.filter((b) => written(b.id)).length;
-const WRITTEN_NAMES = outlineWorlds.filter((b) => written(b.id)).map((b) => b.name).join(', ').replace(/, ([^,]*)$/, ' and $1');
-const built = planets.length + 1 + nWritten, outlines = outlineWorlds.length - nWritten;
 
 // The phone map runs down the page, the Sun at the top. Marks sit in narrow columns on the left;
 // every name sits in a column on the right at the height of its world, pushed down only as far as
@@ -77,12 +76,10 @@ for (const l of vlabels) {
 }
 const VTOTAL = Math.max(VEND + 30, floor + 20);
 ---
-<Reading title="Every world" path="/worlds" description={`Every world on the site, by distance from the Sun: ${built} with full pages and ${outlines} outline pages still being written.`}>
+<Reading title="The Solar System" path="/worlds" description="Every planet, moon, dwarf planet, asteroid and comet on the site, set out by its distance from the Sun.">
   <header class="w-head">
-    <p class="label">Worlds</p>
-    <h1>Every world, by distance from the Sun</h1>
-    <p class="lead">The Sun, its eight planets and {nWritten} of the great moons ({WRITTEN_NAMES}) have full pages. The other larger moons, the dwarf planets and the asteroids and comets on the atlas have outline pages: their measured orbits and sizes now, the rest still being written.</p>
-    <p class="w-key"><span class="k-built">Written</span> {built} pages <span class="k-out">Outline</span> {outlines} pages</p>
+    <h1>The Solar System, by distance from the Sun</h1>
+    {SHOW_OUTLINES && <p class="w-key"><span class="k-built">Full page</span> <span class="k-out">The measured numbers so far</span></p>}
   </header>
 
   <figure class="wm" aria-label="A map of every world by its distance from the Sun. Distance runs across on a scale where each step is a multiple; each small body is drawn as a line from the nearest to the farthest point of its path.">
@@ -138,7 +135,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       </ol>
     </div>
 
-    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Each line runs from the nearest point of a world’s path to the farthest, with the dot at its average distance. Planets are solid and have full pages; everything hollow has an outline page still being written. Sedna’s path runs on past the edge, to about 1,000 au.<span class="v-note"> On this narrow screen the stretch from 1.5 to 6 au is drawn longer than the rest, to make room for the names there.</span></figcaption>
+    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Each line runs from the nearest point of a world’s path to the farthest, with the dot at its average distance. Solid dots have full pages; hollow ones have their measured numbers so far. Sedna’s path runs on past the edge, to about 1,000 au.<span class="v-note"> On this narrow screen the stretch from 1.5 to 6 au is drawn longer than the rest, to make room for the names there.</span></figcaption>
   </figure>
 
   <dl class="wm-key">
@@ -148,8 +145,8 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
 </Reading>
 
 <style>
-  .w-head { max-width: 48rem; margin-bottom: clamp(32px, 5vw, 56px); }
-  .w-head h1 { font: 300 clamp(2.4rem, 5.5vw, 4.2rem)/1.04 var(--r-serif); margin: .6rem 0 1rem; text-wrap: balance; }
+  .w-head { max-width: 60rem; margin-bottom: clamp(20px, 3vw, 32px); }
+  .w-head h1 { font: 300 clamp(1.8rem, 3.2vw, 2.6rem)/1.1 var(--r-serif); margin: 0 0 .9rem; text-wrap: balance; }
   .w-head .lead { font: 300 clamp(1.08rem, 1rem + .3vw, 1.25rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
   .w-key { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; margin: 1.4rem 0 0; font: 300 1rem/1 var(--r-serif); color: var(--ink-soft); }
   .k-built, .k-out { font: 400 .64rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; padding: .4rem .55rem; border-radius: 2px; }

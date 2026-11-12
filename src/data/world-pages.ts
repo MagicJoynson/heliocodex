@@ -5,7 +5,9 @@ export interface WorldPage {
   lead: string;
   /** Only where a figure is published for it. */
   temperature?: { value: string; note: string };
+  /** The lead picture. Where it is a close view, `globe` (the whole world) leads and this moves into the first chapter. */
   picture: { src: string; alt: string; caption: string; width: number; height: number };
+  globe?: { src: string; alt: string; caption: string; width: number; height: number };
   chapters: { title: string; paras: string[] }[];
   sources: { label: string; url: string }[];
 }
@@ -14,6 +16,11 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   titan: {
     lead: 'Saturn’s largest moon, the only moon with thick air, and the only world besides the Earth known to have rain, rivers and seas on its surface.',
     temperature: { value: '−179 °C', note: 'At the ground, measured by the Huygens probe in 2005.' },
+    globe: {
+      src: '/img/learn/titan-cassini-2012.jpg', width: 900, height: 900,
+      alt: 'A smooth, hazy orange ball with a darker cap of haze at the top and a faint blue rim.',
+      caption: '<b>A photograph.</b> Titan in natural colour, from NASA’s Cassini spacecraft, released in April 2012. The haze hides the ground; the darker cap at the top is a hood of haze over the north pole. Credit: NASA/JPL-Caltech/Space Science Institute.',
+    },
     picture: {
       src: '/img/learn/titan-surface-huygens.jpg', width: 311, height: 623,
       alt: 'An orange, hazy plain strewn with rounded pale pebbles, the nearest a hand’s width across.',
@@ -205,6 +212,11 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
 
   enceladus: {
     lead: 'A small, brilliant moon of Saturn that sprays water from a hidden ocean out into space.',
+    globe: {
+      src: '/img/learn/enceladus-cassini-2015.jpg', width: 900, height: 900,
+      alt: 'A bright white moon, cratered at the top and crossed lower down by long cracks and ridges.',
+      caption: '<b>A photograph.</b> Enceladus from NASA’s Cassini spacecraft in October 2015, as it closed in for its nearest pass over the south pole. Old craters in the north give way to younger, cracked ground. Credit: NASA/JPL-Caltech/Space Science Institute.',
+    },
     picture: {
       src: '/img/learn/enceladus-jets-cassini.jpg', width: 1100, height: 680,
       alt: 'The dark edge of a moon with bright jets of spray rising from it into space.',

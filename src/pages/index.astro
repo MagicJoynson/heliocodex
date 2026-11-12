@@ -7,10 +7,16 @@ import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
 import { PLACES, along } from '../lib/learn/map';
 import facts from '../data/facts.json';
 import { bodies } from '../data/bodies';
-import { outlineWorlds } from '../lib/worlds';
-import { plannedCount } from '../data/plan';
+import { planetCells } from '../lib/planet-sheet';
 
 const lessons = await allLessons();
+// the start of the reference, on the first screen: each world's first three record numbers
+const plain = (h: string) => h.replace(/<[^>]+>/g, '');
+const ledger = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].map((slug) => {
+  const c = planetCells(slug);
+  const get = (k: string) => { const x = c.find((y) => y.key === k)!; return plain(`${x.value}${x.unit ? ` ${x.unit.replace(' on average', '')}` : ''}`); };
+  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: get('temperature') };
+});
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
 const jupiterKm = portraits.find((p) => p.slug === 'jupiter')!.km;
 // every picture is sized so that its disc is (diameter ÷ Jupiter's) × --j across
@@ -39,13 +45,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
 
   <section class="home-hero" aria-labelledby="home-h">
     <div class="home-text">
-      <p class="label">The Sun, its worlds and everything beyond</p>
-      <h1 id="home-h">Our corner of the universe, at its true size</h1>
-      <p class="lead">Real photographs and real measurements, from the Sun out to the oldest light there is. Fly through it in 3D, learn how it works in short lessons, or step outside and find what is above you tonight.</p>
-      <p class="ctas">
-        <a class="cta primary" href="/explore">Enter the 3D solar system</a>
-        <a class="cta" href="/learn">Start learning</a>
-      </p>
+      <h1 id="home-h">The Sun, its worlds and everything beyond</h1>
     </div>
 
     <figure class="family">
@@ -66,6 +66,18 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
         The Sun and its eight planets in real spacecraft photographs, all drawn to one scale. The distances would never fit: at this size, Neptune would be <b id="nep">about 5 kilometres</b> off to the right. <a href="/explore">See it at true size and distance</a>.
       </figcaption>
     </figure>
+    <div class="ledger">
+      <table>
+        <caption>The Sun and the eight planets: the first three numbers of each record</caption>
+        <thead><tr><th scope="col">World</th><th scope="col">From the Sun</th><th scope="col">Size</th><th scope="col">Temperature</th></tr></thead>
+        <tbody>
+          {ledger.map((r) => (
+            <tr><th scope="row"><a href={`/${r.slug}`}>{r.name}</a></th><td>{r.dist}</td><td>{r.size}</td><td>{r.temp}</td></tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="ledger-go"><a href="/worlds">Every moon and small world, by distance</a></p>
+    </div>
   </section>
 
   <div class="reading home">
@@ -103,14 +115,14 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
           ))}
         </ol>
       </div>
-      <p class="far-more"><a href="/worlds" data-outline>Beyond the eight planets: {outlineWorlds.length} moons, dwarf planets, asteroids and comets</a> are set out on the map of worlds. Their pages are outlines for now, and are being written.</p>
+      <p class="far-more">Beyond the eight planets, the moons, dwarf planets, asteroids and comets are set out on <a href="/worlds">the map of the Solar System</a>.</p>
     </section>
 
     <section class="learnband" aria-labelledby="learn-h">
       <div class="lb-words">
         <p class="label">Learn</p>
         <h2 id="learn-h">From the ground under your feet to the oldest light</h2>
-        <p class="body">{lessons.length} short lessons, each written at more than one depth, set out by how long their light takes to reach you. Begin with ten first looks that cover the whole subject, or go straight to the part you want. {plannedCount} more are outlined and being written.</p>
+        <p class="body">{lessons.length} short lessons, each written at more than one depth, set out by how long their light takes to reach you. Begin with ten first looks that cover the whole subject, or go straight to the part you want.</p>
         <p class="go"><a class="btn" href={`/learn/${packLessons(PACKS[0])[0]}`}>Begin with ten lessons</a> <a class="lb-all" href="/learn">All {lessons.length} lessons</a></p>
       </div>
       <ol class="ladder" aria-label="Subjects, nearest first">
@@ -159,9 +171,19 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
 
 <style>
   .home-hero { position: relative; overflow: hidden; background: #000; border-bottom: 1px solid rgba(236,231,220,.12); font-family: 'Spectral', Georgia, serif; --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --accent: #e9c48a; }
-  .home-hero .home-text { position: relative; z-index: 2; max-width: 46rem; padding: clamp(40px, 7vw, 96px) var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
+  .ledger { position: relative; z-index: 2; padding: clamp(18px, 2.6vw, 30px) var(--gutter) clamp(28px, 4vw, 48px); margin-left: clamp(0px, 14vw, 220px); max-width: 60rem; }
+  .ledger table { width: 100%; border-collapse: collapse; font: 400 1.02rem/1.3 'Spectral', Georgia, serif; color: var(--ink-soft); }
+  .ledger caption { text-align: left; font: 400 .74rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding: 0 0 .6rem; }
+  .ledger th, .ledger td { text-align: left; padding: .42rem 1rem .42rem 0; border-top: 1px solid rgba(236,231,220,.12); font-weight: 400; }
+  .ledger thead th { font: 400 .72rem/1.3 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); border-top: 0; }
+  .ledger tbody th a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.45); }
+  .ledger tbody th a:hover { color: var(--accent); }
+  .ledger-go { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; margin: 1rem 0 0; }
+  .ledger-go a { font: 400 .78rem/1 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+  @media (max-width: 560px) { .ledger table { font-size: .92rem; } .ledger th, .ledger td { padding-right: .5rem; } }
+  .home-hero .home-text { position: relative; z-index: 2; max-width: 46rem; padding: clamp(22px, 3.4vw, 40px) var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
   .home-hero .label { font: 400 .72rem/1.5 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.1rem; }
-  .home-hero h1 { font: 300 clamp(2.4rem, 6vw, 4.6rem)/1.02 'Spectral', Georgia, serif; letter-spacing: -.02em; margin: 0 0 1.2rem; text-wrap: balance; color: var(--ink); }
+  .home-hero h1 { font: 300 clamp(1.7rem, 3vw, 2.4rem)/1.1 'Spectral', Georgia, serif; letter-spacing: -.02em; margin: 0 0 1.2rem; text-wrap: balance; color: var(--ink); }
   .home-hero .lead { font: 300 clamp(1.08rem, 1rem + .4vw, 1.3rem)/1.55 'Spectral', Georgia, serif; color: var(--ink-soft); max-width: 38rem; margin: 0; }
   .ctas { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin: 1.8rem 0 0; }
   .cta { font: 400 .78rem/1 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 15px 0; border-bottom: 1px solid rgba(233,196,138,.5); }
@@ -170,7 +192,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
   .cta.primary:hover { background: #f3d4a2; color: #160f05; }
 
   /* the family portrait: --j is Jupiter's width in pixels; everything else follows from real diameters */
-  .family { margin: 0; padding: clamp(28px, 5vw, 56px) 0 22px; --j: clamp(64px, 11vw, 168px); }
+  .family { margin: 0; padding: clamp(14px, 2.4vw, 28px) 0 14px; --j: clamp(64px, 11vw, 168px); }
   .strip { position: relative; display: flex; align-items: center; height: calc(var(--j) * 1.6); }
   .sunlimb { position: absolute; top: 50%; height: calc(var(--j) * var(--sun-h)); width: auto; max-width: none; right: calc(100% - var(--j) * 1.35); transform: translateY(-50%); pointer-events: none; }
   .worlds { position: relative; list-style: none; margin: 0 0 0 calc(var(--j) * 1.6); padding: 0 var(--gutter) 0 0; display: flex; align-items: center; gap: calc(var(--j) * .12); }
@@ -180,7 +202,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
   .worlds span { font: 400 .62rem/1 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; position: absolute; top: calc(50% + var(--j) * .62); }
   .worlds li { position: relative; display: grid; justify-items: center; min-width: 4.6rem; }
   .worlds a:hover span, .worlds a:focus-visible span { color: var(--accent); }
-  .family figcaption { font: italic 300 .95rem/1.5 'Spectral', Georgia, serif; color: var(--ink-faint); max-width: 44rem; padding: 2.4rem var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
+  .family figcaption { font: italic 300 .95rem/1.5 'Spectral', Georgia, serif; color: var(--ink-soft); max-width: 44rem; padding: 1.2rem var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
   .family figcaption b { font-weight: 400; color: var(--ink-soft); }
   .family figcaption a { color: var(--ink-soft); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; }
   @media (max-width: 700px) {

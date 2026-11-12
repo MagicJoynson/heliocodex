@@ -2,22 +2,20 @@
  * The record: one layout for every object on the site (moons and small worlds, stars, and later the
  * planets' own data sheets). The data sheet always lists the same quantities in the same places, so any
  * two records can be compared at a glance: distance, size, temperature, then mass or light, then the rest.
+ * A quantity that is not known is left out, never drawn as an empty cell.
  * Builds HTML strings so both Astro pages and the star pages (which are built as strings) can use it.
  */
-export type CellKey = 'distance' | 'size' | 'temperature' | 'mass' | 'light' | 'orbit' | 'seen' | 'density' | 'type' | 'found';
+export type CellKey = 'distance' | 'size' | 'temperature' | 'mass' | 'light' | 'orbit' | 'day' | 'seen' | 'density' | 'moons' | 'type' | 'found';
 export interface Cell { key: CellKey; label: string; value: string; unit?: string; note?: string }
-const ORDER: CellKey[] = ['distance', 'size', 'temperature', 'mass', 'light', 'orbit', 'seen', 'density', 'type', 'found'];
-/** The four that every record shows, so they stay in the same places even when one is not known. */
-const ALWAYS: CellKey[] = ['distance', 'size', 'temperature'];
-const LABEL: Record<CellKey, string> = { distance: 'Distance', size: 'Size', temperature: 'Temperature', mass: 'Mass', light: 'Light given out', orbit: 'Once round', seen: 'Seen from the Earth', density: 'Density', type: 'Type', found: 'Found' };
+const ORDER: CellKey[] = ['distance', 'size', 'temperature', 'mass', 'light', 'orbit', 'day', 'seen', 'density', 'moons', 'type', 'found'];
+const LABEL: Record<CellKey, string> = { distance: 'Distance', size: 'Size', temperature: 'Temperature', mass: 'Mass', light: 'Light given out', orbit: 'Once round', day: 'A day', moons: 'Moons', seen: 'Seen from the Earth', density: 'Density', type: 'Type', found: 'Found' };
 
 export const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
 export function sheet(cells: Cell[]): string {
   const have = new Map(cells.map((c) => [c.key, c]));
-  for (const k of ALWAYS) if (!have.has(k)) have.set(k, { key: k, label: LABEL[k], value: '—', note: 'Not measured well enough to give here.' });
   const list = ORDER.filter((k) => have.has(k)).map((k) => have.get(k)!);
-  return `<dl class="rec-sheet">${list.map((c) => `<div class="rc${c.value === '—' ? ' unknown' : ''}" data-k="${c.key}"><dt>${c.label || LABEL[c.key]}</dt><dd><b>${c.value}</b>${c.unit ? ` <span>${c.unit}</span>` : ''}</dd>${c.note ? `<p>${c.note}</p>` : ''}</div>`).join('')}</dl>`;
+  return `<dl class="rec-sheet">${list.map((c) => `<div class="rc" data-k="${c.key}"><dt>${c.label || LABEL[c.key]}</dt><dd><b>${c.value}</b>${c.unit ? ` <span>${c.unit}</span>` : ''}</dd>${c.note ? `<p>${c.note}</p>` : ''}</div>`).join('')}</dl>`;
 }
 
 /** The top of a record: where it sits, its name and kind on one line, and one sentence. */

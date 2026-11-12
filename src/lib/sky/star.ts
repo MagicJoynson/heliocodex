@@ -1,4 +1,8 @@
 import { sheet, head, type Cell } from '../record';
+import SIZES from '../../data/star-sizes.json';
+// angular sizes (milliarcseconds) for named stars, by HD number: 'm' measured, from the JMMC Measured Diameters
+// Catalogue (the paper given); 'e' estimated from the star's colours in the JMMC Stellar Diameters Catalogue v2
+const SIZE = SIZES as unknown as Record<string, [number, 'm' | 'e', string]>;
 /** Plain facts about one star, worked out from the few numbers the catalogue holds. */
 export const LY_PER_PC = 3.26156;
 
@@ -187,15 +191,21 @@ export function starPage(star: PageStar): { html: string; description: string; r
       : !star.proper
         ? `<p>It has no name of its own. ${BAYER.test(star.catalogue) ? 'Its name by constellation is a Greek letter and the constellation it is in, a way of naming begun by Johann Bayer in 1603.' : /^\d/.test(star.catalogue) ? 'Its name by constellation is a number and the constellation it is in, from the catalogue of John Flamsteed, the first Astronomer Royal.' : 'It goes by a name made from the constellation it is in.'}</p>`
         : '';
-  const tempCell: Cell = byType
+  const tempCell: Cell | null = byType
     ? { key: 'temperature', label: 'Temperature', value: nf(typeK), unit: 'K, roughly', note: `At the surface, from its spectral type. The Sun’s is 5,772 K.` }
     : hasColour
       ? { key: 'temperature', label: 'Temperature', value: star.bv < -0.05 ? `Over ${nf(Math.floor(kelvin / 1000) * 1000)}` : nf(kelvin), unit: 'K, roughly', note: 'At the surface, from its colour. The Sun’s is 5,772 K.' }
-      : { key: 'temperature', label: 'Temperature', value: '—', note: 'Its colour is not in the catalogue, so it cannot be worked out here.' };
+      : null;
+  // its true size: the angle it fills in our sky, measured or estimated, times its distance (Sun = 1,392,700 km across)
+  const ang = star.proper && star.hd ? SIZE[String(star.hd)] : undefined;
+  const suns = ang ? (ang[0] / 1000 / 206264.806) * star.distPc * 3.0857e13 / 1.3927e6 : 0;
+  const reach = (au: number) => au > 5.2 ? 'beyond Jupiter' : au > 1.52 ? 'beyond Mars' : au > 1 ? 'beyond the Earth' : au > 0.72 ? 'beyond Venus' : au > 0.39 ? 'beyond Mercury' : `${Math.round((au / 0.387) * 100)} per cent of the way to Mercury`;
+  const sizeWord = (x: number) => x >= 100 ? nf(Math.round(x / 10) * 10) : x >= 10 ? nf(Math.round(x)) : x.toFixed(1);
+  const sizeCell: Cell | null = ang ? { key: 'size', label: 'Size', value: sizeWord(suns), unit: (suns >= 0.95 && suns < 1.05 ? 'Sun across' : 'Suns across') + (ang[1] === 'e' ? ', roughly' : ''), note: `${ang[1] === 'm' ? 'From its measured' : 'From its estimated'} size in our sky and its distance.${suns >= 100 ? ` Put in place of the Sun, its surface would reach ${reach(suns / 2 * 0.00465)}.` : ''}` } : null;
   const cells: Cell[] = [
     { key: 'distance', label: 'From the Earth', value: `<span data-ly="${star.distPc < 60 ? ly : ''}">${round2(ly)}</span>`, unit: 'light years', note: `Its light set off <span data-left>about ${round2(ly)} years ago</span>.` },
-    { key: 'size', label: 'Size', value: '—', note: 'Not in the star catalogue this site uses.' },
-    tempCell,
+    ...(sizeCell ? [sizeCell] : []),
+    ...(tempCell ? [tempCell] : []),
     { key: 'light', label: 'Light given out', value: lum >= 1.5 ? round2(lum) : lum > 0.67 ? 'About 1' : round2(lum), unit: lum > 0.67 && lum < 1.5 ? 'Sun' : lum >= 1.5 ? 'Suns' : 'of a Sun', note: `Visible light, compared with the Sun.${!unnamed && rank <= 20 ? ` From the Earth it is ${placing(rank)} star in the night sky.` : ''}` },
     { key: 'seen', label: 'Seen from the Earth', value: star.appMag.toFixed(2).replace('-', '−'), unit: 'magnitude', note: sight },
     ...(spect ? [{ key: 'type', label: 'Spectral type', value: esc(spect), note: colour ? `${colour.charAt(0).toUpperCase()}${colour.slice(1)}.` : undefined } as Cell] : []),
@@ -213,7 +223,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
       ${hasColour ? `<p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}${reddened ? ', through the dust' : ''}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>` : ''}`),
     byEye ? row('In your sky now', '<p data-now>Working it out…</p>') : '',
     row('Its names', `${whyNames}${names.length ? `<dl class="names">${names.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}${spect ? '' : (star.spect ?? '').trim() ? '<p>The catalogue\'s spectral type for it does not match its measured colour, most likely because it belongs to a companion star, so it is left out here.</p>' : '<p>Its spectral type, the code for what kind of star it is, is not in the catalogue.</p>'}`, true),
-    row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${byType ? 'The temperature is read from the spectral type with the table of <a href="https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt" rel="noopener">Pecaut and Mamajek (2013)</a>, and the' : hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.</p>
+    row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${byType ? 'The temperature is read from the spectral type with the table of <a href="https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt" rel="noopener">Pecaut and Mamajek (2013)</a>, and the' : hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.${ang ? ` Its size comes from ${ang[1] === 'm' ? `its angular size as measured in <a href="https://ui.adsabs.harvard.edu/abs/${ang[2]}" rel="noopener">${ang[2].slice(0, 4)}</a>, listed in the <a href="https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=II/345" rel="noopener">JMMC Measured Stellar Diameters Catalogue</a>` : 'its angular size as estimated from its colours in the <a href="https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=II/346" rel="noopener">JMMC Stellar Diameters Catalogue, version 2</a> (Bourgès and others, 2017)'}, combined with the distance above.` : ''}</p>
       <p>To read more: <a href="/learn/colour-and-brightness">Colour and brightness</a>, <a href="/learn/how-stars-live-and-die">How stars live and die</a>, <a href="/learn/measuring-distance">Measuring distance</a>.</p>`, true),
   ].join('\n');
   return { html, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${round2(ly)} light years away.`, rgb, byEye };

@@ -1,4 +1,5 @@
 ---
+import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { moonCount } from '../data/moon-counts';
 import '@fontsource/young-serif';
@@ -31,6 +32,8 @@ const rows: [string, string][] = [
       <WorldGlance world="mars" />
         </div>
       </section>
+
+  <PlanetSheet world="mars" name="Mars" />
 
       <section class="beat" data-p="0.17">
         <div class="copy">
@@ -101,9 +104,9 @@ const rows: [string, string][] = [
 
       <section class="beat last ground" data-p="1">
         <div class="copy">
-          <h2>In numbers</h2>
+          <h2>More numbers</h2>
           <dl class="numbers">
-            {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+            {rows.filter(([k]) => !/^(Distance from the Sun|A year|A day|Mass|Known moons|Moons|Average density|Temperature|Surface temperature|Average temperature|Day and night|Width|Diameter|Light to|Radius$|Sunrise to sunrise|Surface \(photosphere\)|Share of|One turn$)/.test(k)).map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
           </dl>
           <p class="aside">NASA NSSDC Mars Fact Sheet and JPL orbital elements. Missions to Mars so far include Viking, Pathfinder, Spirit, Opportunity, Curiosity, Perseverance, Tianwen-1 and Hope.</p>
           <nav class="onward">

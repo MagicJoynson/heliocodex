@@ -4,7 +4,7 @@ export type Group = 'system' | 'sky' | 'learn' | 'ref';
 export interface Section { href: string; label: string; about: string; group: Group; match: (path: string) => boolean; outline?: boolean }
 const PLANETS = /^\/(sun|mercury|venus|earth|mars|jupiter|saturn|uranus|neptune)$/;
 export const sections: Section[] = [
-  { href: '/worlds', group: 'system', label: 'The Solar System', about: 'Every planet, moon and small world, by distance from the Sun', match: (p) => p.startsWith('/worlds') || p === '/bodies' || PLANETS.test(p) },
+  { href: '/worlds', group: 'system', label: 'The Solar System', about: 'Every planet, moon and small world, by distance from the Sun', match: (p) => p.startsWith('/worlds') || PLANETS.test(p) },
   { href: '/explore', group: 'system', label: 'Explore in 3D', about: 'The Sun and its worlds at their true size and distance', match: (p) => p.startsWith('/explore') },
   { href: '/atlas', group: 'system', label: 'Charts', about: 'Maps of everything, from the planets to the cosmic web', match: (p) => p.startsWith('/atlas') },
   { href: '/sky', group: 'sky', label: 'Tonight’s sky', about: 'What is above you right now, wherever you are', match: (p) => p.startsWith('/sky') },

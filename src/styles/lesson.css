@@ -39,8 +39,10 @@ body:has(.lesson) { background: #0b0b0c; }
 .story-steps li:first-child { min-height: 62svh; }
 .story-steps .prose { font: 300 clamp(1.3rem, 1.05rem + .9vw, 1.72rem)/1.5 var(--r-serif); color: var(--ink); max-width: 30rem; }
 .story-steps .prose p { margin: 0; max-width: none; font: inherit; color: inherit; }
-.is-live .story-steps li { opacity: .6; transition: opacity .5s ease; }
-.is-live .story-steps li[data-on] { opacity: 1; }
+/* the step in view is full white; the others stay easy to read (well above 4.5 to 1), only a shade softer */
+.is-live .story-steps li { color: var(--ink-faint); transition: color .5s ease; }
+.is-live .story-steps li[data-on] { color: var(--ink); }
+.is-live .story-steps li .prose { color: inherit; }
 
 @media (max-width: 860px) {
   .l-hero > .cap { position: relative; right: auto; bottom: auto; text-align: left; padding: 0 var(--gutter) 1.2rem; max-width: none; }

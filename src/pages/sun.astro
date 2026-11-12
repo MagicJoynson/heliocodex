@@ -1,4 +1,5 @@
 ---
+import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import '@fontsource-variable/fraunces/full';
 import '@fontsource-variable/fraunces/full-italic';
@@ -26,6 +27,8 @@ const rows: [string, string][] = [
       <p class="lead">A ball of hot gas 109 times as wide as the Earth, holding almost everything in the solar system. Keep scrolling and you will drop to a few thousand kilometres above its surface, drifting towards a sunspot.</p>
     </div>
   </section>
+
+  <PlanetSheet world="sun" name="The Sun" />
 
   <section class="beat" data-p="0.17">
     <div class="copy">
@@ -76,13 +79,13 @@ const rows: [string, string][] = [
 
   <section class="beat last surface" data-p="1">
     <div class="copy">
-      <h2>In numbers</h2>
+      <h2>More numbers</h2>
       <dl class="numbers">
-        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        {rows.filter(([k]) => !/^(Distance from the Sun|A year|A day|Mass|Known moons|Moons|Average density|Temperature|Surface temperature|Average temperature|Day and night|Width|Diameter|Light to|Radius$|Sunrise to sunrise|Surface \(photosphere\)|Share of|One turn$)/.test(k)).map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>
       <p class="aside">NASA NSSDC Sun Fact Sheet and NASA Science. Never look at the Sun directly, through binoculars or a telescope without a proper solar filter: it can blind you in seconds.</p>
       <nav class="onward">
-        <a href="/bodies">← All planets</a>
+        <a href="/worlds">← The Solar System</a>
         <a href="/mercury">Mercury →</a>
       </nav>
       <p class="aside">The surface here is generated, from what solar telescopes show: granules at their real size, the larger supergranule network, sunspots with their umbra, penumbra and Wilson depression, and the darkening towards the edge of the disc. It is shown in visible light, as your eyes would see it through a filter.</p>
