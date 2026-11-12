@@ -41,6 +41,7 @@ import { sections } from '../lib/nav';
 
     <header class="top">
       <a class="mark" href="/" aria-label="Heliocodex, home"><img src="/brand/heliocodex-lockup.svg" alt="" width="660" height="133" /></a>
+      <a class="back-to" id="back-to" href="/" hidden><span aria-hidden="true">←</span> <span id="back-name">Back</span></a>
       <nav class="pages" aria-label="Sections">
         {sections.filter((x) => x.href !== '/explore').map((x) => <a href={x.href}>{x.label}</a>)}
       </nav>
@@ -181,6 +182,19 @@ import { sections } from '../lib/nav';
       const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
       const params = new URLSearchParams(location.search);
+      // coming back to the 3D view in the same tab, with nowhere asked for: carry on from where you were
+      if (!params.has('go')) { try { const at = sessionStorage.getItem('hc-at'); if (at) params.set('go', at); } catch {} }
+      // the way back to the page you came in from, where you were on it
+      try {
+        const from = JSON.parse(sessionStorage.getItem('hc-from') ?? 'null');
+        if (from?.href && from.href !== '/explore') {
+          const back = $('back-to') as HTMLAnchorElement;
+          back.href = from.href;
+          $('back-name').textContent = `Back to ${from.name || 'the page'}`;
+          back.hidden = false;
+          back.addEventListener('click', () => { try { sessionStorage.setItem('hc-from', JSON.stringify({ ...from, back: true })); } catch {} });
+        }
+      } catch {}
       let world: Awaited<ReturnType<typeof createWorld>>;
       const startedAt = performance.now();
       try {
@@ -205,9 +219,12 @@ import { sections } from '../lib/nav';
             body.classList.toggle('free', r.mode === 'free');
             $('free-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
           },
-          onFocus(_id, name) {
+          onFocus(id, name) {
             $('where-name').textContent = cap(name);
             $('said').textContent = `Now at ${name}.`;
+            // remember where you are, in the address (so a reload or a shared link comes back here) and for this tab
+            try { sessionStorage.setItem('hc-at', id); } catch {}
+            const u = new URL(location.href); u.searchParams.set('go', id); u.searchParams.delete('d'); history.replaceState(history.state, '', u);
           },
           onJump() {
             // reduced motion: the view has jumped; let it come up out of black instead
@@ -455,6 +472,9 @@ import { sections } from '../lib/nav';
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
       .pages a, .menu-btn { font: 400 .74rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
       .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
+      .back-to { pointer-events: auto; font: 400 .72rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--glass); white-space: nowrap; max-width: 40vw; overflow: hidden; text-overflow: ellipsis; }
+      .back-to:hover, .back-to:focus-visible { color: var(--warm); border-color: var(--warm); outline: none; }
+      .back-to[hidden] { display: none; }
       .menu-btn { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; background: var(--glass); }
       .menu { position: fixed; z-index: 41; top: calc(var(--top) + 52px); right: var(--gut); width: min(22rem, calc(100vw - 2 * var(--gut))); background: rgba(9,9,11,.96); border: 1px solid var(--line); padding: 6px 0; }
       .menu[hidden] { display: none; }

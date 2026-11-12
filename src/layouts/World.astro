@@ -2,9 +2,15 @@
 import Analytics from '../components/Analytics.astro';
 import { sections, groups } from '../lib/nav';
 import SiteFooter from '../components/SiteFooter.astro';
+import ThreeDReturn from '../components/ThreeDReturn.astro';
 import { allLessons } from '../lib/v2/margin/content';
 import { bodies } from '../data/bodies';
 import { portraits } from '../lib/portraits';
+import facts from '../data/facts.json';
+import { moonCount, MOONS_AS_OF_TEXT } from '../data/moon-counts';
+import { plates } from '../lib/v2/atlas/plates/index';
+import { fmt, daysToYear, hoursToDay } from '../lib/format';
+import { thumb as lessonThumb } from '../lib/learn/map';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
  * driver. Everything you see (type, colour, layout, copy) belongs to the page that uses it.
@@ -16,14 +22,35 @@ const named = world === 'sun' ? /\bSun\b/ : world === 'earth' ? /\bEarth\b/ : ne
 const all = await allLessons();
 const aimed = all.filter((l) => (l.data as { view?: { target?: string } }).view?.target === world);
 const lessons = [...aimed, ...all.filter((l) => !aimed.includes(l) && named.test(`${l.data.title} ${l.data.summary} ${(l.data as { scene?: string }).scene ?? ''}`))].slice(0, 6);
-const thumb = (l: (typeof lessons)[number]) => {
-  for (const lv of l.levels) { const m = /src="(\/img\/learn\/[^"]+\.(?:jpg|png|webp))"/.exec(lv.body ?? ''); if (m) return m[1]; }
-  return face?.src ?? '';
-};
 const face = portraits.find((p) => p.slug === world);
 const order = bodies.map((b) => b.slug);
 const i = order.indexOf(world);
 const near = [order[i - 1], order[i + 1]].filter(Boolean).map((slug) => bodies.find((b) => b.slug === slug)!);
+// the ending's reference block: the same few numbers and two small drawings for every world
+const planet = (facts.planets as unknown as Record<string, { physical: Record<string, number>; elements: { a_au: number } }>)[world];
+const EARTH_KM = 6371, SUN_KM = 695700;
+const radius = world === 'sun' ? SUN_KM : planet.physical.radius_mean_km;
+const LO = Math.log2(0.25), HI = Math.log2(40);
+const along = (a: number) => (Math.log2(a) - LO) / (HI - LO);
+const track = Object.entries(facts.planets as Record<string, { elements: { a_au: number } }>).map(([slug, f]) => ({ slug, x: along(f.elements.a_au), me: slug === world }));
+const lightMin = world === 'sun' ? 0 : planet.elements.a_au * 8.317;
+const lightSays = lightMin < 60 ? `${fmt(lightMin, 1)} minutes` : `${Math.floor(lightMin / 60)} h ${Math.round(lightMin % 60)} min`;
+const n = moonCount(world);
+const glance: [string, string][] = world === 'sun'
+  ? [['Width', '1,392,700 km, 109 Earths'], ['Surface', 'about 5,500 °C'], ['Light to the Earth', '8 min 19 s'], ['Worlds going round it', '8 planets and countless smaller bodies']]
+  : [
+      ['From the Sun', `${fmt(planet.elements.a_au, 3)} au, ${lightSays} of light`],
+      ['Width', `${fmt(radius * 2)} km, ${fmt(radius / EARTH_KM, 2)} × the Earth`],
+      ['A year', daysToYear(planet.physical.orbit_period_days)],
+      ['A day', hoursToDay(planet.physical.day_hours)],
+      ['Gravity at the surface', `${fmt(planet.physical.gravity_ms2 / 9.81, 2)} × the Earth's`],
+      ['Known moons', `${n === 0 ? 'none' : n}, as of ${MOONS_AS_OF_TEXT}`],
+    ];
+const moonChart = plates[world] && n > 0 ? `/atlas/${world}` : null;
+// the two discs: this world and the Earth, at their true sizes against each other
+const big = Math.max(radius, EARTH_KM);
+const discMe = Math.max(3, Math.round((radius / big) * 150));
+const discEarth = Math.max(2, Math.round((EARTH_KM / big) * 150));
 const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b.slug === 'earth' ? 'The Earth' : b.name);
 ---
 <!doctype html>
@@ -75,23 +102,53 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
           {near.map((b) => <a class="more-link" href={`/${b.slug}`}>{order.indexOf(b.slug) < i ? '← ' : ''}{nameOf(b)}{order.indexOf(b.slug) > i ? ' →' : ''}</a>)}
           <a class="more-link" href="/bodies">All planets</a>
         </div>
+        <div class="glance">
+          <figure class="g-size">
+            <div class="g-discs" aria-hidden="true">
+              {face && <img class="g-me" src={face.src} alt="" style={`--px:${Math.round(discMe / face.disc)}px`} loading="lazy" />}
+              {world !== 'earth' && <span class="g-earth" style={`--px:${discEarth}px`}><img src={portraits.find((p) => p.slug === 'earth')!.src} alt="" loading="lazy" /></span>}
+            </div>
+            <figcaption>{world === 'earth' ? 'The Earth, 12,742 km across.' : `${title} and the Earth, to scale.`}</figcaption>
+          </figure>
+          {world !== 'sun' && (
+            <figure class="g-where">
+              <div class="g-track" aria-hidden="true">
+                <span class="g-sun" />
+                {track.map((t) => <i class:list={[{ me: t.me }]} style={`--x:${t.x}`} />)}
+              </div>
+              <figcaption>Its place among the eight planets. Each step out is twice as far from the Sun as the last.</figcaption>
+            </figure>
+          )}
+          <dl class="g-facts">
+            {glance.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+          </dl>
+        </div>
+        <p class="more-go more-go2">
+          {moonChart && <a class="more-link" href={moonChart}>Chart of its {n === 1 ? 'moon' : 'moons'}</a>}
+          <a class="more-link" href={world === 'sun' ? '/bodies#sun' : `/bodies#${world}`}>Next to the other planets</a>
+          <a class="more-link" href="/sky">Find it in tonight's sky</a>
+        </p>
         {lessons.length > 0 && (
           <>
-            <p class="more-h3">Lessons</p>
-            <ul class="more-cards">
-              {lessons.map((l) => (
-                <li><a href={`/learn/${l.id}`}>
-                  <span class="pic">{thumb(l) && <img src={thumb(l)} class:list={[{ face: thumb(l) === face?.src }]} alt="" loading="lazy" decoding="async" />}</span>
-                  <span class="name">{l.data.title}</span>
-                  <span class="line">{l.data.summary}</span>
-                </a></li>
-              ))}
-            </ul>
+            <p class="more-h3">Lessons about {world === 'sun' ? 'the Sun' : world === 'earth' ? 'the Earth' : title}</p>
+            <ol class="more-list">
+              {lessons.map((l, k) => {
+                const t = lessonThumb(l);
+                return (
+                  <li><a href={`/learn/${l.id}`}>
+                    <span class="ml-num">{String(k + 1).padStart(2, '0')}</span>
+                    <span class="ml-words"><span class="name">{l.data.title}</span><span class="line">{l.data.summary}</span></span>
+                    <span class="ml-pic">{t && <img src={t.src} class:list={[{ face: t.face }]} alt="" loading="lazy" decoding="async" />}</span>
+                  </a></li>
+                );
+              })}
+            </ol>
           </>
         )}
       </div>
     </section>
     <SiteFooter />
+    <ThreeDReturn />
     <script>
       // the altitude ruler belongs to the fall; it steps aside once the page reaches its ending
       const ruler = document.querySelector<HTMLElement>('.altitude');
@@ -209,6 +266,40 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .more-link { color: #ece7dc; text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
       .more-link:hover { color: #e9c48a; }
       .more-h3 { font: 400 .72rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #8a8478; margin: 3rem 0 1.2rem; }
+      .glance { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr) minmax(0, 1.2fr); gap: 2rem 3rem; align-items: end; margin: 3rem 0 0; padding: 2.2rem 0 0; border-top: 1px solid rgba(236,231,220,.12); }
+      .glance figure { margin: 0; }
+      .glance figcaption { font: 300 .92rem/1.45 'Spectral', Georgia, serif; color: #8a8478; margin-top: .9rem; }
+      .g-discs { display: flex; align-items: flex-end; gap: 14px; min-height: 150px; }
+      .g-me { width: var(--px); height: var(--px); max-width: none; mix-blend-mode: lighten; }
+      .g-earth { display: block; width: var(--px); height: var(--px); border-radius: 50%; overflow: hidden; flex: none; }
+      .g-earth img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.09); }
+      .g-track { position: relative; height: 40px; border-bottom: 1px solid rgba(236,231,220,.18); margin: 0 6px 0 18px; }
+      .g-sun { position: absolute; left: -18px; bottom: -9px; width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle, #ffd27a, #f39a2e 70%); }
+      .g-track i { position: absolute; left: calc(var(--x) * 100%); bottom: -4px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: rgba(236,231,220,.35); }
+      .g-track i.me { width: 13px; height: 13px; margin-left: -6.5px; bottom: -7px; background: #e9c48a; box-shadow: 0 0 12px rgba(233,196,138,.6); }
+      .g-facts { margin: 0; display: grid; gap: 0; }
+      .g-facts div { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 1rem; padding: .5rem 0; border-top: 1px solid rgba(236,231,220,.08); }
+      .g-facts dt { font: 400 .7rem/1.6 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: #8a8478; }
+      .g-facts dd { margin: 0; font: 300 1rem/1.45 'Spectral', Georgia, serif; color: #ece7dc; }
+      .more-go2 { margin: 2rem 0 0; }
+      .more-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 3rem; }
+      .more-list a { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr) 7rem; gap: 1.1rem; align-items: center; padding: 1rem 0; border-top: 1px solid rgba(236,231,220,.12); text-decoration: none; color: #ece7dc; }
+      .ml-num { font: 300 1.5rem/1 'Spectral', Georgia, serif; color: #8a8478; }
+      .ml-words { display: grid; gap: .3rem; }
+      .more-list .name { font: 400 1.15rem/1.25 'Spectral', Georgia, serif; }
+      .more-list a:hover .name, .more-list a:hover .ml-num { color: #e9c48a; }
+      .more-list .line { font: 300 .92rem/1.45 'Spectral', Georgia, serif; color: #8a8478; }
+      .ml-pic { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 3px; background: #000; }
+      .ml-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .ml-pic img.face { object-fit: contain; transform: scale(.85); }
+      @media (max-width: 1000px) { .glance { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .g-facts { grid-column: 1 / -1; } }
+      @media (max-width: 700px) {
+        .glance { grid-template-columns: minmax(0, 1fr); }
+        .g-facts div { grid-template-columns: 8.5rem minmax(0, 1fr); }
+        .more-list { grid-template-columns: minmax(0, 1fr); }
+        .more-list a { grid-template-columns: minmax(0, 1fr) 5.5rem; }
+        .ml-num { display: none; }
+      }
       .more-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
       .more-cards a { display: grid; gap: .6rem; text-decoration: none; color: #ece7dc; }
       .more-cards .pic { display: block; position: relative; aspect-ratio: 16 / 9; background: radial-gradient(circle at 30% 30%, #2a2217, #0b0b0c 70%); overflow: hidden; border-radius: 3px; }

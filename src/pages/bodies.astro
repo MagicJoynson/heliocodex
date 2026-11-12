@@ -50,7 +50,7 @@ const list = bodies.map((b) => {
 
   <ol class="plain-list bodies">
     {list.map((w) => (
-      <li class={`b b-${w.slug}`}>
+      <li class={`b b-${w.slug}`} id={w.slug}>
         <a class="pic" href={`/${w.slug}`} tabindex="-1" aria-hidden="true"><img src={w.photo.src} alt="" width={w.photo.width} height={w.photo.height} loading="lazy" style={`--s:${w.slug === 'saturn' ? 1 : (0.82 / w.photo.disc).toFixed(3)}`} /></a>
         <div class="txt">
           <p class="label">{w.kind}</p>

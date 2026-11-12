@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Analytics from '../components/Analytics.astro';
 import { sections, groups } from '../lib/nav';
 import SiteFooter from '../components/SiteFooter.astro';
+import ThreeDReturn from '../components/ThreeDReturn.astro';
 interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean }
 const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex } = Astro.props;
 const url = new URL(path, Astro.site).toString();
@@ -57,5 +58,6 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
     </header>
     <slot />
     <SiteFooter />
+    <ThreeDReturn />
   </body>
 </html>
