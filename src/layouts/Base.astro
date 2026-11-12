@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Analytics from '../components/Analytics.astro';
 import { sections } from '../lib/nav';
+import SiteFooter from '../components/SiteFooter.astro';
 interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean }
 const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex } = Astro.props;
 const url = new URL(path, Astro.site).toString();
@@ -55,29 +56,6 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
       </script>
     </header>
     <slot />
-    <footer class="site-footer">
-      <div class="foot-grid">
-        <div class="foot-brand">
-          <a href="/" class="foot-mark">Heliocodex</a>
-          <p>The Sun, its worlds and everything beyond, in real photographs and real measurements.</p>
-        </div>
-        <nav class="foot-col" aria-label="Sections">
-          <p class="foot-h">Explore</p>
-          <a href="/">Home</a>
-          {sections.map((s) => <a href={s.href}>{s.label}</a>)}
-        </nav>
-        <nav class="foot-col" aria-label="Legal">
-          <p class="foot-h">About</p>
-          <a href="/sources">Sources</a>
-          <a href="/licences">Licences and credits</a>
-          <a href="/privacy">Privacy</a>
-          <a href="/cookies">Cookies and storage</a>
-          <a href="/terms">Terms</a>
-          <a href="/accessibility">Accessibility</a>
-          <a href="mailto:hello@fallinghippo.com">hello@fallinghippo.com</a>
-        </nav>
-      </div>
-      <p class="foot-small">Heliocodex is run by FALLINGHIPPO LIMITED, company number 17415391, registered in England and Wales. Registered office: 71-75 Shelton Street, London, England, WC2H 9JQ. It is independent of NASA, ESA and every mission named here, and none of them endorses it. Physical data comes from NASA NSSDC planetary fact sheets, orbits from NASA/JPL Solar System Dynamics, and planet maps from Solar System Scope (CC BY 4.0). See <a href="/sources">Sources</a> for everything we use and how.</p>
-    </footer>
+    <SiteFooter />
   </body>
 </html>
