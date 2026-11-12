@@ -2,6 +2,9 @@
 sources:
   - { label: "NASA Space Place, What are constellations?", url: "https://spaceplace.nasa.gov/constellations/en/" }
   - { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
+  - { label: "Wikipedia, IAU designated constellations", url: "https://en.wikipedia.org/wiki/IAU_designated_constellations" }
+  - { label: "Wikipedia, Hydra (constellation)", url: "https://en.wikipedia.org/wiki/Hydra_(constellation)" }
+  - { label: "Wikipedia, Big Dipper", url: "https://en.wikipedia.org/wiki/Big_Dipper" }
 ---
 Look at the stars for long enough and you start to see shapes: a hunter, a plough, a cross. People everywhere have done this, and different peoples saw different pictures in the same stars. These join-the-dots pictures are constellations.
 
@@ -22,3 +25,19 @@ Which ones you can see depends on where you live and the time of year. As the Ea
 </figure>
 
 In the 3D view the figures are drawn as lines between the stars. Leave the Solar System and you can watch them pull out of shape.
+
+**Different peoples, different pictures.** The seven bright stars that people in Britain call the Plough are the Big Dipper in North America, a saucepan in France and a wagon in much of northern Europe. The ancient Greeks made them the tail and back of a Great Bear. Some peoples made pictures without stars at all. Aboriginal Australians see an emu in the dark clouds of dust that cross the Milky Way, with its head beside the Southern Cross.
+
+**Where the 88 came from.** About half are very old. The Greek astronomer Ptolemy listed 48 nearly two thousand years ago, and most of those came from Mesopotamia long before him. The rest were added from the 1500s onwards, mostly by Europeans who sailed south and saw stars that never rise over Europe. That is why the southern sky has a telescope, a microscope and an air pump in it. In the 1920s astronomers agreed on the list of 88 and drew fixed borders round each.
+
+**The biggest and the smallest.** The largest constellation is Hydra, the water snake, which winds more than a quarter of the way round the sky. The smallest is Crux, the Southern Cross. It is also one of the easiest to recognise, and it appears on the flags of Australia and New Zealand.
+
+**Finding north.** The two stars at the end of the Plough's blade point almost straight at Polaris, the North Star. Polaris sits nearly above the Earth's north pole, so it stays in the same place all night while the rest of the sky wheels round it. Find it and you are facing north.
+
+**The patterns will not last.** The stars are all moving, each on its own path round the Galaxy. They are so far away that nobody notices a change in a lifetime. In 50,000 years, though, the Plough will have bent out of shape, because the stars at its two ends are travelling a different way from the five in the middle.
+
+**Common mistakes.**
+
+- *The stars in a constellation are close together.* They only lie in the same direction. Some are several times further off than others.
+- *The Plough is a constellation.* It is a pattern inside one. The official constellation is the Great Bear, Ursa Major, which is much bigger.
+- *Your star sign is in the sky on your birthday.* It is the one constellation you cannot see then. A star sign is where the Sun is, so it is up in the daytime, hidden behind the glare.
