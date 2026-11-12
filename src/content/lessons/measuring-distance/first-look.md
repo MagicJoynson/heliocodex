@@ -24,6 +24,6 @@ You would not give the distance from Manchester to Sydney in millimetres. Space 
 A light year is a distance, but it carries a bonus. If a star is 4.25 light years away, the light you see tonight left it 4.25 years ago.
 
 <figure class="photo">
-  <img src="/img/learn/charts/rulers-of-distance.svg" alt="A chart of four bars of growing length: the Moon, the Sun, Neptune and the nearest star." width="800" height="470" loading="lazy" />
+  <img src="/img/learn/charts/rulers-of-distance.svg" alt="A chart of four bars of growing length: the Moon, the Sun, Neptune and the nearest star." width="800" height="540" loading="lazy" />
   <figcaption><b>A chart.</b> The same four distances on one scale. The scale is not an even one: each step along is ten times further. On an even scale, if the bar for the nearest star were as long as Britain, the bar for the Moon would be about a centimetre long. Worked out here, taking Britain as 1,000 km.</figcaption>
 </figure>

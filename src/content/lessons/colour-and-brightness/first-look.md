@@ -22,6 +22,6 @@ Stars work the same way. Red stars are the coolest. Blue stars are the hottest. 
 Brightness is harder. A star can look bright because it really is powerful, or just because it is near. To know which, you have to find out how far away it is.
 
 <figure class="photo">
-  <img src="/img/learn/charts/star-colour-and-temperature.svg" alt="A band of colour running from orange through white to pale blue, with six stars marked along it from Proxima at the cool end to Rigel at the hot end." width="800" height="430" loading="lazy" />
+  <img src="/img/learn/charts/star-colour-and-temperature.svg" alt="A band of colour running from orange through white to pale blue, with six stars marked along it from Proxima at the cool end to Rigel at the hot end." width="800" height="560" loading="lazy" />
   <figcaption><b>A chart.</b> Six stars placed by the temperature of their surfaces. Nothing here is green or purple: a star gives out every colour at once, and the mixture only ever looks red, orange, yellow-white, white or blue-white. The temperatures are measured ones, and the colours of the band are a guide.</figcaption>
 </figure>
