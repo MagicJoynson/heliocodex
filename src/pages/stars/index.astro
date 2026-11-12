@@ -38,7 +38,7 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </div>
   </section>
 
-  <section class="row">
+  <section class="row wide">
     <div class="hang"><h2>The brightest</h2><p class="note">The twenty brightest stars in the night sky, as seen from the Earth.</p></div>
     <ol class="plain-list star-list">
       {brightest.map((s) => (
@@ -47,7 +47,7 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </ol>
   </section>
 
-  <section class="row">
+  <section class="row wide">
     <div class="hang"><h2>The nearest</h2><p class="note">The closest stars that have names. Most are too faint to see without a telescope.</p></div>
     <ol class="plain-list star-list">
       {nearest.map((s) => (
@@ -56,8 +56,8 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </ol>
   </section>
 
-  <section class="row">
-    <div class="hang sticks"><h2>The ones with names</h2><p class="note">{stars.length} stars, in the order of the alphabet.</p></div>
+  <section class="row wide">
+    <div class="hang"><h2>The ones with names</h2><p class="note">{stars.length} stars, in the order of the alphabet.</p></div>
     <div class="all">
       {byLetter.map((g) => (
         <div class="letter">
@@ -68,8 +68,8 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </div>
   </section>
 
-  <section class="row" id="constellations">
-    <div class="hang sticks"><h2>Every star, by constellation</h2><p class="note">The sky is divided into 88 constellations, and every star belongs to one. Each list has all its stars that the eye can see.</p></div>
+  <section class="row wide" id="constellations">
+    <div class="hang"><h2>Every star, by constellation</h2><p class="note">The sky is divided into 88 constellations, and every star belongs to one. Each list has all its stars that the eye can see.</p></div>
     <ul class="plain-list cons">
       {groups.map((g) => <li><a href={`/stars/in/${slugOf(g.name)}`}>{g.name}</a><span>{g.count}</span></li>)}
     </ul>
@@ -131,7 +131,7 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
   #age-out :global(.found) { font: italic 300 clamp(2rem, 5vw, 3rem)/1.1 var(--r-serif); color: var(--ink); }
   #age-out :global(.age-links) { display: flex; flex-wrap: wrap; gap: .4rem 1.8rem; font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; }
   #age-out :global(.age-links a) { text-decoration: none; padding: .55rem 0; border-bottom: 1px solid var(--accent); }
-  .star-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0 2.4rem; }
+  .star-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0 2.4rem; }
   .star-list li { display: grid; grid-template-columns: 1rem minmax(0, 1fr); column-gap: .8rem; align-items: baseline; padding: .7rem 0; border-top: 1px solid var(--rule); }
   .star-list i { width: .7rem; height: .7rem; border-radius: 50%; align-self: center; grid-row: 1; }
   .star-list a { font: 300 1.3rem/1.2 var(--r-serif); text-decoration: none; }
