@@ -32,3 +32,21 @@ These are all light. Stars and galaxies shine in every kind. Astronomers build s
   <img src="/img/learn/fermi-gamma-ray-sky.jpg" alt="An oval map of the whole sky, dark blue with a bright band across the middle and scattered bright spots." width="1100" height="656" loading="lazy" />
   <figcaption><b>A map, not a photograph.</b> The whole sky in gamma rays, the shortest waves of all, built up over a year by NASA's Fermi telescope. The bright band is our own galaxy. Brighter colours mean more gamma rays, and the colours were chosen. Credit: NASA/DOE/Fermi LAT Collaboration.</figcaption>
 </figure>
+
+**All the same thing.** Radio waves, infrared, the colours you see, ultraviolet, X-rays and gamma rays are not different substances. They are all light, and they all travel at the same speed. The only difference is the size of the wave. Radio waves can be as long as a football pitch. The waves of visible light are far smaller than a hair is wide. X-rays are as small as atoms.
+
+**See some invisible light.** Point a television remote control at the camera of a mobile phone and press a button. On many phones the end of the remote shows up as a flickering spot of pale light on the screen. The remote sends its signals in infrared. Your eye cannot see it, but the camera's chip can.
+
+**Other eyes.** What counts as "visible" depends on whose eyes they are. Bees see ultraviolet, and many flowers have markings that only show in it. Some snakes sense the infrared glow of warm animals and can strike a mouse in complete darkness.
+
+**Why we see the colours we do.** The Sun gives out more of its light in the visible range than in any other, and that light passes easily through the air. Eyes developed to use the light that was there. If the Sun were a cooler star, creatures here would probably see what we call infrared.
+
+**A thermometer for the universe.** Cold things give out long waves and hot things give out short ones. The cold gas between the stars shows up in radio. Planets and dust, which are merely cool, show up in infrared. Ordinary stars shine in visible light. Gas at millions of degrees gives out X-rays. So each kind of telescope picks out things at a different temperature.
+
+**One sky, many faces.** The Milky Way in visible light is a pale band with dark lanes of dust. In infrared the dust lanes vanish and the crowded centre shines through. In radio the stars disappear and the cold gas appears. In gamma rays, as in the map above, there is a bright strip where fast particles crash into the gas. It is the same Galaxy every time.
+
+**Common mistakes.**
+
+- *Radio waves are a kind of sound.* They are light. A radio set turns them into sound. In space there is no air to carry sound, but radio waves cross it freely.
+- *All invisible rays are dangerous.* Radio waves and infrared are harmless at everyday strengths. The risky ones are at the short end: ultraviolet, X-rays and gamma rays.
+- *Pictures taken in X-rays or radio show their true colours.* Those kinds of light have no colour. Someone has to choose colours to stand for them, and a careful caption says so.
