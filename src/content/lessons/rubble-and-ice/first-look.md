@@ -2,6 +2,9 @@
 sources:
   - { label: "NASA, Asteroids", url: "https://science.nasa.gov/solar-system/asteroids/" }
   - { label: "NASA, Kuiper Belt", url: "https://science.nasa.gov/solar-system/kuiper-belt/" }
+  - { label: "NASA, Ceres", url: "https://science.nasa.gov/dwarf-planets/ceres/facts/" }
+  - { label: "Wikipedia, Asteroid belt", url: "https://en.wikipedia.org/wiki/Asteroid_belt" }
+  - { label: "NASA, OSIRIS-REx", url: "https://science.nasa.gov/mission/osiris-rex/" }
 ---
 The Sun has eight planets. It also has millions of smaller things going round it.
 
@@ -27,3 +30,19 @@ Now and then one of the icy ones falls in towards the Sun, warms up and grows a 
   <img src="/img/learn/charts/leftovers-beside-the-moon.svg" alt="Four circles to scale: the Moon, then Pluto, then much smaller Ceres and Vesta." width="800" height="400" loading="lazy" />
   <figcaption><b>A chart.</b> Even the biggest leftovers are small. Pluto, and Ceres and Vesta from the asteroid belt, drawn to scale beside our Moon.</figcaption>
 </figure>
+
+**How many, and how big?** More than 1.4 million asteroids have been found and given numbers, and more turn up every night. Almost all are small. The biggest thing in the asteroid belt, Ceres, is 940 km across, and only a few hundred are more than 100 km wide. Most are the size of a hill or a house.
+
+**Not a crowd.** Films show spacecraft dodging through tumbling rocks. The real belt is nearly empty. The asteroids are spread through a ring of space so huge that each one is, on average, about a million kilometres from its nearest neighbour. Standing on one, you would not see another.
+
+**Why no planet formed there.** The belt lies next to Jupiter, the heaviest planet by far. Its pull kept stirring the pieces up, so that when they met they smashed instead of sticking. A planet never got started.
+
+**The first one found.** On the first night of 1801 an Italian astronomer, Giuseppe Piazzi, found a faint new "star" that moved. It was Ceres. For a while it was called a planet. Then more and more small bodies were found in the same part of space, and astronomers saw that they were dealing with a whole new class of object. The same thing happened to Pluto two centuries later.
+
+**Pieces you can hold.** Bits of asteroid fall to the Earth all the time. A stone that reaches the ground is called a meteorite, and museums are full of them. Spacecraft have also gone and fetched samples. In September 2023 NASA's OSIRIS-REx brought back dust and pebbles from an asteroid called Bennu.
+
+**The far belt is hard to reach.** The icy belt beyond Neptune is so distant that only one spacecraft has ever been there. New Horizons left the Earth in January 2006 and took nine and a half years to reach Pluto.
+
+**Why they are worth the trouble.** On the Earth, rock has been melted, squeezed and worn down so many times that nothing is left from the beginning. Small bodies have just sat in the cold. They are the oldest things anyone can touch, and they show what the planets were made from.
+
+**A common mistake.** People mix up asteroids, comets and meteors. An asteroid is a body of rock or metal in space. A comet is a body of ice that grows a tail near the Sun. A meteor is the streak of light when a small piece of either burns up in our air.
