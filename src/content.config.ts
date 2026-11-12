@@ -18,7 +18,7 @@ const view = z.object({
 
 export const STRANDS = [
   'finding-your-way', 'gravity-and-orbits', 'light', 'the-sun', 'planets', 'moons', 'small-bodies',
-  'stars', 'stellar-remnants', 'other-worlds', 'the-galaxy', 'galaxies', 'the-universe', 'life', 'exploring-space',
+  'stars', 'stellar-remnants', 'other-worlds', 'the-galaxy', 'galaxies', 'the-universe', 'life', 'exploring-space', 'how-we-found-out', 'what-everything-is-made-of',
 ] as const;
 
 export const LEVELS = ['first-look', 'how-it-works', 'the-physics', 'the-frontier'] as const;

@@ -1,0 +1,9 @@
+title: "Finding the size of everything"
+strand: how-we-found-out
+order: 2
+summary: "Nobody can stretch a tape to the stars. The size of the universe was found one step at a time, over two thousand years, and every step made it far bigger."
+scene: "A drawing to scale of the Earth and the Moon, real photographs of Venus crossing the Sun, of Henrietta Leavitt and of the Andromeda galaxy, a moving drawing of a near star shifting as the Earth goes round the Sun, and a chart of how each step enlarged the known universe."
+view: { target: sun, distanceKm: 700000000 }
+terms: [parallax, astronomical-unit, light-year, cepheid, standard-candle, distance-ladder, galaxy, arcsecond]
+needs: [from-a-still-earth-to-a-moving-one]
+next: [measuring-distance, the-distance-ladder, how-big-is-the-universe]

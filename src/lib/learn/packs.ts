@@ -155,6 +155,19 @@ export const PACKS: Pack[] = [
     coming: ['Telescopes in space', 'Going back to the Moon, and on to Mars'],
     look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
   },
+  {
+    id: 'how-we-know',
+    name: 'How we found all this out',
+    blurb: 'Nobody has been further than the Moon. This is the story of how the rest was worked out from here, and of what everything turned out to be made of.',
+    photo: { src: `${P}lunar-eclipse-sequence-2025.jpg`, width: 1400, height: 516, alt: 'Seven pictures of the Moon in a row: full, then with a curved dark bite growing across it, then wholly dark red.', caption: 'The Earth’s curved shadow crossing the Moon on 14 March 2025: the oldest evidence that the Earth is a ball. Credit: NASA/Eric Bordelon.' },
+    stages: [
+      { title: 'The Earth moves', about: 'Two thousand years of argument, settled by a telescope and a stubborn planet.', lessons: ['why-the-sky-turns', 'from-a-still-earth-to-a-moving-one', 'keplers-laws', 'what-gravity-is'] },
+      { title: 'How far, how big', about: 'From the Moon to the edge of what can be seen, one step at a time.', lessons: ['finding-the-size-of-everything', 'measuring-distance', 'the-distance-ladder', 'how-big-is-the-universe'] },
+      { title: 'What it is all made of', about: 'Atoms, the four forces, and how light tells us what the stars are.', lessons: ['atoms-and-the-four-forces', 'reading-starlight', 'where-the-elements-come-from'] },
+    ],
+    coming: ['The people who changed the picture: Leavitt, Payne, Bell Burnell, Rubin', 'Finding Neptune with a pencil'],
+    look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The same sky the first astronomers puzzled over, above your own horizon.' }],
+  },
 ];
 
 export const packLessons = (pack: Pack) => pack.stages.flatMap((s) => s.lessons);

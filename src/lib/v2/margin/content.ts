@@ -19,6 +19,8 @@ export const STRAND_NAMES: Record<string, string> = {
   'the-universe': 'The universe',
   life: 'Life',
   'exploring-space': 'Exploring space',
+  'how-we-found-out': 'How we found out',
+  'what-everything-is-made-of': 'What everything is made of',
 };
 export const STRAND_ORDER = Object.keys(STRAND_NAMES);
 

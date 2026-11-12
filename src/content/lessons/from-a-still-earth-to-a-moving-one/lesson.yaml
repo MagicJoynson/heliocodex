@@ -1,0 +1,9 @@
+title: "From a still Earth to a moving one"
+strand: how-we-found-out
+order: 1
+summary: "For two thousand years almost everyone was sure the Earth stood still in the middle of everything. Five people, a telescope and one stubborn planet changed that."
+scene: "Real photographs of the Earth's curved shadow on the Moon and of pages printed in 1543 and 1610, with moving drawings of circles upon circles, of the Earth overtaking Mars, of the true shape of an orbit, and of the Moon falling."
+view: { target: sun, highlight: [earth, mars] }
+terms: [retrograde, ellipse, eccentricity, keplers-laws, gravity, parallax, orbit]
+needs: [why-the-sky-turns]
+next: [keplers-laws, what-gravity-is]
