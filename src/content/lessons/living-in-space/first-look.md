@@ -14,7 +14,7 @@ Everything on board floats: people, pencils, drops of water. That is not because
 
 Floating is fun, but the body was built for the ground. With no weight to carry, the bones that hold you up lose between 1 and 1.5 per cent of their mineral every month, and muscles shrink. So every astronaut exercises for at least two hours a day. This is Shannon Walker running on the station's treadmill in 2010. Look at the harness: without it, her first step would send her drifting off.
 
-The station goes round the Earth about once every 90 minutes. That means the Sun rises and sets 16 times in every 24 hours, with a little under an hour of daylight and then about half an hour of night. Nobody can sleep to that rhythm, so the crew ignore it. They keep to one clock, sleep in small cabins with the lights off, and work an ordinary day.
+The station goes round the Earth about once every 90 minutes. That means the Sun rises and sets 16 times in every 24 hours, usually with a little under an hour of daylight and then about half an hour of night. Nobody can sleep to that rhythm, so the crew ignore it. They keep to one clock, sleep in small cabins with the lights off, and work an ordinary day.
 
 Nothing is wasted up there, because everything has to be brought by rocket. The air is cleaned and used again. So is the water, including the crew's sweat and breath. In return they get this: a bay window with seven panes that looks straight down on the Earth. This is the Canadian astronaut David Saint-Jacques photographing the ground going by in 2019.
 
