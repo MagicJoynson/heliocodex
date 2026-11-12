@@ -27,3 +27,15 @@ Because of that rhythm, the moons pass each other at the same places on every la
 </figure>
 
 When orbits keep time like this, it is called a resonance.
+
+**Why the timing matters.** Two moons on different orbits pull on each other whenever they pass. Usually they pass at a different place each time, so one pull is undone by the next and nothing builds up. When their laps are in a simple ratio, they pass at the same place every time. Every pull is then in the same direction, like the well-timed pushes on the swing, and small pulls add up to a large effect.
+
+**What "oval" has to do with heat.** If Io's orbit were a perfect circle, Jupiter would squeeze it by the same amount all the time, and nothing would rub. Because the orbit is kept slightly oval, Io is nearer Jupiter at some times than at others. It is squeezed harder, then less hard, on every lap. Rock that is flexed again and again gets hot, as a squash ball does when it is played with.
+
+**Left alone, the heat would stop.** The squeezing itself tries to pull Io's orbit back into a circle. Without its neighbours, Io would have settled into one long ago, cooled down and frozen solid. The rhythm with Europa and Ganymede keeps undoing that. Io is volcanic today because of two other moons.
+
+**It is not only Jupiter.** At Saturn, the little moon Enceladus keeps time with a bigger moon called Dione, and that is why it is warm enough to spray water into space. Far out, Pluto goes round the Sun twice in exactly the time Neptune takes to go round three times. The same rhythm has been found among planets round other stars.
+
+**In step for good.** A rhythm like this is not luck that will pass. Once moons fall into step, the pulls between them act to keep them there. If one starts to run ahead, the next pull drags it back. That is why Jupiter's three have held their pattern for a very long time.
+
+**A common mistake.** Being in step does not mean lining up. People picture the three moons strung out in a row on one side of Jupiter. They never are. The pattern keeps them apart: when two of them pass each other, the third is always somewhere else.
