@@ -64,3 +64,12 @@ export function thumb(l: Lesson): { src: string; face: boolean } | null {
   const pack = PACKS.find((p) => packLessons(p).includes(l.id));
   return pack ? { src: pack.photo.src, face: false } : null;
 }
+
+/** A lesson's opening picture: a good photograph that is not the first one in the first look,
+ *  so the page does not show the same picture twice in a row; else its small picture. */
+export function cover(l: Lesson): { src: string; face: boolean } | null {
+  const per = l.levels.map((lv) => [...(lv.body ?? '').matchAll(/src="(\/img\/learn\/[^"]+\.(?:jpg|png|webp))"/g)].map((m) => m[1]));
+  const firstShown = per[0]?.[0];
+  const good = per.flat().find((s) => s !== firstShown && (lit[s] ?? 1) >= 0.08);
+  return good ? { src: good, face: false } : thumb(l);
+}

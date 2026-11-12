@@ -24,6 +24,9 @@ const charts = [
   { href: '/atlas/stars', name: 'The stars round the Sun', what: 'The stars within 20 light years, and every star you can see by eye, each at its measured distance.' },
   { href: '/atlas/galaxies', name: 'Our galaxy and the others', what: 'The Milky Way as a model, the small galaxies round it, the Local Group and the cosmic web.' },
 ];
+// the moon charts are many and alike, so they sit together as one line of worlds and counts
+const moonCharts = Object.entries(plates).filter(([id]) => id !== 'earth').map(([id, spec]) => ({ href: `/atlas/${id}`, name: spec.title.replace(/^The moons? of /, ''), n: count(id) }));
+const mainCharts = charts.filter((c) => !moonCharts.some((m) => m.href === c.href));
 const bySize = [...landmarks].sort((a, b) => a.metres - b.metres);
 const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked out here from a measured figure.' } as const;
 ---
@@ -37,8 +40,14 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
   <section class="row wide" id="charts">
     <div class="hang"><h2>The charts</h2><p class="note">Each one shows where its worlds are today, and every name on it will fly you there in 3D.</p></div>
     <ul class="plain-list chart-list">
-      {charts.map((c) => <li><a href={c.href}>{c.name}</a><span>{c.what}</span></li>)}
+      {mainCharts.map((c) => <li><a href={c.href}>{c.name}</a><span>{c.what}</span></li>)}
     </ul>
+    <div class="moon-charts">
+      <h3 class="label">The moons, world by world</h3>
+      <ul class="plain-list">
+        {moonCharts.map((m) => <li><a href={m.href}>{m.name}</a><span>{m.n}</span></li>)}
+      </ul>
+    </div>
   </section>
 
   <section class="row wide" id="beyond">
@@ -83,3 +92,12 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
     </div>
   </section>
 </Reading>
+
+<style>
+  .moon-charts { margin-top: .6rem; padding-top: 1.4rem; border-top: 1px solid var(--rule); }
+  .moon-charts h3 { margin: 0 0 .9rem; }
+  .moon-charts ul { display: flex; flex-wrap: wrap; gap: .7rem 2rem; }
+  .moon-charts li { display: flex; align-items: baseline; gap: .5rem; }
+  .moon-charts a { font: 400 1.12rem/1.3 var(--r-serif); }
+  .moon-charts span { font: 400 .74rem/1 var(--r-mono); color: var(--ink-faint); }
+</style>
