@@ -6,4 +6,4 @@ scene: "A beam of sunlight spread into a band of colour crossed by dark lines, w
 view: { target: sun, distanceKm: 3000000 }
 terms: [spectrum, spectral-line, doppler-shift, redshift, wavelength, hydrogen, helium, exoplanet]
 needs: [the-whole-spectrum]
-next: [telescopes]
+next: [telescopes, redshift-and-the-doppler-effect]

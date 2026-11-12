@@ -1,12 +1,30 @@
 ---
 import Analytics from '../components/Analytics.astro';
-import { sections } from '../lib/nav';
+import { sections, groups } from '../lib/nav';
+import SiteFooter from '../components/SiteFooter.astro';
+import { allLessons } from '../lib/v2/margin/content';
+import { bodies } from '../data/bodies';
+import { portraits } from '../lib/portraits';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
  * driver. Everything you see (type, colour, layout, copy) belongs to the page that uses it.
  */
 interface Props { world: string; title: string; description: string; readout?: string; accent?: string }
 const { world, title, description, readout = 'Altitude' } = Astro.props;
+// lessons whose camera looks at this world, so the fall leads on into reading
+const named = world === 'sun' ? /\bSun\b/ : world === 'earth' ? /\bEarth\b/ : new RegExp(`\\b${title}\\b`);
+const all = await allLessons();
+const aimed = all.filter((l) => (l.data as { view?: { target?: string } }).view?.target === world);
+const lessons = [...aimed, ...all.filter((l) => !aimed.includes(l) && named.test(`${l.data.title} ${l.data.summary} ${(l.data as { scene?: string }).scene ?? ''}`))].slice(0, 6);
+const thumb = (l: (typeof lessons)[number]) => {
+  for (const lv of l.levels) { const m = /src="(\/img\/learn\/[^"]+\.(?:jpg|png|webp))"/.exec(lv.body ?? ''); if (m) return m[1]; }
+  return face?.src ?? '';
+};
+const face = portraits.find((p) => p.slug === world);
+const order = bodies.map((b) => b.slug);
+const i = order.indexOf(world);
+const near = [order[i - 1], order[i + 1]].filter(Boolean).map((slug) => bodies.find((b) => b.slug === slug)!);
+const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b.slug === 'earth' ? 'The Earth' : b.name);
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -31,15 +49,15 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
     <div id="arrive" aria-hidden="true"></div>
 
     <header class="top">
-      <a class="mark" href="/">Heliocodex</a>
+      <a class="mark" href="/"><img src="/brand/heliocodex-lockup.svg" alt="Heliocodex" width="660" height="133" /></a>
       <nav class="wnav" aria-label="Main">
-        {sections.map((x) => <a href={x.href} aria-current={x.href === '/bodies' ? 'page' : undefined}>{x.href === '/bodies' ? 'All planets' : x.label}</a>)}
+        {groups.map((g) => <span class="wgroup" data-group={g.id}>{g.sections.map((x) => <a href={x.href} aria-current={x.href === '/bodies' ? 'page' : undefined}>{x.label}</a>)}</span>)}
       </nav>
       <button type="button" class="wmenu-btn" aria-expanded="false" aria-controls="wmenu">Menu</button>
     </header>
     <nav class="wmenu" id="wmenu" aria-label="Main" hidden>
       <a href="/">Home</a>
-      {sections.map((x) => <a href={x.href}>{x.href === '/bodies' ? 'All planets' : x.label}</a>)}
+      {groups.map((g) => <><p class="wmenu-h">{g.name}</p>{g.sections.map((x) => <a href={x.href}>{x.label}</a>)}</>)}
     </nav>
 
     <aside class="altitude" aria-hidden="true">
@@ -49,9 +67,39 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
     </aside>
 
     <main><slot /></main>
-    <footer class="wfoot">
-      <a href="/bodies">All planets</a><a href={`/explore?go=${world}`}>See it in 3D</a><a href="/sources">Sources</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/cookies">Cookies and storage</a><a href="/licences">Licences and credits</a><a href="/accessibility">Accessibility</a>
-    </footer>
+    <section class="more" aria-labelledby="more-h">
+      <div class="more-in">
+        <h2 id="more-h">Keep exploring</h2>
+        <div class="more-go">
+          <a class="more-btn" href={`/explore?go=${world}`}>See {world === 'sun' ? 'the Sun' : world === 'earth' ? 'the Earth' : title} in 3D</a>
+          {near.map((b) => <a class="more-link" href={`/${b.slug}`}>{order.indexOf(b.slug) < i ? '← ' : ''}{nameOf(b)}{order.indexOf(b.slug) > i ? ' →' : ''}</a>)}
+          <a class="more-link" href="/bodies">All planets</a>
+        </div>
+        {lessons.length > 0 && (
+          <>
+            <p class="more-h3">Lessons</p>
+            <ul class="more-cards">
+              {lessons.map((l) => (
+                <li><a href={`/learn/${l.id}`}>
+                  <span class="pic">{thumb(l) && <img src={thumb(l)} class:list={[{ face: thumb(l) === face?.src }]} alt="" loading="lazy" decoding="async" />}</span>
+                  <span class="name">{l.data.title}</span>
+                  <span class="line">{l.data.summary}</span>
+                </a></li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
+    </section>
+    <SiteFooter />
+    <script>
+      // the altitude ruler belongs to the fall; it steps aside once the page reaches its ending
+      const ruler = document.querySelector<HTMLElement>('.altitude');
+      const end = document.querySelector('.more');
+      if (ruler && end && 'IntersectionObserver' in window) {
+        new IntersectionObserver(([e]) => { ruler.style.opacity = e.isIntersecting ? '0' : ''; }).observe(end);
+      }
+    </script>
 
     <script>
       import { createJourney } from '../lib/journey/engine';
@@ -136,10 +184,39 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
       .top a { color: var(--ink); text-decoration: none; text-shadow: 0 1px 10px rgba(0,0,0,.55); }
       .wnav { display: flex; gap: clamp(12px, 1.6vw, 22px); }
       .wnav a { color: var(--ink-soft); }
+      /* the opening words sit over the brightest view of the planet: a soft shade behind them keeps them readable */
+      main > .beat:first-of-type { position: relative; isolation: isolate; }
+      main > .beat:first-of-type::before { content: ''; position: absolute; z-index: -1; inset: -10vh -6vw -6vh -6vw; pointer-events: none;
+        background: radial-gradient(ellipse 60% 70% at 18% 55%, rgba(0,0,0,.62), rgba(0,0,0,.35) 45%, transparent 75%); }
+      main > .beat:first-of-type :is(h1, p) { text-shadow: 0 1px 3px rgba(0,0,0,.55), 0 2px 24px rgba(0,0,0,.55); }
+      @media (max-width: 760px) { main > .beat:first-of-type::before { background: linear-gradient(to top, rgba(0,0,0,.72), rgba(0,0,0,.4) 55%, transparent 90%); } }
+      .wgroup { display: flex; gap: clamp(12px, 1.6vw, 22px); }
+      .wgroup + .wgroup { padding-left: clamp(12px, 1.6vw, 22px); border-left: 1px solid rgba(255,255,255,.22); }
+      .wgroup[data-group='explore'] a { color: var(--ink); }
+      .wmenu-h { font: 400 .64rem/1 var(--mono); letter-spacing: .14em; color: var(--ink-faint, #8a8478); margin: 12px 16px 2px; }
       .wnav a[aria-current] { color: var(--ink); }
       .wmenu-btn { display: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink); background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
       .wmenu { position: fixed; z-index: 11; top: 58px; right: var(--pad); display: grid; min-width: 14rem; background: rgba(8,8,10,.96); border: 1px solid rgba(255,255,255,.16); padding: 6px 0; font: 400 .78rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
       .wmenu[hidden] { display: none; }
+      .top .mark img { display: block; height: 22px; width: auto; filter: drop-shadow(0 1px 8px rgba(0,0,0,.6)); }
+      .more { position: relative; z-index: 5; background: #0b0b0c; color: #ece7dc; font-family: 'Spectral', Georgia, serif; border-top: 1px solid rgba(236,231,220,.12); }
+      .more-in { max-width: 80rem; margin: 0 auto; padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 64px); }
+      .more h2::before, .more h2::after { display: none !important; }
+      .more h2 { font: 300 clamp(1.8rem, 3vw, 2.6rem)/1.1 'Spectral', Georgia, serif; letter-spacing: -.015em; margin: 0 0 1.4rem; color: #ece7dc; }
+      .more-go { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; font: 400 .76rem/1 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
+      .more-btn { padding: 15px 22px; border-radius: 999px; background: #e9c48a; color: #160f05 !important; text-decoration: none; }
+      .more-btn:hover { background: #f3d4a2; }
+      .more-link { color: #ece7dc; text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+      .more-link:hover { color: #e9c48a; }
+      .more-h3 { font: 400 .72rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #8a8478; margin: 3rem 0 1.2rem; }
+      .more-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 2rem 1.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+      .more-cards a { display: grid; gap: .6rem; text-decoration: none; color: #ece7dc; }
+      .more-cards .pic { display: block; position: relative; aspect-ratio: 16 / 9; background: radial-gradient(circle at 30% 30%, #2a2217, #0b0b0c 70%); overflow: hidden; border-radius: 3px; }
+      .more-cards img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      .more-cards img.face { object-fit: contain; padding: 3% 0; background: #000; }
+      .more-cards .name { font: 400 1.2rem/1.25 'Spectral', Georgia, serif; }
+      .more-cards a:hover .name { color: #e9c48a; }
+      .more-cards .line { font: 300 .95rem/1.5 'Spectral', Georgia, serif; color: #8a8478; }
       .wfoot { position: relative; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 28px var(--pad) 36px; background: rgba(0,0,0,.7); font: 400 .72rem/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
       .wfoot a { color: var(--ink-soft); text-decoration: none; }
       .wfoot a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }

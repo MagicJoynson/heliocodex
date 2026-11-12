@@ -1,0 +1,9 @@
+title: "Giants and supergiants"
+strand: stars
+order: 14
+summary: "A star near the end of its life swells to a size that is hard to believe. The biggest would swallow the inner planets whole, yet are thinner than the air you breathe."
+scene: "A moving drawing to scale of the Sun swelling into a red giant, a drawing to scale of the Sun beside five giant stars, real pictures of the faces of two supergiants and of the first star seen close up in another galaxy, and a real photograph of what a supergiant leaves behind."
+view: { target: neighbourhood }
+terms: [red-giant, main-sequence, luminosity, nuclear-fusion, variable-star, supernova, planetary-nebula, white-dwarf]
+needs: [how-stars-live-and-die]
+next: [supernovae, stars-that-change, white-dwarfs]

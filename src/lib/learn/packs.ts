@@ -67,12 +67,12 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'What a star is', about: 'Begin with the one star we can see close up.', lessons: ['what-the-sun-is', 'what-a-star-is', 'how-the-sun-shines'] },
       { title: 'Reading a star', about: 'Colour, brightness and distance: how anything is known about a point of light.', lessons: ['colour-and-brightness', 'reading-starlight', 'measuring-distance'] },
-      { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'the-stars-you-can-see', 'double-and-multiple-stars', 'stars-that-change', 'star-clusters'] },
-      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'red-dwarfs', 'brown-dwarfs', 'the-stars-you-can-see', 'double-and-multiple-stars', 'stars-that-change', 'star-clusters'] },
+      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'giants-and-supergiants', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'What stars leave us', about: 'Almost every atom heavier than helium was made by a star.', lessons: ['where-the-elements-come-from'] },
       { title: 'Stars as measuring sticks', about: 'How certain stars give the distances to other galaxies.', lessons: ['the-distance-ladder'] },
     ],
-    coming: ['Brown dwarfs', 'Red dwarfs, the commonest stars', 'Giants and supergiants'],
+    coming: [],
     look: [{ href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope, with its distance, colour and place in your sky.' }, { href: '/sky', text: 'Tonight’s sky', about: 'Find the stars from these lessons over your own horizon.' }],
   },
   {
@@ -82,10 +82,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}m87-black-hole-eht.jpg`, width: 1200, height: 1200, alt: 'A blurred orange ring, brighter along its lower edge, round a dark centre.', caption: 'The black hole in the galaxy M87, published on 10 April 2019. A photograph, not a drawing. Credit: EHT Collaboration, CC BY 4.0.' },
     stages: [
       { title: 'What you need first', about: 'Gravity, and why a star cannot last for ever.', lessons: ['what-gravity-is', 'how-stars-live-and-die'] },
-      { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
-      { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'falling-into-a-black-hole', 'gravitational-waves', 'active-galaxies-and-quasars'] },
+      { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'magnetars-and-gamma-ray-bursts', 'what-a-black-hole-is'] },
+      { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'falling-into-a-black-hole', 'do-black-holes-last-for-ever', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
-    coming: ['Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
+    coming: [],
     look: [{ href: '/explore?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
@@ -109,11 +109,11 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}antares-surface-vlti.jpg`, width: 1100, height: 1100, alt: 'A blurred orange disc with brighter and darker patches, on black.', caption: 'The face of another star: Antares, 550 light years away, built up from four telescopes working as one. Credit: ESO/K. Ohnaka, CC BY 4.0.' },
     stages: [
       { title: 'What light carries', about: 'The only messenger we have from almost everywhere.', lessons: ['light-the-only-messenger', 'the-whole-spectrum'] },
-      { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight'] },
-      { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'measuring-distance', 'the-distance-ladder'] },
+      { title: 'Reading it', about: 'Temperature, make-up and motion, all from colour.', lessons: ['colour-and-brightness', 'reading-starlight', 'redshift-and-the-doppler-effect'] },
+      { title: 'Gathering it, and measuring with it', about: 'Telescopes, and the chain of methods that gives distances.', lessons: ['telescopes', 'telescopes-in-space', 'measuring-distance', 'the-distance-ladder'] },
       { title: 'Beyond light', about: 'Particles and ripples that bring news light cannot.', lessons: ['messengers-other-than-light'] },
     ],
-    coming: ['Telescopes in space', 'Redshift and the Doppler effect'],
+    coming: [],
     look: [{ href: '/sources', text: 'Where the pictures come from', about: 'Every photograph on the site, with who took it and how.' }],
   },
   {
@@ -149,11 +149,24 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}earthset-artemis-ii.jpg`, width: 1100, height: 733, alt: 'The blue and white Earth, half hidden, sinking behind the grey cratered edge of the Moon.', caption: 'The Earth setting behind the far side of the Moon, photographed by the crew of Artemis II on 6 April 2026. Credit: NASA.' },
     stages: [
       { title: 'Getting off the ground', about: 'What a rocket does, what an orbit is, and how a spacecraft finds its way to another world.', lessons: ['how-a-rocket-works', 'what-an-orbit-is', 'leaving-and-arriving'] },
-      { title: 'Where we have been', about: 'People as far as the Moon, and machines to every planet and beyond.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers'] },
+      { title: 'Where we have been', about: 'People as far as the Moon, machines to every planet and beyond, and telescopes above the air.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers', 'telescopes-in-space'] },
       { title: 'Staying there', about: 'Life aboard the Space Station, and what the body makes of it.', lessons: ['living-in-space'] },
     ],
-    coming: ['Telescopes in space', 'Going back to the Moon, and on to Mars'],
+    coming: ['Going back to the Moon, and on to Mars'],
     look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
+  },
+  {
+    id: 'how-we-know',
+    name: 'How we found all this out',
+    blurb: 'Nobody has been further than the Moon. This is the story of how the rest was worked out from here, and of what everything turned out to be made of.',
+    photo: { src: `${P}lunar-eclipse-sequence-2025.jpg`, width: 1400, height: 516, alt: 'Seven pictures of the Moon in a row: full, then with a curved dark bite growing across it, then wholly dark red.', caption: 'The Earth’s curved shadow crossing the Moon on 14 March 2025: the oldest evidence that the Earth is a ball. Credit: NASA/Eric Bordelon.' },
+    stages: [
+      { title: 'The Earth moves', about: 'Two thousand years of argument, settled by a telescope and a stubborn planet.', lessons: ['why-the-sky-turns', 'from-a-still-earth-to-a-moving-one', 'keplers-laws', 'what-gravity-is'] },
+      { title: 'How far, how big', about: 'From the Moon to the edge of what can be seen, one step at a time.', lessons: ['finding-the-size-of-everything', 'measuring-distance', 'the-distance-ladder', 'how-big-is-the-universe'] },
+      { title: 'What it is all made of', about: 'Atoms, the four forces, and how light tells us what the stars are.', lessons: ['atoms-and-the-four-forces', 'reading-starlight', 'where-the-elements-come-from'] },
+    ],
+    coming: ['The people who changed the picture: Leavitt, Payne, Bell Burnell, Rubin', 'Finding Neptune with a pencil'],
+    look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The same sky the first astronomers puzzled over, above your own horizon.' }],
   },
 ];
 

@@ -1,0 +1,9 @@
+title: "Atoms, and the four forces"
+strand: what-everything-is-made-of
+order: 1
+summary: "Everything you can touch is built from three kinds of particle, and everything that ever happens to it is the work of just four forces. Stars and galaxies follow from that."
+scene: "A real microscope picture of single gold atoms, drawings of what is inside an atom and of how the count of protons makes each element, a chart of the strengths of the four forces, and real photographs of the Sun and of a galaxy."
+view: { target: sun }
+terms: [hydrogen, helium, nuclear-fusion, gravity, mass, plasma, photon]
+needs: []
+next: [how-the-sun-shines, where-the-elements-come-from, the-first-minutes]

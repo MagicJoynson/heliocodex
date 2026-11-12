@@ -1,0 +1,9 @@
+title: "Brown dwarfs"
+strand: stars
+order: 13
+summary: "Too heavy to be planets and too light to shine as stars, brown dwarfs glow faintly with leftover heat and slowly go dark. Our galaxy may hold tens of billions."
+scene: "A chart of mass from Jupiter to the Sun, a drawing to scale of Jupiter beside a brown dwarf and a small star, the two real pictures that proved brown dwarfs exist, a moving drawing of one cooling over billions of years, a weather map of the nearest one, and a chart to scale of the Sun's nearest neighbours."
+view: { target: neighbourhood }
+terms: [brown-dwarf, red-dwarf, nuclear-fusion, gas-giant, infrared, kelvin, mass, star]
+needs: [what-a-star-is, red-dwarfs]
+next: [the-nearest-stars, three-kinds-of-planet]
