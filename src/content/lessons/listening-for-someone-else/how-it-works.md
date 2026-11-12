@@ -23,7 +23,7 @@ It is not a message. It is the shape a steady source makes as it drifts through 
 
 **A hundred years, a hundred light years.** Radio travels at the speed of light, so a signal sent a hundred years ago is now a hundred light years away. The disc of the Milky Way is about 100,000 light years across. A ball 200 light years across is one five-hundredth of that. Worked out here, in round numbers.
 
-**The record's makers.** The contents of the Voyager record were chosen by a committee led by Carl Sagan. The man in the photograph is John Casani, who managed the Voyager project. He is holding a small flag that was sewn into the spacecraft's blankets, and the spacecraft behind him is Voyager 2.
+**The record's makers.** The contents of the Voyager record were chosen by a committee led by Carl Sagan. The man in the photograph is John Casani, who managed the Voyager project. The spacecraft behind him is Voyager 2.
 
 **The puzzle's possible answers.** Fermi asked his question on the way to lunch at Los Alamos in New Mexico. The answers offered since fall into a few families: life, or clever life, is very rare; civilisations destroy themselves or fade quickly; they send signals for only a short time; or they are there and choose to keep away. None can be tested yet except by more searching.
 

@@ -21,7 +21,7 @@ lastChecked: 2026-11-11
 | Hot springs such as Yellowstone's | Microbes that thrive above 80 °C, and others in strong acid |
 | Sea-floor vents | Whole communities with no sunlight; one microbe grows at 122 °C |
 | The dry valleys of Antarctica | Microbes, in a frozen desert |
-| Open space, for 12 days | Water bears, which came home alive |
+| Open space, for 10 days | Water bears, which came home alive |
 
 **How hot is the vent water?** NOAA gives "over 700 degrees Fahrenheit", which is about 370 °C. Worked out here. It does not boil because of the pressure of the deep sea.
 

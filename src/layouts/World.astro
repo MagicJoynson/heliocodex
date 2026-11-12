@@ -154,7 +154,7 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
       .ruler i { position: absolute; right: -2px; width: 17px; height: 2px; background: var(--accent); top: 0; transition: top .12s linear; }
       @media (max-width: 760px) { .altitude { display: none; } }
       @media (max-width: 1020px) { .wnav { display: none; } .wmenu-btn { display: block; } .top { align-items: center; padding-top: 12px; } }
-      main { position: relative; z-index: 5; }
+      main { position: relative; z-index: 5; overflow-x: clip; }
       .beat { min-height: 120svh; display: grid; align-content: center; gap: 56px; padding: 18svh var(--pad); }
       .beat:first-child { min-height: 100svh; align-content: end; padding-bottom: 12svh; }
       .beat.last { min-height: 100svh; align-content: end; padding-bottom: 12svh; padding-top: 22svh; }

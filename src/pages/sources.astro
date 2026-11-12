@@ -17,6 +17,7 @@ const plates = bodies.flatMap((b) => {
   return out;
 });
 const factSheets = bodies.map((b) => ({ name: b.slug === 'sun' ? 'The Sun' : b.name, url: `https://nssdc.gsfc.nasa.gov/planetary/factsheet/${b.slug}fact.html` }));
+import { portraits } from '../lib/portraits';
 import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places, D3_CELESTIAL } from '../lib/v2/atlas/places';
 ---
 <Base title="Sources" path="/sources" description="Where every number, map and photograph on Heliocodex comes from, and which parts are drawn rather than photographed.">
@@ -57,6 +58,23 @@ import { HYG, MCCONNACHIE, TWO_MRS, WMAP, places, D3_CELESTIAL } from '../lib/v2
       <h2>The stars</h2>
       <div class="entry-body">
         <p>The 9,000 or so stars behind every scene are the <a href="https://heasarc.gsfc.nasa.gov/w3browse/star-catalog/bsc5p.html">Yale Bright Star Catalogue</a> (5th revised edition, Hoffleit and Warren, via NASA HEASARC): every star you could see from a dark site on Earth, placed where it really is, sized by brightness and coloured by its measured colour index.</p>
+      </div>
+    </section>
+
+    <section class="entry" id="portraits">
+      <h2>Portraits of the planets</h2>
+      <div class="entry-body">
+        <p>The photographs of the Sun and planets on the home page and the planets page, each made smaller for the web:</p>
+        <ul>
+          {portraits.map((p) => <li><span>{p.name}</span> {p.credit}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="entry" id="videos">
+      <h2>Videos</h2>
+      <div class="entry-body">
+        <p>A few lessons carry a NASA video, which plays from YouTube only when its Play button is pressed. The still shown before that is kept on this site. They are <a href="https://svs.gsfc.nasa.gov/14576">a flight into a black hole</a> (NASA’s Goddard Space Flight Center/J. Schnittman and B. Powell), the <a href="https://www.youtube.com/watch?v=l3QQQu7QLoM">active Sun</a> (NASA’s Goddard Space Flight Center/SDO) and the <a href="https://svs.gsfc.nasa.gov/4619">tour of the Moon</a> (NASA’s Scientific Visualization Studio). NASA does not endorse Heliocodex.</p>
       </div>
     </section>
 
