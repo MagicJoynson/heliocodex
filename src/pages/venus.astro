@@ -1,4 +1,6 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
+import { moonCount } from '../data/moon-counts';
 import '@fontsource/bodoni-moda/400.css';
 import '@fontsource/bodoni-moda/400-italic.css';
 import '@fontsource-variable/source-serif-4';
@@ -7,7 +9,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 
-const p = facts.planets.venus.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.venus.physical, moons: moonCount('venus') } as unknown as Record<string, number>;
 const e = facts.planets.venus.elements;
 const rows: [string, string][] = [
   ['Radius', `${fmt(p.radius_mean_km)} km`],
@@ -28,6 +30,7 @@ const rows: [string, string][] = [
       <p class="kicker">Second planet · 0.72 au from the Sun</p>
       <h1>Venus</h1>
       <p class="lead">Nearly the same size as Earth, and the hottest planet there is. Almost everything we know about the ground comes from machines that lasted a couple of hours.</p>
+      <WorldGlance world="venus" />
     </div>
   </section>
 

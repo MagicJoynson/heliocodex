@@ -18,6 +18,11 @@ lastChecked: 2026-11-11
 | Air near the ground | 78 per cent nitrogen, 21 per cent oxygen, 1 per cent everything else |
 | Moons | One |
 
+<figure class="photo">
+  <img src="/img/learn/earth-thin-air-sunrise-iss.jpg" alt="The curved edge of the Earth at sunrise, with the air showing as a thin blue line against black space" width="1100" height="642" loading="lazy" />
+  <figcaption><b>A photograph.</b> All the air there is. The Sun rises behind the Earth, seen from the International Space Station over Indonesia on 21 April 2019, and the atmosphere shows as the thin blue line. Credit: NASA.</figcaption>
+</figure>
+
 **Inside the Earth.** Nobody has seen any of this. It is worked out from the outside, above all from the way the waves from earthquakes travel through the planet.
 
 | Layer | What it is | Thickness |
@@ -26,6 +31,11 @@ lastChecked: 2026-11-11
 | Outer core | The same metals, liquid | About 2,300 km |
 | Mantle | Hot rock that flows very slowly | About 2,900 km |
 | Crust | The solid rock at the surface | About 30 km under the land, about 5 km under the sea |
+
+<figure class="photo">
+  <img src="/img/learn/charts/earth-layers-thickness.svg" alt="A bar chart of the thickness of the layers of the Earth: crust about 30 km, mantle about 2,900 km, liquid outer core about 2,300 km, solid inner core 1,221 km" width="800" height="490" loading="lazy" />
+  <figcaption><b>A chart.</b> The layers in the table, drawn to one scale. The crust, which holds every mountain, sea floor and mine, is the short white mark at the top.</figcaption>
+</figure>
 
 The Earth sorted itself into these layers when it was young and molten. The heavy metals sank to the middle and the lighter rock floated to the top.
 
@@ -36,3 +46,9 @@ The Earth sorted itself into these layers when it was young and molten. The heav
 **The magnet.** The field comes from the liquid metal of the outer core, kept stirring by the planet's heat and its spin. It is not fixed. Every so often, on average about every 300,000 years but very unevenly, north and south swap over.
 
 **The odd one out.** Venus is almost the Earth's twin in size, and Mars has a day nearly the same length. Neither has seas, moving plates or, as far as anyone knows, life. Why the Earth turned out so differently from its neighbours is one of the big questions about planets, and it matters for judging the planets being found round other stars.
+
+
+<figure class="photo">
+  <img src="/img/learn/earthrise-apollo-8.jpg" alt="The blue and white Earth, half lit, above the grey horizon of the Moon" width="1100" height="1100" loading="lazy" />
+  <figcaption><b>A photograph.</b> The Earth rising over the edge of the Moon, taken from Apollo 8 on 24 December 1968. Credit: NASA.</figcaption>
+</figure>

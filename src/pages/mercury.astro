@@ -1,11 +1,13 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
+import { moonCount } from '../data/moon-counts';
 import '@fontsource-variable/archivo/wdth.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear } from '../lib/format';
 
-const p = facts.planets.mercury.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.mercury.physical, moons: moonCount('mercury') } as unknown as Record<string, number>;
 const e = facts.planets.mercury.elements;
 const rows: [string, string][] = [
   ['Radius', `${fmt(p.radius_mean_km)} km`],
@@ -25,6 +27,7 @@ const rows: [string, string][] = [
       <p class="kicker">First planet · 0.39 au from the Sun</p>
       <h1>Mercury</h1>
       <p class="lead">The smallest planet, and the one nearest the Sun. It has almost no air, so nothing softens the light. Keep scrolling and you will land near its north pole, where the Sun barely gets off the horizon.</p>
+      <WorldGlance world="mercury" />
     </div>
   </section>
 

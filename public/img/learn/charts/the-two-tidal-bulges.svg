@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 560" width="1100" height="560">
+<rect width="1100" height="560" fill="#07080c"/>
+<defs><radialGradient id="glow"><stop offset="0" stop-color="#ffe2a8"/><stop offset=".35" stop-color="#f0c27a"/><stop offset="1" stop-color="#f0c27a" stop-opacity="0"/></radialGradient></defs>
+<ellipse cx="400" cy="300" rx="168" ry="120" fill="#2f5d8a" fill-opacity=".55"/>
+<circle cx="400" cy="300" r="110" fill="#3b4a3a"/><circle cx="400" cy="300" r="110" fill="none" stroke="#ece7dc" stroke-opacity=".25"/>
+<circle cx="400" cy="300" r="130" fill="none" stroke="#ece7dc" stroke-opacity=".3" stroke-dasharray="3 6"/>
+<text class="lab" x="400.0" y="308.0" font-size="24" fill="#ece7dc" text-anchor="middle">Earth</text>
+<circle cx="1010" cy="300" r="30" fill="#d9d4c7"/><text class="lab" x="1010.0" y="364.0" font-size="24" fill="#ece7dc" text-anchor="middle">Moon</text><g class="km" data-key="The Moon, off to the right"><circle cx="1010.0" cy="355.6" r="33.0" fill="#e9c48a"/><text x="1010.0" y="371.0" font-size="44" fill="#0b0b0c" text-anchor="middle">1</text></g>
+<line x1="510" y1="300" x2="602" y2="300" stroke="#e9c48a" stroke-width="3"/><path d="M591,292 L603,300 L591,308" fill="none" stroke="#e9c48a" stroke-width="3"/>
+<line x1="400" y1="340" x2="466" y2="340" stroke="#e9c48a" stroke-width="3"/><path d="M455,332 L467,340 L455,348" fill="none" stroke="#e9c48a" stroke-width="3"/>
+<line x1="290" y1="300" x2="336" y2="300" stroke="#e9c48a" stroke-width="3"/><path d="M325,292 L337,300 L325,308" fill="none" stroke="#e9c48a" stroke-width="3"/>
+<text class="lab" x="610.0" y="150.0" font-size="26" fill="#ece7dc" text-anchor="start">High tide</text><g class="km" data-key="High tide on the near side: pulled hardest, its water heaps towards the Moon"><circle cx="643.0" cy="140.9" r="33.0" fill="#e9c48a"/><text x="643.0" y="156.3" font-size="44" fill="#0b0b0c" text-anchor="middle">2</text></g>
+<text class="lab" x="610.0" y="178.0" font-size="22" fill="#a9a396" text-anchor="start">This side is pulled hardest,</text>
+<text class="lab" x="610.0" y="204.0" font-size="22" fill="#a9a396" text-anchor="start">so its water heaps towards the Moon</text>
+<text class="lab" x="220.0" y="244.0" font-size="26" fill="#ece7dc" text-anchor="end">High tide</text><g class="km" data-key="High tide on the far side: pulled least, its water is left behind"><circle cx="187.0" cy="234.9" r="33.0" fill="#e9c48a"/><text x="187.0" y="250.3" font-size="44" fill="#0b0b0c" text-anchor="middle">3</text></g>
+<text class="lab" x="220.0" y="272.0" font-size="22" fill="#a9a396" text-anchor="end">This side is pulled least,</text>
+<text class="lab" x="220.0" y="298.0" font-size="22" fill="#a9a396" text-anchor="end">so its water is left behind</text>
+<text class="lab" x="400.0" y="150.0" font-size="26" fill="#ece7dc" text-anchor="middle">Low tide</text><g class="km" data-key="Low tide, top and bottom"><circle cx="400.0" cy="140.9" r="33.0" fill="#e9c48a"/><text x="400.0" y="156.3" font-size="44" fill="#0b0b0c" text-anchor="middle">4</text></g>
+<text class="lab" x="400.0" y="466.0" font-size="26" fill="#ece7dc" text-anchor="middle">Low tide</text>
+<text class="lab" x="700.0" y="536.0" font-size="21" fill="#e9c48a" text-anchor="middle">Gold arrows: the Moon’s pull on each part of the Earth</text><g class="km" data-key="Gold arrows: the Moon’s pull on each part of the Earth, longest nearest the Moon"><circle cx="410.0" cy="528.6" r="33.0" fill="#e9c48a"/><text x="410.0" y="544.0" font-size="44" fill="#0b0b0c" text-anchor="middle">5</text></g>
+</svg>

@@ -1,4 +1,6 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
+import { moonCount } from '../data/moon-counts';
 import '@fontsource/libre-caslon-display';
 import '@fontsource-variable/newsreader';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -6,7 +8,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 
-const p = facts.planets.earth.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.earth.physical, moons: moonCount('earth') } as unknown as Record<string, number>;
 const rows: [string, string][] = [
   ['Radius', `${fmt(p.radius_mean_km)} km`],
   ['Mass', `${fmt(p.mass_1e24kg, 4)} × 10²⁴ kg`],
@@ -25,6 +27,7 @@ const rows: [string, string][] = [
       <p class="kicker">Third planet · 1 au from the Sun</p>
       <h1>Earth</h1>
       <p class="lead">You already know this place. Here it is from the outside, with everything you can’t see from the ground.</p>
+      <WorldGlance world="earth" />
     </div>
   </section>
 

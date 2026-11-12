@@ -95,3 +95,19 @@ body:has(.reading) { background: #0b0b0c; }
   .reading-head.with-pic { min-height: 0; padding-top: 9rem; }
   .reading-head.with-pic::before { width: auto; left: calc(-1 * var(--gutter)); bottom: 45%; -webkit-mask-image: linear-gradient(to top, transparent, #000 60%); mask-image: linear-gradient(to top, transparent, #000 60%); opacity: .7; }
 }
+
+/* drawn charts, put into the page at build time (src/lib/charts.mjs) so they are set in the site's own type */
+.prose svg.chart { display: block; width: 100%; height: auto; font-family: var(--r-serif); font-weight: 400; }
+.prose svg.chart > rect:first-child { fill: transparent; }
+.prose figure:has(svg.chart) { background: #0e0e10; border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1rem .9rem; }
+/* numbered keys: a drawing's words become numbers on a phone, with the words in a list under it */
+.prose svg.chart .km { display: none; }
+.prose .chart-key { display: none; }
+/* "narrow" is set by the script in Reading.astro when a drawing is shown under 560px wide, on a phone or in a narrow column */
+.prose figure.narrow {
+  & svg.chart.keyed .lab { display: none; }
+  & svg.chart.keyed .km { display: inline; }
+  & .chart-key { display: block; counter-reset: k; list-style: none; margin: .9rem 0 .2rem; padding: 0; font: 400 .95rem/1.45 var(--r-serif); color: var(--ink-soft); }
+  & .chart-key li { counter-increment: k; padding: 0; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .5rem; margin: 0 0 .35rem; }
+  & .chart-key li::before { position: static; left: auto; top: auto; content: counter(k); display: grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: #e9c48a; color: #0b0b0c; font: 500 .74rem/1 var(--r-mono); margin-top: .1rem; }
+}

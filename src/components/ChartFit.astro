@@ -1,0 +1,24 @@
+---
+// Sizes the words in every drawing and chart on the page; see the note in the script.
+---
+<script>
+  // One rule for the words in drawings and charts: however wide a drawing is shown, its largest words
+  // come out at 17px on screen, everything else shrinks with them in proportion, and nothing goes under
+  // 12px. The sizes written in the file are the most a word may grow to.
+  const fit = () => {
+    for (const svg of document.querySelectorAll<SVGSVGElement>('svg.chart')) {
+      const vb = svg.viewBox.baseVal, w = svg.getBoundingClientRect().width;
+      if (!vb || !vb.width || !w) continue;
+      svg.closest('figure')?.classList.toggle('narrow', w < 560 && svg.classList.contains('keyed'));
+      const scale = w / vb.width, texts = [...svg.querySelectorAll<SVGTextElement>('text')].filter((t) => !t.closest('.km'));
+      for (const t of texts) if (!t.dataset.fs) t.dataset.fs = String(parseFloat(getComputedStyle(t).fontSize) || 16);
+      const most = Math.max(...texts.map((t) => +t.dataset.fs!));
+      const f = Math.min(1, 17 / (most * scale));
+      for (const t of texts) { const fs = +t.dataset.fs!; t.style.fontSize = `${Math.max(fs * f, 12 / scale).toFixed(1)}px`; }
+    }
+  };
+  // charts can be hidden at first (a story that opens later) or change width, so each is watched
+  let pending = 0;
+  const ro = new ResizeObserver(() => { cancelAnimationFrame(pending); pending = requestAnimationFrame(fit); });
+  for (const svg of document.querySelectorAll('svg.chart')) ro.observe(svg);
+</script>

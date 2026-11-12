@@ -1,0 +1,26 @@
+---
+// Keeps your place when you step into the 3D view and come back. Going in from any page, it notes
+// the page, its heading and how far down you were (in this tab only, sessionStorage). The 3D view
+// then offers a way back to that page, and coming back puts you where you left off.
+---
+<script is:inline>
+  (function () {
+    var KEY = 'hc-from';
+    try {
+      var from = JSON.parse(sessionStorage.getItem(KEY) || 'null');
+      if (from && from.back && from.href === location.pathname + location.search) {
+        from.back = false;
+        sessionStorage.setItem(KEY, JSON.stringify(from));
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        addEventListener('load', function () { scrollTo(0, from.y || 0); });
+      }
+    } catch (e) {}
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="/explore"]') : null;
+      if (!a) return;
+      var h1 = document.querySelector('h1');
+      var name = (h1 && h1.textContent ? h1.textContent : document.title.split(' · ')[0]).replace(/\s+/g, ' ').trim();
+      try { sessionStorage.setItem(KEY, JSON.stringify({ href: location.pathname + location.search, name: name.length > 40 ? name.slice(0, 38) + '…' : name, y: Math.round(scrollY) })); } catch (e2) {}
+    }, true);
+  })();
+</script>

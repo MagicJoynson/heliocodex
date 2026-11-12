@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 800" width="1100" height="800">
+<rect width="1100" height="800" fill="#07080c"/>
+<defs><radialGradient id="glow"><stop offset="0" stop-color="#ffe2a8"/><stop offset=".35" stop-color="#f0c27a"/><stop offset="1" stop-color="#f0c27a" stop-opacity="0"/></radialGradient></defs>
+<line x1="40" y1="250" x2="170" y2="250" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/><path d="M160,243 L172,250 L160,257" fill="none" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/>
+<line x1="40" y1="330" x2="170" y2="330" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/><path d="M160,323 L172,330 L160,337" fill="none" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/>
+<line x1="40" y1="410" x2="170" y2="410" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/><path d="M160,403 L172,410 L160,417" fill="none" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/>
+<line x1="40" y1="490" x2="170" y2="490" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/><path d="M160,483 L172,490 L160,497" fill="none" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/>
+<line x1="40" y1="570" x2="170" y2="570" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/><path d="M160,563 L172,570 L160,577" fill="none" stroke="#e9c48a" stroke-opacity=".55" stroke-width="2"/>
+<text class="lab" x="105.0" y="215.0" font-size="24" fill="#e9c48a" text-anchor="middle">Sunlight</text><g class="km" data-key="Sunlight, coming from the Sun far off to the left"><circle cx="105.0" cy="206.6" r="33.0" fill="#e9c48a"/><text x="105.0" y="222.0" font-size="44" fill="#0b0b0c" text-anchor="middle">1</text></g>
+<circle cx="640" cy="400" r="170" fill="none" stroke="#ece7dc" stroke-opacity=".25" stroke-width="1.5" stroke-dasharray="2 7" stroke-linecap="round"/>
+<circle cx="640.0" cy="400.0" r="48.0" fill="#1c2636" stroke="#ece7dc" stroke-opacity=".25"/><path d="M640.0,448.0 A48.0,48.0 0 0 1 640.0,352.0 Z" fill="#7fa8d8"/>
+<text class="lab" x="640.0" y="482.0" font-size="24" fill="#ece7dc" text-anchor="middle">Earth</text>
+<line x1="440.0" y1="400.0" x2="382.0" y2="400.0" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="470.0" cy="400.0" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M470.0,420.0 A20.0,20.0 0 0 1 470.0,380.0 Z" fill="#d9d4c7"/>
+<circle cx="350.0" cy="400.0" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/>
+<text class="lab" x="304.0" y="407.0" font-size="22" fill="#ece7dc" text-anchor="end">New Moon</text><g class="km" data-key="New Moon"><circle cx="271.0" cy="399.3" r="33.0" fill="#e9c48a"/><text x="271.0" y="414.7" font-size="44" fill="#0b0b0c" text-anchor="middle">2</text></g>
+<line x1="498.6" y1="541.4" x2="457.6" y2="582.4" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="519.8" cy="520.2" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M519.8,540.2 A20.0,20.0 0 0 1 519.8,500.2 Z" fill="#d9d4c7"/>
+<circle cx="434.9" cy="605.1" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M434.9,577.1 A28.0,28.0 0 0 1 434.9,633.1 A19.8,28.0 0 0 0 434.9,577.1 Z" fill="#d9d4c7"/>
+<text class="lab" x="394.9" y="655.1" font-size="22" fill="#ece7dc" text-anchor="end">Waxing crescent</text><g class="km" data-key="Waxing crescent"><circle cx="361.9" cy="647.4" r="33.0" fill="#e9c48a"/><text x="361.9" y="662.8" font-size="44" fill="#0b0b0c" text-anchor="middle">3</text></g>
+<line x1="640.0" y1="600.0" x2="640.0" y2="658.0" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="640.0" cy="570.0" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M640.0,590.0 A20.0,20.0 0 0 1 640.0,550.0 Z" fill="#d9d4c7"/>
+<circle cx="640.0" cy="690.0" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M640.0,662.0 A28.0,28.0 0 0 1 640.0,718.0 A0.0,28.0 0 0 0 640.0,662.0 Z" fill="#d9d4c7"/>
+<text class="lab" x="640.0" y="752.0" font-size="22" fill="#ece7dc" text-anchor="middle">First quarter</text><g class="km" data-key="First quarter"><circle cx="640.0" cy="744.3" r="33.0" fill="#e9c48a"/><text x="640.0" y="759.7" font-size="44" fill="#0b0b0c" text-anchor="middle">4</text></g>
+<line x1="781.4" y1="541.4" x2="822.4" y2="582.4" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="760.2" cy="520.2" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M760.2,540.2 A20.0,20.0 0 0 1 760.2,500.2 Z" fill="#d9d4c7"/>
+<circle cx="845.1" cy="605.1" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M845.1,577.1 A28.0,28.0 0 0 1 845.1,633.1 A19.8,28.0 0 0 1 845.1,577.1 Z" fill="#d9d4c7"/>
+<text class="lab" x="885.1" y="655.1" font-size="22" fill="#ece7dc" text-anchor="start">Waxing gibbous</text><g class="km" data-key="Waxing gibbous"><circle cx="918.1" cy="647.4" r="33.0" fill="#e9c48a"/><text x="918.1" y="662.8" font-size="44" fill="#0b0b0c" text-anchor="middle">5</text></g>
+<line x1="840.0" y1="400.0" x2="898.0" y2="400.0" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="810.0" cy="400.0" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M810.0,420.0 A20.0,20.0 0 0 1 810.0,380.0 Z" fill="#d9d4c7"/>
+<circle cx="930.0" cy="400.0" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M930.0,372.0 A28.0,28.0 0 0 0 930.0,428.0 A28.0,28.0 0 0 0 930.0,372.0 Z" fill="#d9d4c7"/>
+<text class="lab" x="976.0" y="407.0" font-size="22" fill="#ece7dc" text-anchor="start">Full Moon</text><g class="km" data-key="Full Moon"><circle cx="1009.0" cy="399.3" r="33.0" fill="#e9c48a"/><text x="1009.0" y="414.7" font-size="44" fill="#0b0b0c" text-anchor="middle">6</text></g>
+<line x1="781.4" y1="258.6" x2="822.4" y2="217.6" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="760.2" cy="279.8" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M760.2,299.8 A20.0,20.0 0 0 1 760.2,259.8 Z" fill="#d9d4c7"/>
+<circle cx="845.1" cy="194.9" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M845.1,166.9 A28.0,28.0 0 0 0 845.1,222.9 A19.8,28.0 0 0 0 845.1,166.9 Z" fill="#d9d4c7"/>
+<text class="lab" x="885.1" y="156.9" font-size="22" fill="#ece7dc" text-anchor="start">Waning gibbous</text><g class="km" data-key="Waning gibbous"><circle cx="918.1" cy="149.2" r="33.0" fill="#e9c48a"/><text x="918.1" y="164.6" font-size="44" fill="#0b0b0c" text-anchor="middle">7</text></g>
+<line x1="640.0" y1="200.0" x2="640.0" y2="142.0" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="640.0" cy="230.0" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M640.0,250.0 A20.0,20.0 0 0 1 640.0,210.0 Z" fill="#d9d4c7"/>
+<circle cx="640.0" cy="110.0" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M640.0,82.0 A28.0,28.0 0 0 0 640.0,138.0 A0.0,28.0 0 0 0 640.0,82.0 Z" fill="#d9d4c7"/>
+<text class="lab" x="640.0" y="66.0" font-size="22" fill="#ece7dc" text-anchor="middle">Last quarter</text><g class="km" data-key="Last quarter"><circle cx="640.0" cy="58.3" r="33.0" fill="#e9c48a"/><text x="640.0" y="73.7" font-size="44" fill="#0b0b0c" text-anchor="middle">8</text></g>
+<line x1="498.6" y1="258.6" x2="457.6" y2="217.6" stroke="#ece7dc" stroke-opacity=".18"/>
+<circle cx="519.8" cy="279.8" r="20.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M519.8,299.8 A20.0,20.0 0 0 1 519.8,259.8 Z" fill="#d9d4c7"/>
+<circle cx="434.9" cy="194.9" r="28.0" fill="#2a2a2e" stroke="#ece7dc" stroke-opacity=".25"/><path d="M434.9,166.9 A28.0,28.0 0 0 0 434.9,222.9 A19.8,28.0 0 0 1 434.9,166.9 Z" fill="#d9d4c7"/>
+<text class="lab" x="394.9" y="156.9" font-size="22" fill="#ece7dc" text-anchor="end">Waning crescent</text><g class="km" data-key="Waning crescent"><circle cx="361.9" cy="149.2" r="33.0" fill="#e9c48a"/><text x="361.9" y="164.6" font-size="44" fill="#0b0b0c" text-anchor="middle">9</text></g>
+<path d="M520,520 A170,170 0 0 0 760,520" fill="none" stroke="#ece7dc" stroke-opacity="0"/>
+<path d="M-9,-7 L4,0 L-9,7" fill="none" stroke="#ece7dc" stroke-opacity=".6" stroke-width="2" transform="translate(485.9,471.8) rotate(68.5)"/>
+</svg>

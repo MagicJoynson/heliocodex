@@ -18,10 +18,10 @@ const groups = letters.map((letter) => ({ letter, terms: terms.filter((t) => t.t
       <input id="find" type="search" autocomplete="off" spellcheck="false" />
       <p class="label" id="find-count" aria-live="polite"></p>
     </div>
-    <nav class="letters" aria-label="Jump to a letter">
-      {groups.map((g) => <a href={`#letter-${g.letter}`}>{g.letter}</a>)}
-    </nav>
   </header>
+  <nav class="letters" aria-label="Jump to a letter">
+    {groups.map((g) => <a href={`#letter-${g.letter}`}>{g.letter}</a>)}
+  </nav>
 
   {groups.map((g) => (
     <section class="row letter" id={`letter-${g.letter}`}>
@@ -73,18 +73,20 @@ const groups = letters.map((letter) => ({ letter, terms: terms.filter((t) => t.t
   .find input { font: 300 1.2rem/1.4 var(--r-serif); color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--ink-faint); border-radius: 0; padding: .2rem 0 .3rem; width: 100%; }
   .find input:focus { outline: none; border-color: var(--accent); }
   .find input:focus-visible { box-shadow: 0 1px 0 var(--accent); }
-  .letters { display: flex; flex-wrap: wrap; gap: .1rem .15rem; margin: 1.6rem 0 0 -.55rem; font: 400 .82rem/1 var(--r-mono); }
-  .letters a { text-decoration: none; color: var(--ink-soft); min-width: 2rem; padding: .6rem .55rem; text-align: center; }
+  /* the alphabet stays at the top of the screen while you read, like the thumb index of a dictionary */
+  .letters { position: sticky; top: var(--header-h); z-index: 4; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0; margin: 0 0 1rem; padding: .3rem 0; background: rgba(11,11,12,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); font: 400 .82rem/1 var(--r-mono); }
+  .letters a { text-decoration: none; color: var(--ink-soft); min-width: 1.9rem; padding: .6rem .3rem; text-align: center; }
   .letters a:hover { color: var(--accent); }
-  .letter { scroll-margin-top: var(--header-h); }
+  .letter { scroll-margin-top: calc(var(--header-h) + 2.8rem); grid-template-columns: 6rem minmax(0, 1fr); }
   .letter .hang h2 { font: 300 clamp(2.6rem, 5vw, 3.6rem)/.9 var(--r-serif); font-style: normal; color: var(--ink-faint); }
-  dl { margin: 0; display: grid; gap: 2rem; }
-  .term { scroll-margin-top: calc(var(--header-h) + 1.2rem); }
+  dl { margin: 0; columns: 2 22rem; column-gap: 3.5rem; }
+  .term { break-inside: avoid; padding-bottom: 1.7rem; scroll-margin-top: calc(var(--header-h) + 4rem); }
+  .letter .hang.sticks { top: calc(var(--header-h) + 4rem); }
   .term:target dt { color: var(--accent); }
-  dt { font: 400 1.34rem/1.25 var(--r-serif); color: var(--ink); }
+  dt { font: 400 1.22rem/1.25 var(--r-serif); color: var(--ink); }
   .also { font: 400 .72rem/1.4 var(--r-mono); letter-spacing: .04em; color: var(--ink-faint); margin-left: .9em; white-space: nowrap; }
   dd { margin: .3rem 0 0; }
-  dd p { font: 300 1.12rem/1.58 var(--r-serif); color: var(--ink-soft); margin: 0 0 .35rem; }
+  dd p { font: 300 1.04rem/1.55 var(--r-serif); color: var(--ink-soft); margin: 0 0 .35rem; }
   dd .more { color: var(--ink-faint); }
   dd .links { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .2rem 1.6rem; text-transform: none; letter-spacing: .02em; font-size: .76rem; line-height: 1.7; }
   dd .links a { color: var(--ink-soft); text-decoration: underline; text-decoration-color: var(--rule); }
@@ -95,6 +97,9 @@ const groups = letters.map((letter) => ({ letter, terms: terms.filter((t) => t.t
     .find { grid-template-columns: 1fr auto; }
     .find label { grid-column: 1 / -1; }
     .letter .hang h2 { font-size: 2.2rem; }
+    .letter { grid-template-columns: minmax(0, 1fr); }
+    .letters { justify-content: flex-start; }
+    .letters a { min-width: 1.75rem; padding: .5rem .2rem; }
     .also { white-space: normal; }
   }
 </style>

@@ -4,6 +4,7 @@ import Reading from '../../layouts/Reading.astro';
 import LessonStory from '../../components/learn/LessonStory.astro';
 import PackLinks from '../../components/learn/PackLinks.astro';
 import { STORY_LESSONS } from '../../lib/learn/stories';
+import { thumb, cover } from '../../lib/learn/map';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
 import equationStyles from 'katex/dist/katex.min.css?url';
 
@@ -25,20 +26,47 @@ const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
 
 // every source named by any level, once each
 const sources = [...new Map(levels.flatMap((l) => l.entry.data.sources).map((s) => [s.url, s])).values()];
+// the opening picture, and roughly how long each level takes to read at 200 words a minute
+const pic = cover(lesson);
+const minutes = (l: { entry: { body?: string } }) => Math.max(1, Math.round((l.entry.body ?? '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 200));
+// a lesson about one of the worlds links to that world's own page and to it in 3D
+const PLANET_PAGES = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+const target = (lesson.data as { view?: { target?: string } }).view?.target;
+const worldPage = target && PLANET_PAGES.includes(target) ? target : null;
+const worldName = worldPage ? (worldPage === 'sun' ? 'the Sun' : worldPage === 'earth' ? 'the Earth' : worldPage[0].toUpperCase() + worldPage.slice(1)) : '';
+const nextId = lesson.data.next[0];
+const nextLesson = nextId ? lessons.find((l) => l.id === nextId) : undefined;
+const nextPic = nextLesson ? thumb(nextLesson) : null;
 const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
 ---
 {visual ? <LessonStory lesson={lesson} /> : (
 <Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary}>
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
-  <header class="reading-head">
-    <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
-    <h1>{lesson.data.title}</h1>
-    <p class="lead">{lesson.data.summary}</p>
-    {levels.length > 1 && (
-      <nav class="depths" aria-label="Levels of this lesson">
-        {levels.map((l) => <a href={`#${l.id}`}>{LEVEL_NAMES[l.id].name}</a>)}
-      </nav>
+  <header class:list={['opener', { 'no-pic': !pic }]}>
+    <div class="op-words">
+      <p class="label"><a href="/learn">Learn</a> / <a href={`/learn/subject/${lesson.data.strand}`}>{STRAND_NAMES[lesson.data.strand]}</a></p>
+      <h1>{lesson.data.title}</h1>
+      <p class="lead">{lesson.data.summary}</p>
+      {worldPage && <p class="go-see"><a href={`/${worldPage}`}>Visit {worldName}</a><a href={`/explore?go=${worldPage}`}>See {worldName} in 3D</a></p>}
+      <ol class="depth" aria-label="Levels of this lesson, each one deeper">
+        {levels.map((l, i) => (
+          <li style={`--i:${i}`}>
+            <a href={`#${l.id}`}>
+              <span class="d-name">{LEVEL_NAMES[l.id].name}</span>
+              <span class="d-reader">{LEVEL_NAMES[l.id].reader}</span>
+              <span class="d-time">{minutes(l)} min</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+    {pic && (
+      <figure class="op-pic">
+        <span class="op-frame"><img src={pic.src} alt="" loading="eager" /></span>
+        {pic.caption && <figcaption set:html={pic.caption} />}
+      </figure>
     )}
+    {pic && <style is:inline set:html={`.prose figure:has(img[src="${pic.src}"]) { display: none; }`} />}
   </header>
 
   {levels.map((l) => (
@@ -61,50 +89,59 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
     </section>
   )}
 
-  <section class="row">
-    <div class="hang"><h2>Words used here</h2></div>
-    <dl class="words">
-      {words.map((t) => (
-        <div>
-          <dt><a href={`/glossary#${t.id}`}>{t.term}</a></dt>
-          <dd>{t.short}</dd>
-        </div>
-      ))}
-    </dl>
-  </section>
-
-  {worthKnowing.length > 0 && (
-    <section class="row">
-      <div class="hang"><h2>Worth knowing</h2></div>
-      <ul class="plain-list facts">
-        {worthKnowing.map((f) => (
-          <li>
-            <p>{f.text}</p>
-            <p class="label">{basisNote[f.basis] && <span>{basisNote[f.basis]}. </span>}<a href={f.source.url} rel="noopener">{f.source.label}</a></p>
-          </li>
-        ))}
-      </ul>
-    </section>
+  {nextLesson && (
+    <a class="next-up" href={`/learn/${nextLesson.id}`}>
+      {nextPic && <span class:list={['n-pic', { face: nextPic.face }]}><img src={nextPic.src} alt="" loading="lazy" /></span>}
+      <span class="n-words">
+        <span class="label">Next lesson</span>
+        <span class="n-title">{nextLesson.data.title}</span>
+        <span class="n-line">{nextLesson.data.summary}</span>
+      </span>
+    </a>
   )}
 
-  <section class="row small">
-    <div class="hang"><h2>Where this comes from</h2></div>
-    <div>
+  <div class="back">
+    <section>
+      <h2>Words used here</h2>
+      <dl class="words">
+        {words.map((t) => (
+          <div>
+            <dt><a href={`/glossary#${t.id}`}>{t.term}</a></dt>
+            <dd>{t.short}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+    {worthKnowing.length > 0 && (
+      <section>
+        <h2>Worth knowing</h2>
+        <ul class="plain-list facts">
+          {worthKnowing.map((f) => (
+            <li>
+              <p>{f.text}</p>
+              <p class="label">{basisNote[f.basis] && <span>{basisNote[f.basis]}. </span>}<a href={f.source.url} rel="noopener">{f.source.label}</a></p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+    <section>
+      <h2>Where this comes from</h2>
       <ul class="plain-list sources">
         {sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}
       </ul>
-      <p class="aside small-note">The words are written for this site. Sums in the text are worked from the figures in these sources.</p>
-    </div>
-  </section>
+      <p class="small-note">The words are written for this site. Sums in the text are worked from the figures in these sources.</p>
+    </section>
+  </div>
 
   <PackLinks lesson={lesson.id} titles={Object.fromEntries(lessons.map((l) => [l.id, l.data.title]))} />
 
-  {(lesson.data.needs.length > 0 || lesson.data.next.length > 0) && (
+  {(lesson.data.needs.length > 0 || lesson.data.next.length > 1) && (
     <nav class="row onward" aria-label="Other lessons">
       <div class="hang"><h2>Keep going</h2></div>
       <ul class="plain-list">
         {lesson.data.needs.map((id) => <li><span class="label">Helps to read first</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
-        {lesson.data.next.map((id) => <li><span class="label">Next</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
+        {lesson.data.next.slice(1).map((id) => <li><span class="label">Then</span><a href={`/learn/${id}`}>{title(id)}</a></li>)}
       </ul>
     </nav>
   )}
@@ -123,6 +160,50 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
 </script>
 
 <style>
+  /* the opening: words on the left, the lesson's own picture on the right, and the levels as a gauge going down */
+  .opener { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 2.5rem 4rem; align-items: center; margin: 0 0 clamp(40px, 6vw, 72px); }
+  .opener.no-pic { grid-template-columns: minmax(0, 46rem); }
+  .op-words .label { margin-bottom: 1.2rem; }
+  .opener h1 { font: 300 clamp(2.3rem, 5vw, 4rem)/1.04 var(--r-serif); letter-spacing: -.02em; margin: 0 0 1.1rem; text-wrap: balance; }
+  .opener .lead { font: 300 clamp(1.1rem, 1rem + .4vw, 1.3rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
+  .op-pic { margin: 0; }
+  .op-frame { display: block; aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; background: #000; }
+  .op-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .op-pic figcaption { font: italic 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .7rem; }
+  .op-pic figcaption :global(b) { font: 400 .66rem/1.4 var(--r-mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: .4em; }
+  .go-see { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin: 1.4rem 0 0; font: 400 .72rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; }
+  .go-see a { text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+  .depth { list-style: none; margin: 2rem 0 0; padding: 0; border-left: 1px solid var(--rule); }
+  .depth a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .1rem 1rem; padding: .55rem 0 .55rem calc(1.1rem + var(--i) * .9rem); text-decoration: none; position: relative; }
+  .depth a::before { content: ''; position: absolute; left: 0; top: 1.05rem; width: calc(.7rem + var(--i) * .9rem); height: 1px; background: var(--accent); opacity: calc(.9 - var(--i) * .2); }
+  .d-name { font: 400 1.08rem/1.3 var(--r-serif); color: var(--ink); }
+  .d-reader { grid-column: 1; font: 300 .92rem/1.35 var(--r-serif); color: var(--ink-faint); }
+  .d-time { grid-column: 2; grid-row: 1; font: 400 .68rem/1.9 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .depth a:hover .d-name { color: var(--accent); }
+
+  .next-up { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: 2rem; align-items: center; margin: 1rem 0 0; padding: 1.6rem; border: 1px solid var(--rule); border-radius: 6px; text-decoration: none; color: var(--ink); transition: border-color .3s ease; }
+  .next-up:hover { border-color: rgba(233,196,138,.6); }
+  .n-pic { display: block; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 3px; background: #000; }
+  .n-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .n-pic.face img { object-fit: contain; transform: scale(.8); }
+  .n-words { display: grid; gap: .45rem; }
+  .n-title { font: 400 clamp(1.4rem, 2.4vw, 1.9rem)/1.15 var(--r-serif); }
+  .next-up:hover .n-title { color: var(--accent); }
+  .n-line { font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); }
+
+  /* the back of the lesson: three short columns, like the end matter of a book */
+  .back { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem 3.5rem; margin-top: 3.4rem; padding-top: 2.4rem; border-top: 1px solid var(--rule); }
+  .back h2 { font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.2rem; }
+  .back .sources { font-size: .72rem; }
+  @media (max-width: 1000px) { .back { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) {
+    .opener { grid-template-columns: minmax(0, 1fr); }
+    .op-pic { order: -1; margin: calc(-1 * clamp(48px, 8vw, 104px) + 8px) calc(-1 * var(--gutter)) 0; }
+    .op-frame { aspect-ratio: 16 / 9; border-radius: 0; }
+    .op-pic figcaption { padding: 0 var(--gutter); }
+    .next-up { grid-template-columns: minmax(0, 1fr); padding: 1.1rem; }
+    .back { grid-template-columns: minmax(0, 1fr); }
+  }
   .depths { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; margin-top: 1.8rem; font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; }
   .depths a { color: var(--ink-soft); text-decoration: none; padding: .35rem 0; border-bottom: 1px solid var(--rule); }
   .depths a:hover { color: var(--accent); border-color: var(--accent); }
@@ -135,7 +216,7 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
   .facts { display: grid; gap: 1.5rem; }
   .facts p:first-child { font: 300 1.12rem/1.55 var(--r-serif); color: var(--ink); margin: 0 0 .4rem; }
   .sources { display: grid; gap: .45rem; font: 400 .8rem/1.6 var(--r-mono); letter-spacing: .02em; }
-  .small-note { font-size: .98rem; color: var(--ink-faint); margin: 1.1rem 0 0; }
+  .small-note { font: 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); margin: 1.1rem 0 0; }
   .onward ul { display: grid; gap: 1.1rem; }
   .onward li { display: grid; gap: .2rem; }
   .onward a { font: 400 1.25rem/1.25 var(--r-serif); }

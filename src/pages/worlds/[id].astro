@@ -1,0 +1,161 @@
+---
+// An outline page for one world: a moon, dwarf planet, asteroid or comet that has no full page yet.
+// Everything shown is measured data from src/data/bodies; the chapters to come are headings only.
+import Reading from '../../layouts/Reading.astro';
+import { outlineWorlds, KIND_NAMES, CHAPTERS, nameOf, why, AU_KM, PLANET_PAGES } from '../../lib/worlds';
+import { body } from '../../data/bodies/index';
+import { plates } from '../../lib/v2/atlas/plates';
+import { fmt } from '../../lib/format';
+import type { Body } from '../../lib/v2/atlas/types';
+
+export function getStaticPaths() {
+  return outlineWorlds.map((b) => ({ params: { id: b.id } }));
+}
+const { id } = Astro.params as { id: string };
+const b = body(id)! as Body;
+const o = b.orbit as { aKm: number; e: number; iDeg: number; periodDays?: number };
+const parent = b.parent ? body(b.parent) : null;
+const round = b.parent === 'sun';
+const aAu = o.aKm / AU_KM;
+const periodDays = o.periodDays ?? 365.25 * Math.pow(aAu, 1.5);
+const periodSays = periodDays < 2 ? `${fmt(periodDays * 24, 2)} hours` : periodDays < 800 ? `${fmt(periodDays, 3)} days` : `${fmt(periodDays / 365.25, 3)} years`;
+const outSays = round ? `${fmt(aAu, 3)} au from the Sun on average` : `${fmt(o.aKm)} km from ${nameOf(b.parent)} on average`;
+const MOON_KM = 1737.4;
+const sizeSays = b.meanRadiusKm ? `${fmt(b.meanRadiusKm * 2)} km across${b.kind === 'moon' && b.id !== 'moon' ? `, ${fmt((b.meanRadiusKm / MOON_KM) * 100, 2)} per cent of our Moon’s width` : ''}` : 'Size not well measured';
+const kindLine = b.kind === 'moon' ? `Moon of ${nameOf(b.parent)}` : KIND_NAMES[b.kind];
+const parentHref = b.parent && PLANET_PAGES.includes(b.parent) ? `/${b.parent}` : b.parent && b.parent !== 'sun' ? `/worlds/${b.parent}` : null;
+const chart = b.kind === 'moon' && b.parent && (plates as Record<string, unknown>)[b.parent] ? `/atlas/${b.parent}` : b.kind === 'dwarf' && (plates as Record<string, unknown>)[b.id] ? `/atlas/${b.id}` : b.kind === 'asteroid' || b.kind === 'comet' ? '/atlas/small-bodies' : b.kind === 'dwarf' ? '/atlas/solar-system' : null;
+const note = why(b.id);
+const rows: [string, string][] = [
+  ['Kind', kindLine],
+  ['Distance', outSays],
+  ['Once round', periodSays],
+  ['Path', `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'} (eccentricity ${fmt(o.e, 2)}), tilted ${fmt(o.iDeg, 2)}°`],
+  ['Size', sizeSays],
+  ...(b.densityGcm3 ? [['Density', `${fmt(b.densityGcm3, 2)} times water`] as [string, string]] : []),
+  ...(b.discovered ? [['Found', `${b.discovered.year}, by ${b.discovered.by}`] as [string, string]] : []),
+];
+// the drawing: the path to scale and filling its frame, with what it goes round at one focus. Round the Sun,
+// the planets' paths that fit inside it are drawn as faint named rings; round a planet, its disc to scale.
+const W = 600, PAD = 34;
+const Q = o.aKm * (1 + o.e), q = o.aKm * (1 - o.e), bKm = o.aKm * Math.sqrt(1 - o.e * o.e);
+const pR = !round && parent?.meanRadiusKm ? parent.meanRadiusKm : 0;
+const spanKm = Q + Math.max(q, pR);
+const k = (W - 2 * PAD) / spanKm;
+const H = Math.round(Math.min(W, Math.max(230, 2 * Math.max(bKm, pR) * k + 2 * PAD + 20)));
+const fx = PAD + Q * k, fy = H / 2; // the focus: the Sun or the parent
+const ecx = fx - o.aKm * o.e * k, erx = o.aKm * k, ery = bKm * k;
+const PLANET_AU: [string, number][] = [['Mercury', 0.387], ['Venus', 0.723], ['Earth', 1], ['Mars', 1.524], ['Jupiter', 5.203], ['Saturn', 9.537], ['Uranus', 19.19], ['Neptune', 30.07]];
+const rings = round ? PLANET_AU.filter(([, au]) => au * AU_KM <= Q * 1.02).map(([name, au]) => ({ name, r: au * AU_KM * k, crosses: au * AU_KM > q })) : [];
+// each ring is named just below the comet's or asteroid's own path, where nothing else is drawn
+const ly = fy + ery + 16;
+let lastX = -Infinity;
+const ringLabels = [...rings].sort((m, n) => n.r - m.r).filter((g) => g.r > ery + 18 && ly < H - 4).map((g) => ({ ...g, x: fx - Math.sqrt(g.r * g.r - (ly - fy) ** 2) }))
+  .filter((g) => { const w = g.name.length * 7.4 + 10; if (g.x - w / 2 < 2 || g.x - w / 2 < lastX) return false; lastX = g.x + w / 2; return true; });
+const crossed = rings.filter((g) => g.crosses).map((g) => g.name);
+const and = (l: string[]) => l.map((n) => (n === 'Earth' ? 'the Earth' : n)).join(', ').replace(/, ([^,]*)$/, ' and $1');
+const pDraw = pR * k;
+// size drawing for moons: the moon beside our Moon, and the edge of its planet, all to one scale
+const isMoon = b.kind === 'moon' && !!b.meanRadiusKm;
+const rMe = b.meanRadiusKm ?? 0;
+const cmp = b.id === 'moon' ? null : MOON_KM;
+const sk = 70 / Math.max(rMe, cmp ?? 0, b.id === 'moon' ? MOON_KM : 0);
+const SH = 230, scy = 100;
+const parR = (parent?.meanRadiusKm ?? 0) * sk;
+const parEdge = parR > 150 ? 150 : 30 + 2 * parR;
+const parCx = parEdge - parR;
+const meR = Math.max(1.2, rMe * sk), meCx = parEdge + 50 + meR;
+const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
+---
+<Reading title={b.name} path={`/worlds/${b.id}`} description={`${kindLine}. ${outSays}. Outline page: being written.`}>
+  <article class="world-outline">
+    <header class="wo-head">
+      <p class="label"><a href="/worlds">Every world</a> / {kindLine}</p>
+      <h1>{b.name}</h1>
+      <p class="wo-badge"><span>Outline</span> The numbers here are measured. The rest of this page is being written.</p>
+    </header>
+    <div class="wo-body">
+      <figure class="wo-orbit">
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
+          <defs><clipPath id="frame"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
+          <g clip-path="url(#frame)">
+            {rings.map((g) => <circle cx={fx} cy={fy} r={g.r} class:list={['ring', { crossed: g.crosses }]} />)}
+            {!round && pDraw > 0 && <circle cx={fx} cy={fy} r={Math.max(3, pDraw)} class="centre" />}
+          </g>
+          {ringLabels.map((g) => <text x={g.x} y={ly + 4} class="ring-t">{g.name}</text>)}
+          <ellipse cx={ecx} cy={fy} rx={erx} ry={ery} class="path" />
+          {round && <circle cx={fx} cy={fy} r="6" class="centre sun" />}
+          {round && <text x={fx} y={fy + 22} class="foc-t" text-anchor="middle">Sun</text>}
+          {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 18} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
+          <circle cx={ecx + erx} cy={fy} r="5" class="me" />
+        </svg>
+        <figcaption>The path of {b.name} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && <> The faint rings are the paths of {and(rings.map((g) => g.name))}{crossed.length > 0 && <>; it crosses {crossed.length === 1 ? 'the path' : 'the paths'} of {and(crossed)}</>}.</>} Orbit from {b.sources[0]?.label}.</figcaption>
+      </figure>
+      <div class="wo-facts">
+        <dl>{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+        {note && <p class="wo-why">{note.why}</p>}
+        <p class="wo-go">
+          {parentHref && <a href={parentHref}>{nameOf(b.parent).replace(/^the /, 'The ')}</a>}
+          {chart && <a href={chart}>On the atlas</a>}
+          <a href={`/explore?go=${b.id}`}>In 3D</a>
+        </p>
+        {isMoon && (
+          <figure class="wo-size">
+            <svg viewBox={`0 0 600 ${SH}`} role="img" aria-label={`${b.name} drawn to scale beside ${cmp ? 'our Moon and ' : ''}the edge of ${nameOf(b.parent)}`}>
+              <defs><clipPath id="sframe"><rect x="0" y="0" width="600" height={SH} /></clipPath><radialGradient id="shade" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient></defs>
+              <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />
+              <circle cx={meCx} cy={scy} r={meR} fill="url(#shade)" />
+              {cmp && <circle cx={moonCx} cy={scy} r={moonR} class="s-moon" />}
+              <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `The edge of ${nameOf(b.parent)}` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
+              <text x={meCx} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
+              {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
+            </svg>
+            <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.</figcaption>
+          </figure>
+        )}
+      </div>
+    </div>
+    <section class="wo-todo" aria-labelledby="todo-h">
+      <h2 id="todo-h">Still being written</h2>
+      <ol>{CHAPTERS[b.kind].map((c) => <li>{c}</li>)}</ol>
+    </section>
+    <p class="wo-src">Sources: {b.sources.map((s, i) => <>{i > 0 && '; '}<a href={s.url} rel="noopener">{s.label}</a></>)}.</p>
+  </article>
+</Reading>
+
+<style>
+  .wo-head { margin-bottom: clamp(28px, 4vw, 48px); }
+  .wo-head h1 { font: 300 clamp(2.6rem, 6vw, 4.6rem)/1 var(--r-serif); margin: .6rem 0 1rem; }
+  .wo-badge { display: flex; gap: .8rem; align-items: center; font: 300 1rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0; }
+  .wo-badge span { font: 400 .66rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); border: 1px dashed var(--accent); padding: .4rem .55rem; border-radius: 2px; }
+  .wo-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+  .wo-orbit { margin: 0; }
+  .wo-orbit svg { width: 100%; height: auto; display: block; }
+  .wo-orbit .ring { fill: none; stroke: rgba(142,174,255,.18); }
+  .wo-orbit .ring.crossed { stroke: rgba(142,174,255,.38); stroke-dasharray: 2 5; }
+  .wo-orbit .ring-t { font: 400 12px var(--r-mono); fill: rgba(142,174,255,.8); text-anchor: middle; paint-order: stroke; stroke: #0b0b0c; stroke-width: 4px; }
+  .wo-orbit .foc-t, .wo-orbit .me-t { font: 400 12px var(--r-mono); fill: var(--ink-faint); }
+  .wo-orbit .centre { fill: #c4bdaf; } .wo-orbit .centre.sun { fill: #f6d38e; filter: drop-shadow(0 0 6px rgba(246,211,142,.8)); }
+  .wo-orbit .path { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  .wo-orbit .me { fill: #ece7dc; }
+  .wo-size { margin: 2rem 0 0; }
+  .wo-size svg { width: 100%; height: auto; display: block; }
+  .wo-size .s-par { fill: #2a2722; stroke: rgba(233,196,138,.45); }
+  .wo-size .s-moon { fill: none; stroke: rgba(236,231,220,.55); stroke-dasharray: 3 4; }
+  .wo-size .s-t { font: 400 14px var(--r-mono); fill: var(--ink-faint); }
+  .wo-size .s-t.me { fill: var(--ink); }
+  .wo-size figcaption, .wo-orbit figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
+  .wo-facts dl { margin: 0; }
+  .wo-facts dl div { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 1rem; padding: .7rem 0; border-top: 1px solid var(--rule); }
+  .wo-facts dt { font: 400 .68rem/1.7 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+  .wo-facts dd { margin: 0; font: 300 1.08rem/1.45 var(--r-serif); }
+  .wo-why { font: 300 1.08rem/1.55 var(--r-serif); color: var(--ink-soft); margin: 1.4rem 0 0; }
+  .wo-go { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin: 1.6rem 0 0; }
+  .wo-go a { font: 400 .72rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; text-decoration: none; }
+  .wo-todo { margin-top: clamp(40px, 6vw, 72px); border: 1px dashed rgba(233,196,138,.4); border-radius: 4px; padding: 1.4rem 1.6rem; }
+  .wo-todo h2 { font: 400 .72rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 1rem; }
+  .wo-todo ol { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: .6rem 2rem; }
+  .wo-todo li { font: 300 1.1rem/1.4 var(--r-serif); color: var(--ink-faint); }
+  .wo-src { font: 300 .88rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; }
+  @media (max-width: 800px) { .wo-body { grid-template-columns: minmax(0, 1fr); } .wo-facts dl div { grid-template-columns: 6.5rem minmax(0, 1fr); } }
+</style>

@@ -1,4 +1,5 @@
 ---
+import { MOONS_AS_OF_TEXT } from '../data/moon-counts';
 import Base from '../layouts/Base.astro';
 import { bodies, getBody } from '../data/bodies';
 import { physicalRows, orbitRows, sunFacts, phys, fmt, hoursToDay, daysToYear } from '../lib/format';
@@ -67,7 +68,7 @@ const sceneBody = { slug: body.slug, name: body.name, color: body.color, tiltDeg
         <>
           <h2>Notable moons</h2>
           <ul class="moons">{body.keyMoons.map((m) => <li><b>{m.name}</b>. {m.note}</li>)}</ul>
-          {p && <p class="note">NASA lists {p.moons} confirmed moon{p.moons === 1 ? '' : 's'} for {body.name}. Counts change as new moons are confirmed.</p>}
+          {p && <p class="note">JPL lists {p.moons} known moon{p.moons === 1 ? '' : 's'} for {body.name} as of {MOONS_AS_OF_TEXT}. Counts change as new moons are confirmed.</p>}
         </>
       )}
       {body.rings && (<><h2>Rings</h2><p>{body.rings}</p></>)}

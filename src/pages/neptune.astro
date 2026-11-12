@@ -1,4 +1,6 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
+import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource-variable/big-shoulders-display/wght';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-sans/400.css';
@@ -6,7 +8,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear } from '../lib/format';
 
-const p = facts.planets.neptune.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.neptune.physical, moons: moonCount('neptune') } as unknown as Record<string, number>;
 const e = facts.planets.neptune.elements;
 const rows: [string, string][] = [
   ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
@@ -18,7 +20,7 @@ const rows: [string, string][] = [
   ['A day', '16 h 7 min'],
   ['Axial tilt', `${p.obliquity_deg}°`],
   ['Strongest winds', 'about 2,000 km/h'],
-  ['Known moons (NASA)', `${p.moons}`],
+  [`Known moons, ${MOONS_AS_OF_TEXT}`, `${p.moons}`],
 ];
 ---
 <World world="neptune" title="Neptune" description="Fall into the deep blue of Neptune and come out above streaks of high cloud. Real NASA data and Voyager 2 images." readout="Pressure">
@@ -27,6 +29,7 @@ const rows: [string, string][] = [
       <p class="kicker">Eighth planet · 30 au from the Sun</p>
       <h1>Neptune</h1>
       <p class="lead">The farthest planet, thirty times as far from the Sun as we are, and the windiest. Fall in and you will come out above the clouds at 29° north, the same latitude where Voyager 2 photographed long white streaks throwing shadows on the cloud below.</p>
+      <WorldGlance world="neptune" />
     </div>
   </section>
 

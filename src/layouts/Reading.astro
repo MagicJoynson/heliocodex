@@ -1,4 +1,5 @@
 ---
+import ChartFit from '../components/ChartFit.astro';
 import Base from './Base.astro';
 import '../styles/reading.css';
 import VideoEmbeds from '../components/VideoEmbeds.astro';
@@ -10,4 +11,5 @@ const { title, description, path } = Astro.props;
     <slot />
   </article>
   <VideoEmbeds />
+  <ChartFit />
 </Base>

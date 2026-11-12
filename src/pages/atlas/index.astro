@@ -24,6 +24,22 @@ const charts = [
   { href: '/atlas/stars', name: 'The stars round the Sun', what: 'The stars within 20 light years, and every star you can see by eye, each at its measured distance.' },
   { href: '/atlas/galaxies', name: 'Our galaxy and the others', what: 'The Milky Way as a model, the small galaxies round it, the Local Group and the cosmic web.' },
 ];
+// the moon charts are many and alike, so they sit together as one line of worlds and counts
+const moonCharts = Object.entries(plates).filter(([id]) => id !== 'earth').map(([id, spec]) => ({ href: `/atlas/${id}`, name: spec.title.replace(/^The moons? of /, ''), n: count(id) }));
+const mainCharts = charts.filter((c) => !moonCharts.some((m) => m.href === c.href));
+// the rings: each chart or view at how far out it reaches, in metres, on a log scale
+const LY = 9.461e15, AU = 1.496e11;
+const RW = 1000, RH = 600, OX = 30, OY = 580, ANG = (40 * Math.PI) / 180, COS = Math.cos(ANG), SIN = Math.sin(ANG);
+const rOf = (m: number) => 40 + ((Math.log10(m) - 8.5) / (26.7 - 8.5)) * 720;
+const reachOf: Record<string, [number, string]> = {
+  'solar-system': [50 * AU, '50 au'], 'oort-cloud': [1.5 * LY, '1.5 light years'], neighbourhood: [20 * LY, '20 light years'],
+  'night-sky': [3000 * LY, 'a few thousand light years'], 'milky-way': [1e5 * LY, '100,000 light years'], 'local-group': [3e6 * LY, '3 million light years'],
+  'cosmic-web': [5e8 * LY, '500 million light years'], cmb: [4.6e10 * LY, '46 billion light years'],
+};
+const rings = [
+  { name: 'The Moon’s orbit', far: '405,000 km', href: '/atlas/earth', r: rOf(4.05e8), model: false },
+  ...places.map((p) => ({ name: p.name, far: reachOf[p.id]?.[1] ?? '', href: p.chart ?? `/explore?go=${p.id}`, r: rOf(reachOf[p.id]?.[0] ?? 1e10), model: p.model })),
+];
 const bySize = [...landmarks].sort((a, b) => a.metres - b.metres);
 const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked out here from a measured figure.' } as const;
 ---
@@ -34,19 +50,38 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
     <p class="lead">Flat charts of everything in the 3D model, drawn to scale and good enough to print. Below them, one ruler that runs from your own height to the edge of what can be seen.</p>
   </header>
 
-  <section class="row wide" id="charts">
-    <div class="hang"><h2>The charts</h2><p class="note">Each one shows where its worlds are today, and every name on it will fly you there in 3D.</p></div>
-    <ul class="plain-list chart-list">
-      {charts.map((c) => <li><a href={c.href}>{c.name}</a><span>{c.what}</span></li>)}
+  <section class="row wide reach" id="charts">
+    <div class="reach-words">
+      <h2>Every chart, by how far it reaches</h2>
+      <p class="note">Each ring is one chart or one view in 3D, drawn at how far out from the Sun it goes, every ring ten times or more the one inside it. Charts show where things are today, and every name on a chart will fly you there in 3D. Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p>
+      <div class="moon-charts">
+        <h3 class="label">The moons, world by world</h3>
+        <ul class="plain-list">
+          {moonCharts.map((m) => <li><a href={m.href}>{m.name}</a><span>{m.n}</span></li>)}
+        </ul>
+      </div>
+    </div>
+    <figure class="reach-fig">
+      <svg viewBox={`0 0 ${RW} ${RH}`} role="img" aria-label="Rings round the Sun, one for each chart, from the Moon's orbit out to the edge of what can be seen.">
+        <circle cx={OX} cy={OY} r="7" class="r-sun" />
+        {rings.map((g, i) => (
+          <g class:list={['ring', { model: g.model }]}>
+            <path d={`M${OX + g.r},${OY} A${g.r},${g.r} 0 0 0 ${OX},${OY - g.r}`} />
+            <a href={g.href}>{i === rings.length - 1
+              ? <text x={(OX + g.r * COS - 12).toFixed(1)} y={(OY - g.r * SIN + 5).toFixed(1)} text-anchor="end" class="r-name"><tspan class="r-far" dx="0">{g.far}</tspan><tspan dx="10">{g.name}</tspan></text>
+              : <text x={(OX + g.r * COS + 10).toFixed(1)} y={(OY - g.r * SIN + 5).toFixed(1)} class="r-name">{g.name}<tspan class="r-far" dx="10">{g.far}</tspan></text>}</a>
+          </g>
+        ))}
+      </svg>
+      <figcaption>Not to scale between rings: each step outwards is a jump of ten times or far more. {places.filter((p) => p.model).length} of the views are partly models; their rings are dashed.</figcaption>
+    </figure>
+    <ul class="reach-list">
+      {places.map((p) => <li><a href={p.chart ?? `/explore?go=${p.id}`}>{p.name}</a> <span>{p.what}{p.model && <> <em>Partly a model.</em></>}</span> <a class="go3d" href={`/explore?go=${p.id}`} aria-label={`Fly out to ${p.name} in 3D`}>In 3D</a></li>)}
+      {mainCharts.filter((c) => c.href === '/atlas/small-bodies').map((c) => <li><a href={c.href}>{c.name}</a> <span>{c.what}</span></li>)}
     </ul>
   </section>
 
-  <section class="row wide" id="beyond">
-    <div class="hang"><h2>Further out</h2><p class="note">Eight steps away from the Sun, each one opening in 3D. Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p></div>
-    <ul class="plain-list chart-list">
-      {places.map((p) => <li><a href={`/explore?go=${p.id}`} aria-label={`Fly out to ${p.name} in 3D`}>{p.name}</a><span>{p.what}{p.model && <> <em>Partly a model.</em></>}{p.chart && <> <a href={p.chart}>The chart.</a></>}</span></li>)}
-    </ul>
-  </section>
+  <p class="row atlas-more"><a href="/worlds" data-outline>The map of worlds</a> sets every moon, dwarf planet, asteroid and comet in the Atlas by its distance from the Sun. Most of their pages are outlines for now, and are being written.</p>
 
   <section class="row figure-row ruler-row" id="ruler">
     <div class="hang sticks">
@@ -83,3 +118,30 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
     </div>
   </section>
 </Reading>
+
+<style>
+  .reach { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: 1rem clamp(24px, 4vw, 64px); align-items: start; }
+  .reach-words h2 { margin: 0 0 1rem; }
+  .reach-fig { margin: 0; }
+  .reach-fig svg { width: 100%; height: auto; display: block; overflow: hidden; }
+  .reach-fig .r-sun { fill: #f6d38e; filter: drop-shadow(0 0 8px rgba(246,211,142,.8)); }
+  .reach-fig .ring path { fill: none; stroke: rgba(236,231,220,.32); stroke-width: 1.2; }
+  .reach-fig .ring.model path { stroke-dasharray: 3 6; }
+  .reach-fig .r-name { font: 400 19px var(--r-serif); fill: var(--ink); paint-order: stroke; stroke: #0b0b0c; stroke-width: 5px; }
+  .reach-fig .r-far { font: 400 11px var(--r-mono); letter-spacing: .06em; fill: var(--ink-faint); }
+  .reach-fig a:hover .r-name { fill: var(--accent); }
+  .reach-fig a:hover ~ path, .reach-fig .ring:hover path { stroke: var(--accent); }
+  .reach-fig figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
+  .reach-list { grid-column: 1 / -1; list-style: none; margin: 1.6rem 0 0; padding: 1.4rem 0 0; border-top: 1px solid var(--rule); columns: 2 26rem; column-gap: 3rem; }
+  .reach-list li { break-inside: avoid; margin: 0 0 .9rem; font: 300 .98rem/1.5 var(--r-serif); color: var(--ink-faint); }
+  .reach-list li > a:first-child { font-size: 1.08rem; color: var(--ink); }
+  .reach-list .go3d { font: 400 .66rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; margin-left: .3rem; }
+  @media (max-width: 900px) { .reach { grid-template-columns: minmax(0, 1fr); } .reach-fig .r-far { display: none; } .reach-fig .r-name { font-size: 34px; stroke-width: 7px; } }
+  .moon-charts { margin-top: .6rem; padding-top: 1.4rem; border-top: 1px solid var(--rule); }
+  .moon-charts h3 { margin: 0 0 .9rem; }
+  .moon-charts ul { display: flex; flex-wrap: wrap; gap: .7rem 2rem; }
+  .moon-charts li { display: flex; align-items: baseline; gap: .5rem; }
+  .moon-charts a { font: 400 1.12rem/1.3 var(--r-serif); }
+  .moon-charts span { font: 400 .74rem/1 var(--r-mono); color: var(--ink-faint); }
+  .atlas-more { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); max-width: 44rem; }
+</style>

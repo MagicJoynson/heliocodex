@@ -79,26 +79,29 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
       </form>
     </div>
 
-    <div class="reading sky-rest">
-      <section class="row">
-        <div class="hang"><h2>Up now</h2></div>
-        <div class="prose" id="sky-list"><p>Working it out…</p></div>
+    <div class="sky-rest">
+      <section class="up" aria-labelledby="up-h">
+        <div class="up-words">
+          <p class="label" id="up-h">Up now, all the way round</p>
+          <div id="sky-list" class="up-list"><p>Working it out…</p></div>
+        </div>
+        <figure class="up-ring">
+          <svg id="sky-ring" viewBox="0 0 1000 320" role="img" aria-label="The horizon all the way round, from north through east, south and west back to north, with the Sun, the Moon and the planets placed at their height and direction."></svg>
+          <figcaption>The whole horizon unrolled, north at both ends. Height above the ground goes up the side; anything under the line is below the horizon and cannot be seen.</figcaption>
+        </figure>
       </section>
 
-      <section class="row">
-        <div class="hang"><h2>How to use it</h2></div>
-        <div class="prose">
+      <section class="colophon">
+        <div class="col-use">
+          <p class="label">Using the picture</p>
           <p>The picture shows the sky as you would see it standing outside, facing the way written on the ground at the foot of the view. Drag the picture to turn round or to look higher. Pinch, or roll the mouse wheel, to look closer.</p>
           <p>Slide the bar to move through the night and watch the sky turn. Touch any bright star, a planet or the Moon to find out what it is.</p>
           <p>"Whole sky" tips the view straight up, so the point overhead is in the middle and the horizon runs round the edge. East is then on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down.</p>
           <p>A bigger dot is a brighter star. The colours are real: blue-white stars are the hottest and orange ones the coolest. Things close to the ground may be hidden by houses, trees or haze.</p>
           <p><a href="/stars">Meet a star</a> has a page for every star on the map.</p>
         </div>
-      </section>
-
-      <section class="row small">
-        <div class="hang"><h2>How it is worked out</h2></div>
-        <div class="prose">
+        <div class="col-how">
+          <p class="label">How it is worked out</p>
           <p>Nothing here is looked up from a service. The page works out the sky itself from your place and the time on your device.</p>
           <ul>
             <li>Stars: places, distances, brightness and colour from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database</a> by David Nash (CC BY-SA 4.0), the same stars the 3D view uses.</li>
@@ -306,6 +309,47 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     out.push(moon.altDeg > 0 ? `The Moon is up, ${whereabouts(moon)}, with ${nf(moon.lit * 100)} per cent of its face lit.` : 'The Moon is below the horizon.');
     out.push('Turn the picture, or choose "Whole sky", and touch anything bright to find out what it is.');
     list.replaceChildren(...out.map((t) => el('p', t)));
+    ring(m, sun, moon);
+  }
+
+  let lastRing: [Moment, { altDeg: number; azDeg: number }, { altDeg: number; azDeg: number; lit: number }] | null = null;
+  let ringW = 0;
+  new ResizeObserver((e) => { const w = Math.round(e[0].contentRect.width); if (lastRing && Math.abs(w - ringW) > 8) { ringW = w; ring(...lastRing); } }).observe(document.querySelector('.up-ring')!);
+  /** The horizon unrolled: bearing across, height up. Planets too faint for the eye are drawn faint. */
+  function ring(m: Moment, sun: { altDeg: number; azDeg: number }, moon: { altDeg: number; azDeg: number; lit: number }): void {
+    const svg = document.getElementById('sky-ring'); if (!svg) return;
+    lastRing = [m, sun, moon];
+    // drawn at the size it is shown, so the words stay at reading size on a phone
+    const W = Math.max(320, Math.round(svg.getBoundingClientRect().width || 1000)), L = 30, R = W - 12;
+    svg.setAttribute('viewBox', `0 0 ${W} 300`);
+    const X = (az: number) => L + (az / 360) * (R - L), Y = (alt: number) => 230 - (Math.max(-18, Math.min(75, alt)) / 75) * 200;
+    const ns = 'http://www.w3.org/2000/svg';
+    const mk = (tag: string, at: Record<string, string | number>, text?: string) => { const e = document.createElementNS(ns, tag); for (const k in at) e.setAttribute(k, String(at[k])); if (text) e.textContent = text; return e; };
+    const parts: Element[] = [];
+    parts.push(mk('rect', { x: L, y: 230, width: R - L, height: 70, class: 'r-ground' }));
+    for (const h of [30, 60]) parts.push(mk('line', { x1: L, x2: R, y1: Y(h), y2: Y(h), class: 'r-grid' }), mk('text', { x: L - 6, y: Y(h) + 4, class: 'r-alt', 'text-anchor': 'end' }, `${h}°`));
+    parts.push(mk('line', { x1: L, x2: R, y1: 230, y2: 230, class: 'r-horizon' }));
+    ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'].forEach((d, i) => { if (W > 600 || d.length === 1) parts.push(mk('text', { x: X(i * 45), y: 290, class: d.length === 1 ? 'r-dir big' : 'r-dir', 'text-anchor': 'middle' }, d)); });
+    type It = { name: string; alt: number; az: number; kind: string };
+    const items: It[] = [
+      { name: 'Sun', alt: sun.altDeg, az: sun.azDeg, kind: 'sun' },
+      { name: 'Moon', alt: moon.altDeg, az: moon.azDeg, kind: 'moon' },
+      ...PLANETS.map((id) => { const k = toSky(planetFromEarth(id, m.T).dir, m); return { name: PLANET_NAMES[id], alt: k.altDeg, az: k.azDeg, kind: id === 'uranus' || id === 'neptune' ? 'faint' : 'planet' }; }),
+    ].sort((a, b) => a.az - b.az);
+    let lastX = -999, lastLift = 0;
+    for (const it of items) {
+      const x = X(it.az), y = Y(it.alt), below = it.alt < 0;
+      const g = mk('g', { class: `r-${it.kind}${below ? ' below' : ''}` });
+      g.append(mk('circle', { cx: x, cy: y, r: it.kind === 'sun' ? 11 : it.kind === 'moon' ? 9 : it.kind === 'faint' ? 3 : 5 }));
+      // below the ground only the Sun and the Moon are named, to say where they will rise
+      if (!below || it.kind === 'sun' || it.kind === 'moon') {
+        const lift = x - lastX < 64 ? lastLift + 17 : 0; lastX = x; lastLift = lift;
+        const anchor = x < L + 30 ? 'start' : x > R - 30 ? 'end' : 'middle';
+        g.append(mk('text', { x, y: y - 14 - lift, 'text-anchor': anchor }, it.name));
+      }
+      parts.push(g);
+    }
+    svg.replaceChildren(...parts);
   }
 
   function pick(e: PointerEvent): void {
@@ -462,7 +506,35 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   .pair label { display: grid; gap: .3rem; font: 300 .92rem var(--r-serif); color: var(--ink-soft); }
   .tick { display: flex; gap: .6rem; align-items: center; font: 300 1rem var(--r-serif); color: var(--ink-soft); min-height: 36px; }
   .tick input { accent-color: #e9c48a; width: 18px; height: 18px; }
-  .sky-rest { padding-top: clamp(40px, 6vw, 80px); }
+
+  /* below the sky: what is up, as words beside the horizon unrolled, then a two-column colophon */
+  .sky-rest { max-width: 1240px; margin: 0 auto; padding: clamp(40px, 6vw, 80px) var(--gutter, 24px) clamp(48px, 7vw, 96px); }
+  .up { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
+  .sky-rest { --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace; }
+  .sky-rest .up-list :global(p) { font: 300 1.12rem/1.55 var(--r-serif); color: var(--ink-soft); margin: 0 0 .8rem; }
+  .sky-rest .up-list :global(p:first-child) { font-size: 1.35rem; line-height: 1.4; color: var(--ink); }
+  .up-ring { margin: 0; }
+  .up-ring svg { width: 100%; height: 300px; display: block; overflow: visible; }
+  .up-ring figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; max-width: 40rem; }
+  .up-ring :global(.r-ground) { fill: #0f0d0b; }
+  .up-ring :global(.r-grid) { stroke: rgba(236,231,220,.08); stroke-dasharray: 2 6; }
+  .up-ring :global(.r-horizon) { stroke: rgba(236,231,220,.45); }
+  .up-ring :global(.r-alt), .up-ring :global(.r-dir) { font: 400 11px var(--r-mono); fill: var(--ink-faint); letter-spacing: .06em; }
+  .up-ring :global(.r-dir.big) { fill: var(--ink-soft); font-size: 13px; }
+  .up-ring :global(g text) { font: 400 15px var(--r-serif); fill: var(--ink); paint-order: stroke; stroke: #0b0b0c; stroke-width: 4px; }
+  .up-ring :global(.r-sun circle) { fill: #f6d38e; }
+  .up-ring :global(.r-moon circle) { fill: #e8e3d6; }
+  .up-ring :global(.r-planet circle) { fill: #e9c48a; }
+  .up-ring :global(.r-faint circle) { fill: #8eaeff; }
+  .up-ring :global(.r-faint text) { fill: var(--ink-faint); font-size: 13px; }
+  .up-ring :global(g.below) { opacity: .35; }
+  .colophon { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 80px); margin-top: clamp(48px, 7vw, 96px); padding-top: 2rem; border-top: 1px solid var(--rule); }
+  .sky-rest .colophon p, .sky-rest .colophon li { font: 300 .98rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0 0 .8rem; }
+  .colophon ul { margin: 0 0 .8rem; padding-left: 1.1rem; }
+  .colophon .label { margin-bottom: 1rem; }
+  .colophon a { color: var(--ink); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; }
+  @media (max-width: 860px) { .up, .colophon { grid-template-columns: minmax(0, 1fr); } }
+
 
   @media (max-width: 900px) {
     .sky-bar { grid-template-columns: minmax(0, 1fr) auto; padding-bottom: .5rem; }

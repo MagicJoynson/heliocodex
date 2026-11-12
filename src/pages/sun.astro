@@ -1,4 +1,5 @@
 ---
+import WorldGlance from '../components/WorldGlance.astro';
 import '@fontsource-variable/fraunces/full';
 import '@fontsource-variable/fraunces/full-italic';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -21,6 +22,7 @@ const rows: [string, string][] = [
     <div class="copy">
       <p class="kicker">Our star · 1 au away</p>
       <h1>The Sun</h1>
+      <WorldGlance world="sun" />
       <p class="lead">A ball of hot gas 109 times as wide as the Earth, holding almost everything in the solar system. Keep scrolling and you will drop to a few thousand kilometres above its surface, drifting towards a sunspot.</p>
     </div>
   </section>
@@ -113,4 +115,5 @@ const rows: [string, string][] = [
   .onward { font: italic 500 1.25rem var(--display); }
   @media (min-width: 900px) { .beat.wide { grid-template-columns: minmax(0, 32rem) minmax(0, 38rem); align-items: center; column-gap: 6vw; } }
   @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(10,4,2,.2) 0%, rgba(10,4,2,.62) 55%, rgba(10,4,2,.82) 100%); } }
+  :global(.wglance) { margin: 1.4rem 0 1.6rem !important; }
 </style>

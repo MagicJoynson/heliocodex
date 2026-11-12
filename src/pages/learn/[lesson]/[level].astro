@@ -29,7 +29,7 @@ const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
   <div class="level">
     <header class="reading-head">
-      <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
+      <p class="label"><a href="/learn">Learn</a> / <a href={`/learn/subject/${lesson.data.strand}`}>{STRAND_NAMES[lesson.data.strand]}</a></p>
       <p class="of"><a href={`/learn/${lesson.id}`}>{lesson.data.title}</a></p>
       <h1>{LEVEL_NAMES[level].name}</h1>
       <p class="lead">{LEVEL_NAMES[level].reader}.</p>
