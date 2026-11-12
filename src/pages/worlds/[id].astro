@@ -15,6 +15,7 @@ export function getStaticPaths() {
 const { id } = Astro.params as { id: string };
 const b = body(id)! as Body;
 const page = WORLD_PAGES[id];
+const midName = b.name.replace(/^The /, 'the ');
 const o = b.orbit as { aKm: number; e: number; iDeg: number; periodDays?: number };
 const parent = b.parent ? body(b.parent) : null;
 const round = b.parent === 'sun';
@@ -92,7 +93,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
           {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 18} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
           <circle cx={ecx + erx} cy={fy} r="5" class="me" />
         </svg>
-        <figcaption>The path of {b.name} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
+        <figcaption>The path of {midName} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
       </figure>
       <div class="wo-facts">
         <dl>{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>

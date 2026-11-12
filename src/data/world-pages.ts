@@ -156,4 +156,142 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'Wikipedia, Ganymede (moon)', url: 'https://en.wikipedia.org/wiki/Ganymede_(moon)' },
     ],
   },
+  callisto: {
+    picture: {
+      src: '/img/learn/callisto-galileo.jpg', width: 740, height: 753,
+      alt: 'A dark brown globe peppered all over with bright white spots, the scars of craters.',
+      caption: '<b>A photograph.</b> Callisto from NASA’s Galileo spacecraft. The bright spots are craters, where impacts dug up cleaner ice. Credit: NASA/JPL/DLR.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Callisto is covered in craters from edge to edge, more thickly than almost anywhere else in the Solar System. Its dark surface has hardly changed in about four billion years. There are no great mountains, no volcanoes and no long cracks. Nothing inside has stirred enough to wipe the slate clean.',
+        'The largest scar is Valhalla, a bright centre ringed by ridges that spread out to about 3,800 km across, like ripples frozen round a stone dropped in a pond. Up close the ground is softer than expected, with few small craters, as if frost has been slowly boiling off and leaving dark dust behind.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Callisto is 4,821 km across, the third-largest moon in the Solar System and almost as wide as Mercury. It is roughly half rock and half ice, and the two have not fully separated inside, unlike in Ganymede. That points to a gentle history, without much heating.',
+        'It goes round Jupiter in 16.7 days, well outside the lock-step that heats Io, Europa and Ganymede, so it gets almost no heat from tides. Even so, the Galileo spacecraft found that Callisto makes a changing magnetic field as Jupiter’s sweeps past, which may mean a salty ocean deep under the ice.',
+        'It also lies beyond the worst of Jupiter’s radiation. For that reason a NASA study in 2003 picked it as the best place for a future human base among Jupiter’s moons.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Galileo Galilei found Callisto in January 1610, with the other three large moons. Being furthest out, it strays furthest from Jupiter, and it is the one most easily seen in a small telescope.',
+        'Callisto was a nymph loved by Zeus, who in the myth was turned into a bear and set in the sky as the Great Bear.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Pioneer 10 and 11 passed in 1973 and 1974, and Voyager 1 and 2 photographed half its surface in 1979. The Galileo spacecraft flew past Callisto eight times between 1996 and 2001.',
+        'The European Space Agency’s JUICE, launched in April 2023, is planned to fly past Callisto 21 times in the early 2030s before settling into orbit round Ganymede.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Whether the ocean is really there. The changing magnetic field could also come partly from Callisto’s thin, electrically charged upper air, and some researchers think that explains it without any ocean. JUICE’s many passes should settle it.',
+        'It is also not known why Callisto and Ganymede, so alike in size and make-up, grew up so differently inside.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Callisto', url: 'https://science.nasa.gov/jupiter/jupiter-moons/callisto/' },
+      { label: 'ESA, JUICE', url: 'https://www.esa.int/Science_Exploration/Space_Science/Juice' },
+      { label: 'Wikipedia, Callisto (moon)', url: 'https://en.wikipedia.org/wiki/Callisto_(moon)' },
+    ],
+  },
+
+  enceladus: {
+    picture: {
+      src: '/img/learn/enceladus-jets-cassini.jpg', width: 1100, height: 680,
+      alt: 'The dark edge of a moon with bright jets of spray rising from it into space.',
+      caption: '<b>A photograph.</b> Jets of water from the hidden ocean of Enceladus, lit from behind by the Sun. Two pictures by NASA’s Cassini spacecraft joined together. Credit: NASA/JPL/Space Science Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Enceladus is a small, brilliant white ball of ice. It reflects nearly all the sunlight that falls on it, more than any other large body in the Solar System, because its surface is kept coated in fresh snow.',
+        'Near its south pole run four long, parallel cracks, each about 130 km long, nicknamed the tiger stripes. From them more than a hundred jets of water vapour and ice grains spray out into space. Some of the spray falls back as snow. The rest escapes and feeds one of Saturn’s rings, the faint, wide E ring.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Enceladus is only 504 km across, small enough to fit inside Great Britain. Under its ice is a global ocean of salty water, sitting on a rocky core. The Cassini spacecraft showed in 2015 that the icy shell wobbles too much as it goes round Saturn to be frozen to the rock beneath: something liquid must separate them.',
+        'Cassini flew straight through the jets and tasted them. It found water, salt, carbon compounds, tiny grains of silica that form in hot water reacting with rock, and hydrogen gas, which on the Earth is food for some microbes. In 2023 a study of Cassini’s data found phosphates, the last of the main ingredients that life on the Earth needs.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Herschel found Enceladus on 28 August 1789, using the largest telescope in the world at the time, his 40-foot reflector. His son John named it in 1847, after one of the giants of Greek myth.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 1 and 2 passed in 1980 and 1981 and showed that parts of the surface were strangely smooth and uncratered. The Cassini spacecraft, at Saturn from 2004 to 2017, found the jets in 2005 and flew through them several times, once only 25 km above the surface, in October 2008.',
+        'No spacecraft is on its way yet. Missions to orbit Enceladus or land beside the tiger stripes are being studied.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Enceladus is too small to have stayed warm for 4.5 billion years on its own. The heat comes from Saturn’s tides, but nobody knows whether the ocean is ancient or formed recently, which matters for whether life could have had time to start.',
+        'The biggest question is the simplest: is anything living there? Every ingredient that is known to be needed has now been found in the spray.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Enceladus', url: 'https://science.nasa.gov/saturn/moons/enceladus/' },
+      { label: 'NASA, Cassini finds global ocean in Saturn’s moon Enceladus (2015)', url: 'https://science.nasa.gov/missions/cassini/cassini-finds-global-ocean-in-saturns-moon-enceladus/' },
+      { label: 'Wikipedia, Enceladus', url: 'https://en.wikipedia.org/wiki/Enceladus' },
+    ],
+  },
+
+  triton: {
+    picture: {
+      src: '/img/learn/triton-voyager2-1989.jpg', width: 1200, height: 933,
+      alt: 'A lit crescent-shaped part of a globe, pinkish and pale grey, its lower half covered in bright patchy frost and its upper half in a wrinkled texture.',
+      caption: '<b>A photograph, stitched together from many.</b> Triton from NASA’s Voyager 2 in August 1989. The colours were made from pictures through orange, violet and ultraviolet filters, so they are close to, but not exactly, what the eye would see. The pale frost at the bottom is the southern ice cap. Credit: NASA/JPL/USGS.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Triton is pink-grey and very cold, about −235 °C at the surface, one of the coldest places ever measured in the Solar System. Much of what Voyager 2 saw was a wrinkled plain that the scientists called cantaloupe terrain, after the skin of the melon.',
+        'Across the bright southern ice cap ran dozens of dark streaks, all pointing the same way. They were laid down by geysers: plumes of nitrogen gas and dark dust that shot about 8 km up and were then carried sideways by the thin wind. Very few craters were seen, so the surface is young, probably less than about 100 million years old.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Triton is 2,705 km across, Neptune’s largest moon by far. Under a crust of frozen nitrogen, water ice and carbon dioxide lies a large rocky core. It has a very thin air of nitrogen, about a seventy-thousandth of the pressure at the Earth’s surface.',
+        'It is the only large moon in the Solar System that goes round its planet backwards, against the direction the planet spins. No moon could form that way from the disc round a young planet. Triton was almost certainly captured: a world like Pluto from the Kuiper belt that strayed too close to Neptune and was caught.',
+        'Neptune’s tides are slowly pulling it inwards. In some billions of years it will come close enough to be torn apart, and Neptune may then have a ring grander than Saturn’s.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The English brewer and astronomer William Lassell found Triton on 10 October 1846, only 17 days after Neptune itself had been found. The name, after a sea god, son of Poseidon, was suggested by the French writer Camille Flammarion in 1880.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only one: Voyager 2, which passed about 40,000 km from Triton on 25 August 1989 after twelve years in space. It photographed about 40 per cent of the surface. Everything known about Triton up close comes from those few days.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'More than half of Triton has never been seen. Nobody knows whether the geysers are driven by sunlight warming the ice, or by heat from inside. Heat from the tides that followed its capture may have been enough to melt an ocean under the ice, and it might still be there.',
+        'A mission to fly past Triton, called Trident, was proposed to NASA, but it was not chosen in 2021. No spacecraft is planned.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Triton', url: 'https://science.nasa.gov/neptune/moons/triton/' },
+      { label: 'NASA Image Library, Global color mosaic of Triton (PIA00317)', url: 'https://images.nasa.gov/details/PIA00317' },
+      { label: 'Wikipedia, Triton (moon)', url: 'https://en.wikipedia.org/wiki/Triton_(moon)' },
+    ],
+  },
+
+  moon: {
+    picture: {
+      src: '/img/learn/moon-near-side-lro.jpg', width: 1100, height: 1100,
+      alt: 'The whole face of the Moon in grey, with large dark smooth patches across the upper half and bright, heavily cratered ground in the lower half.',
+      caption: '<b>A photograph.</b> The side of the Moon that always faces the Earth, pieced together from about 1,300 pictures taken by NASA’s Lunar Reconnaissance Orbiter in December 2010. Credit: NASA/GSFC/Arizona State University.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'The Moon has two kinds of ground. The bright highlands are old rock, battered by craters. The dark patches, still called seas from the days when people thought they might be water, are wide plains of solidified lava that flooded the largest basins more than three billion years ago. They cover about a sixth of the surface, almost all on the side facing the Earth.',
+        'The far side, which never faces us, is nearly all highland, with hardly any seas. It holds the largest crater on the Moon, the South Pole–Aitken basin, about 2,500 km across. In craters near the poles where sunlight never reaches, there is ice: in 2009 NASA’s LCROSS mission crashed a rocket stage into one and saw water in the cloud it threw up.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'The Moon is 3,475 km across, a little over a quarter of the Earth’s width. It has a crust, a rocky mantle and a small iron core. Its rocks are a very close chemical match for the Earth’s outer rock, which is the strongest evidence that it formed from the debris of a giant collision with the young Earth about 4.5 billion years ago.',
+        'It is slowly moving away. Mirrors left by the Apollo crews are still used to time laser pulses from the Earth, and they show the Moon drifting about 3.8 cm further away every year.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It has always been known. Galileo Galilei, looking through a telescope in 1609, was among the first to see that its face was rough, with mountains and craters, and not a perfect polished sphere.',
+        'The Greek astronomer Hipparchus worked out its distance in the second century BC from the way a solar eclipse looked from two different places. His answer was close to the true figure.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'The Soviet Luna 2 was the first spacecraft to reach it, crashing on purpose in September 1959. Luna 3 sent back the first pictures of the far side the next month, and Luna 9 made the first soft landing in 1966. On 20 July 1969 Apollo 11 landed the first people, and by the end of 1972 twelve astronauts had walked on the Moon and brought back 382 kg of rock and soil.',
+        'In 2019 China’s Chang’e 4 made the first landing on the far side, and in 2024 Chang’e 6 brought back the first samples from it. In April 2026 the four astronauts of Artemis II flew round the Moon, the first people to travel there since 1972.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How much ice the dark polar craters hold, and whether it is enough to be useful to people living there, is still being measured. It is one reason several countries are aiming their landers at the south pole.',
+        'The giant collision explains most of what is known, but not everything. The Moon’s rocks match the Earth’s so closely that, in most versions of the story, it is hard to see why more of the other body did not show.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Earth’s Moon', url: 'https://science.nasa.gov/moon/' },
+      { label: 'NASA, LCROSS impact data indicates water on the Moon (2009)', url: 'https://www.nasa.gov/news-release/lcross-impact-data-indicates-water-on-moon/' },
+      { label: 'Wikipedia, Moon', url: 'https://en.wikipedia.org/wiki/Moon' },
+    ],
+  },
 };
