@@ -2,20 +2,21 @@
 title: "Cookies and storage"
 description: "Exactly what Heliocodex keeps in your browser, why, for how long and how to remove it. There are no cookies."
 lead: "Heliocodex sets no cookies and loads nothing from advertisers. This page lists the only things it ever keeps on your device, how its visit counting works, how to switch that off, and what the site reads from your device."
-updated: 2026-11-11
+updated: 2026-11-12
 ---
 
 <div class="short-version">
 
 **The short version**
 
-- No cookies. No adverts. No social media buttons or embedded videos.
+- No cookies of our own. No adverts. No social media buttons.
+- A few lessons have a NASA video. It loads from YouTube only if you press its Play button, and the line beside the button says what that does (see section 7).
 - One thing is kept for good: the place you chose on the sky map. **Forget my place** on that page removes it.
 - One thing is kept until you close the tab: a one-word note, used only if the 3D view's graphics fail and the page has to start again.
 - One more is kept only if you use the switch below: a note that you don't want to be counted.
 - We count visits with Cloudflare Web Analytics, which sets no cookies. You can switch it off below, and it switches itself off if your browser sends Do Not Track or Global Privacy Control.
 - Nothing kept on your device is ever sent to us.
-- There is no cookie banner, because nothing here needs your consent. You are told, and you can opt out.
+- There is no cookie banner, because nothing here needs your consent until you choose to play a video, and pressing play is that choice. You are told, and you can opt out.
 
 </div>
 
@@ -69,6 +70,8 @@ PECR lets a website store or read information without consent in some situations
 - **Strictly necessary for a service you asked for.** This covers technical storage that is strictly necessary for a service you have requested, and its examples include recording selections you have made on a website and keeping a device safe or preventing technical faults. The place you choose on the sky map is a selection you have made, kept so that the page does what you asked next time. The note about graphics is there to deal with a technical fault.
 - **Adapting the site to your preferences.** This covers storage or access whose only purpose is to adapt how the website looks or works to your preferences, as long as you are told clearly what it is for and have a simple, free way to object. The place you chose, and the reading of your screen, motion setting and time zone, are used for that and nothing else. You are told here and on the sky map, and you can object whenever you like with **Forget my place**, or by clearing your site data. The site works without any of it.
 
+- **Videos (consent).** Anything Google stores or reads when you press play on a video is covered by your consent, given by pressing play after being told what it does (paragraph 2 of Schedule A1). Nothing from YouTube loads before that.
+
 We use these things for the purpose we have given and no other. They aren't used for measurement, advertising or tracking, and they aren't combined with anything. If we ever wanted to use them for something else, we would ask for your consent first.
 
 We think this is the right reading of the law. It is the law and the Information Commission's guidance on "storage and access technologies" that matter, not our opinion, so if you disagree or have a concern, tell us at privacy@fallinghippo.com.
@@ -81,7 +84,9 @@ If you say yes, the page receives your position, works out your sky with it and 
 
 ## 7. What other people's services might set
 
-Apart from the visit-counting script, nothing on heliocodex.com loads from another company's servers: not fonts, not maps, not pictures. The counting script comes from Cloudflare (static.cloudflareinsights.com) and reports to Cloudflare. Cloudflare says that it sets no cookies. It is the only third party on our pages and it only loads if you haven't opted out.
+Apart from the visit-counting script and a video you choose to play, nothing on heliocodex.com loads from another company's servers: not fonts, not maps, not pictures. The counting script comes from Cloudflare (static.cloudflareinsights.com) and reports to Cloudflare. Cloudflare says that it sets no cookies, and it only loads if you haven't opted out.
+
+**Videos from YouTube.** Some lessons carry a NASA video hosted on YouTube. Until you press its Play button, the page shows a still picture kept on our own server and makes no request to YouTube or Google. When you press play, your browser loads YouTube's player from youtube-nocookie.com, YouTube's privacy-enhanced mode. From then on Google receives your IP address and details of your browser and device, and may store or read information on your device to run the player and count the view, under Google's own privacy policy. Google says that in this mode, views of embedded videos are not used to personalise your YouTube experience or the adverts it shows you outside the embed. We receive nothing from Google and cannot see who has played a video.
 
 Our web host, Cloudflare, may in some situations set a security cookie, usually to tell people from automated attacks. That would be strictly necessary for keeping the site safe, and wouldn't need consent. At the time of writing we have checked and none is set. If that changes, we will list it here.
 
@@ -94,6 +99,7 @@ If you follow a link from a Heliocodex page to NASA, a journal or any other site
 - **Visit counting.** Use the switch in section 1, send a Do Not Track or Global Privacy Control signal, or block cloudflareinsights.com.
 - **The note about graphics.** Closing the tab clears it.
 - **Your position.** Change the location permission for heliocodex.com in your browser's site settings.
+- **Videos.** Anything kept after you pressed play belongs to youtube-nocookie.com and google.com. Clear their data in your browser's site settings, or simply don't press play.
 
 ## 9. Changes
 

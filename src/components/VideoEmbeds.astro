@@ -1,0 +1,43 @@
+---
+/**
+ * Click-to-load videos. A lesson writes <figure class="video" data-yt="ID" data-title="…"><figcaption>…</figcaption></figure>.
+ * Nothing loads from YouTube until the reader presses Play: the poster is a frame kept on our own server
+ * (/img/video/ID.jpg) and the line beside the button says what playing does (see /cookies).
+ */
+---
+<script>
+  for (const fig of document.querySelectorAll<HTMLElement>('figure.video[data-yt]')) {
+    const id = fig.dataset.yt!;
+    if (!/^[\w-]{11}$/.test(id)) continue;
+    const title = fig.dataset.title || 'Video';
+    const frame = document.createElement('div');
+    frame.className = 'v-frame';
+    frame.innerHTML = `<img src="/img/video/${id}.jpg" alt="" loading="lazy" width="1280" height="720" />
+      <div class="v-gate"><button type="button" class="v-play"><span aria-hidden="true">▶</span> Play video<span class="v-sr">: ${title.replace(/</g, '&lt;')}</span></button>
+      <p>Playing this loads YouTube, which may store data on your device and see your IP address. See <a href="/cookies">Cookies and storage</a>.</p></div>`;
+    fig.prepend(frame);
+    frame.querySelector('button')!.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+      f.title = title;
+      f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      f.allowFullscreen = true;
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      frame.replaceChildren(f);
+      f.focus();
+    });
+  }
+</script>
+<style is:global>
+  figure.video { margin: 2rem 0 2.2rem; }
+  .v-frame { position: relative; aspect-ratio: 16 / 9; background: #000; border: 1px solid rgba(236,231,220,.14); overflow: hidden; }
+  .v-frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .62; }
+  .v-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .v-gate { position: absolute; inset: auto 0 0 0; display: grid; gap: .7rem; justify-items: start; padding: 1.1rem 1.2rem 1.2rem; background: linear-gradient(transparent, rgba(0,0,0,.85) 40%); }
+  .v-play { font: 400 .76rem/1 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: #160f05; background: #e9c48a; border: 0; border-radius: 999px; padding: 13px 20px; cursor: pointer; }
+  .v-play:hover, .v-play:focus-visible { background: #f3d4a2; }
+  .v-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .v-gate p { font: 300 .92rem/1.4 'Spectral', Georgia, serif; color: #c4bdaf; margin: 0; max-width: 34rem; }
+  .v-gate a { color: #ece7dc; }
+  figure.video figcaption { font: italic 300 .95rem/1.5 'Spectral', Georgia, serif; color: #8a8478; margin-top: .7rem; }
+</style>

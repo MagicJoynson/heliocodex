@@ -1,5 +1,6 @@
 ---
 import Analytics from '../components/Analytics.astro';
+import { sections } from '../lib/nav';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
  * driver. Everything you see (type, colour, layout, copy) belongs to the page that uses it.
@@ -31,8 +32,15 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
 
     <header class="top">
       <a class="mark" href="/">Heliocodex</a>
-      <a class="back" href="/bodies">Back out to the solar system</a>
+      <nav class="wnav" aria-label="Main">
+        {sections.map((x) => <a href={x.href} aria-current={x.href === '/bodies' ? 'page' : undefined}>{x.href === '/bodies' ? 'All planets' : x.label}</a>)}
+      </nav>
+      <button type="button" class="wmenu-btn" aria-expanded="false" aria-controls="wmenu">Menu</button>
     </header>
+    <nav class="wmenu" id="wmenu" aria-label="Main" hidden>
+      <a href="/">Home</a>
+      {sections.map((x) => <a href={x.href}>{x.href === '/bodies' ? 'All planets' : x.label}</a>)}
+    </nav>
 
     <aside class="altitude" aria-hidden="true">
       <span class="alt-label">{readout}</span>
@@ -41,10 +49,19 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
     </aside>
 
     <main><slot /></main>
+    <footer class="wfoot">
+      <a href="/bodies">All planets</a><a href={`/explore?go=${world}`}>See it in 3D</a><a href="/sources">Sources</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/cookies">Cookies and storage</a><a href="/licences">Licences and credits</a><a href="/accessibility">Accessibility</a>
+    </footer>
 
     <script>
       import { createJourney } from '../lib/journey/engine';
       import { worlds } from '../lib/journey/worlds';
+      const wbtn = document.querySelector<HTMLButtonElement>('.wmenu-btn')!;
+      const wmenu = document.getElementById('wmenu')!;
+      const wset = (open: boolean) => { wmenu.hidden = !open; wbtn.setAttribute('aria-expanded', String(open)); };
+      wbtn.addEventListener('click', () => wset(Boolean(wmenu.hidden)));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !wmenu.hidden) { wset(false); wbtn.focus(); } });
+      document.addEventListener('click', (e) => { if (!wmenu.hidden && !wmenu.contains(e.target as Node) && e.target !== wbtn) wset(false); });
       const id = document.body.dataset.world!;
       const canvas = document.getElementById('journey') as HTMLCanvasElement;
       const journey = createJourney(canvas, document.getElementById('haze')!, worlds[id]);
@@ -117,7 +134,17 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
       #arrive { position: fixed; inset: 0; z-index: 50; background: #000; opacity: 0; pointer-events: none; transition: opacity 1.4s ease; }
       .top { position: fixed; z-index: 10; left: 0; right: 0; top: 0; display: flex; justify-content: space-between; gap: 16px; padding: 18px var(--pad); font: 400 .78rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
       .top a { color: var(--ink); text-decoration: none; text-shadow: 0 1px 10px rgba(0,0,0,.55); }
-      .top .back { color: var(--ink-soft); }
+      .wnav { display: flex; gap: clamp(12px, 1.6vw, 22px); }
+      .wnav a { color: var(--ink-soft); }
+      .wnav a[aria-current] { color: var(--ink); }
+      .wmenu-btn { display: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--ink); background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
+      .wmenu { position: fixed; z-index: 11; top: 58px; right: var(--pad); display: grid; min-width: 14rem; background: rgba(8,8,10,.96); border: 1px solid rgba(255,255,255,.16); padding: 6px 0; font: 400 .78rem/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+      .wmenu[hidden] { display: none; }
+      .wfoot { position: relative; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px 22px; padding: 28px var(--pad) 36px; background: rgba(0,0,0,.7); font: 400 .72rem/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+      .wfoot a { color: var(--ink-soft); text-decoration: none; }
+      .wfoot a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+      .wmenu a { color: var(--ink); text-decoration: none; padding: 14px 18px; }
+      .wmenu a:hover { background: rgba(255,255,255,.06); }
       .top a:hover { text-decoration: underline; text-underline-offset: 4px; }
       .altitude { position: fixed; z-index: 10; right: var(--pad); top: 50%; transform: translateY(-50%); display: grid; justify-items: end; gap: 4px; font: 400 .72rem/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); text-shadow: 0 0 2px rgba(0,0,0,.85), 0 1px 3px rgba(0,0,0,.7), 0 1px 12px rgba(0,0,0,.6); }
       .ruler { filter: drop-shadow(0 0 1px rgba(0,0,0,.9)) drop-shadow(0 1px 4px rgba(0,0,0,.6)); }
@@ -125,7 +152,8 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
       .ruler { position: relative; display: block; width: 1px; height: 38vh; margin-top: 10px; margin-right: 3px; background: repeating-linear-gradient(to bottom, var(--ink-faint) 0 1px, transparent 1px 12px); }
       .ruler::before { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 7px; background: repeating-linear-gradient(to bottom, var(--ink-soft) 0 1px, transparent 1px 12px); }
       .ruler i { position: absolute; right: -2px; width: 17px; height: 2px; background: var(--accent); top: 0; transition: top .12s linear; }
-      @media (max-width: 760px) { .altitude { display: none; } .top .back { display: none; } }
+      @media (max-width: 760px) { .altitude { display: none; } }
+      @media (max-width: 1020px) { .wnav { display: none; } .wmenu-btn { display: block; } .top { align-items: center; padding-top: 12px; } }
       main { position: relative; z-index: 5; }
       .beat { min-height: 120svh; display: grid; align-content: center; gap: 56px; padding: 18svh var(--pad); }
       .beat:first-child { min-height: 100svh; align-content: end; padding-bottom: 12svh; }

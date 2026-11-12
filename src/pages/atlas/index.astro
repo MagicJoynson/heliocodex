@@ -44,7 +44,7 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
   <section class="row" id="beyond">
     <div class="hang"><h2>Further out</h2><p class="note">Eight steps away from the Sun, each one opening in 3D.</p><p class="note">Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p></div>
     <ul class="plain-list chart-list">
-      {places.map((p) => <li><a href={`/?go=${p.id}`} aria-label={`Fly out to ${p.name} in 3D`}>{p.name}</a><span>{p.what}{p.model && <> <em>Partly a model.</em></>}{p.chart && <> <a href={p.chart}>The chart.</a></>}</span></li>)}
+      {places.map((p) => <li><a href={`/explore?go=${p.id}`} aria-label={`Fly out to ${p.name} in 3D`}>{p.name}</a><span>{p.what}{p.model && <> <em>Partly a model.</em></>}{p.chart && <> <a href={p.chart}>The chart.</a></>}</span></li>)}
     </ul>
   </section>
 

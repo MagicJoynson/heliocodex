@@ -1,5 +1,5 @@
 ---
-// The 3D view moved to the home page. Old links (/v2?go=…) still work: this forwards them, keeping the query.
+// The 3D view now lives at /explore. Old links (/v2?go=…) still work: this forwards them, keeping the query.
 ---
 <!doctype html>
 <html lang="en-GB">
@@ -7,11 +7,11 @@
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
     <title>Heliocodex</title>
-    <link rel="canonical" href={new URL('/', Astro.site).toString()} />
-    <meta http-equiv="refresh" content="0; url=/" />
-    <script is:inline>location.replace('/' + location.search + location.hash);</script>
+    <link rel="canonical" href={new URL('/explore', Astro.site).toString()} />
+    <meta http-equiv="refresh" content="0; url=/explore" />
+    <script is:inline>location.replace('/explore' + location.search + location.hash);</script>
   </head>
   <body>
-    <p>The 3D view is now on the <a href="/">home page</a>.</p>
+    <p>The 3D view is now at <a href="/explore">/explore</a>.</p>
   </body>
 </html>

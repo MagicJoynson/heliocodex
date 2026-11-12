@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import '../styles/reading.css';
+import VideoEmbeds from '../components/VideoEmbeds.astro';
 interface Props { title: string; description: string; path: string }
 const { title, description, path } = Astro.props;
 ---
@@ -8,4 +9,5 @@ const { title, description, path } = Astro.props;
   <article class="reading">
     <slot />
   </article>
+  <VideoEmbeds />
 </Base>

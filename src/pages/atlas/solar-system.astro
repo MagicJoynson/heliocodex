@@ -99,7 +99,7 @@ const data = {
               <td data-label="Tilt">{w.tilt < 10 ? w.tilt.toFixed(1) : Math.round(w.tilt)}°</td>
               <td data-label="Width">{w.meanRadiusKm ? fmtKm(w.meanRadiusKm * 2) : <span class="unknown">not measured</span>}</td>
               <td data-label="Moons">{w.moons === 0 ? 'none' : plates[w.id] ? <a href={`/atlas/${w.id}`} aria-label={`${w.moons} ${w.moons === 1 ? 'moon' : 'moons'}: the chart of ${w.name}’s moons`}>{w.moons}</a> : w.moons}</td>
-              <td class="go"><a href={`/?go=${w.id}`} aria-label={`Fly to ${w.name} in 3D`}>Fly there</a></td>
+              <td class="go"><a href={`/explore?go=${w.id}`} aria-label={`Fly to ${w.name} in 3D`}>Fly there</a></td>
             </tr>
           ))}
         </tbody>

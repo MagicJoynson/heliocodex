@@ -2,7 +2,7 @@
 title: "Licences and credits"
 description: "Who owns what on Heliocodex, the licences behind every picture, map, catalogue, font and tool we use, and how to reuse our work or tell us about a problem."
 lead: "Heliocodex stands on other people's work, most of it given freely to the public by NASA and by astronomers who put their catalogues online. This page says whose each part is, on what terms it is shared and what you may do with it."
-updated: 2026-11-11
+updated: 2026-11-12
 ---
 
 <div class="short-version">
@@ -41,6 +41,8 @@ The photographs on the planet pages are from NASA missions and photographers. Ea
 **Images that have an owner besides NASA.** Where NASA has used a third party's picture, or a person has processed NASA's data and credited themselves, that person keeps their rights and their credit, and NASA's permission does not pass on theirs. If you want to reuse a photograph from this site, please go to NASA or the source in the credit, check the terms that come with the original and use their copy, not ours.
 
 **People in pictures.** Where people appear in an image, such as the launch photograph, the rights in their likeness aren't covered by the NASA guidelines. Don't use those images commercially without checking.
+
+**Videos.** A few lessons carry a video made by NASA, mostly by its Goddard Space Flight Center and Scientific Visualization Studio, and hosted on NASA's own YouTube channels. Like NASA's photographs, NASA video is generally not subject to copyright in the United States, and its media guidelines apply: NASA is credited beside each video, and nothing here suggests that NASA endorses Heliocodex. The still picture shown before you press play is a frame from the same video. A video plays from YouTube only when you press its Play button; see [cookies and storage](/cookies) for what that does.
 
 ## 3. Maps and textures
 

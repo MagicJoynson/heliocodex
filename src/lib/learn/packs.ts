@@ -29,7 +29,7 @@ export const PACKS: Pack[] = [
       { title: 'Everything else', about: 'Our galaxy, and the universe it is one small part of.', lessons: ['the-milky-way', 'the-expanding-universe'] },
     ],
     coming: [],
-    look: [{ href: '/', text: 'Fly through it in 3D', about: 'From the Sun out to the oldest light, with everything where it is measured to be.' }, { href: '/sky', text: 'Tonight’s sky', about: 'What is overhead where you are, right now.' }],
+    look: [{ href: '/explore', text: 'Fly through it in 3D', about: 'From the Sun out to the oldest light, with everything where it is measured to be.' }, { href: '/sky', text: 'Tonight’s sky', about: 'What is overhead where you are, right now.' }],
   },
   {
     id: 'the-night-sky',
@@ -57,7 +57,7 @@ export const PACKS: Pack[] = [
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
     coming: ['Inside planets and their magnetic shields'],
-    look: [{ href: '/', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
+    look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
     id: 'stars',
@@ -86,7 +86,7 @@ export const PACKS: Pack[] = [
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
     coming: ['Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
-    look: [{ href: '/?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
+    look: [{ href: '/explore?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
     id: 'gravity',
@@ -100,7 +100,7 @@ export const PACKS: Pack[] = [
       { title: 'Einstein\u2019s picture', about: 'Why time and space depend on how you move, and what that does to gravity.', lessons: ['space-and-time-are-not-fixed', 'gravity-as-bent-space-and-time', 'gravity-as-a-lens'] },
     ],
     coming: ['How a rocket works'],
-    look: [{ href: '/', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
+    look: [{ href: '/explore', text: 'Watch the orbits in 3D', about: 'Every planet and moon moving under the rule these lessons describe.' }],
   },
   {
     id: 'light',
@@ -127,7 +127,7 @@ export const PACKS: Pack[] = [
       { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy'] },
     ],
     coming: ['How galaxies form and change', 'How it ends', 'How big is the universe'],
-    look: [{ href: '/?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
+    look: [{ href: '/explore?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
     id: 'other-worlds-and-life',
@@ -140,7 +140,7 @@ export const PACKS: Pack[] = [
       { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
     ],
     coming: ['What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
-    look: [{ href: '/?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
+    look: [{ href: '/explore?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];
 

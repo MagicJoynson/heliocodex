@@ -1,49 +1,12 @@
 ---
-import '@fontsource/spectral/300.css';
-import '@fontsource/spectral/300-italic.css';
-import '@fontsource/spectral/400.css';
-import '@fontsource/ibm-plex-mono/400.css';
-// each world's own display face, for its line in the list
-import '@fontsource-variable/fraunces/full';
-import '@fontsource-variable/archivo/wdth.css';
-import '@fontsource/bodoni-moda/400-italic.css';
-import '@fontsource/libre-caslon-display';
-import '@fontsource/young-serif';
-import '@fontsource/bevan';
-import '@fontsource/italiana';
-import '@fontsource/instrument-serif/400-italic.css';
-import '@fontsource-variable/big-shoulders-display/wght';
-import Base from '../layouts/Base.astro';
+import Reading from '../layouts/Reading.astro';
 import { bodies } from '../data/bodies';
 import { phys, fmt, hoursToDay, daysToYear } from '../lib/format';
+import { portraits } from '../lib/portraits';
 import facts from '../data/facts.json';
 
-const sceneBodies = bodies.map((b) => ({ slug: b.slug, name: b.name, color: b.color, tiltDeg: b.tiltDeg, retrograde: b.retrograde }));
 const kindWord: Record<string, string> = { star: 'Our star', terrestrial: 'Rocky planet', 'gas giant': 'Gas giant', 'ice giant': 'Ice giant' };
-const panelData = Object.fromEntries(
-  bodies.map((b) => {
-    const p = phys(b.slug) as Record<string, number> | undefined;
-    const e = (facts.planets as any)[b.slug]?.elements;
-    return [
-      b.slug,
-      {
-        name: b.name === 'Sun' ? 'The Sun' : b.name,
-        kind: kindWord[b.kind],
-        tagline: b.tagline,
-        rows: b.slug === 'sun'
-          ? [['Radius', '695,700 km'], ['Surface', 'about 5,500 °C'], ['One turn', '25 to 35 days']]
-          : [
-              ['Radius', `${fmt(p!.radius_mean_km)} km`],
-              ['Orbit', `${fmt(e.a_au, 2)} au`],
-              ['Year', daysToYear(p!.orbit_period_days)],
-              ['Day', hoursToDay(p!.day_hours)],
-            ],
-      },
-    ];
-  }),
-);
-
-// where each fall ends, in a line
+// where each page's fall ends, in a line
 const landings: Record<string, string> = {
   sun: 'Drift a few thousand kilometres over the boiling surface, towards a sunspot.',
   mercury: 'Stand on a crater rim near the north pole, the Sun low on the horizon.',
@@ -55,257 +18,77 @@ const landings: Record<string, string> = {
   uranus: 'Midnight at 45° north. The Sun is still up, and five moons sit in a row.',
   neptune: 'Ride above the blue at 29° north, where white streaks cast their shadows.',
 };
+const photo = Object.fromEntries(portraits.map((p) => [p.slug, p]));
 const list = bodies.map((b) => {
   const p = phys(b.slug) as Record<string, number> | undefined;
   const e = (facts.planets as any)[b.slug]?.elements;
   return {
     slug: b.slug,
-    name: b.slug === 'sun' ? 'The Sun' : b.name,
-    where: p ? `${fmt(e.a_au, 2)} au` : 'centre',
-    year: p ? daysToYear(p.orbit_period_days) : '',
+    name: b.slug === 'sun' ? 'The Sun' : b.slug === 'earth' ? 'The Earth' : b.name,
+    kind: kindWord[b.kind],
+    tagline: b.tagline,
     land: landings[b.slug],
+    photo: photo[b.slug],
+    rows: b.slug === 'sun'
+      ? [['Width', '1,392,700 km'], ['Surface', 'about 5,500 °C'], ['One turn', '25 to 35 days'], ['Light to the Earth', '8 min 20 s']]
+      : [
+          ['Width', `${fmt(p!.radius_mean_km * 2)} km`],
+          ['From the Sun', `${fmt(e.a_au, 2)} au`],
+          ['Year', daysToYear(p!.orbit_period_days)],
+          ['Day', hoursToDay(p!.day_hours)],
+          ['Moons', `${p!.moons}`],
+        ],
   };
 });
 ---
-<Base title="Bodies" path="/bodies" description="The Sun and its eight planets where they are tonight, from NASA JPL orbital elements. Pick one and fall to its surface.">
-  <div id="veil" aria-hidden="true"></div>
-  <section class="orrery" id="stage">
-    <canvas id="sky" aria-label="The solar system in 3D, with each planet where it is today. Drag to turn it, tap a planet or its name to pick it."></canvas>
+<Reading title="The Sun and planets" path="/bodies" description="The Sun and its eight planets, each with a real spacecraft photograph, its key numbers from NASA, and a page that falls from orbit to the ground.">
+  <header class="reading-head">
+    <p class="label">Planets</p>
+    <h1>The Sun and its eight planets</h1>
+    <p class="lead">Each has its own page: a fall from orbit down to the ground, or as near to a ground as that world has, with the story of what you pass on the way. Every photograph here is real, taken by a spacecraft or by astronauts.</p>
+  </header>
 
-    <div class="sky-hero">
-      <p class="when" id="when">Tonight</p>
-      <h1>Where everything is tonight.</h1>
-      <p class="lead">The Sun and its eight planets in the places they hold right now, worked out from NASA JPL’s orbital elements. Drag to turn it. Pick a world to fall down to its surface.</p>
-    </div>
+  <ol class="plain-list bodies">
+    {list.map((w) => (
+      <li class={`b b-${w.slug}`}>
+        <a class="pic" href={`/${w.slug}`} tabindex="-1" aria-hidden="true"><img src={w.photo.src} alt="" width={w.photo.width} height={w.photo.height} loading="lazy" style={w.slug === 'saturn' ? undefined : `height:${(82 / w.photo.disc).toFixed(1)}%`} /></a>
+        <div class="txt">
+          <p class="label">{w.kind}</p>
+          <h2><a href={`/${w.slug}`}>{w.name}</a></h2>
+          <p class="tag">{w.tagline}</p>
+          <dl>{w.rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
+          <p class="land">{w.land}</p>
+          <p class="links"><a href={`/${w.slug}`}>Fall to the surface</a><a href={`/explore?go=${w.slug}`}>See it in 3D</a></p>
+          <p class="credit">{w.photo.credit}</p>
+        </div>
+      </li>
+    ))}
+  </ol>
 
-    <aside class="pick" id="panel" aria-live="polite" hidden>
-      <p class="pick-kind" id="p-kind"></p>
-      <h2 id="p-name"></h2>
-      <p class="pick-tag" id="p-tag"></p>
-      <dl id="p-rows"></dl>
-      <dl class="now">
-        <div><dt>From the Sun now</dt><dd id="p-dist">–</dd></div>
-        <div><dt>Sunlight takes</dt><dd id="p-light">–</dd></div>
-      </dl>
-      <a class="fall" id="p-go" href="/">Fall to the surface</a>
-      <button class="pick-close" id="panel-close" type="button">Put it back</button>
-    </aside>
-
-    <div class="clock" role="group" aria-label="Time and scale">
-      <span class="date" id="date" aria-live="off"></span>
-      <span class="sep" aria-hidden="true"></span>
-      <button class="t" id="play" type="button" aria-pressed="true">Pause</button>
-      <button class="t" id="now" type="button">Today</button>
-      <span class="sep" aria-hidden="true"></span>
-      <span class="speeds" role="group" aria-label="How fast time runs">
-        <button class="t" data-speed="0.0000115741" type="button" aria-pressed="true">real time</button>
-        <span class="per">or</span>
-        <button class="t" data-speed="1" type="button" aria-pressed="false">a day</button>
-        <button class="t" data-speed="10" type="button" aria-pressed="false">10 days</button>
-        <button class="t" data-speed="100" type="button" aria-pressed="false">100 days</button>
-        <button class="t" data-speed="365.25" type="button" aria-pressed="false">a year</button>
-        <span class="per">a second</span>
-      </span>
-      <span class="sep" aria-hidden="true"></span>
-      <button class="t" id="scale" type="button" aria-pressed="false" title="The planets are drawn far larger than they are. True distances spreads the orbits out to scale.">Squeezed distances</button>
-      <span class="zoom" role="group" aria-label="Zoom">
-        <button class="t" data-zoom="0.7" type="button" aria-label="Closer">closer</button>
-        <button class="t" data-zoom="1.4" type="button" aria-label="Further out">further</button>
-      </span>
+  <section class="row quiet">
+    <div class="hang"><h2>And the rest</h2></div>
+    <div class="more">
+      <p>The dwarf planets, the moons, the asteroids and the comets are all in the <a href="/explore">3D view</a> and on the charts of the <a href="/atlas">atlas</a>. Distances are averages, in astronomical units: 1 au is the Earth’s distance from the Sun, about 150 million km. Figures are from NASA’s planetary fact sheets and JPL; the full list is on the <a href="/sources">sources</a> page.</p>
     </div>
   </section>
+</Reading>
 
-  <section class="landings" id="bodies" aria-labelledby="land-h">
-    <div class="landings-in">
-      <h2 id="land-h">Nine places to land</h2>
-      <p class="landings-lead">Each one is a fall from orbit to the surface, or as near to a surface as that world has. Scroll down a page and you go with it.</p>
-      <ol class="worlds">
-        {list.map((w) => (
-          <li class={`w-${w.slug}`}>
-            <a href={`/${w.slug}`}>
-              <span class="w-where"><span>{w.where}</span>{w.year && <span>{w.year} round the Sun</span>}</span>
-              <span class="w-name">{w.name}</span>
-              <span class="w-land">{w.land}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-      <p class="landings-note">Distances are the average from the Sun, in astronomical units (1 au is the Earth’s distance, about 150 million km). The model above draws every planet hundreds of times too big so you can see it at all. Figures from NASA’s planetary fact sheets and JPL; the full list is on the <a href="/sources">sources</a> page.</p>
-    </div>
-  </section>
-
-  <script define:vars={{ sceneBodies, panelData }} is:inline>
-    window.__helio = { sceneBodies, panelData };
-  </script>
-  <script>
-    import { createSolarSystem, lightTime } from '../lib/scene';
-    const { sceneBodies, panelData } = (window as any).__helio;
-    const $ = (id: string) => document.getElementById(id)!;
-    const panel = $('panel');
-    const dateEl = $('date');
-    const fmtDate = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-    $('when').textContent = `Tonight, ${new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date())}`;
-
-    const sys = createSolarSystem({
-      container: $('stage'),
-      canvas: $('sky') as HTMLCanvasElement,
-      bodies: sceneBodies,
-      onSelect(slug) {
-        document.body.classList.toggle('picked', !!slug);
-        if (!slug) { panel.hidden = true; return; }
-        const d = panelData[slug];
-        $('p-kind').textContent = d.kind;
-        $('p-name').textContent = d.name;
-        $('p-tag').textContent = d.tagline;
-        $('p-rows').innerHTML = d.rows.map((r: string[]) => `<div><dt>${r[0]}</dt><dd>${r[1]}</dd></div>`).join('');
-        ($('p-go') as HTMLAnchorElement).href = `/${slug}`;
-        $('p-go').textContent = slug === 'sun' ? 'Fall towards the Sun' : `Fall to ${d.name}`;
-        ($('panel').querySelector('.now') as HTMLElement).hidden = slug === 'sun';
-        panel.hidden = false;
-      },
-      onTick({ date, selected, distAU }) {
-        dateEl.textContent = fmtDate.format(date);
-        if (selected && selected !== 'sun' && distAU) {
-          $('p-dist').textContent = `${distAU.toFixed(3)} au`;
-          $('p-light').textContent = lightTime(distAU);
-        }
-      },
-    });
-
-    $('panel-close').addEventListener('click', () => sys.select(null));
-    // falling into a world: go dark while the camera closes in, then arrive in orbit on the other side
-    $('p-go').addEventListener('click', (ev) => {
-      const a = ev.currentTarget as HTMLAnchorElement;
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      ev.preventDefault();
-      sys.dive();
-      $('veil').classList.add('on');
-      setTimeout(() => { location.href = `${a.getAttribute('href')}?from=sys`; }, 1100);
-    });
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') sys.select(null); });
-
-    const play = $('play');
-    play.addEventListener('click', () => {
-      const p = !sys.isPlaying();
-      sys.setPlaying(p);
-      play.textContent = p ? 'Pause' : 'Carry on';
-      play.setAttribute('aria-pressed', String(p));
-    });
-    $('now').addEventListener('click', () => sys.now());
-    document.querySelectorAll<HTMLButtonElement>('[data-speed]').forEach((b) =>
-      b.addEventListener('click', () => {
-        sys.setSpeed(Number(b.dataset.speed));
-        document.querySelectorAll('[data-speed]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      }),
-    );
-    document.querySelectorAll<HTMLButtonElement>('[data-zoom]').forEach((b) =>
-      b.addEventListener('click', () => sys.zoom(Number(b.dataset.zoom))),
-    );
-    const scale = $('scale');
-    scale.addEventListener('click', () => {
-      const on = scale.getAttribute('aria-pressed') !== 'true';
-      scale.setAttribute('aria-pressed', String(on));
-      scale.textContent = on ? 'True distances' : 'Squeezed distances';
-      sys.setTrueDistance(on);
-    });
-  </script>
-</Base>
-
-<style is:global>
-  :root {
-    --ink: #f1ece2; --ink-soft: #c9c2b4; --ink-faint: #8d877c; --accent: #f3c98b;
-    --home-serif: 'Spectral', Georgia, serif; --home-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  }
-  body { background: #020203; }
-  #veil { position: fixed; inset: 0; z-index: 60; background: #000; opacity: 0; pointer-events: none; transition: opacity 1.1s ease-in; }
-  #veil.on { opacity: 1; pointer-events: all; }
-
-  /* the model fills the first screen; everything on it is plain type laid over the dark */
-  .orrery { position: relative; height: calc(100svh - var(--header-h)); min-height: 520px; overflow: hidden; }
-  .orrery canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
-  .orrery button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-
-  .sky-hero { position: absolute; left: var(--gutter); top: clamp(20px, 6vh, 64px); max-width: 34rem; pointer-events: none; font-family: var(--home-serif); }
-  .sky-hero .when { font: 400 .74rem/1.4 var(--home-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.1rem; }
-  .sky-hero h1 { font: 300 clamp(2.6rem, 6.2vw, 5.4rem)/.98 var(--home-serif); letter-spacing: -.02em; margin: 0 0 1.2rem; color: var(--ink); text-wrap: balance; }
-  .sky-hero .lead { font: 300 clamp(1.02rem, .96rem + .3vw, 1.2rem)/1.55 var(--home-serif); color: var(--ink-soft); max-width: 27em; margin: 0; text-shadow: 0 1px 14px #020203; }
-  body.picked .sky-hero .lead { opacity: 0; transition: opacity .4s; }
-
-  .orrery .scene-label { font: 400 .68rem/1 var(--home-mono, var(--mono)); letter-spacing: .1em; color: rgba(225,219,206,.62); text-shadow: 0 0 6px #000, 0 0 2px #000; padding: 6px 8px; }
-  .orrery .scene-label:hover { color: var(--ink); }
-  .orrery .scene-label.is-selected { color: var(--accent); }
-
-  /* the picked world: a caption, not a box */
-  .pick { position: absolute; right: var(--gutter); top: 50%; transform: translateY(-50%); width: min(20rem, 40vw); font-family: var(--home-serif); color: var(--ink); text-shadow: 0 1px 12px #020203, 0 0 2px #020203; }
-  .pick[hidden] { display: none; }
-  .pick-kind { font: 400 .7rem/1.4 var(--home-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 .5rem; }
-  .pick h2 { font: 300 clamp(2.4rem, 4vw, 3.4rem)/1 var(--home-serif); letter-spacing: -.015em; margin: 0 0 .7rem; }
-  .pick-tag { font: italic 300 1.06rem/1.45 var(--home-serif); color: var(--ink-soft); margin: 0 0 1.3rem; }
-  .pick dl { margin: 0 0 1rem; display: grid; gap: .32rem; }
-  .pick dl div { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(241,236,226,.12); padding-bottom: .3rem; }
-  .pick dt { font: 400 .72rem/1.5 var(--home-mono); letter-spacing: .04em; color: var(--ink-faint); }
-  .pick dd { margin: 0; font: 400 .78rem/1.5 var(--home-mono); color: var(--ink); text-align: right; }
-  .pick .now dd { color: var(--accent); }
-  .fall { display: inline-block; margin: .6rem 0 .9rem; font: italic 400 1.35rem/1.2 var(--home-serif); color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(243,201,139,.45); padding-bottom: 2px; }
-  .fall::after { content: ' ↓'; font-style: normal; }
-  .fall:hover { border-bottom-color: var(--accent); }
-  .pick-close { display: block; font: 400 .7rem/1.4 var(--home-mono) !important; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint) !important; }
-  .pick-close:hover { color: var(--ink) !important; }
-
-  /* time and scale, as one line of type along the bottom */
-  .clock { position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(14px, 3vh, 28px); display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.1rem; font: 400 .74rem/1.6 var(--home-mono); letter-spacing: .04em; color: var(--ink-faint); text-shadow: 0 0 8px #020203; }
-  .clock .date { font: 300 1.3rem/1 var(--home-serif); letter-spacing: 0; color: var(--ink); min-width: 9.5em; }
-  .clock .sep { width: 1px; height: .9em; background: rgba(241,236,226,.2); align-self: center; }
-  .clock .t { color: var(--ink-soft); padding: 4px 0; border-bottom: 1px solid transparent; }
-  .clock .t:hover { color: var(--ink); }
-  .clock .t[aria-pressed='true'][data-speed] { color: var(--accent); border-bottom-color: rgba(243,201,139,.55); }
-  .clock .speeds { display: inline-flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline; }
-  .clock .t, .clock .per { white-space: nowrap; }
-  .clock .per { color: var(--ink-faint); }
-  .clock .zoom { display: inline-flex; gap: .8rem; margin-left: auto; }
-  .orrery button:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
-
-  /* below the fold: the nine falls, each name in the type its own page uses */
-  .landings { background: linear-gradient(#020203, #060607 30%); border-top: 1px solid rgba(241,236,226,.08); }
-  .landings-in { max-width: 72rem; margin: 0 auto; padding: clamp(64px, 10vw, 130px) var(--gutter) clamp(56px, 8vw, 100px); }
-  .landings h2 { font: 300 clamp(2.2rem, 4.6vw, 3.6rem)/1 var(--home-serif); letter-spacing: -.015em; color: var(--ink); margin: 0 0 1rem; }
-  .landings-lead { font: 300 1.12rem/1.55 var(--home-serif); color: var(--ink-soft); max-width: 32em; margin: 0 0 clamp(36px, 5vw, 60px); }
-  .worlds { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(241,236,226,.14); }
-  .worlds li { border-bottom: 1px solid rgba(241,236,226,.14); }
-  .worlds a { display: grid; grid-template-columns: 10rem minmax(0, 1fr) minmax(0, 1.4fr); align-items: baseline; gap: 0 2rem; padding: 1.35rem 0 1.25rem; text-decoration: none; color: var(--ink); transition: background .3s; }
-  .worlds a:hover { background: linear-gradient(90deg, rgba(241,236,226,.04), rgba(241,236,226,0)); }
-  .w-where { font: 400 .72rem/1.5 var(--home-mono); color: var(--ink-faint); letter-spacing: .03em; display: flex; flex-direction: column; }
-  .w-name { font-size: clamp(2rem, 3.6vw, 2.9rem); line-height: 1; color: var(--ink); transition: color .3s; }
-  .worlds a:hover .w-name { color: var(--hue); }
-  .w-land { font: 300 1.06rem/1.5 var(--home-serif); color: var(--ink-soft); }
-  .w-land::after { content: ' →'; color: var(--ink-faint); }
-
-  .w-sun { --hue: #ffc777; } .w-sun .w-name { font-family: 'Fraunces Variable', serif; font-weight: 640; font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1; }
-  .w-mercury { --hue: #d9d4cc; } .w-mercury .w-name { font-family: 'Archivo Variable', sans-serif; font-weight: 300; font-stretch: 125%; text-transform: uppercase; letter-spacing: .04em; font-size: clamp(1.6rem, 2.8vw, 2.2rem); }
-  .w-venus { --hue: #f0c27a; } .w-venus .w-name { font-family: 'Bodoni Moda', serif; font-style: italic; }
-  .w-earth { --hue: #a9d3ff; } .w-earth .w-name { font-family: 'Libre Caslon Display', serif; }
-  .w-mars { --hue: #f2a07b; } .w-mars .w-name { font-family: 'Young Serif', serif; }
-  .w-jupiter { --hue: #e8c39e; } .w-jupiter .w-name { font-family: 'Bevan', serif; font-size: clamp(1.7rem, 3vw, 2.4rem); }
-  .w-saturn { --hue: #f1dfb5; } .w-saturn .w-name { font-family: 'Italiana', serif; letter-spacing: .04em; }
-  .w-uranus { --hue: #c8f2ec; } .w-uranus .w-name { font-family: 'Instrument Serif', serif; font-style: italic; }
-  .w-neptune { --hue: #8fb6ff; } .w-neptune .w-name { font-family: 'Big Shoulders Display Variable', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
-
-  .landings-note { font: 400 .74rem/1.7 var(--home-mono); color: var(--ink-faint); max-width: 62em; margin: 2.4rem 0 0; }
-  .landings-note a { color: var(--ink-soft); }
-
-  @media (max-width: 760px) {
-    .sky-hero { right: var(--gutter); top: 18px; }
-    .sky-hero .lead { font-size: 1rem; max-width: 22em; }
-    body.picked .clock .speeds, body.picked .clock #scale, body.picked .clock .zoom { display: none; }
-    .pick { top: auto; bottom: 6.6rem; transform: none; left: var(--gutter); right: var(--gutter); width: auto; }
-    body.picked .sky-hero { opacity: 0; transition: opacity .4s; }
-    .pick h2 { font-size: 2.3rem; }
-    .pick dl:not(.now) { display: none; }
-    .clock { gap: .3rem .9rem; font-size: .7rem; }
-    .clock .date { width: 100%; font-size: 1.15rem; }
-    .clock .sep { display: none; }
-    .clock .zoom { margin-left: 0; }
-    .worlds a { grid-template-columns: 1fr; gap: .45rem; padding: 1.2rem 0 1.15rem; }
-    .w-where { order: 3; flex-direction: row; gap: 1.2em; }
-  }
+<style>
+  .bodies { display: grid; gap: 0; margin: 0 0 3rem; }
+  .b { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 1.5rem 3.5rem; align-items: center; padding: 2.6rem 0; border-top: 1px solid var(--rule); }
+  .pic { display: grid; place-items: center; aspect-ratio: 1; background: #000; line-height: 0; overflow: hidden; }
+  .pic img { width: auto; max-width: none; }
+  .b-saturn .pic img { width: 100%; height: auto; }
+  .txt h2 { font: 300 clamp(2rem, 4vw, 3rem)/1.05 var(--r-serif); letter-spacing: -.015em; margin: .5rem 0 .4rem; }
+  .txt h2 a { text-decoration: none; }
+  .tag { font: italic 300 1.2rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0 0 1.2rem; }
+  dl { display: flex; flex-wrap: wrap; gap: .9rem 2rem; margin: 0 0 1.2rem; }
+  dt { font: 400 .66rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+  dd { margin: .15rem 0 0; font: 400 .95rem/1.3 var(--r-mono); color: var(--ink); }
+  .land { font: 300 1.08rem/1.55 var(--r-serif); color: var(--ink-soft); margin: 0 0 1rem; max-width: 36rem; }
+  .links { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin: 0 0 1rem; font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; }
+  .links a { text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+  .credit { font: italic 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); margin: 0; max-width: 36rem; }
+  .more p { font: 300 1.06rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0; }
+  @media (max-width: 760px) { .b { grid-template-columns: 1fr; } .pic { max-width: 22rem; } }
 </style>

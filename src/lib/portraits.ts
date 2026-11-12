@@ -1,0 +1,18 @@
+/**
+ * One real photograph of each body, used on the home page and the Planets page. `disc` is the body’s diameter as a share of
+ * the picture’s height (for Saturn, the globe without its rings), so the pictures can be drawn to one true scale.
+ * Diameters are mean values in kilometres (NASA planetary fact sheets).
+ */
+export interface Portrait { slug: string; name: string; src: string; width: number; height: number; disc: number; km: number; alt: string; credit: string }
+const B = '/img/bodies/';
+export const portraits: Portrait[] = [
+  { slug: 'sun', name: 'The Sun', src: `${B}sun.jpg`, width: 900, height: 796, disc: 0.86, km: 1392700, alt: 'The Sun as a glowing orange-red ball, mottled and streaked with dark filaments, with flame-like prominences at its edge.', credit: 'The Sun in extreme ultraviolet light by NASA’s Solar Dynamics Observatory. The colour is chosen: the light is invisible to the eye. Credit: NASA/SDO.' },
+  { slug: 'mercury', name: 'Mercury', src: `${B}mercury.jpg`, width: 900, height: 900, disc: 0.91, km: 4879, alt: 'A grey globe covered in craters of every size, some with bright rays.', credit: 'Mercury, a globe made from thousands of pictures taken by NASA’s MESSENGER spacecraft, 2011. Credit: NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington.' },
+  { slug: 'venus', name: 'Venus', src: `${B}venus.jpg`, width: 900, height: 900, disc: 0.854, km: 12104, alt: 'A smooth cream-white globe with faint tan swirls of cloud.', credit: 'Venus by NASA’s Mariner 10 in February 1974, built from pictures taken through orange and ultraviolet filters. Credit: NASA/JPL-Caltech.' },
+  { slug: 'earth', name: 'The Earth', src: `${B}earth.jpg`, width: 900, height: 900, disc: 0.92, km: 12742, alt: 'The whole Earth, with Africa, the white ice of Antarctica and swirls of cloud over blue sea.', credit: 'The whole Earth, photographed by the crew of Apollo 17 on 7 December 1972. Credit: NASA.' },
+  { slug: 'mars', name: 'Mars', src: `${B}mars.jpg`, width: 873, height: 900, disc: 0.995, km: 6779, alt: 'A rust-orange globe with dark markings, a white polar cap and a long canyon across its middle.', credit: 'Mars, pieced together from about 1,000 pictures by NASA’s Viking 1 orbiter. Credit: NASA/JPL/USGS.' },
+  { slug: 'jupiter', name: 'Jupiter', src: `${B}jupiter.jpg`, width: 900, height: 900, disc: 0.718, km: 139820, alt: 'A globe banded in cream, orange and rust, with the round Great Red Spot below the middle.', credit: 'Jupiter by the Hubble Space Telescope on 27 June 2019. Credit: NASA, ESA, A. Simon (Goddard Space Flight Center) and M. H. Wong (University of California, Berkeley), CC BY 4.0.' },
+  { slug: 'saturn', name: 'Saturn', src: `${B}saturn.jpg`, width: 1400, height: 564, disc: 1.0, km: 116460, alt: 'A pale gold globe circled by wide, thin rings seen at a slant.', credit: 'Saturn in natural colour, made from 126 pictures by NASA’s Cassini spacecraft in October 2004. Credit: NASA/JPL/Space Science Institute.' },
+  { slug: 'uranus', name: 'Uranus', src: `${B}uranus.jpg`, width: 900, height: 900, disc: 0.97, km: 50724, alt: 'A plain pale blue-green globe with almost no markings.', credit: 'Uranus by NASA’s Voyager 2 in January 1986. Credit: NASA/JPL-Caltech.' },
+  { slug: 'neptune', name: 'Neptune', src: `${B}neptune.jpg`, width: 900, height: 899, disc: 0.843, km: 49244, alt: 'A deep blue globe with a dark oval spot and thin white streaks of cloud.', credit: 'Neptune by NASA’s Voyager 2 in August 1989, from pictures taken through green and orange filters, with the Great Dark Spot. Credit: NASA/JPL.' },
+];

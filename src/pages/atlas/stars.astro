@@ -63,7 +63,7 @@ const two = (v: number) => v.toFixed(2);
       <p class="note">The {nearStars.length} stars in the catalogue that lie within {limits.nearLy} light years of the Sun, seen from above the disc of the Milky Way. Stars that go round each other share a dot.</p>
       <p class="note">A bigger dot is a star that gives out more light. Most of these are red dwarfs, far too faint to see by eye, and that is what most stars everywhere are like.</p>
       <p class="note scale">The drawing is {NEAR_HALF * 2} light years across. On this scale the whole Solar System out to Neptune would be about a fortieth of the width of one of the dotted lines.</p>
-      <p class="note print-hide"><a href="/?go=neighbourhood">See these stars in 3D</a></p>
+      <p class="note print-hide"><a href="/explore?go=neighbourhood">See these stars in 3D</a></p>
     </div>
     <figure class="plate-holder">
       <DeepPlate id="near" numeral="I" title={`The stars within ${limits.nearLy} light years`} rings={nearRings} up="To the centre of the Milky Way" footLeft="Seen from the north side of the galaxy’s disc" footRight="HYG star database v4.4"
@@ -84,7 +84,7 @@ const two = (v: number) => v.toFixed(2);
       <p class="note">Half of them are within {fmtLy([...skyStars].map((p) => Math.hypot(p[0], p[1], p[2])).sort((a, b) => a - b)[Math.floor(skyStars.length / 2)])}, and {pct(1000)} in every 100 are within 1,000. The few far ones are giants, thousands of times brighter than the Sun.</p>
       <p class="note">The further a star, the less sure its distance. Beyond about 1,000 light years many of these distances are rough, so a far dot may really belong some way nearer or further along its line from the Sun.</p>
       <p class="note scale">The drawing is {(SKY_HALF * 2).toLocaleString('en-GB')} light years across. {beyond} stars lie outside it, the furthest given as {fmtLy(furthest)} away.</p>
-      <p class="note print-hide"><a href="/?go=night-sky">See this cloud of stars in 3D</a></p>
+      <p class="note print-hide"><a href="/explore?go=night-sky">See this cloud of stars in 3D</a></p>
     </div>
     <figure class="plate-holder">
       <DeepPlate id="sky" numeral="II" title="The naked-eye stars, from above" rings={skyRings} up="To the centre of the Milky Way" footLeft={`${skyStars.length.toLocaleString('en-GB')} stars of magnitude ${limits.skyMag} or brighter`} footRight="HYG star database v4.4"

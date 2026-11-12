@@ -2,7 +2,7 @@
 title: "Privacy policy"
 description: "What personal data Heliocodex handles, why, who sees it, how long it is kept and what your rights are. In short, almost none."
 lead: "Heliocodex is built so that it does not need to know who you are. This page says exactly what does reach us, what stays on your own device, and what you can do about either."
-updated: 2026-11-11
+updated: 2026-11-12
 ---
 
 <div class="short-version">
@@ -75,6 +75,12 @@ So that we can see which pages people read and whether the site loads quickly, w
 
 We don't use these figures for adverts, to build a profile of anyone or to work out who you are. If you would rather not be counted, you don't have to do anything if your browser sends a Do Not Track or Global Privacy Control signal, because the script is not loaded at all. Otherwise, use the switch on the [cookies and storage page](/cookies), which stops the script loading in that browser. The site works the same either way.
 
+### Videos from YouTube
+
+Some lessons carry a video that is hosted on YouTube, which is run by Google. A video loads only when you press its Play button. Until then your browser makes no request to YouTube or Google: the still picture on the poster is kept on our own server, and a line beside the button says what pressing play does. When you press play, your browser loads YouTube's player from youtube-nocookie.com, which is YouTube's privacy-enhanced mode. Google then receives your IP address and details of your browser and device, and it may store or read information on your device to run the player. Google says that in this mode, views of embedded videos are not used to personalise your YouTube experience or the adverts it shows you outside the embed.
+
+For what happens at that point Google is its own controller, under Google's privacy policy, not ours. We receive nothing from it and we cannot see who has played a video. Pressing play is how you consent, and if you don't want that, don't press play. Every video carries its credit and licence beside it (see [licences and credits](/licences)).
+
 ### The sky map, the star pages and "Use where I am"
 
 The sky map at /sky works out which stars, planets and constellations are above you from a place and a time. To do that it needs a place, and you can give it one in four ways:
@@ -98,7 +104,7 @@ We receive your email address, your name if your email shows it, the content of 
 
 ### What we don't collect
 
-There are no accounts, comments, forums, forms that send data to us, newsletters, surveys or competitions on this site. We don't use advertising, social media buttons, embedded videos or fingerprinting, and our only analytics is the visit counting described above. We don't collect sensitive ("special category") data such as health, religious beliefs, ethnicity or sexual orientation, and we don't collect information about criminal convictions. We don't buy personal data from data brokers or anyone else. Our fonts, images, maps and own scripts are all served from heliocodex.com, so loading a page doesn't send your details to Google or any other company. The one exception is the visit-counting script from Cloudflare, which you can switch off.
+There are no accounts, comments, forums, forms that send data to us, newsletters, surveys or competitions on this site. We don't use advertising, social media buttons or fingerprinting, and our only analytics is the visit counting described above. We don't collect sensitive ("special category") data such as health, religious beliefs, ethnicity or sexual orientation, and we don't collect information about criminal convictions. We don't buy personal data from data brokers or anyone else. Our fonts, images, maps and own scripts are all served from heliocodex.com, so loading a page doesn't send your details to Google or any other company. There are two exceptions: the visit-counting script from Cloudflare, which you can switch off, and a video from YouTube, which loads only if you press its Play button (see below).
 
 ## 5. How we use it and our lawful basis
 
@@ -109,6 +115,7 @@ Data protection law only lets us use personal data where we have a lawful basis.
 | Deliver web pages and files to your browser | Server log data | Legitimate interests: running a website that works | Handled by Cloudflare for as long as it needs for this purpose, then deleted (see section 11). We keep none. |
 | Protect the site from attacks and abuse, and investigate faults | Server log data, network error reports | Legitimate interests: keeping the site and its visitors safe | As above |
 | Count visits and page speed, to see what is read and what is slow | Page loaded, load timings, country, device and browser type, referring page, as reported by Cloudflare Web Analytics | Legitimate interests: knowing which parts of the site help people and which don't work. You can object by switching it off (see section 7). | Held by Cloudflare as totals and charts for as long as it needs for this purpose. We don't download or keep individual reports. |
+| Play a video you ask for | Your IP address and device details, sent to YouTube (Google) when you press play | Consent, given by pressing play after being told what it does | We keep nothing. Google's own policy applies to what it keeps. |
 | Read and reply to your emails and letters | Contact details, message content, attachments | Legitimate interests: answering people who contact us | Up to 24 months after our last exchange |
 | Look into corrections, ideas and feedback you send | Contact details, what you tell us | Legitimate interests: keeping the site accurate and improving it | Up to 24 months after our last exchange, or longer if we are working on it with you and you know that |
 | Keep accounting and tax records, if you ever pay us or we pay you | Names and details on invoices | Legal obligation (Companies Act 2006 and tax law) | 6 years from the end of the financial year they relate to |
@@ -147,7 +154,7 @@ None of them is used for advertising or tracking, and none is sent to us. You ca
 
 The site also reads a few facts about your device inside your browser, such as the size of the screen, whether you use a touch screen, how much memory and how many processor cores it has, whether it can run WebGPU or WebGL, whether you have asked for reduced motion and the time zone it is set to. They decide how detailed to make the 3D scenes and which city to guess. They stay in your browser.
 
-Visit counting is covered by the exception in PECR for statistics, which came into force on 5 February 2026. It applies where the only purpose is to collect statistics to improve the site, the figures are shared with no one else, visitors are told, and they have a simple, free way to object. This page is the telling, the script doesn't load if your browser sends a Do Not Track or Global Privacy Control signal, and the switch on the cookies page is the way to object. Cloudflare's script uses your browser's performance measurements and, according to Cloudflare, doesn't store anything in your browser. If we ever decide to add anything else that stores or reads information on your device, we'll update this section first and ask for your consent where the law requires it. That is also why there is no cookie banner.
+Visit counting is covered by the exception in PECR for statistics, which came into force on 5 February 2026. It applies where the only purpose is to collect statistics to improve the site, the figures are shared with no one else, visitors are told, and they have a simple, free way to object. This page is the telling, the script doesn't load if your browser sends a Do Not Track or Global Privacy Control signal, and the switch on the cookies page is the way to object. Cloudflare's script uses your browser's performance measurements and, according to Cloudflare, doesn't store anything in your browser. A video from YouTube is different: nothing from YouTube loads until you press a video's Play button, and the line beside the button tells you what that does, so pressing play is your consent. If we ever decide to add anything else that stores or reads information on your device, we'll update this section first and ask for your consent where the law requires it. That is also why there is no cookie banner.
 
 ## 8. Marketing
 

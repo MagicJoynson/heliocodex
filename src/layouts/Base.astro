@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Analytics from '../components/Analytics.astro';
+import { sections } from '../lib/nav';
 interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean }
 const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex } = Astro.props;
 const url = new URL(path, Astro.site).toString();
@@ -37,13 +38,21 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
     <header class="site-header">
       <a class="wordmark" href="/"><img src="/brand/heliocodex-lockup.svg" alt="Heliocodex" width="660" height="133" /></a>
       <nav class="site-nav" aria-label="Main">
-        <a href="/bodies" aria-current={path === '/bodies' ? 'page' : undefined}>Bodies</a>
-        <a href="/learn" aria-current={path.startsWith('/learn') ? 'page' : undefined}>Learn</a>
-        <a href="/sky" aria-current={path.startsWith('/sky') || path.startsWith('/stars') ? 'page' : undefined}>Sky</a>
-        <a href="/atlas" aria-current={path.startsWith('/atlas') ? 'page' : undefined}>Atlas</a>
-        <a href="/glossary" aria-current={path === '/glossary' ? 'page' : undefined}>Glossary</a>
-        <a href="/sources" aria-current={path === '/sources' ? 'page' : undefined}>Sources</a>
+        {sections.map((x) => <a href={x.href} aria-current={x.match(path) ? 'page' : undefined}>{x.label}</a>)}
       </nav>
+      <button type="button" class="site-menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
+      <nav class="site-menu" id="site-menu" aria-label="Main" hidden>
+        <a href="/"><b>Home</b><span>Where to start</span></a>
+        {sections.map((x) => <a href={x.href} aria-current={x.match(path) ? 'page' : undefined}><b>{x.label}</b><span>{x.about}</span></a>)}
+      </nav>
+      <script>
+        const btn = document.querySelector<HTMLButtonElement>('.site-menu-btn')!;
+        const menu = document.getElementById('site-menu')!;
+        const set = (open: boolean) => { menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+        btn.addEventListener('click', () => set(Boolean(menu.hidden)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { set(false); btn.focus(); } });
+        document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target as Node) && e.target !== btn) set(false); });
+      </script>
     </header>
     <slot />
     <footer class="site-footer">
@@ -52,6 +61,7 @@ const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
         <a href="/privacy">Privacy</a>
         <a href="/terms">Terms</a>
         <a href="/cookies">Cookies and storage</a>
+        <a href="/sources">Sources</a>
         <a href="/licences">Licences and credits</a>
         <a href="/accessibility">Accessibility</a>
         <a href="mailto:hello@fallinghippo.com">hello@fallinghippo.com</a>
