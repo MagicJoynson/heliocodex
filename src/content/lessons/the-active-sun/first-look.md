@@ -17,7 +17,7 @@ When there are many spots the Sun is stormy. Sometimes it hurls a great cloud of
 
 **How big is a spot?** A middling sunspot is about as wide as the Earth. A big group can be ten times that, and can be seen without a telescope through eclipse glasses. They look small only because the Sun is so large: 109 Earths would fit across it.
 
-**Why are they dark?** A sunspot is a place where strong magnetism has broken through the surface and is holding back the heat coming up from below. The spot is about 1,500 degrees cooler than the gas round it. It is still hotter than molten iron, and on its own it would shine brilliantly. It looks black only because everything round it is brighter still.
+**Why are they dark?** A sunspot is a place where strong magnetism has broken through the surface and is holding back the heat coming up from below. The spot is 1,500 degrees or more cooler than the gas round it. It is still hotter than molten iron, and on its own it would shine brilliantly. It looks black only because everything round it is brighter still.
 
 **The Sun has weather.** Apart from the spots there are sudden flashes called flares, and vast loops and clouds of glowing gas that rise off the surface and sometimes break free. A thin stream of particles, the solar wind, blows out from the Sun all the time and fills the space between the planets. When the Sun is stormy the wind is gusty.
 
