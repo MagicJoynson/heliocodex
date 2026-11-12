@@ -25,3 +25,19 @@ It has been doing this for 4.6 billion years. It is so big that it has hardly no
   <img src="/img/learn/charts/sun-weight-used.svg" alt="A long gold bar with a hairline at its right-hand end, labelled as the part turned into light so far." width="800" height="300" loading="lazy" />
   <figcaption><b>A chart.</b> Four million tonnes a second for 4.6 billion years comes to roughly a hundred Earths' worth of matter. Next to the Sun that is about 3 parts in 10,000. Drawn to scale, the used part would be a quarter of the width of the thin white line. Worked out here from the Sun's measured output.</figcaption>
 </figure>
+
+**How anyone knows it is not burning.** The sum can be done. Take a ball of coal with the mass of the Sun and burn it fast enough to give out as much heat as the Sun does. It would be used up in about 5,000 years. The Earth's rocks and fossils show that the Sun has shone steadily for thousands of millions of years. Burning is not even close.
+
+**The same power as a hydrogen bomb, held steady.** Forcing hydrogen together to make helium is called fusion. People have done it in bombs, and are trying to do it in power stations, but it is very hard, because the gas has to be held at millions of degrees. The Sun holds its gas with its own enormous weight. It needs no walls.
+
+**Why it does not blow up.** The Sun controls itself. If the centre makes a little too much heat, the gas there swells and cools, and the fusion slows down. If it makes too little, the centre is squeezed and heats up, and the fusion speeds up. That is why the Sun has stayed so steady for so long.
+
+**How much reaches us.** The Sun shines in every direction, and the Earth is a small target a long way off. We catch less than one part in two thousand million of its light. Even so, the sunlight that falls on the Earth in a single hour is about as much energy as all the people in the world use in a year.
+
+**How long will it last?** The Sun has enough hydrogen in its centre for about another five billion years. It is roughly half-way through.
+
+**Common mistakes.**
+
+- *The Sun is a ball of fire.* Fire is a chemical change that needs oxygen. The Sun's light comes from changes inside the cores of atoms, which give out millions of times more energy from the same amount of stuff.
+- *The Sun will explode one day.* Only stars much heavier than the Sun explode. The Sun will swell up, then fade.
+- *The Sun is yellow.* Its light is white. It looks yellow from the ground because the air scatters some of the blue away.
