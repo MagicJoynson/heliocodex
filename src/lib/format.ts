@@ -1,9 +1,12 @@
 import facts from '../data/facts.json';
+import { moonCount } from '../data/moon-counts';
 
 const P = facts.planets as Record<string, { physical: Record<string, number | boolean>; elements: any }>;
 
 export function phys(slug: string) {
-  return P[slug]?.physical;
+  const physical = P[slug]?.physical;
+  // moon counts change as new ones are confirmed, so they come from the one dated list, not the fact sheet
+  return physical && { ...physical, moons: moonCount(slug) };
 }
 export function fmt(n: number, digits = 2) {
   if (Math.abs(n) >= 1000) return Math.round(n).toLocaleString('en-GB');

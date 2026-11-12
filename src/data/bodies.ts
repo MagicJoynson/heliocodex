@@ -1,3 +1,4 @@
+import { moonCount, MOONS_AS_OF_TEXT } from './moon-counts';
 // Hand-written editorial content for each body. Numbers that come from NASA
 // fact sheets and JPL elements live in facts.json (built by scripts/build-facts.py).
 // Atmosphere compositions and temperatures below are copied from the NASA NSSDC
@@ -352,7 +353,7 @@ export const bodies: Body[] = [
       {
         title: 'A miniature solar system',
         paragraphs: [
-          'Jupiter has 95 confirmed moons in NASA\'s count, and the number keeps growing as smaller ones are found. The four large Galilean moons, discovered by Galileo in 1610, are worlds in their own right.',
+          `Jupiter has ${moonCount('jupiter')} known moons in JPL's list as of ${MOONS_AS_OF_TEXT}, and the number keeps growing as smaller ones are found. The four large Galilean moons, discovered by Galileo in 1610, are worlds in their own right.`,
           'Io is the most volcanic body known. Europa hides a salty ocean under its ice shell. Ganymede is the largest moon in the solar system, bigger than Mercury, and has its own magnetic field. Callisto is an ancient cratered ball of rock and ice.',
         ],
       },
@@ -422,7 +423,7 @@ export const bodies: Body[] = [
       {
         title: 'Moons',
         paragraphs: [
-          'NASA lists 274 moons for Saturn, the most of any planet at the time of writing. Titan is larger than Mercury and the only moon with a dense atmosphere. Its lakes and seas are made of liquid methane and ethane.',
+          `JPL lists ${moonCount('saturn')} moons for Saturn as of ${MOONS_AS_OF_TEXT}, the most of any planet. Titan is larger than Mercury and the only moon with a dense atmosphere. Its lakes and seas are made of liquid methane and ethane.`,
           'Enceladus sprays water from cracks near its south pole, giving direct evidence of a subsurface ocean.',
         ],
       },
@@ -485,7 +486,7 @@ export const bodies: Body[] = [
       {
         title: 'Rings and moons',
         paragraphs: [
-          'There are 13 known rings, narrow and dark. NASA lists 28 moons, named mostly after characters from Shakespeare and Pope rather than from mythology. The five largest are Miranda, Ariel, Umbriel, Titania and Oberon.',
+          `There are 13 known rings, narrow and dark. JPL lists ${moonCount('uranus')} moons as of ${MOONS_AS_OF_TEXT}, named mostly after characters from Shakespeare and Pope rather than from mythology. The five largest are Miranda, Ariel, Umbriel, Titania and Oberon.`,
         ],
       },
     ],

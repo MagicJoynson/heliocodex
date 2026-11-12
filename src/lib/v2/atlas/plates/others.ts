@@ -1,4 +1,5 @@
 import type { PlateSpec } from './types';
+import { moonCount, MOONS_AS_OF_TEXT } from '../../../../data/moon-counts';
 
 const JPL = [
   { label: 'NASA/JPL Solar System Dynamics, planetary satellites: orbits fitted to JPL Horizons positions, 2000 to 2040', url: 'https://ssd.jpl.nasa.gov/sats/elem/' },
@@ -46,7 +47,7 @@ export const mars: PlateSpec = {
 export const uranus: PlateSpec = {
   parent: 'uranus',
   title: 'The moons of Uranus',
-  lead: 'Uranus has 29 known moons. Uranus lies on its side, and its close moons and rings are tipped over with it, so their orbits stand almost upright to the plane of the planets.',
+  lead: `Uranus has ${moonCount('uranus')} known moons in JPL's list as of ${MOONS_AS_OF_TEXT}. Uranus lies on its side, and its close moons and rings are tipped over with it, so their orbits stand almost upright to the plane of the planets.`,
   equatorKm: 25559,
   rings: [
     { name: 'Rings 6, 5 and 4', innerKm: 41837, outerKm: 42571 },
@@ -88,7 +89,7 @@ export const uranus: PlateSpec = {
 export const neptune: PlateSpec = {
   parent: 'neptune',
   title: 'The moons of Neptune',
-  lead: 'Neptune has 16 known moons. One of them, Triton, holds nearly all the mass, and it goes round backwards: the only large moon in the Solar System that does. It was almost certainly captured.',
+  lead: `Neptune has ${moonCount('neptune')} known moons in JPL's list as of ${MOONS_AS_OF_TEXT}. One of them, Triton, holds nearly all the mass, and it goes round backwards: the only large moon in the Solar System that does. It was almost certainly captured.`,
   equatorKm: 24764,
   rings: [
     { name: 'Galle ring', innerKm: 40900, outerKm: 42900, faint: true },

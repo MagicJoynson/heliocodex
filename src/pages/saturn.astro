@@ -1,4 +1,5 @@
 ---
+import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/italiana';
 import '@fontsource-variable/eb-garamond';
 import '@fontsource/ibm-plex-mono/400.css';
@@ -6,7 +7,7 @@ import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear } from '../lib/format';
 
-const p = facts.planets.saturn.physical as unknown as Record<string, number>;
+const p = { ...facts.planets.saturn.physical, moons: moonCount('saturn') } as unknown as Record<string, number>;
 const e = facts.planets.saturn.elements;
 const rows: [string, string][] = [
   ['Radius at the equator', `${fmt(p.radius_equatorial_km)} km`],
@@ -17,7 +18,7 @@ const rows: [string, string][] = [
   ['A year', daysToYear(p.orbit_period_days)],
   ['A day', '10 h 33 min'],
   ['Axial tilt', `${p.obliquity_deg}°`],
-  ['Known moons (NASA)', `${p.moons}`],
+  [`Known moons, ${MOONS_AS_OF_TEXT}`, `${p.moons}`],
 ];
 ---
 <World world="saturn" title="Saturn" description="Fall into the haze of Saturn and look up at the rings. Real NASA data and Cassini images." readout="Pressure">

@@ -1,4 +1,5 @@
 import type { PlateSpec } from './types';
+import { moonCount, MOONS_AS_OF_TEXT } from '../../../../data/moon-counts';
 
 // Families of outer moons are groups on similar orbits, thought to be the pieces of bodies that
 // were captured and later broken up. The limits below are ours, chosen to split JPL's list
@@ -6,7 +7,7 @@ import type { PlateSpec } from './types';
 export const jupiter: PlateSpec = {
   parent: 'jupiter',
   title: 'The moons of Jupiter',
-  lead: 'Jupiter has 115 known moons. Eight keep close, on neat circles above its equator. The other 107 are small captured bodies on wide, tilted loops, most of them going round backwards.',
+  lead: `Jupiter has ${moonCount('jupiter')} known moons in JPL's list as of ${MOONS_AS_OF_TEXT}. Eight keep close, on neat circles above its equator. The other ${moonCount('jupiter') - 8} are small captured bodies on wide, tilted loops, most of them going round backwards.`,
   equatorKm: 71492,
   rings: [{ name: 'Main ring', innerKm: 122500, outerKm: 129000 }],
   families: [
