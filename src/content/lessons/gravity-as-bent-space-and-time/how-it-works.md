@@ -18,8 +18,23 @@ lastChecked: 2026-11-11
 | Two clocks, 33 cm apart in height, 2010 | The higher one ran faster. Over a life of 79 years the difference would come to about 90 billionths of a second |
 | Clocks on navigation satellites | Fast by 45 millionths of a second a day from being higher up, and slow by 7 from their speed. Left alone, positions would drift by about 10 km a day |
 
+<figure class="photo">
+  <img src="/img/learn/charts/satellite-clocks-fast-and-slow.svg" alt="A bar chart: being higher up makes a satellite clock run fast by 45 millionths of a second a day, moving makes it run slow by 7, leaving it 38 fast" width="800" height="390" loading="lazy" />
+  <figcaption><b>A chart.</b> What happens to a clock on a navigation satellite each day. The 38 is the sum of the other two, and the system is built to allow for it.</figcaption>
+</figure>
+
 **The 1919 expeditions.** Two teams from Britain went to watch the eclipse, one to the island of Príncipe off West Africa and one to Sobral in Brazil. The Sun was hidden for nearly seven minutes, one of the longest eclipses of the century. They photographed the stars round the darkened Sun and compared the plates with the same stars photographed at night. The original glass plates are lost. The picture in this lesson was made from a copy of one of the Sobral plates kept at an observatory in Heidelberg.
 
 **What came out of it.** Black holes, the expansion of the universe, the bending of light by galaxies and waves in space itself were all found first in Einstein's equations and only later in the sky. Each has a lesson of its own.
+
+<figure class="photo">
+  <img src="/img/learn/einstein-cross-hubble.jpg" alt="Four bright dots in a cross round a fainter glow at the centre" width="800" height="800" loading="lazy" />
+  <figcaption><b>A photograph.</b> The Einstein Cross, by the Hubble Space Telescope. The four bright dots are four views of one far-off quasar. The galaxy in the middle, much nearer to us, bends its light round four ways. The colour is built from pictures taken through separate filters. Credit: ESA/Hubble and NASA, CC BY 4.0.</figcaption>
+</figure>
+
+<figure class="photo">
+  <img src="/img/learn/cosmic-horseshoe-hubble.jpg" alt="An orange galaxy with a blue ring of light almost all the way round it" width="1100" height="860" loading="lazy" />
+  <figcaption><b>A photograph.</b> The Cosmic Horseshoe, found in 2007, by the Hubble Space Telescope. The blue ring is a far galaxy whose light has been bent right round the orange galaxy in front of it. The colour is built from pictures taken through separate filters. Credit: ESA/Hubble and NASA, CC BY 4.0.</figcaption>
+</figure>
 
 **Where it stops.** General relativity has passed every test so far. It does not fit together with quantum theory, which describes the very small, and at the centre of a black hole its own sums stop making sense. Most physicists expect that a deeper theory lies underneath it, and nobody has found it yet.
