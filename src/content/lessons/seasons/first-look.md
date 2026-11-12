@@ -10,6 +10,11 @@ The real cause is that the Earth leans. Its axis is tipped over by 23.4°, and i
 So in June the northern half of the world leans towards the Sun. The Sun climbs high, the days are long, and the ground has time to warm. Six months later the Earth is on the other side of its orbit, still leaning the same way, which now means the north leans away. The Sun stays low and the days are short.
 
 <figure class="photo">
+  <img src="/img/learn/charts/the-lean-and-the-year.svg" alt="A drawing of the Earth at four places on its path round the Sun. Its axis leans the same way at all four. In June the north end leans towards the Sun, in December away from it, and in March and September neither end leans towards it." width="1160" height="560" loading="lazy" />
+  <figcaption><b>A drawing.</b> The Earth at four points on its year round the Sun, with its axis leaning 23.4° the same way at every one. The path is drawn squashed because it is seen at a slant; in fact it is very nearly a circle. Not to scale: the Sun is about 109 times wider than the Earth, and the Earth is about 12,000 of its own widths from the Sun.</figcaption>
+</figure>
+
+<figure class="photo">
   <img src="/img/learn/earth-seasons-meteosat.jpg" alt="Four black and white views of the Earth, each half lit. The line between day and night leans one way in the first, is upright in the second, leans the other way in the third and is upright again in the fourth." width="720" height="720" loading="lazy" />
   <figcaption><b>Four satellite pictures.</b> The Earth seen from the same satellite at the same time of the morning on four days: 21 December 2010, 20 March, 21 June and 20 September 2011. The dates are part of the published picture. In December the edge of daylight leans away from the North Pole, which stays dark. In June it leans the other way. In March and September it runs from pole to pole. Credit: NASA Earth Observatory, with data from EUMETSAT.</figcaption>
 </figure>

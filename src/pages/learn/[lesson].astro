@@ -60,7 +60,13 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
         ))}
       </ol>
     </div>
-    {pic && <figure class:list={['op-pic', { face: pic.face }]}><img src={pic.src} alt="" loading="eager" /></figure>}
+    {pic && (
+      <figure class="op-pic">
+        <span class="op-frame"><img src={pic.src} alt="" loading="eager" /></span>
+        {pic.caption && <figcaption set:html={pic.caption} />}
+      </figure>
+    )}
+    {pic && <style is:inline set:html={`.prose figure:has(img[src="${pic.src}"]) { display: none; }`} />}
   </header>
 
   {levels.map((l) => (
@@ -160,9 +166,11 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
   .op-words .label { margin-bottom: 1.2rem; }
   .opener h1 { font: 300 clamp(2.3rem, 5vw, 4rem)/1.04 var(--r-serif); letter-spacing: -.02em; margin: 0 0 1.1rem; text-wrap: balance; }
   .opener .lead { font: 300 clamp(1.1rem, 1rem + .4vw, 1.3rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
-  .op-pic { margin: 0; aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; background: #000; }
-  .op-pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .op-pic.face img { object-fit: contain; transform: scale(.8); }
+  .op-pic { margin: 0; }
+  .op-frame { display: block; aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; background: #000; }
+  .op-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .op-pic figcaption { font: italic 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .7rem; }
+  .op-pic figcaption :global(b) { font: 400 .66rem/1.4 var(--r-mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: .4em; }
   .go-see { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin: 1.4rem 0 0; font: 400 .72rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; }
   .go-see a { text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
   .depth { list-style: none; margin: 2rem 0 0; padding: 0; border-left: 1px solid var(--rule); }
@@ -190,7 +198,9 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
   @media (max-width: 1000px) { .back { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 760px) {
     .opener { grid-template-columns: minmax(0, 1fr); }
-    .op-pic { order: -1; aspect-ratio: 16 / 9; margin: calc(-1 * clamp(48px, 8vw, 104px) + 8px) calc(-1 * var(--gutter)) 0; border-radius: 0; }
+    .op-pic { order: -1; margin: calc(-1 * clamp(48px, 8vw, 104px) + 8px) calc(-1 * var(--gutter)) 0; }
+    .op-frame { aspect-ratio: 16 / 9; border-radius: 0; }
+    .op-pic figcaption { padding: 0 var(--gutter); }
     .next-up { grid-template-columns: minmax(0, 1fr); padding: 1.1rem; }
     .back { grid-template-columns: minmax(0, 1fr); }
   }

@@ -25,6 +25,29 @@ const kelvin = (bv: number) => 4600 * (1 / (0.92 * bv + 1.7) + 1 / (0.92 * bv + 
 const hr = stars.filter((s) => Number.isFinite(s.bv) && Number.isFinite(s.absMag)).map((s) => ({ s, x: hx(s.bv), y: hy(s.absMag), big: brightest.includes(s) }));
 const tempTicks = [30000, 10000, 6000, 4000, 3000].map((t) => { let lo = BV0, hi = BV1; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (kelvin(mid) > t) lo = mid; else hi = mid; } return { t, x: hx((lo + hi) / 2) }; });
 const lumTicks = [[10000, -5.17], [100, -0.17], [1, 4.83], [0.01, 9.83], [0.0001, 14.83]].map(([l, m]) => ({ l: l >= 1 ? `${l.toLocaleString('en-GB')} ${l === 1 ? 'Sun' : 'Suns'}` : `1/${(1 / l).toLocaleString('en-GB')} Sun`, y: hy(m) }));
+// names for the brightest, placed only where they fit: each tries right, left, above and below its dot and
+// is left off if all four would touch a name already placed, the Sun's label or a zone title; every other
+// star (and any name that did not fit) shows its name when pointed at or tapped
+type Box = [number, number, number, number];
+const hit = (a: Box, b: Box) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+const taken: Box[] = [
+  [hx(0.65) - 70, hy(4.83) + 6, hx(0.65) + 8, hy(4.83) + 24],
+  [hx(1.25) - 2, hy(-6.6) - 16, hx(1.25) + 100, hy(-6.6) + 4],
+  [hx(1.15) - 2, hy(-2.2) - 16, hx(1.15) + 50, hy(-2.2) + 4],
+  [hx(-0.2) - 2, hy(12.5) - 16, hx(-0.2) + 105, hy(12.5) + 4],
+];
+const placed = new Map<string, { x: number; y: number; anchor: string; name: string }>();
+for (const d of hr.filter((d) => d.big).sort((a, b) => a.s.appMag - b.s.appMag)) {
+  const w = d.s.name.length * 6.1 + 4, h = 14;
+  const tries = [
+    { x: d.x + 8, y: d.y + 4, anchor: 'start', box: [d.x + 7, d.y - 8, d.x + 8 + w, d.y + 6] as Box },
+    { x: d.x - 8, y: d.y + 4, anchor: 'end', box: [d.x - 8 - w, d.y - 8, d.x - 7, d.y + 6] as Box },
+    { x: d.x, y: d.y - 9, anchor: 'middle', box: [d.x - w / 2, d.y - 9 - h + 3, d.x + w / 2, d.y - 6] as Box },
+    { x: d.x, y: d.y + 18, anchor: 'middle', box: [d.x - w / 2, d.y + 6, d.x + w / 2, d.y + 21] as Box },
+  ].filter((t) => t.box[0] >= PADL && t.box[2] <= W - 10);
+  const ok = tries.find((t) => !taken.some((b) => hit(b, t.box)));
+  if (ok) { taken.push(ok.box); placed.set(d.s.slug, { ...ok, name: d.s.name }); }
+}
 const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
 ---
 <Reading title="Meet a star" path="/stars" description={`Find the star whose light is as old as you are, and meet any of the ${every.length.toLocaleString('en-GB')} stars you can see: how far each is, how bright, how hot, and where it is in your sky.`}>
@@ -61,8 +84,13 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
         <text class="zone" x={hx(1.15)} y={hy(-2.2)}>Giants</text>
         <text class="zone" x={hx(0.95)} y={hy(9.5)} transform={`rotate(31 ${hx(0.95)} ${hy(9.5)})`}>The main band</text>
         <text class="zone" x={hx(-0.2)} y={hy(12.5)}>White dwarfs</text>
-        {hr.map((d) => <a href={`/stars/${d.s.slug}`}><circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={d.big ? 5 : 3.2} style={`fill:rgb(${tint(d.s.bv).join(',')})`}><title>{d.s.name}</title></circle></a>)}
-        {hr.filter((d) => d.big).map((d) => <text class="name" x={(d.x + 8).toFixed(1)} y={(d.y + 4).toFixed(1)}>{d.s.name}</text>)}
+        {hr.map((d) => (
+          <a href={`/stars/${d.s.slug}`} aria-label={d.s.name}>
+            <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={d.big ? 5 : 3.2} style={`fill:rgb(${tint(d.s.bv).join(',')})`}><title>{d.s.name}</title></circle>
+            {!placed.has(d.s.slug) && <text class="name hov" x={d.x > W - 160 ? (d.x - 10).toFixed(1) : (d.x + 10).toFixed(1)} y={(d.y - 8).toFixed(1)} text-anchor={d.x > W - 160 ? 'end' : 'start'}>{d.s.name}</text>}
+          </a>
+        ))}
+        {[...placed].map(([, p]) => <text class="name" x={p.x.toFixed(1)} y={p.y.toFixed(1)} text-anchor={p.anchor}>{p.name}</text>)}
         <circle cx={hx(0.65)} cy={hy(4.83)} r="7" class="sun" /><text class="name sun-name" x={hx(0.65) - 11} y={hy(4.83) + 18} text-anchor="end">The Sun</text>
       </svg>
       <figcaption>Colour from each star's measured B−V colour, turned into a surface temperature in kelvin (degrees above absolute zero) with Ballesteros's formula; true brightness from its distance and how bright it looks. The scale of brightness is in Suns, and each line is a hundred times the one below. Data: HYG database (CC BY-SA 4.0), with modern distances where they differ.</figcaption>
@@ -186,6 +214,9 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
   .hr .zone { font: italic 300 17px var(--r-serif); fill: rgba(236,231,220,.42); }
   .hr .name { font: 400 12px var(--r-serif); fill: var(--ink-soft); pointer-events: none; paint-order: stroke; stroke: #0d0d10; stroke-width: 3px; stroke-linejoin: round; }
   .hr a circle { transition: r .15s ease; }
+  .hr .hov { opacity: 0; transition: opacity .12s ease; fill: #ece7dc; font-size: 13px; }
+  .hr a:hover .hov, .hr a:focus .hov, .hr a:active .hov { opacity: 1; }
+  .hr a:hover, .hr a:focus { outline: none; }
   .hr a:hover circle, .hr a:focus-visible circle { r: 7; stroke: #e9c48a; stroke-width: 1.5; }
   .hr .sun { fill: none; stroke: #e9c48a; stroke-width: 1.5; }
   .hr .sun-name { fill: #e9c48a; }

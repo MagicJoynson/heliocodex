@@ -95,3 +95,8 @@ body:has(.reading) { background: #0b0b0c; }
   .reading-head.with-pic { min-height: 0; padding-top: 9rem; }
   .reading-head.with-pic::before { width: auto; left: calc(-1 * var(--gutter)); bottom: 45%; -webkit-mask-image: linear-gradient(to top, transparent, #000 60%); mask-image: linear-gradient(to top, transparent, #000 60%); opacity: .7; }
 }
+
+/* drawn charts, put into the page at build time (src/lib/charts.mjs) so they are set in the site's own type */
+.prose svg.chart { display: block; width: 100%; height: auto; font-family: var(--r-serif); font-weight: 400; }
+.prose svg.chart > rect:first-child { fill: transparent; }
+.prose figure:has(svg.chart) { background: #0e0e10; border: 1px solid var(--rule); border-radius: 4px; padding: 1rem 1rem .9rem; }

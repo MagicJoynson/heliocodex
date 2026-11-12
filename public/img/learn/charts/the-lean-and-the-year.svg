@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1160 560" width="1160" height="560">
+<rect width="1160" height="560" fill="#07080c"/>
+<defs><radialGradient id="glow"><stop offset="0" stop-color="#ffe2a8"/><stop offset=".35" stop-color="#f0c27a"/><stop offset="1" stop-color="#f0c27a" stop-opacity="0"/></radialGradient></defs>
+<path d="M320,290 A260,125 0 0 1 840,290" fill="none" stroke="#ece7dc" stroke-opacity=".22" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round"/>
+<circle cx="580" cy="290" r="110" fill="url(#glow)" opacity=".55"/><circle cx="580" cy="290" r="38" fill="#f6d38e"/>
+<text x="630" y="298" font-size="24" fill="#e9c48a" text-anchor="start">Sun</text>
+<path d="M320,290 A260,125 0 0 0 840,290" fill="none" stroke="#ece7dc" stroke-opacity=".35" stroke-width="2"/>
+<path d="M-9,-7 L4,0 L-9,7" fill="none" stroke="#ece7dc" stroke-opacity=".6" stroke-width="2" transform="translate(457.9,400.4) rotate(12.4)"/>
+<circle cx="320.0" cy="290.0" r="34.0" fill="#1c2636" stroke="#ece7dc" stroke-opacity=".25"/>
+<path d="M320.0,256.0 A34.0,34.0 0 0 1 320.0,324.0 Z" fill="#7fa8d8"/>
+<line x1="298.6" y1="339.6" x2="341.4" y2="240.4" stroke="#ece7dc" stroke-width="2.5"/>
+<line x1="288.8" y1="276.5" x2="351.2" y2="303.5" stroke="#07080c" stroke-opacity=".55" stroke-width="1.5"/>
+<text x="347.0" y="233.6" font-size="19" fill="#ece7dc" text-anchor="middle">N</text>
+<text x="260.0" y="264.0" font-size="25" fill="#ece7dc" text-anchor="end">About 21 June</text>
+<text x="260.0" y="294.0" font-size="20" fill="#a9a396" text-anchor="end">North leans towards the Sun:</text>
+<text x="260.0" y="320.0" font-size="20" fill="#a9a396" text-anchor="end">summer in the north</text>
+<circle cx="580.0" cy="415.0" r="34.0" fill="#1c2636" stroke="#ece7dc" stroke-opacity=".25"/>
+<path d="M546.0,415.0 A34.0,34.0 0 0 1 614.0,415.0 Z" fill="#7fa8d8"/>
+<line x1="558.6" y1="464.6" x2="601.4" y2="365.4" stroke="#ece7dc" stroke-width="2.5"/>
+<line x1="548.8" y1="401.5" x2="611.2" y2="428.5" stroke="#07080c" stroke-opacity=".55" stroke-width="1.5"/>
+<text x="607.0" y="358.6" font-size="19" fill="#ece7dc" text-anchor="middle">N</text>
+<text x="580.0" y="497.0" font-size="25" fill="#ece7dc" text-anchor="middle">About 22 September</text>
+<text x="580.0" y="525.0" font-size="20" fill="#a9a396" text-anchor="middle">Neither half leans in: day and night near equal</text>
+<circle cx="840.0" cy="290.0" r="34.0" fill="#1c2636" stroke="#ece7dc" stroke-opacity=".25"/>
+<path d="M840.0,324.0 A34.0,34.0 0 0 1 840.0,256.0 Z" fill="#7fa8d8"/>
+<line x1="818.6" y1="339.6" x2="861.4" y2="240.4" stroke="#ece7dc" stroke-width="2.5"/>
+<line x1="808.8" y1="276.5" x2="871.2" y2="303.5" stroke="#07080c" stroke-opacity=".55" stroke-width="1.5"/>
+<text x="867.0" y="233.6" font-size="19" fill="#ece7dc" text-anchor="middle">N</text>
+<text x="900.0" y="264.0" font-size="25" fill="#ece7dc" text-anchor="start">About 21 December</text>
+<text x="900.0" y="294.0" font-size="20" fill="#a9a396" text-anchor="start">North leans away:</text>
+<text x="900.0" y="320.0" font-size="20" fill="#a9a396" text-anchor="start">winter in the north</text>
+<circle cx="580.0" cy="165.0" r="29.2" fill="#1c2636" stroke="#ece7dc" stroke-opacity=".25"/>
+<path d="M609.2,165.0 A29.2,29.2 0 0 1 550.8,165.0 Z" fill="#7fa8d8"/>
+<line x1="560.4" y1="210.2" x2="599.6" y2="119.8" stroke="#ece7dc" stroke-width="2.5"/>
+<line x1="553.2" y1="153.4" x2="606.8" y2="176.6" stroke="#07080c" stroke-opacity=".55" stroke-width="1.5"/>
+<text x="605.1" y="113.0" font-size="19" fill="#ece7dc" text-anchor="middle">N</text>
+<text x="580.0" y="57.8" font-size="25" fill="#ece7dc" text-anchor="middle">About 20 March</text>
+<text x="580.0" y="85.8" font-size="20" fill="#a9a396" text-anchor="middle">Neither half leans in: day and night near equal</text>
+</svg>

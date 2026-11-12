@@ -45,9 +45,10 @@ const intro = isIdea
       return (
         <li>
           <a href={`/learn/${l.id}`}>
-            <span class="c-num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="c-stop" aria-hidden="true" />
             <span class="c-pic">{t ? <img src={t.src} class:list={[{ face: t.face }]} alt="" loading={i < 4 ? 'eager' : 'lazy'} decoding="async" /> : null}</span>
             <span class="c-words">
+              {i === 0 && <span class="c-first">Start here</span>}
               <span class="c-title">{l.data.title}</span>
               <span class="c-line">{l.data.summary}</span>
               <span class="c-levels">{levelsOf(l).join(' · ')}</span>
@@ -82,11 +83,14 @@ const intro = isIdea
   .w-me.dot { width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; }
   .w-ends { display: flex; justify-content: space-between; font: 400 .62rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin-top: .3rem; }
 
-  /* a table of contents with pictures: numbered, in reading order */
-  .contents { list-style: none; margin: 0; padding: 0; counter-reset: c; }
-  .contents a { display: grid; grid-template-columns: 3.4rem 15rem minmax(0, 1fr); gap: 1.6rem; align-items: center; padding: 1.3rem 0; border-top: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
-  .contents li:last-child a { border-bottom: 1px solid var(--rule); }
-  .c-num { font: 300 2rem/1 var(--r-serif); color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  /* the lessons as stops on one route, read from the top: a thread runs down the left and each lesson hangs off it */
+  .contents { list-style: none; margin: 0; padding: 0; position: relative; }
+  .contents::before { content: ''; position: absolute; left: 7px; top: 2.4rem; bottom: 2.4rem; width: 1px; background: linear-gradient(var(--accent), rgba(233,196,138,.15)); }
+  .contents a { position: relative; display: grid; grid-template-columns: 2.4rem 15rem minmax(0, 1fr); gap: 1.6rem; align-items: center; padding: 1.3rem 0; color: var(--ink); text-decoration: none; }
+  .c-stop { justify-self: start; width: 15px; height: 15px; border-radius: 50%; border: 1px solid var(--accent); background: var(--paper, #0b0b0c); }
+  .contents li:first-child .c-stop { background: var(--accent); box-shadow: 0 0 14px rgba(233,196,138,.55); }
+  .contents a:hover .c-stop { background: var(--accent); }
+  .c-first { font: 400 .66rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
   .c-pic { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #000; border-radius: 3px; }
   .c-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
   .c-pic img.face { object-fit: contain; transform: scale(.82); }
@@ -94,7 +98,6 @@ const intro = isIdea
   .c-words { display: grid; gap: .4rem; max-width: 40rem; }
   .c-title { font: 400 1.42rem/1.2 var(--r-serif); }
   .contents a:hover .c-title { color: var(--accent); }
-  .contents a:hover .c-num { color: var(--accent); }
   .c-line { font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); }
   .c-levels { font: 400 .66rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
 
@@ -104,8 +107,8 @@ const intro = isIdea
   .a-map { font: 400 .74rem/1 var(--r-mono) !important; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
 
   @media (max-width: 760px) {
-    .contents a { grid-template-columns: minmax(0, 1fr) 6.5rem; grid-template-areas: 'words pic'; gap: 1rem; padding: 1.1rem 0; }
-    .c-num { display: none; }
+    .contents a { grid-template-columns: 1.5rem minmax(0, 1fr) 6.5rem; grid-template-areas: 'stop words pic'; gap: .9rem; padding: 1.1rem 0; }
+    .c-stop { grid-area: stop; align-self: start; margin-top: .35rem; }
     .c-pic { grid-area: pic; aspect-ratio: 1; align-self: start; }
     .c-words { grid-area: words; }
     .c-title { font-size: 1.2rem; }

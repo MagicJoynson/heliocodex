@@ -65,11 +65,15 @@ export function thumb(l: Lesson): { src: string; face: boolean } | null {
   return pack ? { src: pack.photo.src, face: false } : null;
 }
 
-/** A lesson's opening picture: a good photograph that is not the first one in the first look,
- *  so the page does not show the same picture twice in a row; else its small picture. */
-export function cover(l: Lesson): { src: string; face: boolean } | null {
-  const per = l.levels.map((lv) => [...(lv.body ?? '').matchAll(/src="(\/img\/learn\/[^"]+\.(?:jpg|png|webp))"/g)].map((m) => m[1]));
-  const firstShown = per[0]?.[0];
-  const good = per.flat().find((s) => s !== firstShown && (lit[s] ?? 1) >= 0.08);
-  return good ? { src: good, face: false } : thumb(l);
+/** A lesson's opening picture: its first good photograph, lifted out of the text together with its caption
+ *  and credit, so the page shows it once, at the top. Charts and mostly black photographs are passed over. */
+export function cover(l: Lesson): { src: string; caption: string } | null {
+  for (const lv of l.levels) {
+    for (const m of (lv.body ?? '').matchAll(/<figure[^>]*>([\s\S]*?)<\/figure>/g)) {
+      const src = /src="(\/img\/learn\/(?!charts\/)[^"]+\.(?:jpg|png|webp))"/.exec(m[1])?.[1];
+      if (!src || (lit[src] ?? 1) < 0.08) continue;
+      return { src, caption: /<figcaption>([\s\S]*?)<\/figcaption>/.exec(m[1])?.[1].trim() ?? '' };
+    }
+  }
+  return null;
 }
