@@ -1,0 +1,119 @@
+---
+import Reading from '../../../layouts/Reading.astro';
+import { PLACES, IDEAS, TICKS, SUBJECT_ORDER, along, thumb } from '../../../lib/learn/map';
+import { allLessons, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../../lib/v2/margin/content';
+
+export async function getStaticPaths() {
+  const lessons = await allLessons();
+  return SUBJECT_ORDER.filter((id) => lessons.some((l) => l.data.strand === id)).map((strand) => ({ params: { strand } }));
+}
+const { strand } = Astro.params as { strand: string };
+const lessons = await allLessons();
+const mine: Lesson[] = lessons.filter((l) => l.data.strand === strand);
+const name = STRAND_NAMES[strand];
+const place = PLACES.find((p) => p.strand === strand);
+const isIdea = IDEAS.includes(strand);
+const order = SUBJECT_ORDER.filter((id) => lessons.some((l) => l.data.strand === id));
+const at = order.indexOf(strand);
+const prev = order[at - 1], next = order[at + 1];
+const others = PLACES.filter((p) => p.strand !== strand && lessons.some((l) => l.data.strand === p.strand));
+const levelsOf = (l: Lesson) => l.levels.map((lv) => LEVEL_NAMES[levelOf(lv)]?.name).filter(Boolean);
+const intro = isIdea
+  ? 'One of the ideas that runs through every place the lessons go.'
+  : `On the scale of light: ${place!.reach.charAt(0).toLowerCase()}${place!.reach.slice(1)}.`;
+---
+<Reading title={name} path={`/learn/subject/${strand}`} description={`${mine.length} short lessons on ${name.toLowerCase()}, in the order to read them.`}>
+  <header class="subject-head">
+    <p class="label"><a href="/learn">Learn</a> / {isIdea ? 'Ideas that run through all of it' : 'Outward from here'}</p>
+    <h1>{name}</h1>
+    <p class="lead">{intro} {mine.length} {mine.length === 1 ? 'lesson' : 'lessons'}, in the order to read them.</p>
+    {place && (
+      <div class="where" aria-hidden="true">
+        <span class="w-track">
+          {TICKS.filter((t) => t.s > 1).map((t) => <i style={`--x:${along(t.s)}`}><b>{t.label}</b></i>)}
+          {others.map((o) => <span class="w-other" style={`--x:${(along(o.from) + along(o.to)) / 2}`} />)}
+          <span class:list={['w-me', { dot: along(place.to) - along(place.from) < 0.012 }]} style={`--a:${along(place.from)};--b:${along(place.to)}`} />
+        </span>
+        <span class="w-ends"><span>Here</span><span>The oldest light</span></span>
+      </div>
+    )}
+  </header>
+
+  <ol class="contents">
+    {mine.map((l, i) => {
+      const t = thumb(l);
+      return (
+        <li>
+          <a href={`/learn/${l.id}`}>
+            <span class="c-num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="c-pic">{t ? <img src={t.src} class:list={[{ face: t.face }]} alt="" loading={i < 4 ? 'eager' : 'lazy'} decoding="async" /> : null}</span>
+            <span class="c-words">
+              <span class="c-title">{l.data.title}</span>
+              <span class="c-line">{l.data.summary}</span>
+              <span class="c-levels">{levelsOf(l).join(' · ')}</span>
+            </span>
+          </a>
+        </li>
+      );
+    })}
+  </ol>
+
+  <nav class="along" aria-label="Other subjects">
+    {prev ? <a class="a-prev" href={`/learn/subject/${prev}`}><span class="label">{isIdea ? 'Previous' : 'Nearer'}</span>{STRAND_NAMES[prev]}</a> : <span />}
+    <a class="a-map" href="/learn">All subjects</a>
+    {next ? <a class="a-next" href={`/learn/subject/${next}`}><span class="label">{isIdea || IDEAS.includes(next) ? 'Next' : 'Further out'}</span>{STRAND_NAMES[next]}</a> : <span />}
+  </nav>
+</Reading>
+
+<style>
+  .subject-head { max-width: 52rem; margin: 0 0 clamp(36px, 5vw, 64px); }
+  .subject-head .label { margin-bottom: 1.2rem; }
+  .subject-head h1 { font: 300 clamp(2.5rem, 6vw, 4.4rem)/1.02 var(--r-serif); letter-spacing: -.02em; margin: 0 0 1.1rem; text-wrap: balance; }
+  .subject-head .lead { font: 300 clamp(1.1rem, 1rem + .4vw, 1.3rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; max-width: 40rem; }
+
+  .where { margin-top: 2.2rem; max-width: 46rem; }
+  .w-track { display: block; position: relative; height: 2.4rem; margin: 0 10px; }
+  .w-track::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--rule); }
+  .w-track i { position: absolute; left: calc(var(--x) * 100%); top: 0; bottom: 0; width: 1px; font-style: normal; }
+  .w-track i::before { content: ''; position: absolute; top: 35%; bottom: 35%; width: 1px; background: rgba(236,231,220,.12); }
+  .w-track b { position: absolute; top: -.9rem; transform: translateX(-50%); font: 400 .6rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
+  .w-other { position: absolute; top: 50%; left: calc(var(--x) * 100%); width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: rgba(236,231,220,.25); }
+  .w-me { position: absolute; top: 50%; left: calc(var(--a) * 100%); width: max(calc((var(--b) - var(--a)) * 100%), 14px); height: 6px; margin-top: -3px; border-radius: 3px; background: var(--accent); box-shadow: 0 0 16px rgba(233,196,138,.5); }
+  .w-me.dot { width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; }
+  .w-ends { display: flex; justify-content: space-between; font: 400 .62rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin-top: .3rem; }
+
+  /* a table of contents with pictures: numbered, in reading order */
+  .contents { list-style: none; margin: 0; padding: 0; counter-reset: c; }
+  .contents a { display: grid; grid-template-columns: 3.4rem 15rem minmax(0, 1fr); gap: 1.6rem; align-items: center; padding: 1.3rem 0; border-top: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+  .contents li:last-child a { border-bottom: 1px solid var(--rule); }
+  .c-num { font: 300 2rem/1 var(--r-serif); color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .c-pic { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #000; border-radius: 3px; }
+  .c-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+  .c-pic img.face { object-fit: contain; transform: scale(.82); }
+  .contents a:hover .c-pic img:not(.face) { transform: scale(1.04); }
+  .c-words { display: grid; gap: .4rem; max-width: 40rem; }
+  .c-title { font: 400 1.42rem/1.2 var(--r-serif); }
+  .contents a:hover .c-title { color: var(--accent); }
+  .contents a:hover .c-num { color: var(--accent); }
+  .c-line { font: 300 1.04rem/1.5 var(--r-serif); color: var(--ink-soft); }
+  .c-levels { font: 400 .66rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+
+  .along { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.5rem; align-items: end; margin-top: 3rem; }
+  .along a { text-decoration: none; display: grid; gap: .45rem; font: 400 1.2rem/1.25 var(--r-serif); }
+  .a-next { text-align: right; }
+  .a-map { font: 400 .74rem/1 var(--r-mono) !important; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+
+  @media (max-width: 760px) {
+    .contents a { grid-template-columns: minmax(0, 1fr) 6.5rem; grid-template-areas: 'words pic'; gap: 1rem; padding: 1.1rem 0; }
+    .c-num { display: none; }
+    .c-pic { grid-area: pic; aspect-ratio: 1; align-self: start; }
+    .c-words { grid-area: words; }
+    .c-title { font-size: 1.2rem; }
+    .c-line { font-size: .96rem; }
+    .along { grid-template-columns: 1fr 1fr; }
+    .a-map { grid-column: 1 / -1; grid-row: 2; justify-self: center; }
+    .w-track b { display: none; }
+    .w-track i:nth-child(1) b, .w-track i:nth-child(4) b, .w-track i:nth-child(7) b { display: block; }
+  }
+  @media (prefers-reduced-motion: reduce) { .c-pic img { transition: none; } }
+</style>

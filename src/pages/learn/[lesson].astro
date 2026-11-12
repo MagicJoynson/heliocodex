@@ -31,7 +31,7 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
 <Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary}>
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
   <header class="reading-head">
-    <p class="label"><a href="/learn">Learn</a> / {STRAND_NAMES[lesson.data.strand]}</p>
+    <p class="label"><a href="/learn">Learn</a> / <a href={`/learn/subject/${lesson.data.strand}`}>{STRAND_NAMES[lesson.data.strand]}</a></p>
     <h1>{lesson.data.title}</h1>
     <p class="lead">{lesson.data.summary}</p>
     {levels.length > 1 && (
