@@ -23,7 +23,7 @@ Proxima Centauri has a parallax of 0.768 arcseconds, so it is 1 ÷ 0.768 = 1.30 
 
 <figure class="photo">
   <img src="/img/learn/charts/parallax-across-the-year.svg" alt="A drawing of the Earth at two opposite sides of its path round the Sun, in January and in July. Lines from each pass through a near star and on to a strip of far-off stars, where they land in two different places." width="1100" height="700" loading="lazy" />
-  <figcaption><b>A drawing.</b> Parallax. Seen from opposite sides of the Earth's orbit, six months apart, a near star lands in two different places against the far-off stars. The angle between the two sight lines is the whole shift; half of it is the star's parallax. Hugely exaggerated: no star shifts by as much as an arcsecond, about the width of a one pound coin nearly 5 km away.</figcaption>
+  <figcaption><b>A drawing.</b> Parallax. Seen from opposite sides of the Earth's orbit, six months apart, a near star lands in two different places against the far-off stars. The angle between the two sight lines is the whole shift; half of it is the star's parallax. Hugely exaggerated: even for the nearest star the whole shift is only about 1.5 arcseconds.</figcaption>
 </figure>
 
 These angles are tiny. One arcsecond is the width of a one pound coin nearly 5 km away, and no star shifts by even that much. The Gaia spacecraft measured shifts tens of thousands of times smaller, for well over a billion stars. Beyond its reach, distances have to be worked out in less direct ways, each one checked against the one before. Astronomers call that chain the distance ladder, and parallax is its bottom rung.
