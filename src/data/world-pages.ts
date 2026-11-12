@@ -1,6 +1,10 @@
 // Full pages for worlds that began as outlines. Each chapter matches a heading in CHAPTERS (src/lib/worlds.ts).
 // Every figure is from the sources listed with it. Counts carry their date. No first person.
 export interface WorldPage {
+  /** One sentence under the name. */
+  lead: string;
+  /** Only where a figure is published for it. */
+  temperature?: { value: string; note: string };
   picture: { src: string; alt: string; caption: string; width: number; height: number };
   chapters: { title: string; paras: string[] }[];
   sources: { label: string; url: string }[];
@@ -8,6 +12,8 @@ export interface WorldPage {
 
 export const WORLD_PAGES: Record<string, WorldPage> = {
   titan: {
+    lead: 'Saturn’s largest moon, the only moon with thick air, and the only world besides the Earth known to have rain, rivers and seas on its surface.',
+    temperature: { value: '−179 °C', note: 'At the ground, measured by the Huygens probe in 2005.' },
     picture: {
       src: '/img/learn/titan-surface-huygens.jpg', width: 311, height: 623,
       alt: 'An orange, hazy plain strewn with rounded pale pebbles, the nearest a hand’s width across.',
@@ -47,6 +53,8 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   europa: {
+    lead: 'An ice-covered moon of Jupiter with a salty ocean underneath, holding about twice as much water as all the Earth’s oceans.',
+    temperature: { value: '−160 °C', note: 'The warmest it gets, at the equator. The poles are colder.' },
     picture: {
       src: '/img/learn/europa-galileo.jpg', width: 1100, height: 1488,
       alt: 'Half of a pale blue-white globe criss-crossed by long rust-brown lines and blotches, fading into shadow on the right.',
@@ -85,6 +93,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   io: {
+    lead: 'The most volcanic world known, heated from inside by Jupiter’s tides.',
     picture: {
       src: '/img/learn/io-galileo-1999.jpg', width: 900, height: 900,
       alt: 'Io as a yellow, orange and pale green globe dotted with black spots and red rings.',
@@ -121,6 +130,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   ganymede: {
+    lead: 'The largest moon in the Solar System, wider than Mercury, and the only moon with its own magnetic field.',
     picture: {
       src: '/img/learn/ganymede-juno-2021.jpg', width: 898, height: 1050,
       alt: 'Part of a large grey globe with dark old ground, paler grooved bands and bright craters with rays.',
@@ -157,6 +167,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   callisto: {
+    lead: 'One of the most heavily cratered worlds in the Solar System, its surface almost unchanged for about four billion years.',
     picture: {
       src: '/img/learn/callisto-galileo.jpg', width: 740, height: 753,
       alt: 'A dark brown globe peppered all over with bright white spots, the scars of craters.',
@@ -193,6 +204,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   enceladus: {
+    lead: 'A small, brilliant moon of Saturn that sprays water from a hidden ocean out into space.',
     picture: {
       src: '/img/learn/enceladus-jets-cassini.jpg', width: 1100, height: 680,
       alt: 'The dark edge of a moon with bright jets of spray rising from it into space.',
@@ -227,6 +239,8 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   triton: {
+    lead: 'Neptune’s largest moon, the only large moon that goes round its planet backwards, with geysers of nitrogen.',
+    temperature: { value: '−235 °C', note: 'Measured by Voyager 2 in 1989, one of the coldest surfaces known.' },
     picture: {
       src: '/img/learn/triton-voyager2-1989.jpg', width: 1200, height: 933,
       alt: 'A lit crescent-shaped part of a globe, pinkish and pale grey, its lower half covered in bright patchy frost and its upper half in a wrinkled texture.',
@@ -261,6 +275,8 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   moon: {
+    lead: 'The Earth’s only natural satellite, and the only other world people have walked on.',
+    temperature: { value: '−133 to 121 °C', note: 'From night to day at the equator. There is no air to even it out.' },
     picture: {
       src: '/img/learn/moon-near-side-lro.jpg', width: 1100, height: 1100,
       alt: 'The whole face of the Moon in grey, with large dark smooth patches across the upper half and bright, heavily cratered ground in the lower half.',

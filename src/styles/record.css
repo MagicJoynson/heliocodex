@@ -1,0 +1,33 @@
+/* The record layout: one for every object. Head, then picture beside the data sheet, then the story. */
+.rec { --rec-col: 1fr; }
+.rec-head { margin: 0 0 clamp(18px, 2.6vw, 28px); }
+.rec-crumbs { font: 400 .8rem/1.4 var(--r-mono, monospace); letter-spacing: .06em; color: var(--ink-soft); margin: 0 0 .5rem; }
+.rec-crumbs a { color: var(--ink-soft); }
+.rec-crumbs span { margin: 0 .35rem; color: var(--ink-faint); }
+.rec-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem 1.1rem; }
+.rec-title h1 { font: 300 clamp(2.2rem, 4.6vw, 3.6rem)/1.05 var(--r-serif); margin: 0; letter-spacing: -.01em; }
+.rec-kind { font: 400 clamp(1.05rem, 1rem + .3vw, 1.25rem)/1.3 var(--r-serif); color: var(--accent); margin: 0; }
+.rec-badge { font: 400 .78rem/1.3 var(--r-mono, monospace); color: var(--ink-soft); border: 1px dashed rgba(233,196,138,.5); border-radius: 999px; padding: .3rem .7rem; margin: 0; }
+.rec-lead { font: 300 clamp(1.08rem, 1rem + .3vw, 1.25rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: .7rem 0 0; max-width: 46rem; }
+.rec-top { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(20px, 3.4vw, 48px); align-items: start; padding: clamp(18px, 2.4vw, 28px) 0 clamp(24px, 3vw, 36px); border-top: 1px solid var(--rule); }
+.rec-pic { margin: 0; }
+.rec-pic img { display: block; width: 100%; height: auto; max-height: 30rem; object-fit: contain; object-position: left top; border-radius: 2px; }
+.rec-pic figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-soft); margin-top: .6rem; }
+.rec-sheet { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; border-top: 1px solid var(--rule); }
+.rec-sheet .rc { padding: .9rem 1.2rem .95rem 0; border-bottom: 1px solid var(--rule); }
+.rec-sheet .rc:nth-child(even) { padding-left: 1.2rem; border-left: 1px solid var(--rule); }
+.rec-sheet dt { font: 400 .76rem/1.3 var(--r-mono, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.rec-sheet dd { margin: .35rem 0 0; font: 400 clamp(1.5rem, 1.2rem + 1vw, 2.1rem)/1.1 var(--r-serif); color: var(--ink); }
+.rec-sheet dd b { font-weight: 400; }
+.rec-sheet dd > span { font-size: .55em; color: var(--ink-soft); }
+.rec-sheet .rc p { font: 400 .92rem/1.45 var(--r-serif); color: var(--ink-soft); margin: .35rem 0 0; }
+.rec-sheet .rc.unknown dd { color: var(--ink-faint); }
+.rec-go { display: flex; flex-wrap: wrap; gap: .6rem 1.4rem; margin: 1.1rem 0 0; }
+.rec-go a { font: 400 .8rem/1 var(--r-mono, monospace); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+@media (max-width: 860px) {
+  .rec-top { grid-template-columns: minmax(0, 1fr); }
+  .rec-pic img { width: 100%; height: 18rem; max-height: none; object-fit: cover; object-position: center; }
+}
+@media (max-width: 420px) {
+  .rec-sheet .rc { padding-right: .7rem; } .rec-sheet .rc:nth-child(even) { padding-left: .8rem; }
+}

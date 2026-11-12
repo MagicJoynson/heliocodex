@@ -3,6 +3,7 @@
 import Base from '../../layouts/Base.astro';
 import '../../styles/reading.css';
 import '../../styles/star.css';
+import '../../styles/record.css';
 import { pageStars, type PageStar } from '../../lib/sky/starlist';
 import { starPage } from '../../lib/sky/star';
 
@@ -13,7 +14,7 @@ const { star } = Astro.props as { star: PageStar };
 const page = starPage(star);
 ---
 <Base title={star.name} path={`/stars/${star.slug}`} description={page.description}>
-  <article class="reading star" data-dir={star.dir.join(',')} data-name={star.name} data-rgb={page.rgb} data-lum={star.lumSun} set:html={page.html} />
+  <article class="reading star rec" data-dir={star.dir.join(',')} data-name={star.name} data-rgb={page.rgb} data-lum={star.lumSun} set:html={page.html} />
 </Base>
 
 <script>

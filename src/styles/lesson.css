@@ -1,7 +1,7 @@
 /* Lessons in the visual style. Same family as the reading pages (Spectral, Plex Mono, hairlines),
    with room for a picture that stays in view while the words go past. */
 .lesson {
-  --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a;
+  --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --accent: #e9c48a;
   --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --rule: rgba(236, 231, 220, .14); --night: #0b0b0c;
   font-family: var(--r-serif); color: var(--ink); background: var(--night);
@@ -39,7 +39,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .story-steps li:first-child { min-height: 62svh; }
 .story-steps .prose { font: 300 clamp(1.3rem, 1.05rem + .9vw, 1.72rem)/1.5 var(--r-serif); color: var(--ink); max-width: 30rem; }
 .story-steps .prose p { margin: 0; max-width: none; font: inherit; color: inherit; }
-.is-live .story-steps li { opacity: .28; transition: opacity .5s ease; }
+.is-live .story-steps li { opacity: .6; transition: opacity .5s ease; }
 .is-live .story-steps li[data-on] { opacity: 1; }
 
 @media (max-width: 860px) {

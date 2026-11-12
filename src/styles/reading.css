@@ -7,7 +7,7 @@
 @import '@fontsource/ibm-plex-mono/400.css';
 
 .reading {
-  --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a;
+  --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --accent: #e9c48a;
   --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --rule: rgba(236, 231, 220, .14);
   --margin-col: 15rem; --text-col: 42rem;

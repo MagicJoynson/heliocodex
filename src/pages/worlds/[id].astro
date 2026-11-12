@@ -8,6 +8,10 @@ import { plates } from '../../lib/v2/atlas/plates';
 import { fmt } from '../../lib/format';
 import type { Body } from '../../lib/v2/atlas/types';
 import { WORLD_PAGES } from '../../data/world-pages';
+import { sheet, head, ratio, sig, type Cell } from '../../lib/record';
+import { SHOW_OUTLINES } from '../../lib/site';
+import { sunAu } from '../../lib/worlds';
+import '../../styles/record.css';
 
 export function getStaticPaths() {
   return outlineWorlds.map((b) => ({ params: { id: b.id } }));
@@ -33,11 +37,31 @@ const rows: [string, string][] = [
   ['Kind', kindLine],
   ['Distance', outSays],
   ['Once round', periodSays],
-  ['Path', `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'} (eccentricity ${fmt(o.e, 2)}), tilted ${fmt(o.iDeg, 2)}°`],
+  ['Path', `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'} (eccentricity ${fmt(o.e, 2)}), ${o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`],
   ['Size', sizeSays],
   ...(b.densityGcm3 ? [['Density', `${fmt(b.densityGcm3, 2)} times water`] as [string, string]] : []),
   ...(b.discovered ? [['Found', `${b.discovered.year}, by ${b.discovered.by}`] as [string, string]] : []),
 ];
+// the data sheet: the same quantities in the same places as every other record
+const EARTH_KM = 12742, EARTH_KG = 5.972e24;
+const dKm = b.meanRadiusKm ? b.meanRadiusKm * 2 : null;
+const massKg = b.gmKm3S2 ? b.gmKm3S2 / 6.6743e-20 : null;
+const sup = (n: number) => String(n).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)] ?? c).join('');
+const parentName = nameOf(b.parent).replace(/^the /, 'the ');
+const pathWords = `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'}, ${o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`;
+const cells: Cell[] = [
+  round
+    ? { key: 'distance', label: 'From the Sun', value: fmt(aAu, aAu < 10 ? 2 : 1), unit: 'au on average', note: `From ${fmt(o.aKm * (1 - o.e) / AU_KM, 2)} to ${fmt(o.aKm * (1 + o.e) / AU_KM, 2)} au. One au is the Earth’s distance.` }
+    : { key: 'distance', label: `From ${parentName.replace(/^the /, 'the ')}`, value: fmt(o.aKm), unit: 'km on average', note: `${parentName.replace(/^the /, 'The ').replace(/^./, (c) => c.toUpperCase())} is ${fmt(sunAu(b), 2)} au from the Sun.` },
+  dKm ? { key: 'size', label: 'Size', value: fmt(dKm), unit: 'km across', note: `${ratio(dKm / EARTH_KM, 'the Earth’s width')}.` } : { key: 'size', label: 'Size', value: '—', note: 'Not measured well enough to give here.' },
+  ...(page?.temperature ? [{ key: 'temperature', label: 'Temperature', value: page.temperature.value, note: page.temperature.note } as Cell] : []),
+  ...(massKg ? [(() => { const ex = Math.floor(Math.log10(massKg)); return { key: 'mass', label: 'Mass', value: `${(massKg / 10 ** ex).toFixed(2)} × 10${sup(ex)}`, unit: 'kg', note: `${ratio(massKg / EARTH_KG, 'the Earth’s')}.` } as Cell; })()] : []),
+  { key: 'orbit', label: 'Once round', value: periodSays.split(' ')[0], unit: `${periodSays.split(' ')[1]}, round ${round ? 'the Sun' : parentName}`, note: `Its path is ${pathWords}.` },
+  ...(b.densityGcm3 ? [{ key: 'density', label: 'Density', value: fmt(b.densityGcm3, 2), unit: 'times water', note: b.densityGcm3 < 2.2 ? 'Light enough to be roughly half ice.' : b.densityGcm3 > 3 ? 'Dense enough to be mostly rock and metal.' : undefined } as Cell] : []),
+  ...(b.discovered ? [{ key: 'found', label: 'Found', value: String(b.discovered.year), note: `By ${b.discovered.by}.` } as Cell] : []),
+];
+const crumbs: [string, string][] = [['Solar System', '/worlds'], ...(b.parent && b.parent !== 'sun' ? [[nameOf(b.parent).replace(/^the /, 'The '), parentHref ?? '/worlds'] as [string, string]] : [])];
+const headHtml = head({ crumbs, name: b.name, kind: kindLine, lead: page?.lead ?? note?.why, badge: !page && SHOW_OUTLINES ? 'Outline: the numbers are measured; the rest is being written' : undefined });
 // the drawing: the path to scale and filling its frame, with what it goes round at one focus. Round the Sun,
 // the planets' paths that fit inside it are drawn as faint named rings; round a planet, its disc to scale.
 const W = 600, PAD = 34;
@@ -71,14 +95,70 @@ const parCx = parEdge - parR;
 const meR = Math.max(1.2, rMe * sk), meCx = parEdge + 50 + meR;
 const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 ---
-<Reading title={b.name} path={`/worlds/${b.id}`} description={page ? `${kindLine}: what it looks like, what it is made of, how it was found and what is still unknown.` : `${kindLine}. ${outSays}. Outline page: being written.`}>
-  <article class="world-outline">
-    <header class="wo-head">
-      <p class="label"><a href="/worlds">Every world</a> / {kindLine}</p>
-      <h1>{b.name}</h1>
-      {!page && <p class="wo-badge"><span>Outline</span> The numbers here are measured. The rest of this page is being written.</p>}
-    </header>
-    <div class="wo-body">
+<Reading title={b.name} path={`/worlds/${b.id}`} description={page ? `${kindLine}: what it looks like, what it is made of, how it was found and what is still unknown.` : `${kindLine}. ${outSays}.`}>
+  <article class="rec world-record">
+    <Fragment set:html={headHtml} />
+    <section class="rec-top">
+      {page ? (
+        <figure class="rec-pic">
+          <img src={page.picture.src} alt={page.picture.alt} width={page.picture.width} height={page.picture.height} />
+          <figcaption set:html={page.picture.caption} />
+        </figure>
+      ) : isMoon ? (
+          <figure class="rec-pic wo-size">
+            <svg viewBox={`0 0 600 ${SH}`} role="img" aria-label={`${b.name} drawn to scale beside ${cmp ? 'our Moon and ' : ''}the edge of ${nameOf(b.parent)}`}>
+              <defs><clipPath id="sframe"><rect x="0" y="0" width="600" height={SH} /></clipPath><radialGradient id="shade" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient></defs>
+              <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />
+              <circle cx={meCx} cy={scy} r={meR} fill="url(#shade)" />
+              {cmp && <circle cx={moonCx} cy={scy} r={moonR} class="s-moon" />}
+              <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `${nameOf(b.parent).replace(/^the /, 'The ')}’s edge` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
+              <text x={meCx} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
+              {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
+            </svg>
+            <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.</figcaption>
+          </figure>
+      ) : (
+      <figure class="rec-pic wo-orbit">
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
+          <defs><clipPath id="frame"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
+          <g clip-path="url(#frame)">
+            {rings.map((g) => <circle cx={fx} cy={fy} r={g.r} class:list={['ring', { crossed: g.crosses }]} />)}
+            {!round && pDraw > 0 && <circle cx={fx} cy={fy} r={Math.max(3, pDraw)} class="centre" />}
+          </g>
+          {ringLabels.map((g) => <text x={g.x} y={ly + 4} class="ring-t">{g.name}</text>)}
+          <ellipse cx={ecx} cy={fy} rx={erx} ry={ery} class="path" />
+          {round && <circle cx={fx} cy={fy} r="6" class="centre sun" />}
+          {round && <text x={fx} y={fy + 22} class="foc-t" text-anchor="middle">Sun</text>}
+          {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 18} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
+          <circle cx={ecx + erx} cy={fy} r="5" class="me" />
+        </svg>
+        <figcaption>The path of {midName} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
+      </figure>
+      )}
+      <div>
+        <Fragment set:html={sheet(cells)} />
+        <p class="rec-go">
+          {parentHref && <a href={parentHref}>{nameOf(b.parent).replace(/^the /, 'The ')}</a>}
+          {chart && <a href={chart}>On the charts</a>}
+          <a href={`/explore?go=${b.id}`}>Fly to it in 3D</a>
+        </p>
+      </div>
+    </section>
+    {page ? page.chapters.map((c) => (
+      <section class="row">
+        <div class="hang"><h2>{c.title}</h2></div>
+        <div class="prose">{c.paras.map((t) => <p>{t}</p>)}</div>
+      </section>
+    )) : SHOW_OUTLINES && (
+      <section class="row small wo-later">
+        <div class="hang"><h2>Being written</h2></div>
+        <div class="prose"><p>{CHAPTERS[b.kind].join(' · ')}</p></div>
+      </section>
+    )}
+    {(page || isMoon) && (
+      <section class="row wide wo-draw">
+        <div class="hang"><h2>Its path{isMoon && (page || !isMoon) ? ' and size' : ''}</h2></div>
+        <div class="draw-pair">
       <figure class="wo-orbit">
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
           <defs><clipPath id="frame"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
@@ -95,15 +175,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
         </svg>
         <figcaption>The path of {midName} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
       </figure>
-      <div class="wo-facts">
-        <dl>{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
-        {note && <p class="wo-why">{note.why}</p>}
-        <p class="wo-go">
-          {parentHref && <a href={parentHref}>{nameOf(b.parent).replace(/^the /, 'The ')}</a>}
-          {chart && <a href={chart}>On the atlas</a>}
-          <a href={`/explore?go=${b.id}`}>In 3D</a>
-        </p>
-        {isMoon && (
+          {page && isMoon && (
           <figure class="wo-size">
             <svg viewBox={`0 0 600 ${SH}`} role="img" aria-label={`${b.name} drawn to scale beside ${cmp ? 'our Moon and ' : ''}the edge of ${nameOf(b.parent)}`}>
               <defs><clipPath id="sframe"><rect x="0" y="0" width="600" height={SH} /></clipPath><radialGradient id="shade" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient></defs>
@@ -116,35 +188,22 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
             </svg>
             <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.</figcaption>
           </figure>
-        )}
-      </div>
-    </div>
-    {page ? (
-      <div class="wo-full">
-        <figure class="wo-photo">
-          <img src={page.picture.src} alt={page.picture.alt} width={page.picture.width} height={page.picture.height} loading="lazy" />
-          <figcaption set:html={page.picture.caption} />
-        </figure>
-        <div class="wo-text">
-          {page.chapters.map((c) => (
-            <section class="wo-ch">
-              <h2>{c.title}</h2>
-              {c.paras.map((t) => <p>{t}</p>)}
-            </section>
-          ))}
+          )}
         </div>
-      </div>
-    ) : (
-      <section class="wo-todo" aria-labelledby="todo-h">
-      <h2 id="todo-h">Still being written</h2>
-      <ol>{CHAPTERS[b.kind].map((c) => <li>{c}</li>)}</ol>
-    </section>
+      </section>
     )}
-    <p class="wo-src">Sources: {[...(page?.sources ?? []), ...b.sources].map((s, i) => <>{i > 0 && '; '}<a href={s.url} rel="noopener">{s.label}</a></>)}.</p>
+    <section class="row small">
+      <div class="hang"><h2>Where this comes from</h2></div>
+      <div class="prose"><p>{[...(page?.sources ?? []), ...b.sources].map((s, i) => <>{i > 0 && '; '}<a href={s.url} rel="noopener">{s.label}</a></>)}.</p></div>
+    </section>
   </article>
 </Reading>
 
 <style>
+  .draw-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px); align-items: start; }
+  .draw-pair figure { margin: 0; }
+  .wo-later .prose p { color: var(--ink-faint); }
+  @media (max-width: 800px) { .draw-pair { grid-template-columns: minmax(0, 1fr); } }
   .wo-head { margin-bottom: clamp(28px, 4vw, 48px); }
   .wo-head h1 { font: 300 clamp(2.6rem, 6vw, 4.6rem)/1 var(--r-serif); margin: .6rem 0 1rem; }
   .wo-badge { display: flex; gap: .8rem; align-items: center; font: 300 1rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0; }

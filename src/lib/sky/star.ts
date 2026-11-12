@@ -1,3 +1,4 @@
+import { sheet, head, type Cell } from '../record';
 /** Plain facts about one star, worked out from the few numbers the catalogue holds. */
 export const LY_PER_PC = 3.26156;
 
@@ -186,28 +187,30 @@ export function starPage(star: PageStar): { html: string; description: string; r
       : !star.proper
         ? `<p>It has no name of its own. ${BAYER.test(star.catalogue) ? 'Its name by constellation is a Greek letter and the constellation it is in, a way of naming begun by Johann Bayer in 1603.' : /^\d/.test(star.catalogue) ? 'Its name by constellation is a number and the constellation it is in, from the catalogue of John Flamsteed, the first Astronomer Royal.' : 'It goes by a name made from the constellation it is in.'}</p>`
         : '';
+  const tempCell: Cell = byType
+    ? { key: 'temperature', label: 'Temperature', value: nf(typeK), unit: 'K, roughly', note: `At the surface, from its spectral type. The Sun’s is 5,772 K.` }
+    : hasColour
+      ? { key: 'temperature', label: 'Temperature', value: star.bv < -0.05 ? `Over ${nf(Math.floor(kelvin / 1000) * 1000)}` : nf(kelvin), unit: 'K, roughly', note: 'At the surface, from its colour. The Sun’s is 5,772 K.' }
+      : { key: 'temperature', label: 'Temperature', value: '—', note: 'Its colour is not in the catalogue, so it cannot be worked out here.' };
+  const cells: Cell[] = [
+    { key: 'distance', label: 'From the Earth', value: `<span data-ly="${star.distPc < 60 ? ly : ''}">${round2(ly)}</span>`, unit: 'light years', note: `Its light set off <span data-left>about ${round2(ly)} years ago</span>.` },
+    { key: 'size', label: 'Size', value: '—', note: 'Not in the star catalogue this site uses.' },
+    tempCell,
+    { key: 'light', label: 'Light given out', value: lum >= 1.5 ? round2(lum) : lum > 0.67 ? 'About 1' : round2(lum), unit: lum > 0.67 && lum < 1.5 ? 'Sun' : lum >= 1.5 ? 'Suns' : 'of a Sun', note: `Visible light, compared with the Sun.${!unnamed && rank <= 20 ? ` From the Earth it is ${placing(rank)} star in the night sky.` : ''}` },
+    { key: 'seen', label: 'Seen from the Earth', value: star.appMag.toFixed(2).replace('-', '−'), unit: 'magnitude', note: sight },
+    ...(spect ? [{ key: 'type', label: 'Spectral type', value: esc(spect), note: colour ? `${colour.charAt(0).toUpperCase()}${colour.slice(1)}.` : undefined } as Cell] : []),
+  ];
+  const crumbs: [string, string][] = [['Sky', '/sky'], ['Stars', '/stars'], ...(star.constellation ? [[star.constellation, `/stars/in/${slugOf(star.constellation)}`] as [string, string]] : [])];
   const html = [
-    `<header class="star-head"><div>
-      <p class="label"><a href="/stars">Meet a star</a>${star.constellation ? ` / <a href="/stars/in/${slugOf(star.constellation)}">${esc(star.constellation)}</a>` : ''}</p>
-      <h1${star.name.length > 14 ? ' class="long"' : ''}>${n}</h1>
-      <p class="lead">${lead} ${stage}${mate ? ` It is listed as a companion of ${mate}, right beside it in the sky.` : ''}</p>
-      <p class="star-links"><a href="/explore?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p>
-    </div>
-    <figure class="star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure></header>`,
-    row('How far', `<p class="big"><span data-ly="${star.distPc < 60 ? ly : ''}">${round2(ly)}</span> light years</p>
-      <p>The light you see from ${it} tonight set off <span data-left>about ${round2(ly)} years ago</span>. Everything we know about it is that much out of date.</p>${doubt ? `<p>${doubt}</p>` : ''}`),
-    row('How bright', `<p class="big">${lum >= 1.5 ? `${round2(lum)} Suns` : lum > 0.67 ? 'About one Sun' : `${round2(lum)} of a Sun`}</p>
-      <p>It gives out ${lumText}. ${unnamed ? '' : rank <= 20 ? `From the Earth it is ${placing(rank)} star in the night sky.` : rank <= 100 ? 'It is one of the hundred brightest stars in the night sky.' : ''} ${sight}</p>
-      <p>Astronomers put its brightness in our sky at magnitude ${star.appMag.toFixed(2).replace('-', '−')}. Smaller numbers are brighter, and the faintest stars the eye can see are about 6.</p>`),
-    byType
-      ? row('How hot', `<p class="big">About ${nf(typeK)} K</p>
-      <p>That is the temperature of its surface, worked out from its spectral type, ${spect}, with a standard table of how hot stars of each type are. It is a guide and not a measurement, and could be out by a tenth or so. ${reddened ? `Its colour alone would suggest only about ${nf(Number(kelvin.toPrecision(2)))} K. Dust lying between us and the star reddens its light, the way the air reddens the setting Sun, so for this star the type is the better guide.` : hasColour ? 'For stars as hot as this, colour is a poor thermometer, because most of their light is ultraviolet, so the type is the better guide.' : ''} The Sun's is 5,772 K. Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>
-      ${hasColour ? `<p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}${reddened ? ', as it looks through the dust' : ''}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>` : ''}`)
-      : hasColour
-      ? row('How hot', `<p class="big">${star.bv < -0.05 ? `Hotter than ${nf(Math.floor(kelvin / 1000) * 1000)} K` : `About ${nf(kelvin)} K`}</p>
-      <p>That is the temperature of its surface, worked out from its colour, so it is a guide and not a measurement. ${star.bv < -0.05 ? 'For stars as blue as this one, colour is a poor thermometer: most of their light is ultraviolet, which the eye and this sum do not see, and the true figure can be far higher.' : 'It could be out by a few hundred degrees.'} The Sun's is 5,772 K. Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>
-      <p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>`)
-      : row('How hot', `<p>Not known here. The catalogue this site uses has no colour measurement for this star, and colour is what the temperature is worked out from.${colour ? ` Its spectral type says it is ${colour}.` : ''}</p>`),
+    head({ crumbs, name: star.name, kind: colour ? `${colour.charAt(0).toUpperCase()}${colour.slice(1)}` : 'A star', lead: `${stage}${mate ? ` It is listed as a companion of ${mate}, right beside it in the sky.` : ''}`.trim() || undefined }),
+    `<section class="rec-top">
+      <figure class="rec-pic star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure>
+      <div>${sheet(cells)}<p class="rec-go"><a href="/explore?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p></div>
+    </section>`,
+    row('About these numbers', `<p>${round2(ly)} light years means the light you see from ${it} tonight set off about ${round2(ly)} years ago. Everything we know about it is that much out of date.${doubt ? ` ${doubt}` : ''}</p>
+      <p>It gives out ${lumText}. Its brightness in our sky is magnitude ${star.appMag.toFixed(2).replace('-', '−')}: smaller numbers are brighter, and the faintest stars the eye can see are about 6.</p>
+      ${byType ? `<p>The temperature is read from its spectral type, ${spect}, with a standard table of how hot stars of each type are. It is a guide and could be out by a tenth or so.${reddened ? ` Its colour alone would suggest only about ${nf(Number(kelvin.toPrecision(2)))} K, because dust between us and the star reddens its light.` : ''}</p>` : hasColour ? `<p>The temperature is worked out from its colour, so it is a guide and not a measurement. ${star.bv < -0.05 ? 'For stars this blue, colour is a poor thermometer, and the true figure can be far higher.' : 'It could be out by a few hundred degrees.'} Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>` : ''}
+      ${hasColour ? `<p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}${reddened ? ', through the dust' : ''}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>` : ''}`),
     byEye ? row('In your sky now', '<p data-now>Working it out…</p>') : '',
     row('Its names', `${whyNames}${names.length ? `<dl class="names">${names.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>` : ''}${spect ? '' : (star.spect ?? '').trim() ? '<p>The catalogue\'s spectral type for it does not match its measured colour, most likely because it belongs to a companion star, so it is left out here.</p>' : '<p>Its spectral type, the code for what kind of star it is, is not in the catalogue.</p>'}`, true),
     row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${byType ? 'The temperature is read from the spectral type with the table of <a href="https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt" rel="noopener">Pecaut and Mamajek (2013)</a>, and the' : hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.</p>
