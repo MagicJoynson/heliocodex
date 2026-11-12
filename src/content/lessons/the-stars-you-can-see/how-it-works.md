@@ -31,7 +31,7 @@ The further away a star is, the less sure its distance. Figures of a few hundred
 | Polaris, the Pole Star | 430 | 2.0 |
 | Betelgeuse | 500 | 0.5 |
 | Rigel | 860 | 0.2 |
-| Deneb | 1,400 | 1.3 |
+| Deneb | At least 1,400, perhaps nearer 2,600 | 1.3 |
 
 Canopus looks only a little fainter than Sirius from more than thirty times further off. Light spreads out with the square of distance, so Canopus has to be giving out hundreds of times more light to manage that.
 

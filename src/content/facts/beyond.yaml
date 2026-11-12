@@ -86,7 +86,7 @@ facts:
     basis: worked-out
     source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
   - id: deneb-old-light
-    text: "Deneb is one of the most distant stars that is easy to see, about 1,400 light years away. The light reaching your eye tonight left it around the year 600."
+    text: "Deneb is one of the most distant stars that is easy to see, at least 1,400 light years away, and perhaps nearer 2,600; it is hard to measure. The light reaching your eye tonight left it at least 1,400 years ago."
     about: [night-sky, light-the-only-messenger]
     basis: worked-out
     source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }

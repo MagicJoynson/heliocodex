@@ -10,10 +10,10 @@ On a dark night the sky looks like a dome with the stars painted on it, all the 
   <figcaption><b>A photograph.</b> Orion over the Very Large Telescope in Chile. From the southern half of the world he hangs head down: the three stars of the Belt are at upper left, with the reddish glow of the Orion Nebula beside them. They look like neighbours. They are not. Credit: ESO/Y. Beletsky, CC BY 4.0.</figcaption>
 </figure>
 
-Sirius, the brightest, is under 9 light years away. Deneb, another bright one, is about 1,400. The light you see from Deneb tonight set out around the year 600.
+Sirius, the brightest, is under 9 light years away. Deneb, another bright one, is at least 1,400 light years away, and perhaps nearer 2,600; it is hard to measure. The light you see from Deneb tonight set out at least 1,400 years ago.
 
 <figure class="photo">
-  <img src="/img/learn/charts/bright-stars-distances.svg" alt="A chart of five bars: Sirius 8.6 light years, Vega 25, Arcturus 37, Rigel about 860 and Deneb about 1,400." width="800" height="590" loading="lazy" />
+  <img src="/img/learn/charts/bright-stars-distances.svg" alt="A chart of five bars: Sirius 8.6 light years, Vega 25, Arcturus 37, Rigel about 860 and Deneb at least 1,400." width="800" height="590" loading="lazy" />
   <figcaption><b>A chart.</b> Five bright stars and how far away each one is. In the sky they look much the same. The far ones are hard to measure, so their figures are rough.</figcaption>
 </figure>
 
