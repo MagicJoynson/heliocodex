@@ -1,0 +1,9 @@
+title: Looking for life in the Solar System
+strand: life
+order: 3
+summary: "Four places near home might hold life or the remains of it: Mars, Europa, Enceladus and Titan. Spacecraft have been to all four, and more are on the way."
+scene: "Real photographs of Mars, of a spotted rock found there in 2024, of the cracked ice of Europa, of the jets of Enceladus and of the ground on Titan, and a drawing to scale of where the four places are."
+view: { target: solar-system }
+terms: [biosignature, subsurface-ocean, habitable-zone, tidal-heating, cryovolcanism, atmosphere, astronomical-unit]
+needs: [what-life-needs, ocean-moons]
+next: [are-we-alone, the-habitable-zone]

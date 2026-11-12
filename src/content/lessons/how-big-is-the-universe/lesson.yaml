@@ -1,0 +1,9 @@
+title: How big is the universe?
+strand: the-universe
+order: 8
+summary: "There is an edge to what can be seen, 46 billion light years away in every direction. It is not the edge of the universe, and nobody knows how far the rest goes."
+scene: "The real map of the oldest light and a real photograph of far galaxies, with drawings of the ball of space we can see, of light crossing space as it stretches, and of the same view from somewhere else."
+view: { target: cmb }
+terms: [light-year, look-back-time, cosmic-microwave-background, big-bang, galaxy, redshift, speed-of-light, hubble-constant]
+needs: [the-expanding-universe, the-oldest-light]
+next: [how-it-all-ends, the-history-of-the-universe]

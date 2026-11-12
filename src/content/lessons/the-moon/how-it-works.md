@@ -32,6 +32,8 @@ The width is twice the radius NASA gives, and the fraction for the mass is one d
 
 **Why one face.** The Earth's gravity pulls a little harder on the near side of the Moon than on the far side. Long ago that pull slowed the Moon's spin until one turn matched one orbit, and it has stayed that way. Many moons of other planets have ended up the same.
 
+<figure class="video" data-yt="nr5Pj6GQL2o" data-title="Tour of the Moon in 4K"><figcaption><b>Not a film from a camera: a flight made from real measurements.</b> Every hill and crater here is where NASA’s Lunar Reconnaissance Orbiter measured it to be, and the surface is built from its photographs. The tour passes the great basins, the bright young crater Tycho, the south pole and the valley where Apollo 17 landed. About 5 minutes, with a spoken commentary. Credit: NASA’s Scientific Visualization Studio.</figcaption></figure>
+
 <figure class="photo">
   <img src="/img/learn/moon-far-side-lro.jpg" alt="The other face of the Moon in grey: craters crowded edge to edge, with only two or three small dark patches." width="1100" height="1100" loading="lazy" />
   <figcaption><b>A photograph.</b> The far side of the Moon, which can never be seen from the Earth, from pictures by NASA's Lunar Reconnaissance Orbiter. Credit: NASA/GSFC/Arizona State University.</figcaption>

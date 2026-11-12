@@ -51,12 +51,12 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}sun-sunspots-sdo.jpg`, width: 1024, height: 990, alt: 'The whole Sun as an orange disc with a cluster of dark spots below the middle.', caption: 'The Sun in October 2014, with a group of sunspots wider than ten Earths. Credit: NASA/SDO.' },
     stages: [
       { title: 'The Sun', about: 'The star in the middle, which holds almost all of the mass.', lessons: ['what-the-sun-is', 'how-the-sun-shines', 'the-active-sun', 'the-suns-reach'] },
-      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'the-earth-as-a-planet', 'how-the-planets-formed', 'air-and-the-greenhouse', 'rings'] },
+      { title: 'The planets', about: 'Three kinds of world, how they formed, and why their skies differ.', lessons: ['three-kinds-of-planet', 'what-counts-as-a-planet', 'the-earth-as-a-planet', 'how-the-planets-formed', 'inside-planets-and-magnetic-shields', 'air-and-the-greenhouse', 'rings'] },
       { title: 'The moons', about: 'More than two hundred of them, some with oceans under the ice.', lessons: ['what-a-moon-is', 'the-moon', 'ocean-moons', 'moons-in-step', 'tides', 'phases-and-eclipses'] },
       { title: 'The small things, and the edge', about: 'Asteroids, comets, falling rocks and the cloud that surrounds it all.', lessons: ['rubble-and-ice', 'comets', 'falling-rocks', 'things-that-hit-the-earth', 'the-oort-cloud'] },
       { title: 'How it all moves', about: 'Orbits, the laws they follow, and how spacecraft use them.', lessons: ['what-an-orbit-is', 'keplers-laws', 'balance-points', 'leaving-and-arriving'] },
     ],
-    coming: ['Inside planets and their magnetic shields'],
+    coming: [],
     look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every planet and moon where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps of the worlds that have been mapped.' }],
   },
   {
@@ -83,7 +83,7 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'What you need first', about: 'Gravity, and why a star cannot last for ever.', lessons: ['what-gravity-is', 'how-stars-live-and-die'] },
       { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
-      { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'gravitational-waves', 'active-galaxies-and-quasars'] },
+      { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'falling-into-a-black-hole', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
     coming: ['Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
     look: [{ href: '/explore?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
@@ -122,11 +122,11 @@ export const PACKS: Pack[] = [
     blurb: 'From our own galaxy outward to the largest structures there are, and back in time to the first few minutes.',
     photo: { src: `${P}m87-jet-hubble.jpg`, width: 1222, height: 1276, alt: 'A bright yellow galaxy centre with a narrow, knotted blue streak pointing away from it.', caption: 'The centre of the galaxy M87 and the jet thrown out from beside its black hole. Credit: The Hubble Heritage Team (STScI/AURA) and NASA/ESA, CC BY 4.0.' },
     stages: [
-      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-stuff-between-the-stars', 'spiral-arms', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'active-galaxies-and-quasars'] },
+      { title: 'Our galaxy and the others', about: 'The Milky Way from inside, and the kinds of galaxy there are.', lessons: ['the-milky-way', 'the-stuff-between-the-stars', 'spiral-arms', 'the-centre-of-the-galaxy', 'kinds-of-galaxy', 'when-galaxies-collide', 'how-galaxies-form-and-change', 'active-galaxies-and-quasars'] },
       { title: 'The biggest picture', about: 'How galaxies are spread through space, and how their distances are found.', lessons: ['the-distance-ladder', 'the-cosmic-web', 'galaxy-clusters'] },
-      { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy'] },
+      { title: 'The universe itself', about: 'Its expansion, its first minutes, and the two things in it nobody has yet explained.', lessons: ['the-expanding-universe', 'the-first-minutes', 'the-oldest-light', 'how-we-know-there-was-a-big-bang', 'the-history-of-the-universe', 'dark-matter-and-dark-energy', 'how-big-is-the-universe', 'how-it-all-ends'] },
     ],
-    coming: ['How galaxies form and change', 'How it ends', 'How big is the universe'],
+    coming: [],
     look: [{ href: '/explore?go=cosmic-web', text: 'Fly out to the cosmic web', about: 'About 43,000 real galaxies, each where it was measured to be.' }],
   },
   {
@@ -137,9 +137,9 @@ export const PACKS: Pack[] = [
     stages: [
       { title: 'Worlds round other stars', about: 'How they are found, and one system with seven of them.', lessons: ['planets-round-other-stars', 'how-planets-are-found', 'the-kinds-of-planet-out-there', 'trappist-1'] },
       { title: 'What makes a world fit to live on', about: 'Air, warmth and water, here and on the moons of the giant planets.', lessons: ['air-and-the-greenhouse', 'the-habitable-zone', 'ocean-moons'] },
-      { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone'] },
+      { title: 'The question', about: 'What is known, what is not, and how people are looking.', lessons: ['are-we-alone', 'what-life-needs', 'looking-for-life-in-the-solar-system', 'listening-for-someone-else'] },
     ],
-    coming: ['What life needs', 'Looking for life in the Solar System', 'Listening for someone else'],
+    coming: [],
     look: [{ href: '/explore?go=neighbourhood', text: 'Fly out among the nearest stars', about: 'The Sun\u2019s neighbours, each where it was measured to be. Many are now known to have planets.' }],
   },
 ];

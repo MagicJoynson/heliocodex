@@ -1,0 +1,9 @@
+title: What life needs
+strand: life
+order: 2
+summary: "Life on Earth needs liquid water, a few common elements and a supply of energy. Given those, it turns up in boiling springs and in the dark of the sea floor."
+scene: "Real photographs of the Earth, of a hot vent on the sea floor, of a spring coloured by heat-loving microbes and of a water bear under a microscope, with drawings of the three things life needs and of how hot it can live."
+view: { target: earth }
+terms: [habitable-zone, biosignature, subsurface-ocean, atmosphere, kelvin]
+needs: [are-we-alone]
+next: [the-habitable-zone, ocean-moons]
