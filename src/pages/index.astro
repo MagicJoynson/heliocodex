@@ -7,6 +7,8 @@ import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
 import { PLACES, along } from '../lib/learn/map';
 import facts from '../data/facts.json';
 import { bodies } from '../data/bodies';
+import { outlineWorlds } from '../lib/worlds';
+import { plannedCount } from '../data/plan';
 
 const lessons = await allLessons();
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
@@ -101,13 +103,14 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
           ))}
         </ol>
       </div>
+      <p class="far-more"><a href="/worlds" data-outline>Beyond the eight planets: {outlineWorlds.length} moons, dwarf planets, asteroids and comets</a> are set out on the map of worlds. Their pages are outlines for now, and are being written.</p>
     </section>
 
     <section class="learnband" aria-labelledby="learn-h">
       <div class="lb-words">
         <p class="label">Learn</p>
         <h2 id="learn-h">From the ground under your feet to the oldest light</h2>
-        <p class="body">{lessons.length} short lessons, each written at more than one depth, set out by how long their light takes to reach you. Begin with ten first looks that cover the whole subject, or go straight to the part you want.</p>
+        <p class="body">{lessons.length} short lessons, each written at more than one depth, set out by how long their light takes to reach you. Begin with ten first looks that cover the whole subject, or go straight to the part you want. {plannedCount} more are outlined and being written.</p>
         <p class="go"><a class="btn" href={`/learn/${packLessons(PACKS[0])[0]}`}>Begin with ten lessons</a> <a class="lb-all" href="/learn">All {lessons.length} lessons</a></p>
       </div>
       <ol class="ladder" aria-label="Subjects, nearest first">
@@ -205,6 +208,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
   .far { padding: 3rem 0 1rem; border-top: 1px solid var(--rule); }
   .far-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .6rem 3rem; }
   .far-head h2 { margin: 0; }
+  .far-more { margin: 1.4rem 0 0; font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); max-width: 40rem; }
   .far-head p { font: 300 1.02rem/1.5 var(--r-serif); color: var(--ink-faint); max-width: 34rem; margin: 0; }
   .orbitband { position: relative; height: 17rem; margin: 2.4rem 0 0; }
   .far { overflow-x: clip; }
