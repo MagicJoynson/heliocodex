@@ -16,6 +16,15 @@ const byLetter = letters.map((l) => ({ l, stars: stars.filter((s) => s.slug[0].t
 const near = every
   .filter((s) => s.appMag <= 6.5 && s.distPc * LY_PER_PC <= 121)
   .map((s) => [s.name, Math.round(s.distPc * LY_PER_PC * 10) / 10, Math.round(s.appMag * 10) / 10, starHref(s), s.index, Math.round(declination(s.index))]);
+// the named stars by colour and true brightness: a Hertzsprung-Russell diagram you can click
+const W = 1000, H = 560, PADL = 70, PADB = 46;
+const BV0 = -0.35, BV1 = 2.0, M0 = -9, M1 = 16;
+const hx = (bv: number) => PADL + ((Math.max(BV0, Math.min(BV1, bv)) - BV0) / (BV1 - BV0)) * (W - PADL - 10);
+const hy = (m: number) => 10 + ((Math.max(M0, Math.min(M1, m)) - M0) / (M1 - M0)) * (H - PADB - 10);
+const kelvin = (bv: number) => 4600 * (1 / (0.92 * bv + 1.7) + 1 / (0.92 * bv + 0.62));
+const hr = stars.filter((s) => Number.isFinite(s.bv) && Number.isFinite(s.absMag)).map((s) => ({ s, x: hx(s.bv), y: hy(s.absMag), big: brightest.includes(s) }));
+const tempTicks = [30000, 10000, 6000, 4000, 3000].map((t) => { let lo = BV0, hi = BV1; for (let k = 0; k < 40; k++) { const mid = (lo + hi) / 2; if (kelvin(mid) > t) lo = mid; else hi = mid; } return { t, x: hx((lo + hi) / 2) }; });
+const lumTicks = [[10000, -5.17], [100, -0.17], [1, 4.83], [0.01, 9.83], [0.0001, 14.83]].map(([l, m]) => ({ l: l >= 1 ? `${l.toLocaleString('en-GB')} ${l === 1 ? 'Sun' : 'Suns'}` : `1/${(1 / l).toLocaleString('en-GB')} Sun`, y: hy(m) }));
 const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
 ---
 <Reading title="Meet a star" path="/stars" description={`Find the star whose light is as old as you are, and meet any of the ${every.length.toLocaleString('en-GB')} stars you can see: how far each is, how bright, how hot, and where it is in your sky.`}>
@@ -38,6 +47,28 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </div>
   </section>
 
+  <section class="row wide" id="map">
+    <div class="hang"><h2>Every named star, by colour and true brightness</h2><p class="note">How bright each star really is, not how bright it looks from here, against how hot it is. Most stars, the Sun among them, fall on one band; the giants and the dead stars sit apart. Touch or click a dot to meet that star.</p></div>
+    <figure class="hr">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`A chart of ${hr.length} named stars, by colour across and true brightness up the side`}>
+        <defs><linearGradient id="hr-sky" x1="0" x2="1"><stop offset="0" stop-color="#9db4ff" stop-opacity=".07" /><stop offset=".5" stop-color="#fff4e8" stop-opacity=".03" /><stop offset="1" stop-color="#ff9b5a" stop-opacity=".07" /></linearGradient></defs>
+        <rect x={PADL} y="10" width={W - PADL - 10} height={H - PADB - 10} fill="url(#hr-sky)" />
+        {lumTicks.map((t) => <g class="tick"><line x1={PADL} x2={W - 10} y1={t.y} y2={t.y} /><text x={PADL - 8} y={t.y + 4} text-anchor="end">{t.l}</text></g>)}
+        {tempTicks.map((t) => <g class="tick"><line x1={t.x} x2={t.x} y1="10" y2={H - PADB} /><text x={t.x} y={H - PADB + 18} text-anchor="middle">{t.t.toLocaleString('en-GB')} K</text></g>)}
+        <text class="axis" x={PADL} y={H - 6}>Hotter and bluer</text>
+        <text class="axis" x={W - 10} y={H - 6} text-anchor="end">Cooler and redder</text>
+        <text class="zone" x={hx(1.25)} y={hy(-6.6)}>Supergiants</text>
+        <text class="zone" x={hx(1.15)} y={hy(-2.2)}>Giants</text>
+        <text class="zone" x={hx(0.95)} y={hy(9.5)} transform={`rotate(31 ${hx(0.95)} ${hy(9.5)})`}>The main band</text>
+        <text class="zone" x={hx(-0.2)} y={hy(12.5)}>White dwarfs</text>
+        {hr.map((d) => <a href={`/stars/${d.s.slug}`}><circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={d.big ? 5 : 3.2} style={`fill:rgb(${tint(d.s.bv).join(',')})`}><title>{d.s.name}</title></circle></a>)}
+        {hr.filter((d) => d.big).map((d) => <text class="name" x={(d.x + 8).toFixed(1)} y={(d.y + 4).toFixed(1)}>{d.s.name}</text>)}
+        <circle cx={hx(0.65)} cy={hy(4.83)} r="7" class="sun" /><text class="name sun-name" x={hx(0.65) - 11} y={hy(4.83) + 18} text-anchor="end">The Sun</text>
+      </svg>
+      <figcaption>Colour from each star's measured B−V colour, turned into a surface temperature in kelvin (degrees above absolute zero) with Ballesteros's formula; true brightness from its distance and how bright it looks. The scale of brightness is in Suns, and each line is a hundred times the one below. Data: HYG database (CC BY-SA 4.0), with modern distances where they differ.</figcaption>
+    </figure>
+  </section>
+
   <section class="row wide">
     <div class="hang"><h2>The brightest</h2><p class="note">The twenty brightest stars in the night sky, as seen from the Earth.</p></div>
     <ol class="plain-list star-list">
@@ -56,6 +87,13 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </ol>
   </section>
 
+  <section class="row wide" id="constellations">
+    <div class="hang"><h2>Every star, by constellation</h2><p class="note">The sky is divided into 88 constellations, and every star belongs to one. Each list has all its stars that the eye can see.</p></div>
+    <ul class="plain-list cons">
+      {groups.map((g) => <li><a href={`/stars/in/${slugOf(g.name)}`}>{g.name}</a><span>{g.count}</span></li>)}
+    </ul>
+  </section>
+
   <section class="row wide">
     <div class="hang"><h2>The ones with names</h2><p class="note">{stars.length} stars, in the order of the alphabet.</p></div>
     <div class="all">
@@ -68,12 +106,6 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
     </div>
   </section>
 
-  <section class="row wide" id="constellations">
-    <div class="hang"><h2>Every star, by constellation</h2><p class="note">The sky is divided into 88 constellations, and every star belongs to one. Each list has all its stars that the eye can see.</p></div>
-    <ul class="plain-list cons">
-      {groups.map((g) => <li><a href={`/stars/in/${slugOf(g.name)}`}>{g.name}</a><span>{g.count}</span></li>)}
-    </ul>
-  </section>
 
   <section class="row small">
     <div class="hang"><h2>Where this comes from</h2></div>
@@ -147,4 +179,16 @@ const dot = (bv: number) => `background:rgb(${tint(bv).join(',')})`;
   .cons a { font: 300 1.04rem/1.5 var(--r-serif); text-decoration: none; color: var(--ink-soft); padding: .22rem 0; }
   .cons a:hover { color: var(--accent); }
   .cons span { font: 400 .72rem/1 var(--r-mono); color: var(--ink-faint); }
+  .hr { margin: 0; }
+  .hr svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .hr .tick line { stroke: rgba(236,231,220,.08); }
+  .hr .tick text, .hr .axis { font: 400 11px var(--r-mono); fill: var(--ink-faint); letter-spacing: .04em; }
+  .hr .zone { font: italic 300 17px var(--r-serif); fill: rgba(236,231,220,.42); }
+  .hr .name { font: 400 12px var(--r-serif); fill: var(--ink-soft); pointer-events: none; paint-order: stroke; stroke: #0d0d10; stroke-width: 3px; stroke-linejoin: round; }
+  .hr a circle { transition: r .15s ease; }
+  .hr a:hover circle, .hr a:focus-visible circle { r: 7; stroke: #e9c48a; stroke-width: 1.5; }
+  .hr .sun { fill: none; stroke: #e9c48a; stroke-width: 1.5; }
+  .hr .sun-name { fill: #e9c48a; }
+  .hr figcaption { font: 300 .92rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 1rem; max-width: 46rem; }
+  @media (max-width: 760px) { .hr svg { min-width: 640px; } .hr { overflow-x: auto; -webkit-overflow-scrolling: touch; } .hr figcaption { min-width: 0; } }
 </style>
