@@ -82,10 +82,10 @@ export const PACKS: Pack[] = [
     photo: { src: `${P}m87-black-hole-eht.jpg`, width: 1200, height: 1200, alt: 'A blurred orange ring, brighter along its lower edge, round a dark centre.', caption: 'The black hole in the galaxy M87, published on 10 April 2019. A photograph, not a drawing. Credit: EHT Collaboration, CC BY 4.0.' },
     stages: [
       { title: 'What you need first', about: 'Gravity, and why a star cannot last for ever.', lessons: ['what-gravity-is', 'how-stars-live-and-die'] },
-      { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'How stars end', about: 'The explosion, and the three things a star can leave behind.', lessons: ['supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'magnetars-and-gamma-ray-bursts', 'what-a-black-hole-is'] },
       { title: 'Closer in', about: 'The edge itself, the ripples when two collide, and the giants in the middles of galaxies.', lessons: ['the-event-horizon', 'falling-into-a-black-hole', 'gravitational-waves', 'active-galaxies-and-quasars'] },
     ],
-    coming: ['Magnetars and gamma-ray bursts', 'Do black holes last for ever?'],
+    coming: ['Do black holes last for ever?'],
     look: [{ href: '/explore?go=milky-way', text: 'Fly out to the Milky Way', about: 'Our own giant black hole sits at its centre, 27,000 light years from here.' }],
   },
   {
