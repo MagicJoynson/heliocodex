@@ -1,0 +1,9 @@
+title: "Red dwarfs, the commonest stars"
+strand: stars
+order: 12
+summary: "Most stars are small, cool and red, and too faint to see without a telescope. They will still be shining when every star you can see tonight has gone out."
+scene: "A chart of the 60 nearest stars, a real photograph of Proxima Centauri, a drawing to scale of the Sun beside two red dwarfs and Jupiter, a moving chart of how long stars last, a moving drawing of a flare, and a drawing to scale of a red dwarf's planet beside the orbit of Mercury."
+view: { target: neighbourhood }
+terms: [red-dwarf, main-sequence, luminosity, nuclear-fusion, habitable-zone, tidal-locking, exoplanet, white-dwarf]
+needs: [what-a-star-is, the-nearest-stars]
+next: [trappist-1, how-stars-live-and-die]
