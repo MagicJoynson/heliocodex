@@ -2,29 +2,73 @@
 // Every world the site knows, set out by distance from the Sun. Worlds with a full page are written in
 // full; the rest have outline pages built from their measured orbits, marked as outlines.
 import Reading from '../../layouts/Reading.astro';
-import { outlineWorlds, PLANET_PAGES, sunAu, nameOf } from '../../lib/worlds';
-import { allBodies, body } from '../../data/bodies/index';
+import { outlineWorlds, PLANET_PAGES, sunAu, AU_KM } from '../../lib/worlds';
+import { body } from '../../data/bodies/index';
 import { moonCount } from '../../data/moon-counts';
 
 const LO = Math.log10(0.3), HI = Math.log10(700);
-const x = (au: number) => ((Math.log10(Math.min(700, Math.max(0.3, au))) - LO) / (HI - LO)) * 100;
+const f = (au: number) => (Math.log10(Math.min(700, Math.max(0.3, au))) - LO) / (HI - LO);
+const x = (au: number) => f(au) * 100;
 const planets = PLANET_PAGES.filter((p) => p !== 'sun').map((id) => body(id)!);
-const outline = new Set(outlineWorlds.map((b) => b.id));
-const dots = [
-  ...planets.map((b) => ({ id: b.id, name: b.name, au: sunAu(b), href: `/${b.id}`, built: true, kind: 'planet' })),
-  ...outlineWorlds.filter((b) => b.kind !== 'moon').map((b) => ({ id: b.id, name: b.name, au: sunAu(b), href: `/worlds/${b.id}`, built: false, kind: b.kind })),
-];
+const moonsOf = (id: string) => outlineWorlds.filter((b) => b.kind === 'moon' && b.parent === id)
+  .sort((a, b) => ((a.orbit as { aKm: number }).aKm) - ((b.orbit as { aKm: number }).aKm));
+const radius = (b: { meanRadiusKm?: number; radiiKm?: [number, number, number] }) => b.meanRadiusKm ?? (b.radiiKm ? Math.cbrt(b.radiiKm[0] * b.radiiKm[1] * b.radiiKm[2]) : undefined);
+const fmtAu = (a: number) => (a < 10 ? a.toFixed(2) : String(Math.round(a)));
+const P = planets.map((b) => {
+  const a = sunAu(b), r = radius(b) ?? 3000;
+  return { id: b.id, name: b.name.replace(/^The /, ''), a, x: x(a), d: Math.round(6 + Math.sqrt(r) / 16), moons: moonsOf(b.id), known: moonCount(b.id), skip: 0 };
+});
+// a moon list that would run into its neighbour's starts below it instead
+P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && p.x - q.x < 7) p.skip = q.skip + q.moons.length; });
+const LANES = [
+  { kind: 'asteroid', name: 'Asteroids', about: 'rocky and metal worlds' },
+  { kind: 'comet', name: 'Comets', about: 'icy, on stretched paths' },
+  { kind: 'dwarf', name: 'Dwarf planets', about: 'round, but sharing their path' },
+].map((l) => ({
+  ...l,
+  rows: outlineWorlds.filter((b) => b.kind === l.kind).map((b) => {
+    const o = b.orbit as { aKm: number; e: number };
+    const a = o.aKm / AU_KM, q = a * (1 - o.e), Q = a * (1 + o.e), r = radius(b);
+    return { id: b.id, name: b.name, a, q, Q, xa: x(a), xq: x(q), xQ: x(Q), off: Q > 700, d: r ? Math.round(Math.min(12, 4 + Math.sqrt(r) / 3.5)) : 4,
+      moons: moonsOf(b.id), flip: x(Q) > 78 };
+  }).sort((p, q) => p.a - q.a),
+}));
 const ZONES = [
-  { name: 'The inner planets', from: 0.3, to: 1.7, about: 'Four rocky worlds close to the Sun.' },
-  { name: 'The asteroid belt', from: 1.7, to: 4, about: 'Rubble between Mars and Jupiter, and the near-Earth rocks that strayed from it.' },
-  { name: 'The giant planets', from: 4, to: 31, about: 'Four giants and most of the Sun’s moons.' },
-  { name: 'The Kuiper belt', from: 31, to: 100, about: 'Icy worlds past Neptune, among them most of the dwarf planets.' },
-  { name: 'Far out', from: 100, to: 700, about: 'Worlds on long paths that reach far beyond the planets.' },
+  { name: 'Inner planets', from: 0.3, to: 1.7, about: 'Four rocky worlds close to the Sun, and the rocks that cross their paths.' },
+  { name: 'Asteroid belt', from: 1.7, to: 4.5, about: 'Rubble between Mars and Jupiter.' },
+  { name: 'Giant planets', from: 4.5, to: 31, about: 'Four giants and most of the Sun’s moons.' },
+  { name: 'Kuiper belt', from: 31, to: 100, about: 'Icy worlds past Neptune, among them most of the dwarf planets.' },
+  { name: 'Far out', from: 100, to: 700, about: 'Long paths that reach far beyond the planets.' },
 ];
-const inZone = (z: (typeof ZONES)[number]) => dots.filter((d) => d.au >= z.from && d.au < z.to).sort((a, b) => a.au - b.au);
-const moonsOf = (id: string) => outlineWorlds.filter((b) => b.kind === 'moon' && b.parent === id);
 const ticks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
 const built = planets.length + 1, outlines = outlineWorlds.length;
+
+// The phone map runs down the page, the Sun at the top. Marks sit in narrow columns on the left;
+// every name sits in a column on the right at the height of its world, pushed down only as far as
+// it must be to stay clear of the name above, with a thin line back to its mark.
+const VH = 2700, VT = 36, vy = (au: number) => VT + f(au) * VH;
+const LX = 200;
+type VL = { id: string; href: string; name: string; sub?: string; subs?: { id: string; name: string }[]; y: number; mx: number; my: number; out: boolean };
+const vlabels: VL[] = [];
+const vmarks: { kind: string; mx: number; y1: number; y2: number; ya: number; d: number; out: boolean; off?: boolean }[] = [];
+for (const p of P) {
+  vmarks.push({ kind: 'planet', mx: 52, y1: vy(p.a), y2: vy(p.a), ya: vy(p.a), d: p.d, out: false });
+  vlabels.push({ id: p.id, href: `/${p.id}`, name: p.name, subs: p.moons.map((m) => ({ id: m.id, name: m.name })), y: vy(p.a), mx: 52, my: vy(p.a), out: false });
+}
+const COLS: Record<string, [number, number]> = { asteroid: [70, 3], comet: [128, 4], dwarf: [164, 4] };
+for (const l of LANES) l.rows.forEach((r, i) => {
+  const mx = COLS[l.kind][0] + i * COLS[l.kind][1];
+  vmarks.push({ kind: l.kind, mx, y1: vy(r.q), y2: vy(r.Q), ya: vy(r.a), d: Math.max(4, Math.round(r.d * .7)), out: true, off: r.off });
+  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, sub: `${fmtAu(r.q)}–${r.off ? '700+' : fmtAu(r.Q)} au`, subs: r.moons.map((m) => ({ id: m.id, name: m.name })), y: vy(r.a), mx, my: vy(r.a), out: true });
+});
+vlabels.sort((a, b) => a.y - b.y);
+let floor = 0;
+for (const l of vlabels) {
+  const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 5.8 + 6 : 0) > 168 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
+  l.y = Math.max(l.y - 9, floor);
+  floor = l.y + 3 + 17 + (lines - 1) * 14;
+}
+const VTOTAL = Math.max(VT + VH + 30, floor + 20);
 ---
 <Reading title="Every world" path="/worlds" description={`Every world on the site, by distance from the Sun: ${built} with full pages and ${outlines} outline pages still being written.`}>
   <header class="w-head">
@@ -34,35 +78,65 @@ const built = planets.length + 1, outlines = outlineWorlds.length;
     <p class="w-key"><span class="k-built">Written</span> {built} pages <span class="k-out">Outline</span> {outlines} pages</p>
   </header>
 
-  <figure class="w-scale" aria-label="Every world as a dot on a line from the Sun outwards; each step of the scale is a multiple of ten or of two.">
-    <div class="w-line">
-      <a class="w-sun" href="/sun" aria-label="The Sun"></a>
-      {ticks.map((t) => <i style={`--x:${x(t)}`}><b>{t} au</b></i>)}
-      {dots.map((d) => <a href={d.href} class:list={['w-dot', d.kind, { out: !d.built }]} style={`--x:${x(d.au)}`} title={`${d.name}, ${d.au.toFixed(d.au < 10 ? 2 : 0)} au`}><span>{d.built ? d.name : ''}</span></a>)}
+  <figure class="wm" aria-label="A map of every world by its distance from the Sun. Distance runs across on a scale where each step is a multiple; each small body is drawn as a line from the nearest to the farthest point of its path.">
+    <div class="wm-field">
+      {ZONES.map((z, i) => <div class:list={['wm-zone', { alt: i % 2 }]} style={`--a:${x(z.from)};--b:${x(z.to)}`}><span>{z.name}</span></div>)}
+      <div class="wm-ticks" aria-hidden="true">{ticks.map((t) => <i style={`--x:${x(t)}`}><b>{t} au</b></i>)}</div>
+      <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
+      <ol class="wm-planets">
+        {P.map((p) => (
+          <li style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}`}>
+            <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
+            <span class="wp-au">{fmtAu(p.a)} au</span>
+            {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
+          </li>
+        ))}
+      </ol>
+      {LANES.map((l) => (
+        <section class="wm-lane" aria-label={l.name}>
+          <h2 class="lane-h">{l.name} <small>{l.about}</small></h2>
+          <ol>
+            {l.rows.map((r) => (
+              <li class:list={['wr', { flip: r.flip }]} style={`--q:${r.xq};--Q:${r.xQ};--a:${r.xa};--d:${r.d}px`}>
+                <span class:list={['wr-span', { off: r.off }]} aria-hidden="true" />
+                <span class="wr-dot" aria-hidden="true" />
+                <span class="wr-name"><a href={`/worlds/${r.id}`}>{r.name}</a>{r.moons.map((m) => <> · <a class="wr-moon" href={`/worlds/${m.id}`}>{m.name}</a></>)}<small>{fmtAu(r.q)}–{r.off ? '700+' : fmtAu(r.Q)} au</small></span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
     </div>
-    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Solid dots have full pages; hollow ones have outlines.</figcaption>
+
+    <div class="wm-v" style={`--vh:${VTOTAL}px`}>
+      <svg class="wm-vs" width={LX} height={VTOTAL} viewBox={`0 0 ${LX} ${VTOTAL}`} aria-hidden="true">
+        {ZONES.map((z, i) => i % 2 ? <rect x="44" y={vy(z.from)} width={LX - 44} height={vy(z.to) - vy(z.from)} class="vz" /> : null)}
+        <circle cx="52" cy="10" r="14" class="vsun" />
+        <line x1="44" y1={VT} x2="44" y2={VT + VH} class="vax" />
+        {ticks.map((t) => <g><line x1="40" x2="44" y1={vy(t)} y2={vy(t)} class="vax" /><text x="37" y={vy(t) + 3.5} class="vt">{t}</text></g>)}
+        <text x="37" y={VT - 6} class="vt">au</text>
+        {vmarks.map((m) => m.kind === 'planet'
+          ? <circle cx={m.mx} cy={m.ya} r={m.d / 2} class="vp" />
+          : <g class:list={['vm', m.kind]}><line x1={m.mx} x2={m.mx} y1={m.y1} y2={m.off ? VT + VH + 14 : m.y2} />{m.off && <path d={`M${m.mx - 3} ${VT + VH + 8} L${m.mx} ${VT + VH + 14} L${m.mx + 3} ${VT + VH + 8}`} />}<circle cx={m.mx} cy={m.ya} r={m.d / 2} /></g>)}
+        {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 9}, ${LX} ${l.y + 9}`} />)}
+      </svg>
+      <ol class="wm-vl">
+        {vlabels.map((l) => (
+          <li class:list={[{ out: l.out }]} style={`top:${l.y}px`}>
+            <a href={l.href}>{l.name}</a>
+            {l.sub && <small>{l.sub}</small>}
+            {l.subs && l.subs.length > 0 && <span class="vl-moons">{l.out ? 'Moon: ' : 'Moons: '}{l.subs.map((m, i) => <>{i > 0 && ', '}<a href={`/worlds/${m.id}`}>{m.name}</a></>)}</span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Each line runs from the nearest point of a world’s path to the farthest, with the dot at its average distance. Planets are solid and have full pages; everything hollow has an outline page still being written. Sedna’s path runs on past the edge, to about 1,000 au.</figcaption>
   </figure>
 
-  <div class="zones">
-    {ZONES.map((z) => (
-      <section class="zone" style={`--a:${x(z.from)};--b:${x(z.to)}`}>
-        <h2>{z.name}</h2>
-        <p class="z-range">{z.from < 1 ? z.from : Math.round(z.from)} to {z.to} au · {z.about}</p>
-        <ul>
-          {inZone(z).map((d) => (
-            <li class:list={[{ out: !d.built }]}>
-              <a href={d.href}>{d.name}</a>
-              {d.kind === 'planet' && moonCount(d.id) > 0 && (
-                <span class="z-moons">{moonCount(d.id)} known moon{moonCount(d.id) === 1 ? '' : 's'}{moonsOf(d.id).length > 0 && <>; outline{moonsOf(d.id).length === 1 ? '' : 's'} for {moonsOf(d.id).map((m, i) => <>{i > 0 && ', '}<a href={`/worlds/${m.id}`}>{m.name}</a></>)}</>}</span>
-              )}
-              {d.kind === 'dwarf' && moonsOf(d.id).length > 0 && <span class="z-moons">Its moon{moonsOf(d.id).length > 1 ? 's' : ''}: {moonsOf(d.id).map((m, i) => <>{i > 0 && ', '}<a href={`/worlds/${m.id}`}>{m.name}</a></>)}</span>}
-              {!d.built && <span class="z-kind">{d.kind}</span>}
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))}
-  </div>
+  <dl class="wm-key">
+    {ZONES.map((z) => <div><dt>{z.name}</dt><dd>{z.from} to {z.to} au. {z.about}</dd></div>)}
+  </dl>
   <p class="w-more">Further out still, the Oort cloud has no outline page yet; you can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>. Stars have their own pages under <a href="/stars">Stars</a>.</p>
 </Reading>
 
@@ -74,27 +148,67 @@ const built = planets.length + 1, outlines = outlineWorlds.length;
   .k-built, .k-out { font: 400 .64rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; padding: .4rem .55rem; border-radius: 2px; }
   .k-built { background: var(--accent); color: #0b0b0c; }
   .k-out { color: var(--accent); border: 1px dashed var(--accent); }
-  .w-scale { margin: 0 0 clamp(40px, 6vw, 72px); }
-  .w-line { position: relative; height: 7rem; margin: 0 12px 0 28px; border-bottom: 1px solid var(--rule); }
-  .w-sun { position: absolute; left: -26px; bottom: -14px; width: 28px; height: 28px; border-radius: 50%; background: #f6d38e; box-shadow: 0 0 24px rgba(246,211,142,.7); }
-  .w-line i { position: absolute; left: calc(var(--x) * 1%); bottom: -1.6rem; font-style: normal; }
-  .w-line i b { position: absolute; transform: translateX(-50%); font: 400 .62rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; font-weight: 400; }
-  .w-dot { position: absolute; left: calc(var(--x) * 1%); bottom: -5px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: var(--accent); }
-  .w-dot.out { background: #0b0b0c; border: 1px solid rgba(233,196,138,.75); width: 7px; height: 7px; margin-left: -3.5px; bottom: -4px; }
-  .w-dot.planet { width: 13px; height: 13px; margin-left: -6.5px; bottom: -7px; }
-  .w-dot span { position: absolute; bottom: 1.4rem; left: 50%; transform: translateX(-50%) rotate(-40deg); transform-origin: left bottom; font: 400 .95rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
-  .w-dot:hover { background: #ece7dc; }
-  .w-scale figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2.6rem; max-width: 44rem; }
-  .zones { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 2rem; border-top: 1px solid var(--rule); padding-top: 1.6rem; }
-  .zone h2 { font: 400 1.25rem/1.2 var(--r-serif); margin: 0 0 .4rem; }
-  .z-range { font: 300 .88rem/1.45 var(--r-serif); color: var(--ink-faint); margin: 0 0 1rem; }
-  .zone ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
-  .zone li > a { font: 400 1.04rem/1.3 var(--r-serif); text-decoration: none; }
-  .zone li.out > a { color: var(--ink-soft); border-bottom: 1px dashed rgba(233,196,138,.45); }
-  .z-moons { display: block; font: 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .2rem; }
-  .z-moons a { color: var(--ink-soft); }
-  .z-kind { margin-left: .4rem; font: 400 .58rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
-  .w-more { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2.4rem; }
-  @media (max-width: 1100px) { .zones { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 700px) { .zones { grid-template-columns: minmax(0, 1fr); } .w-dot span { display: none; } .w-line { height: 3rem; } .w-line i:nth-child(odd) b { display: none; } }
+  .wm { margin: 0 0 clamp(32px, 5vw, 56px); }
+  .wm a { text-decoration: none; }
+  .wm-field { position: relative; margin: 0 7rem 0 2.2rem; padding: 3.6rem 0 1rem; }
+  .wm-zone { position: absolute; top: 0; bottom: 0; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); border-left: 1px solid rgba(236,231,220,.07); }
+  .wm-zone.alt { background: rgba(236,231,220,.025); }
+  .wm-zone span { position: absolute; top: 0; left: .5rem; font: 400 .66rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
+  .wm-ticks { position: absolute; top: 1.6rem; left: 0; right: 0; }
+  .wm-ticks i { position: absolute; left: calc(var(--x) * 1%); font-style: normal; }
+  .wm-ticks b { position: absolute; transform: translateX(-50%); font: 400 .66rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; font-weight: 400; }
+  .wm-ticks i::after { content: ''; position: absolute; top: 1.1rem; left: 0; width: 1px; height: .4rem; background: var(--rule); }
+  .wm-sun { position: absolute; left: -2.2rem; top: 5.2rem; width: 34px; height: 34px; border-radius: 50%; background: #f6d38e; box-shadow: 0 0 28px rgba(246,211,142,.6); }
+  .wm-planets { list-style: none; margin: 0; padding: 0; position: relative; height: 12.5rem; }
+  .wm-planets > li { position: absolute; left: calc(var(--x) * 1%); top: 2.2rem; }
+  .wp-dot { position: absolute; left: calc(var(--d) / -2); top: calc(var(--d) / -2); width: var(--d); height: var(--d); border-radius: 50%; background: var(--accent); }
+  .wp-dot span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(-50%); font: 400 1rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
+  .wp-au { position: absolute; top: calc(var(--d) / 2 + .3rem); left: 0; transform: translateX(-50%); font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
+  .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: .1rem; padding-top: calc(var(--skip) * 1.06rem); }
+  .wp-moons a { display: flex; align-items: center; gap: .35rem; font: 400 .8rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
+  .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
+  .wm-lane { position: relative; margin-top: 1rem; }
+  .lane-h { font: 400 .7rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 .5rem -2.2rem; }
+  .lane-h small { font: 300 .9rem/1 var(--r-serif); letter-spacing: 0; text-transform: none; color: var(--ink-faint); margin-left: .5rem; }
+  .wm-lane ol { list-style: none; margin: 0; padding: 0; }
+  .wr { position: relative; height: 1.3rem; }
+  .wr-span { position: absolute; top: 50%; left: calc(var(--q) * 1%); width: calc((var(--Q) - var(--q)) * 1%); height: 1px; background: rgba(233,196,138,.45); }
+  .wr-span.off { width: calc((100 - var(--q)) * 1% + 1.2rem); background: linear-gradient(90deg, rgba(233,196,138,.45) 85%, transparent); }
+  .wr-span::before, .wr-span::after { content: ''; position: absolute; top: -3px; width: 1px; height: 7px; background: rgba(233,196,138,.45); }
+  .wr-span::before { left: 0; } .wr-span::after { right: 0; } .wr-span.off::after { display: none; }
+  .wr-dot { position: absolute; top: 50%; left: calc(var(--a) * 1%); width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); border-radius: 50%; background: #0b0b0c; border: 1px solid rgba(233,196,138,.9); box-sizing: border-box; }
+  .wr-name { position: absolute; top: 50%; left: calc(var(--Q) * 1% + .5rem); transform: translateY(-50%); white-space: nowrap; font: 400 .92rem/1 var(--r-serif); }
+  .wr.flip .wr-name { left: auto; right: calc((100 - var(--q)) * 1% + .5rem); }
+  .wr-name a { color: var(--ink); border-bottom: 1px dashed rgba(233,196,138,.4); }
+  .wr-name a.wr-moon { color: var(--ink-soft); font-size: .82rem; }
+  .wr-name small { margin-left: .45rem; font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); }
+  .wr:hover .wr-span, .wr:focus-within .wr-span { background: var(--accent); }
+  .wr:hover .wr-dot, .wr:focus-within .wr-dot { background: var(--accent); }
+  .wm figcaption { font: 300 .92rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 1.6rem; max-width: 46rem; }
+  .wm-key { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.4rem; margin: 0; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+  .wm-key dt { font: 400 1rem/1.2 var(--r-serif); color: var(--ink); }
+  .wm-key dd { margin: .3rem 0 0; font: 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); }
+  .w-more { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; }
+  .wm-v { display: none; }
+  @media (max-width: 860px) {
+    .wm-field { display: none; }
+    .wm-v { display: block; position: relative; height: var(--vh); }
+    .wm-vs { position: absolute; left: 0; top: 0; overflow: visible; }
+    .vz { fill: rgba(236,231,220,.035); }
+    .vsun { fill: #f6d38e; }
+    .vax { stroke: rgba(236,231,220,.25); stroke-width: 1; }
+    .vt { font: 400 10px var(--r-mono); fill: var(--ink-faint); text-anchor: end; }
+    .vp { fill: var(--accent); }
+    .vm line, .vm path { stroke: rgba(233,196,138,.55); stroke-width: 1; fill: none; }
+    .vm circle { fill: #0b0b0c; stroke: rgba(233,196,138,.9); stroke-width: 1; }
+    .vlead { fill: none; stroke: rgba(236,231,220,.16); stroke-width: .8; }
+    .wm-vl { list-style: none; margin: 0; padding: 0; position: absolute; left: 200px; right: 0; top: 0; }
+    .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/17px var(--r-serif); }
+    .wm-vl li > a { color: var(--ink); }
+    .wm-vl li.out > a { text-decoration: underline dashed rgba(233,196,138,.5); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+    .wm-vl small { margin-left: .4rem; font: 400 .58rem/14px var(--r-mono); color: var(--ink-faint); }
+    .wm-vl .vl-moons { display: block; font: 300 .8rem/14px var(--r-serif); color: var(--ink-faint); }
+    .wm-vl .vl-moons a { color: var(--ink-soft); }
+    .wm-key { grid-template-columns: minmax(0, 1fr); }
+  }
 </style>

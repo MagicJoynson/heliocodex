@@ -23,7 +23,20 @@ const px = (y: number) => ((y - P0) / (P1 - P0)) * 100;
 const people = [...PEOPLE].sort((a, b) => a.born - b.born);
 // telescopes: mirrors to scale against each other
 const most = Math.max(...TELESCOPES.map((t) => t.metres));
-const scopes = [...TELESCOPES].sort((a, b) => a.metres - b.metres);
+const scopes = [...TELESCOPES].sort((a, b) => b.metres - a.metres);
+// every mirror drawn as a circle sitting in the same corner, so the sizes read in one look; names to the
+// right at the height of each circle's top, pushed down only as far as they must be to stay clear
+const nest = (S: number, gap: number) => {
+  let floor = -Infinity;
+  const items = scopes.map((t) => {
+    const r = (t.metres / most) * S / 2, top = S - 2 * r + 4 + 18;
+    const y = Math.max(top + 4, floor);
+    floor = y + gap;
+    return { ...t, r, top, y };
+  });
+  return { S, items, H: Math.max(S + 26, floor) + 8 };
+};
+const NESTS = [{ cls: 'wide', W: 720, LX: 400, ...nest(340, 40) }, { cls: 'narrow', W: 358, LX: 168, ...nest(150, 36) }];
 ---
 <Reading title="Discovery" path="/discovery" description="The missions, people and telescopes behind what we know. Outline: each will get its own page.">
   <header class="d-head">
@@ -55,15 +68,20 @@ const scopes = [...TELESCOPES].sort((a, b) => a.metres - b.metres);
 
   <section class="d-part" aria-labelledby="t-h">
     <h2 id="t-h">Telescopes, by the width of their main mirror</h2>
-    <div class="t-row">
-      {scopes.map((t) => (
-        <figure class="t-scope" style={`--d:${(t.metres / most) * 100}`}>
-          <span class:list={['t-disc', t.kind]} />
-          <figcaption><em>{t.name}</em><small>{t.metres} m{t.year ? ` · ${t.kind === 'space' ? 'launched' : 'first light'} ${t.year}` : ' · being built'}</small></figcaption>
-        </figure>
-      ))}
-    </div>
-    <p class="t-note">Circles to scale against one another. Gold: on the ground; blue: in space.</p>
+    {NESTS.map((n) => (
+      <svg class:list={['t-nest', n.cls]} width={n.W} height={n.H} viewBox={`0 0 ${n.W} ${n.H}`} role="img" aria-label="The main mirrors of eight telescopes as circles to one scale, all set in the same corner.">
+        <line x1="0" y1={n.S + 22} x2={n.S + 20} y2={n.S + 22} class="t-base" />
+        {n.items.map((t) => <circle cx={t.r} cy={n.S + 22 - t.r} r={Math.max(1.5, t.r)} class:list={['t-c', t.kind]} />)}
+        {n.items.map((t) => <path d={`M${t.r} ${t.top - 4} L${t.r + 6} ${t.top - 4} C ${n.LX - 30} ${t.top - 4}, ${n.LX - 40} ${t.y - 4}, ${n.LX - 6} ${t.y - 4}`} class="t-lead" />)}
+        {n.items.map((t) => (
+          <g>
+            <text x={n.LX} y={t.y} class="t-name">{t.name}</text>
+            <text x={n.LX} y={t.y + 15} class="t-sub">{t.metres} m{t.year ? ` · ${t.kind === 'space' ? 'launched' : 'first light'} ${t.year}` : ' · being built'}</text>
+          </g>
+        ))}
+      </svg>
+    ))}
+    <p class="t-note">Circles to scale against one another, all set in the same corner. Gold: on the ground; blue: in space.</p>
   </section>
 </Reading>
 
@@ -88,12 +106,16 @@ const scopes = [...TELESCOPES].sort((a, b) => a.metres - b.metres);
   .p-name { position: absolute; left: calc(var(--b) * 1% + .6rem); top: .1rem; font: 400 .98rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
   .p-years { position: absolute; left: calc(var(--a) * 1% + .4rem); top: .4rem; font: 400 .6rem/1.2 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
   .p-row.flip .p-name { left: auto; right: calc(100% - var(--a) * 1% + .6rem); }
-  .t-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.6rem 2.2rem; }
-  .t-scope { margin: 0; display: grid; justify-items: center; gap: .7rem; width: min(100%, max(7rem, calc(var(--d) * .28rem + 4rem))); text-align: center; }
-  .t-disc { display: block; width: min(calc(100vw - 4rem), max(4px, calc(var(--d) * .28rem))); aspect-ratio: 1; border-radius: 50%; border: 1px dashed rgba(233,196,138,.8); background: rgba(233,196,138,.08); }
-  .t-disc.space { border-color: rgba(142,174,255,.8); background: rgba(142,174,255,.08); }
-  .t-scope em { display: block; font: 400 .98rem/1.2 var(--r-serif); font-style: normal; color: var(--ink-soft); }
-  .t-scope small { display: block; font: 400 .62rem/1.3 var(--r-mono); color: var(--ink-faint); margin-top: .2rem; }
+  .t-nest { display: block; max-width: 100%; height: auto; overflow: visible; }
+  .t-nest.narrow { display: none; }
+  .t-base { stroke: var(--rule); }
+  .t-c { fill: rgba(233,196,138,.06); stroke: rgba(233,196,138,.8); stroke-dasharray: 3 3; }
+  .t-c.space { fill: rgba(142,174,255,.08); stroke: rgba(142,174,255,.85); }
+  .t-lead { fill: none; stroke: rgba(236,231,220,.2); }
+  .t-name { font: 400 17px var(--r-serif); fill: var(--ink-soft); }
+  .t-sub { font: 400 11px var(--r-mono); fill: var(--ink-faint); }
+  .narrow .t-name { font-size: 14px; }
+  @media (max-width: 760px) { .t-nest.wide { display: none; } .t-nest.narrow { display: block; } }
   .t-note { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 1.4rem; }
   @media (max-width: 760px) {
     .m-line { height: auto; border-top: 0; display: grid; gap: .8rem; }

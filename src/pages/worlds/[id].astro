@@ -35,14 +35,37 @@ const rows: [string, string][] = [
   ...(b.densityGcm3 ? [['Density', `${fmt(b.densityGcm3, 2)} times water`] as [string, string]] : []),
   ...(b.discovered ? [['Found', `${b.discovered.year}, by ${b.discovered.by}`] as [string, string]] : []),
 ];
-// the drawing: the path to scale, centred on what it goes round. A parent disc is drawn to the same scale
-// where it would be visible, and a ring for the Earth's path is added round the Sun for comparison.
-const S = 260, cx = 300, cy = 300;
-const far = o.aKm * (1 + o.e);
-const scale = S / Math.max(far, round ? AU_KM * 1.2 : 0);
-const rx = o.aKm * scale, ry = rx * Math.sqrt(1 - o.e * o.e), shift = o.aKm * o.e * scale;
-const parentR = parent && parent.meanRadiusKm ? Math.max(3, parent.meanRadiusKm * scale) : 6;
-const earthR = AU_KM * scale;
+// the drawing: the path to scale and filling its frame, with what it goes round at one focus. Round the Sun,
+// the planets' paths that fit inside it are drawn as faint named rings; round a planet, its disc to scale.
+const W = 600, PAD = 34;
+const Q = o.aKm * (1 + o.e), q = o.aKm * (1 - o.e), bKm = o.aKm * Math.sqrt(1 - o.e * o.e);
+const pR = !round && parent?.meanRadiusKm ? parent.meanRadiusKm : 0;
+const spanKm = Q + Math.max(q, pR);
+const k = (W - 2 * PAD) / spanKm;
+const H = Math.round(Math.min(W, Math.max(230, 2 * Math.max(bKm, pR) * k + 2 * PAD + 20)));
+const fx = PAD + Q * k, fy = H / 2; // the focus: the Sun or the parent
+const ecx = fx - o.aKm * o.e * k, erx = o.aKm * k, ery = bKm * k;
+const PLANET_AU: [string, number][] = [['Mercury', 0.387], ['Venus', 0.723], ['Earth', 1], ['Mars', 1.524], ['Jupiter', 5.203], ['Saturn', 9.537], ['Uranus', 19.19], ['Neptune', 30.07]];
+const rings = round ? PLANET_AU.filter(([, au]) => au * AU_KM <= Q * 1.02).map(([name, au]) => ({ name, r: au * AU_KM * k, crosses: au * AU_KM > q })) : [];
+// each ring is named just below the comet's or asteroid's own path, where nothing else is drawn
+const ly = fy + ery + 16;
+let lastX = -Infinity;
+const ringLabels = [...rings].sort((m, n) => n.r - m.r).filter((g) => g.r > ery + 18 && ly < H - 4).map((g) => ({ ...g, x: fx - Math.sqrt(g.r * g.r - (ly - fy) ** 2) }))
+  .filter((g) => { const w = g.name.length * 7.4 + 10; if (g.x - w / 2 < 2 || g.x - w / 2 < lastX) return false; lastX = g.x + w / 2; return true; });
+const crossed = rings.filter((g) => g.crosses).map((g) => g.name);
+const and = (l: string[]) => l.map((n) => (n === 'Earth' ? 'the Earth' : n)).join(', ').replace(/, ([^,]*)$/, ' and $1');
+const pDraw = pR * k;
+// size drawing for moons: the moon beside our Moon, and the edge of its planet, all to one scale
+const isMoon = b.kind === 'moon' && !!b.meanRadiusKm;
+const rMe = b.meanRadiusKm ?? 0;
+const cmp = b.id === 'moon' ? null : MOON_KM;
+const sk = 70 / Math.max(rMe, cmp ?? 0, b.id === 'moon' ? MOON_KM : 0);
+const SH = 230, scy = 100;
+const parR = (parent?.meanRadiusKm ?? 0) * sk;
+const parEdge = parR > 150 ? 150 : 30 + 2 * parR;
+const parCx = parEdge - parR;
+const meR = Math.max(1.2, rMe * sk), meCx = parEdge + 50 + meR;
+const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 ---
 <Reading title={b.name} path={`/worlds/${b.id}`} description={`${kindLine}. ${outSays}. Outline page: being written.`}>
   <article class="world-outline">
@@ -53,14 +76,20 @@ const earthR = AU_KM * scale;
     </header>
     <div class="wo-body">
       <figure class="wo-orbit">
-        <svg viewBox="0 0 600 600" role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
-          {round && <circle cx={cx} cy={cy} r={earthR} class="ref" />}
-          {round && <text x={cx} y={cy - earthR - 8} class="ref-t" text-anchor="middle">The Earth’s path</text>}
-          <circle cx={cx} cy={cy} r={round ? 7 : parentR} class:list={['centre', { sun: round }]} />
-          <ellipse cx={cx - shift} cy={cy} rx={rx} ry={ry} class="path" />
-          <circle cx={cx - shift + rx} cy={cy} r="6" class="me" />
+        <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
+          <defs><clipPath id="frame"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
+          <g clip-path="url(#frame)">
+            {rings.map((g) => <circle cx={fx} cy={fy} r={g.r} class:list={['ring', { crossed: g.crosses }]} />)}
+            {!round && pDraw > 0 && <circle cx={fx} cy={fy} r={Math.max(3, pDraw)} class="centre" />}
+          </g>
+          {ringLabels.map((g) => <text x={g.x} y={ly + 4} class="ring-t">{g.name}</text>)}
+          <ellipse cx={ecx} cy={fy} rx={erx} ry={ery} class="path" />
+          {round && <circle cx={fx} cy={fy} r="6" class="centre sun" />}
+          {round && <text x={fx} y={fy + 22} class="foc-t" text-anchor="middle">Sun</text>}
+          {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 18} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
+          <circle cx={ecx + erx} cy={fy} r="5" class="me" />
         </svg>
-        <figcaption>The path of {b.name} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale{round ? ', with the Earth’s path for comparison' : ''}. Orbit from {b.sources[0]?.label}.</figcaption>
+        <figcaption>The path of {b.name} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && <> The faint rings are the paths of {and(rings.map((g) => g.name))}{crossed.length > 0 && <>; it crosses {crossed.length === 1 ? 'the path' : 'the paths'} of {and(crossed)}</>}.</>} Orbit from {b.sources[0]?.label}.</figcaption>
       </figure>
       <div class="wo-facts">
         <dl>{rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}</dl>
@@ -70,6 +99,20 @@ const earthR = AU_KM * scale;
           {chart && <a href={chart}>On the atlas</a>}
           <a href={`/explore?go=${b.id}`}>In 3D</a>
         </p>
+        {isMoon && (
+          <figure class="wo-size">
+            <svg viewBox={`0 0 600 ${SH}`} role="img" aria-label={`${b.name} drawn to scale beside ${cmp ? 'our Moon and ' : ''}the edge of ${nameOf(b.parent)}`}>
+              <defs><clipPath id="sframe"><rect x="0" y="0" width="600" height={SH} /></clipPath><radialGradient id="shade" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient></defs>
+              <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />
+              <circle cx={meCx} cy={scy} r={meR} fill="url(#shade)" />
+              {cmp && <circle cx={moonCx} cy={scy} r={moonR} class="s-moon" />}
+              <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `The edge of ${nameOf(b.parent)}` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
+              <text x={meCx} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
+              {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
+            </svg>
+            <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.</figcaption>
+          </figure>
+        )}
       </div>
     </div>
     <section class="wo-todo" aria-labelledby="todo-h">
@@ -88,12 +131,20 @@ const earthR = AU_KM * scale;
   .wo-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
   .wo-orbit { margin: 0; }
   .wo-orbit svg { width: 100%; height: auto; display: block; }
-  .wo-orbit .ref { fill: none; stroke: rgba(142,174,255,.35); stroke-dasharray: 3 6; }
-  .wo-orbit .ref-t { font: 400 13px var(--r-mono); fill: rgba(142,174,255,.7); }
+  .wo-orbit .ring { fill: none; stroke: rgba(142,174,255,.18); }
+  .wo-orbit .ring.crossed { stroke: rgba(142,174,255,.38); stroke-dasharray: 2 5; }
+  .wo-orbit .ring-t { font: 400 12px var(--r-mono); fill: rgba(142,174,255,.8); text-anchor: middle; paint-order: stroke; stroke: #0b0b0c; stroke-width: 4px; }
+  .wo-orbit .foc-t, .wo-orbit .me-t { font: 400 12px var(--r-mono); fill: var(--ink-faint); }
   .wo-orbit .centre { fill: #c4bdaf; } .wo-orbit .centre.sun { fill: #f6d38e; filter: drop-shadow(0 0 6px rgba(246,211,142,.8)); }
   .wo-orbit .path { fill: none; stroke: var(--accent); stroke-width: 1.5; }
   .wo-orbit .me { fill: #ece7dc; }
-  .wo-orbit figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
+  .wo-size { margin: 2rem 0 0; }
+  .wo-size svg { width: 100%; height: auto; display: block; }
+  .wo-size .s-par { fill: #2a2722; stroke: rgba(233,196,138,.45); }
+  .wo-size .s-moon { fill: none; stroke: rgba(236,231,220,.55); stroke-dasharray: 3 4; }
+  .wo-size .s-t { font: 400 14px var(--r-mono); fill: var(--ink-faint); }
+  .wo-size .s-t.me { fill: var(--ink); }
+  .wo-size figcaption, .wo-orbit figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
   .wo-facts dl { margin: 0; }
   .wo-facts dl div { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 1rem; padding: .7rem 0; border-top: 1px solid var(--rule); }
   .wo-facts dt { font: 400 .68rem/1.7 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }

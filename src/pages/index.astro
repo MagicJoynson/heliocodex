@@ -94,7 +94,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
             <li style={`--x:${p.x};--d:${p.d}px;--iw:${p.iw}px;--ih:${p.ih}px`}>
               <a href={`/${p.slug}`}>
                 <span class="o-name">{p.name.replace('The ', '')}</span>
-                <span class="o-disc"><img src={p.src} alt="" width={p.width} height={p.height} loading="lazy" /></span>
+                <span class="o-disc"><img src={`/img/bodies/cut/${p.slug}.webp`} alt="" width={p.width} height={p.height} loading="lazy" /></span>
                 <span class="o-dist">{p.a.toFixed(p.a < 2 ? 2 : 1)} au</span>
                 <span class="o-light">{p.light}</span>
                 <span class="o-tag">{tagline[p.slug]}</span>
@@ -221,7 +221,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
   .out a { display: grid; grid-template-rows: 1fr 4.4rem 1fr; justify-items: center; height: 100%; text-decoration: none; color: var(--ink); }
   .o-name { align-self: end; font: 400 1.05rem/1.2 var(--r-serif); padding-bottom: .7rem; white-space: nowrap; }
   .o-disc { display: grid; place-items: center; width: var(--d); height: 4.4rem; }
-  .o-disc img { width: var(--iw); height: var(--ih); max-width: none; mix-blend-mode: lighten; transition: transform .4s ease; }
+  .o-disc img { width: var(--iw); height: var(--ih); max-width: none; transition: transform .4s ease; }
   .o-dist { align-self: start; padding-top: .7rem; font: 400 .7rem/1.4 var(--r-mono); letter-spacing: .06em; color: var(--ink-soft); white-space: nowrap; }
   .o-light, .o-tag { display: none; }
   .out a:hover .o-name { color: var(--accent); }
