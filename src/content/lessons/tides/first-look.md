@@ -10,6 +10,11 @@ The Moon's gravity pulls on the whole Earth, but not evenly. The side of the Ear
 That uneven pull stretches the Earth slightly along the line towards the Moon. The oceans, which are free to move, pile up into two bulges: one facing the Moon and one on the opposite side.
 
 <figure class="photo">
+  <img src="/img/learn/charts/the-two-tidal-bulges.svg" alt="A drawing of the Earth with a layer of sea stretched into an oval, longest along the line towards the Moon on the right. Arrows show the Moon's pull: longest on the near side, shorter at the centre, shortest on the far side." width="1100" height="560" loading="lazy" />
+  <figcaption><b>A drawing.</b> Why there are two high tides and not one. The Moon pulls the near side of the Earth hardest, the centre less and the far side least. Seen from the Earth's centre, the near water is pulled away towards the Moon and the far water is left behind, so the sea is stretched both ways. The bulges are drawn thousands of times too tall: in open ocean they are well under a metre high.</figcaption>
+</figure>
+
+<figure class="photo">
   <img src="/img/learn/bay-of-fundy-tides-aster.jpg" alt="Two satellite pictures of the same bay, one above the other. In the top one the bay is full of purple water. In the bottom one most of it is bare mud and sand with winding channels." width="693" height="1100" loading="lazy" />
   <figcaption><b>Two satellite pictures, with chosen colours.</b> The same place at high tide (top) and low tide (bottom): the Minas Basin in the Bay of Fundy, Canada, where the sea can rise and fall by 16 metres, the greatest range on Earth. Each picture is 16.5 km across. Taken by NASA's Terra satellite on 20 April 2001 and 30 September 2002. Credit: NASA/GSFC/METI/ERSDAC/JAROS and the U.S./Japan ASTER Science Team.</figcaption>
 </figure>

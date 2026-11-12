@@ -8,6 +8,11 @@ Half of the Moon is always lit by the Sun, just as half of the Earth is always i
 
 The Moon goes round the Earth about once a month. When it is on the Sun's side of us, the lit half faces away and we see nothing: new Moon. A week later we see it side-on, half lit and half dark. A week after that it is on the far side of us from the Sun, with its whole lit face towards us: full Moon. Then the same in reverse.
 
+<figure class="photo">
+  <img src="/img/learn/charts/phases-of-the-moon.svg" alt="A drawing with the Earth in the middle and sunlight coming from the left. An inner ring shows the Moon at eight places round the Earth, always lit on the side facing the Sun. An outer ring shows how the Moon looks from the Earth at each place: dark at new Moon, a growing crescent, half, nearly full, full, and back again." width="1100" height="800" loading="lazy" />
+  <figcaption><b>A drawing.</b> Inner ring: the Moon at eight points in its month, seen from far above the North Pole. Its sunward half is always lit. Outer ring: how it looks from the Earth at each point, as seen from Britain; from Australia the pictures are the other way up. Not to scale.</figcaption>
+</figure>
+
 The dark part is not the Earth's shadow. It is simply the Moon's own night side.
 
 The Earth's shadow does reach the Moon now and then, and that is an eclipse of the Moon. It is rare because the Moon's path is slightly tilted, so most months the Moon passes just above or below the shadow.
@@ -19,6 +24,11 @@ The Earth's shadow does reach the Moon now and then, and that is an eclipse of t
 </figure>
 
 Now and then the Moon passes exactly between us and the Sun, and hides it. That is an eclipse of the Sun. For a few minutes the day goes dark, and the Sun's thin outer glow, which is always there but drowned by daylight, stands out round the black Moon.
+
+<figure class="photo">
+  <img src="/img/learn/charts/eclipses-in-line.svg" alt="Two drawings. In the top one the Earth sits between the Sun and the Moon, and the Moon, dark red, lies inside the long cone of the Earth's shadow. In the bottom one the Moon sits between the Sun and the Earth, and the point of its much smaller shadow just touches the Earth." width="1100" height="760" loading="lazy" />
+  <figcaption><b>A drawing.</b> The two kinds of eclipse. The faint gold lines are sunlight grazing the edges, which is what fixes the shape of each shadow. The Earth's shadow is wide enough to swallow the whole Moon, so everyone on the night side sees an eclipse of the Moon. The Moon's shadow only just reaches the Earth, so an eclipse of the Sun is total only along a narrow track. Not to scale: the real Sun is about 400 times further off than the Moon, and about 400 times as wide.</figcaption>
+</figure>
 
 
 <figure class="photo">
