@@ -68,11 +68,11 @@ export const PACKS: Pack[] = [
       { title: 'What a star is', about: 'Begin with the one star we can see close up.', lessons: ['what-the-sun-is', 'what-a-star-is', 'how-the-sun-shines'] },
       { title: 'Reading a star', about: 'Colour, brightness and distance: how anything is known about a point of light.', lessons: ['colour-and-brightness', 'reading-starlight', 'measuring-distance'] },
       { title: 'The stars round us', about: 'The neighbours, the ones you can see, and the company they keep.', lessons: ['the-nearest-stars', 'red-dwarfs', 'brown-dwarfs', 'the-stars-you-can-see', 'double-and-multiple-stars', 'stars-that-change', 'star-clusters'] },
-      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
+      { title: 'Birth, life and death', about: 'From a cold cloud to whatever is left at the end.', lessons: ['nebulae-and-star-birth', 'how-stars-live-and-die', 'giants-and-supergiants', 'supernovae', 'white-dwarfs', 'neutron-stars-and-pulsars', 'what-a-black-hole-is'] },
       { title: 'What stars leave us', about: 'Almost every atom heavier than helium was made by a star.', lessons: ['where-the-elements-come-from'] },
       { title: 'Stars as measuring sticks', about: 'How certain stars give the distances to other galaxies.', lessons: ['the-distance-ladder'] },
     ],
-    coming: ['Giants and supergiants'],
+    coming: [],
     look: [{ href: '/stars', text: 'Meet a star', about: 'A page for every star you can see without a telescope, with its distance, colour and place in your sky.' }, { href: '/sky', text: 'Tonight’s sky', about: 'Find the stars from these lessons over your own horizon.' }],
   },
   {
