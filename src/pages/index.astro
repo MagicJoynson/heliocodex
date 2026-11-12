@@ -13,12 +13,12 @@ const jupiterKm = portraits.find((p) => p.slug === 'jupiter')!.km;
 const strip = portraits.map((p) => ({ ...p, h: (p.km / jupiterKm) / p.disc, w: (p.km / jupiterKm) / p.disc * (p.width / p.height) }));
 const sun = strip[0];
 const worlds = strip.slice(1);
-const packs = PACKS.slice(0, 3);
+const packs = PACKS.slice(0, 4);
 const elsewhere = [
-  { href: '/sky', label: 'Tonight’s sky', about: 'A live map of what is above you right now, wherever you are, with every planet and bright star named.' },
-  { href: '/stars', label: 'Meet a star', about: 'All 8,770 stars you can see by eye, each with its own page, and the one whose light set out when you were born.' },
-  { href: '/atlas', label: 'The atlas', about: 'Flat charts of everything in the 3D view, drawn to scale and good enough to print.' },
-  { href: '/glossary', label: 'Glossary', about: 'Every word on the site, explained plainly in a line or two.' },
+  { href: '/sky', img: '/img/home/sky.jpg', label: 'Tonight’s sky', about: 'A live map of what is above you right now, wherever you are, with every planet and bright star named.' },
+  { href: '/stars', img: '/img/learn/omega-centauri-hubble.jpg', label: 'Meet a star', about: 'All 8,770 stars you can see by eye, each with its own page, and the one whose light set out when you were born.' },
+  { href: '/atlas', img: '/img/home/atlas.jpg', label: 'The atlas', about: 'Flat charts of everything in the 3D view, drawn to scale and good enough to print.' },
+  { href: '/glossary', img: '', label: 'Glossary', about: 'Every word on the site, explained plainly in a line or two.' },
 ];
 ---
 <Base title="Heliocodex" path="/" description="The Sun, its planets and everything beyond, from real photographs and real measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
@@ -59,30 +59,28 @@ const elsewhere = [
   </section>
 
   <div class="reading home">
-    <section class="row">
-      <div class="hang">
-        <h2>Explore in 3D</h2>
-        <p class="note">Works on a phone. Calm by default, with a minimap and big zoom buttons.</p>
-      </div>
-      <div>
-        <a class="shot" href="/explore">
-          <img src="/img/home/explore.jpg" alt="The 3D view: Mars close up against black space, with a small round map of the planets’ orbits in the corner and zoom buttons at the side." width="1280" height="720" loading="lazy" />
-        </a>
-        <p class="body">Every planet and its main moons where they are today, worked out from NASA’s orbital data. Click a world to glide to it, zoom out past the stars to the Milky Way and the cosmic web, or switch on <em>easier to see</em> to make the planets large enough to spot. Walk on a stretch of Mars made from its real colour map.</p>
-        <p class="go"><a href="/explore">Enter the 3D solar system</a></p>
+    <section class="row wide feature">
+      <a class="shot" href="/explore">
+        <img src="/img/home/explore.jpg" alt="The 3D view: Mars close up against black space, with a small round map of the planets’ orbits in the corner and zoom buttons at the side." width="1280" height="720" loading="lazy" />
+      </a>
+      <div class="feature-words">
+        <p class="label">Explore in 3D</p>
+        <h2>The whole Solar System, where it is today</h2>
+        <p class="body">Every planet and its main moons in their real places, worked out from NASA’s orbital data. Click a world to glide to it, zoom out past the stars to the Milky Way and the cosmic web, or switch on <em>easier to see</em> to make the planets large enough to spot. Works on a phone.</p>
+        <p class="go"><a class="btn" href="/explore">Enter the 3D solar system</a></p>
       </div>
     </section>
 
-    <section class="row">
+    <section class="row wide">
       <div class="hang">
         <h2>The planets</h2>
-        <p class="note">One page each, with a fall from orbit to the ground.</p>
+        <a class="more" href="/bodies">All planets, with their numbers</a>
       </div>
       <ul class="plain-list planet-grid">
         {strip.map((p) => (
           <li>
             <a href={`/${p.slug}`}>
-              <span class="disc"><img src={p.src} alt="" width={p.width} height={p.height} loading="lazy" style={`height:${(78 / p.disc).toFixed(1)}%`} /></span>
+              <span class="disc"><img src={p.src} alt="" width={p.width} height={p.height} loading="lazy" style={`--s:${p.slug === 'saturn' ? 1 : (0.78 / p.disc).toFixed(3)}`} /></span>
               <span class="pname">{p.name}</span>
               <span class="ptag">{tagline[p.slug]}</span>
             </a>
@@ -91,31 +89,40 @@ const elsewhere = [
       </ul>
     </section>
 
-    <section class="row">
+    <section class="row wide">
       <div class="hang">
         <h2>Learn</h2>
-        <p class="note">{lessons.length} short lessons, each with real pictures and a deeper level beneath.</p>
+        <a class="more" href="/learn">All {lessons.length} lessons, by subject</a>
       </div>
-      <div>
-        <ul class="plain-list pack-list">
-          {packs.map((p) => (
-            <li>
-              <a href={`/learn/packs/${p.id}`}><img src={p.photo.src} alt="" width={p.photo.width} height={p.photo.height} loading="lazy" /><span>{p.name}</span></a>
-              <p>{packLessons(p).length} lessons. {p.blurb}</p>
-            </li>
-          ))}
-        </ul>
-        <p class="go"><a href="/learn">Every lesson, by subject</a></p>
-      </div>
+      <ul class="cards">
+        {packs.map((p) => (
+          <li>
+            <a href={`/learn/packs/${p.id}`}>
+              <span class="pic"><img src={p.photo.src} alt="" width={p.photo.width} height={p.photo.height} loading="lazy" /></span>
+              <span class="kicker">{packLessons(p).length} lessons</span>
+              <span class="name">{p.name}</span>
+              <p class="line">{p.blurb}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
     </section>
 
-    <section class="row">
+    <section class="row wide">
       <div class="hang">
         <h2>Look up</h2>
-        <p class="note">For the sky over your own head.</p>
+        <p class="note">For the sky over your own head, and for looking things up.</p>
       </div>
-      <ul class="plain-list elsewhere">
-        {elsewhere.map((e) => <li><a href={e.href}>{e.label}</a><p>{e.about}</p></li>)}
+      <ul class="cards" style="--card-min: 14rem">
+        {elsewhere.map((e) => (
+          <li>
+            <a href={e.href}>
+              <span class="pic">{e.img ? <img src={e.img} alt="" width="1280" height="800" loading="lazy" /> : <span class="pic-type">A to Z</span>}</span>
+              <span class="name">{e.label}</span>
+              <p class="line">{e.about}</p>
+            </a>
+          </li>
+        ))}
       </ul>
     </section>
   </div>
@@ -166,34 +173,29 @@ const elsewhere = [
     .worlds span { font-size: .56rem; }
   }
 
-  .home { padding-top: clamp(40px, 6vw, 80px); }
-  .shot { display: block; border: 1px solid rgba(236,231,220,.14); line-height: 0; }
-  .shot img { width: 100%; height: auto; display: block; }
+  .home { padding-top: clamp(24px, 4vw, 48px); }
+  .feature { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem 3.5rem; align-items: center; border-top: 0; }
+  .feature h2 { font: 300 clamp(1.8rem, 3.2vw, 2.7rem)/1.1 var(--r-serif); letter-spacing: -.015em; margin: .8rem 0 0; text-wrap: balance; }
+  .shot { display: block; border: 1px solid rgba(236,231,220,.14); line-height: 0; border-radius: 4px; overflow: hidden; }
+  .shot img { width: 100%; height: auto; display: block; transition: transform .6s ease; }
   .shot:hover { border-color: rgba(233,196,138,.6); }
-  .body { font: 300 1.12rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 1.2rem 0 0; }
-  .go { margin: 1rem 0 0; font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; }
-  .go a { text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+  .shot:hover img { transform: scale(1.02); }
+  .body { font: 300 1.12rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 1.1rem 0 0; }
+  .go { margin: 1.6rem 0 0; }
+  .btn { display: inline-block; font: 400 .76rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; text-decoration: none; padding: 15px 22px; border-radius: 999px; color: #160f05 !important; background: var(--accent); }
+  .btn:hover { background: #f3d4a2; }
 
-  .planet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 2rem 1.6rem; }
-  .planet-grid a { display: grid; gap: .5rem; text-decoration: none; color: var(--ink); }
-  .disc { display: grid; place-items: center; aspect-ratio: 1; background: #000; overflow: hidden; }
-  .disc img { width: auto; max-width: none; transition: transform .4s ease; }
-  .planet-grid li:nth-child(7) .disc img { height: auto !important; width: 100%; }
-  .planet-grid a:hover .disc img { transform: scale(1.04); }
-  .pname { font: 400 1.25rem/1.2 var(--r-serif); }
+  .planet-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.2rem; }
+  @media (min-width: 1100px) { .planet-grid { grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 2rem .9rem; } }
+  .planet-grid a { display: grid; gap: .55rem; text-decoration: none; color: var(--ink); }
+  .disc { position: relative; display: block; aspect-ratio: 1; background: radial-gradient(circle at 50% 50%, #111 0, #000 70%); overflow: hidden; border-radius: 3px; }
+  .disc img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; transform: scale(var(--s, 1)); transition: transform .4s ease; }
+  .planet-grid a:hover .disc img { transform: scale(calc(var(--s, 1) * 1.05)); }
+  .pname { font: 400 1.2rem/1.2 var(--r-serif); }
   .planet-grid a:hover .pname { color: var(--accent); }
-  .ptag { font: 300 .98rem/1.4 var(--r-serif); color: var(--ink-faint); }
-
-  .pack-list { display: grid; gap: 2.2rem 2rem; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); }
-  .pack-list a { display: grid; gap: .8rem; text-decoration: none; color: var(--ink); }
-  .pack-list img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; background: #000; }
-  .pack-list span { font: 400 1.25rem/1.25 var(--r-serif); }
-  .pack-list a:hover span { color: var(--accent); }
-  .pack-list p { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .35rem 0 0; }
-
-  .elsewhere { display: grid; gap: 1.6rem; }
-  .elsewhere a { font: 400 1.32rem/1.25 var(--r-serif); text-decoration: none; background: linear-gradient(rgba(233,196,138,.5), rgba(233,196,138,.5)) 0 100% / 0 1px no-repeat; transition: background-size .3s ease; }
-  .elsewhere a:hover { background-size: 100% 1px; }
-  .elsewhere p { font: 300 1.06rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .25rem 0 0; }
+  .ptag { font: 300 .95rem/1.4 var(--r-serif); color: var(--ink-faint); }
+  @media (min-width: 1100px) { .ptag { font-size: .88rem; } }
+  .pic-type { position: absolute; inset: 0; display: grid; place-items: center; font: 300 3rem/1 var(--r-serif); color: var(--accent); background: linear-gradient(135deg, #17130d, #0b0b0c); }
+  @media (max-width: 900px) { .feature { grid-template-columns: 1fr; } }
   @media (max-width: 760px) { .row { grid-template-columns: 1fr; } }
 </style>

@@ -34,15 +34,15 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
     <p class="lead">Flat charts of everything in the 3D model, drawn to scale and good enough to print. Below them, one ruler that runs from your own height to the edge of what can be seen.</p>
   </header>
 
-  <section class="row" id="charts">
+  <section class="row wide" id="charts">
     <div class="hang"><h2>The charts</h2><p class="note">Each one shows where its worlds are today, and every name on it will fly you there in 3D.</p></div>
     <ul class="plain-list chart-list">
       {charts.map((c) => <li><a href={c.href}>{c.name}</a><span>{c.what}</span></li>)}
     </ul>
   </section>
 
-  <section class="row" id="beyond">
-    <div class="hang"><h2>Further out</h2><p class="note">Eight steps away from the Sun, each one opening in 3D.</p><p class="note">Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p></div>
+  <section class="row wide" id="beyond">
+    <div class="hang"><h2>Further out</h2><p class="note">Eight steps away from the Sun, each one opening in 3D. Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p></div>
     <ul class="plain-list chart-list">
       {places.map((p) => <li><a href={`/explore?go=${p.id}`} aria-label={`Fly out to ${p.name} in 3D`}>{p.name}</a><span>{p.what}{p.model && <> <em>Partly a model.</em></>}{p.chart && <> <a href={p.chart}>The chart.</a></>}</span></li>)}
     </ul>

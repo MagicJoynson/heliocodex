@@ -51,7 +51,7 @@ const list = bodies.map((b) => {
   <ol class="plain-list bodies">
     {list.map((w) => (
       <li class={`b b-${w.slug}`}>
-        <a class="pic" href={`/${w.slug}`} tabindex="-1" aria-hidden="true"><img src={w.photo.src} alt="" width={w.photo.width} height={w.photo.height} loading="lazy" style={w.slug === 'saturn' ? undefined : `height:${(82 / w.photo.disc).toFixed(1)}%`} /></a>
+        <a class="pic" href={`/${w.slug}`} tabindex="-1" aria-hidden="true"><img src={w.photo.src} alt="" width={w.photo.width} height={w.photo.height} loading="lazy" style={`--s:${w.slug === 'saturn' ? 1 : (0.82 / w.photo.disc).toFixed(3)}`} /></a>
         <div class="txt">
           <p class="label">{w.kind}</p>
           <h2><a href={`/${w.slug}`}>{w.name}</a></h2>
@@ -76,9 +76,8 @@ const list = bodies.map((b) => {
 <style>
   .bodies { display: grid; gap: 0; margin: 0 0 3rem; }
   .b { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 1.5rem 3.5rem; align-items: center; padding: 2.6rem 0; border-top: 1px solid var(--rule); }
-  .pic { display: grid; place-items: center; aspect-ratio: 1; background: #000; line-height: 0; overflow: hidden; }
-  .pic img { width: auto; max-width: none; }
-  .b-saturn .pic img { width: 100%; height: auto; }
+  .pic { position: relative; display: block; aspect-ratio: 1; background: #000; line-height: 0; overflow: hidden; }
+  .pic img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; transform: scale(var(--s, 1)); }
   .txt h2 { font: 300 clamp(2rem, 4vw, 3rem)/1.05 var(--r-serif); letter-spacing: -.015em; margin: .5rem 0 .4rem; }
   .txt h2 a { text-decoration: none; }
   .tag { font: italic 300 1.2rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0 0 1.2rem; }

@@ -1,12 +1,22 @@
 ---
 import Reading from '../../layouts/Reading.astro';
 import { PACKS, packLessons } from '../../lib/learn/packs';
+import { portraits } from '../../lib/portraits';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, STRAND_ORDER, LEVEL_NAMES, levelOf } from '../../lib/v2/margin/content';
 
 const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
 const strands = STRAND_ORDER.map((id) => ({ id, name: STRAND_NAMES[id], lessons: lessons.filter((l) => l.data.strand === id) }));
 const written = strands.filter((s) => s.lessons.length);
 const toCome = strands.filter((s) => !s.lessons.length).map((s) => s.name);
+// each lesson's card shows the first real picture in its first look
+const thumb = (l: (typeof lessons)[number]) => {
+  for (const lv of l.levels) { const m = /src="(\/img\/learn\/[^"]+\.(?:jpg|png|webp))"/.exec(lv.body ?? ''); if (m) return m[1]; }
+  const target = (l.data as { view?: { target?: string } }).view?.target;
+  const face = portraits.find((p) => p.slug === target);
+  if (face) return face.src + '#face';
+  const pack = PACKS.find((p) => packLessons(p).includes(l.id));
+  return pack ? pack.photo.src : '';
+};
 const levelCount = Math.max(...lessons.map((l) => l.levels.length));
 ---
 <Reading title="Learn" path="/learn" description="Short lessons on how space works, from why there are seasons to what the Sun is made of. Each one can be read at more than one depth.">
@@ -16,33 +26,44 @@ const levelCount = Math.max(...lessons.map((l) => l.levels.length));
     <p class="lead">Short lessons, each written more than once. Start with the first look, which needs nothing but curiosity. If you want the numbers and the reasons, the next level down is on the same page.</p>
   </header>
 
-  <section class="row packs">
+  <nav class="jump" aria-label="On this page">
+    <a href="#packs">Lesson packs</a>
+    {written.map((s) => <a href={`#s-${s.id}`}>{s.name} <span>{s.lessons.length}</span></a>)}
+  </nav>
+
+  <section class="row wide" id="packs">
     <div class="hang">
       <h2>Lesson packs</h2>
       <p class="about">Everything on one subject, in the best order to read it.</p>
     </div>
-    <ul class="plain-list pack-list">
+    <ul class="cards">
       {PACKS.map((p) => (
         <li>
-          <a href={`/learn/packs/${p.id}`}><img src={p.photo.src} alt="" width={p.photo.width} height={p.photo.height} loading="lazy" /><span>{p.name}</span></a>
-          <p>{packLessons(p).length} lessons. {p.blurb}</p>
+          <a href={`/learn/packs/${p.id}`}>
+            <span class="pic"><img src={p.photo.src} alt="" width={p.photo.width} height={p.photo.height} loading="lazy" /></span>
+            <span class="kicker">{packLessons(p).length} lessons</span>
+            <span class="name">{p.name}</span>
+            <p class="line">{p.blurb}</p>
+          </a>
         </li>
       ))}
     </ul>
   </section>
 
-  <header class="all-head"><h2>Every lesson, by subject</h2></header>
-
   {written.map((s) => (
-    <section class="row">
+    <section class="row wide" id={`s-${s.id}`}>
       <div class="hang">
         <h2>{s.name}</h2>
+        <p class="about">{s.lessons.length} {s.lessons.length === 1 ? 'lesson' : 'lessons'}</p>
       </div>
-      <ol class="plain-list lessons">
+      <ol class="cards lesson-cards" style="--card-min: 15rem">
         {s.lessons.map((l) => (
           <li>
-            <a href={`/learn/${l.id}`}>{l.data.title}</a>
-            <p>{l.data.summary}</p>
+            <a href={`/learn/${l.id}`}>
+              <span class="pic">{thumb(l) ? <img src={thumb(l).replace('#face', '')} class:list={[{ face: thumb(l).endsWith('#face') }]} alt="" loading="lazy" decoding="async" /> : <span class="no-pic" />}</span>
+              <span class="name">{l.data.title}</span>
+              <p class="line">{l.data.summary}</p>
+            </a>
           </li>
         ))}
       </ol>
@@ -78,6 +99,15 @@ const levelCount = Math.max(...lessons.map((l) => l.levels.length));
   .pack-list span { font: 400 1.32rem/1.25 var(--r-serif); }
   .pack-list a:hover span { color: var(--accent); }
   .pack-list p { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-soft); margin: .35rem 0 0; }
+  .jump { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0 0 1rem; }
+  .jump a { font: 400 .74rem/1 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; color: var(--ink-soft); border: 1px solid var(--rule); border-radius: 999px; padding: .6rem .9rem; }
+  .jump a:hover { color: var(--accent); border-color: var(--accent); }
+  .jump span { color: var(--ink-faint); margin-left: .3rem; }
+  .lesson-cards .pic { aspect-ratio: 16 / 9; }
+  .lesson-cards .name { font-size: 1.18rem; }
+  .lesson-cards .line { font-size: .95rem; color: var(--ink-faint); }
+  .lesson-cards .pic img.face { object-fit: contain; padding: 6% 0; }
+  .no-pic { position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, #2a2217, #0b0b0c 70%); }
   .all-head { margin: 3.5rem 0 0; }
   .all-head h2 { font: 400 .76rem/1.4 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
   .lessons, .lookups { display: grid; gap: 1.5rem; }

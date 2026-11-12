@@ -10,8 +10,8 @@
   --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a;
   --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --rule: rgba(236, 231, 220, .14);
-  --margin-col: 15rem; --text-col: 38rem;
-  max-width: 74rem; margin: 0 auto;
+  --margin-col: 15rem; --text-col: 42rem;
+  max-width: 80rem; margin: 0 auto;
   padding: clamp(48px, 8vw, 104px) var(--gutter) clamp(64px, 9vw, 120px);
   font-family: var(--r-serif); color: var(--ink);
 }
@@ -31,9 +31,26 @@ body:has(.reading) { background: #0b0b0c; }
 
 /* a ruled row: something short hangs in the margin, the text runs beside it */
 .row { display: grid; grid-template-columns: minmax(0, var(--margin-col)) minmax(0, var(--text-col)); gap: 1rem 4rem; padding: 2.2rem 0 2.6rem; border-top: 1px solid var(--rule); }
-.row > .hang h2 { font: italic 300 clamp(1.45rem, 2.3vw, 1.85rem)/1.15 var(--r-serif); margin: 0; }
+.row > .hang h2 { font: 400 clamp(1.5rem, 2.4vw, 1.95rem)/1.15 var(--r-serif); letter-spacing: -.01em; margin: 0; }
 .row > .hang .label { margin-top: .6rem; }
 .row > .hang .note { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin: .5rem 0 0; }
+/* a wide row: the heading sits above, and what follows uses the whole width */
+.row.wide { grid-template-columns: minmax(0, 1fr); gap: 1.6rem; padding: 2.6rem 0 3rem; }
+.row.wide > .hang { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .4rem 2rem; }
+.row.wide > .hang .note, .row.wide > .hang .about { margin: 0; max-width: 36rem; }
+.row.wide > .hang .more { font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; color: var(--accent); }
+.row.wide > .hang .more:hover { text-decoration: underline; }
+/* cards: a picture, a name and a line, used for anything you browse */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.2rem 1.6rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--card-min, 16rem)), 1fr)); }
+.cards a { display: grid; gap: .7rem; align-content: start; color: var(--ink); text-decoration: none; }
+.cards .pic { display: block; position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #000; border-radius: 3px; }
+.cards .pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; }
+.cards a:hover .pic img { transform: scale(1.03); }
+.cards .kicker { font: 400 .68rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+.cards .name { font: 400 1.3rem/1.22 var(--r-serif); }
+.cards a:hover .name { color: var(--accent); }
+.cards .line { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0; }
+@media (prefers-reduced-motion: reduce) { .cards .pic img { transition: none; } }
 @media (min-width: 761px) { .row > .hang.sticks { position: sticky; top: calc(var(--header-h) + 1.5rem); align-self: start; } }
 
 /* running prose from Markdown */
