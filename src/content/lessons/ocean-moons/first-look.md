@@ -25,5 +25,5 @@ Where there is liquid water there might be life, so these moons are some of the 
 
 <figure class="photo">
   <img src="/img/learn/charts/europa-water-ball.svg" alt="Two blue balls side by side: a smaller one for all the Earth's oceans and a larger one for Europa's ocean, which sits inside a dashed outline of Europa." width="800" height="500" loading="lazy" />
-  <figcaption><b>A chart.</b> All the water gathered into a ball, to scale. Europa's ball is bigger, although Europa is smaller than our Moon. Worked out here from the 1.335 billion cubic kilometres in the Earth's oceans, taking twice that for Europa.</figcaption>
+  <figcaption><b>A chart.</b> All the water gathered into a ball, to scale. Europa's ball is bigger, although Europa is smaller than our Moon. Worked out here from the 1.335 billion cubic kilometres in the Earth's oceans, taking twice that for Europa, which is an estimate: nobody yet knows how deep its ocean is.</figcaption>
 </figure>
