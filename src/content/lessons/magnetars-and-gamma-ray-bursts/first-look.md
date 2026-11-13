@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "Hurley and others, An exceptionally bright flare from SGR 1806-20 (Nature, 2005): spike energy at 15 kpc", url: "https://arxiv.org/abs/astro-ph/0502329" }
   - { label: "Wikipedia, Magnetar", url: "https://en.wikipedia.org/wiki/Magnetar" }
   - { label: "Wikipedia, SGR 1806-20", url: "https://en.wikipedia.org/wiki/SGR_1806%E2%88%9220" }
   - { label: "Wikipedia, SGR 1900+14", url: "https://en.wikipedia.org/wiki/SGR_1900%2B14" }
@@ -11,7 +12,7 @@ What is the strongest magnet there is? A dead star. When a heavy star blows up, 
 
 Nothing on the Earth comes close, and nothing could survive near one. From 1,000 km away a magnetar's field would pull the atoms of your body out of shape, so that the chemistry of life stopped working. From half way to the Moon it could wipe every bank card on the Earth. Only about thirty are known, all thousands of light years away. One of them sits inside a ring of warm dust seven light years across.
 
-A field that strong puts the star's hard crust under enormous strain. Now and then the crust cracks. This is a starquake, and it lets out a flash of gamma rays, the most energetic kind of light. On 27 December 2004 a magnetar on the far side of our galaxy flared. In a tenth of a second it gave out as much energy as the Sun does in 150,000 years. It was more than 40,000 light years away, and the flash still jolted the top of the Earth's air.
+A field that strong puts the star's hard crust under enormous strain. Now and then the crust cracks. This is a starquake, and it lets out a flash of gamma rays, the most energetic kind of light. On 27 December 2004 a magnetar on the far side of our galaxy flared. In about a fifth of a second it gave out as much energy as the Sun does in a quarter of a million years. That is the measured figure if the star is about 49,000 light years away and shone equally in every direction. It was more than 40,000 light years away, and the flash still jolted the top of the Earth's air.
 
 There are bigger flashes yet. In 1967 American satellites built to watch for secret nuclear bomb tests picked up bursts of gamma rays coming from space. Satellites now catch about one a day. Each comes from a far galaxy and, for a few seconds, can outshine everything else in the sky in gamma rays. Most are the death of a very heavy star whose centre falls in to make a black hole. Two thin jets punch out through the star at nearly the speed of light, and a burst is seen only if one jet points at us.
 
