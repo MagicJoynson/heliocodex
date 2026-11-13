@@ -72,7 +72,7 @@ $$
 M \sim \left(\frac{\hbar c}{G}\right)^{3/2} \frac{1}{(2 m_H)^2}
 $$
 
-With NIST's constants that is 0.46 Suns. Above this sort of mass, gravity beats the electrons whatever the size. Chandrasekhar's full calculation, which works out the pressure at every depth, multiplies this by 3.10, giving 1.43 Suns. It earned him a share of the Nobel prize in 1983. Sirius B, at 1.018, is safely below. The remarkable thing is what goes into the limit: Planck's constant, the speed of light, the constant of gravity and the mass of a proton, and nothing about any particular star.
+With NIST's constants that is 0.46 Suns. This is an order-of-magnitude argument, not a result: the $\sim$ signs mean every number in front has been dropped, so 0.46 says only that the limit is about the mass of the Sun, and that above it gravity beats the electrons whatever the size. Chandrasekhar's full calculation puts the numbers back. It works out the pressure and density at every depth, with the electrons' energy treated exactly and the star's mass concentrated towards its centre, and the number in front comes out as 3.10, giving 1.43 Suns. It earned him a share of the Nobel prize in 1983. Sirius B, at 1.018, is safely below. The remarkable thing is what goes into the limit: Planck's constant, the speed of light, the constant of gravity and the mass of a proton, and nothing about any particular star.
 
 **Try it yourself.** Use the escape speed formula, $\sqrt{2GM/R}$, to show that Sirius B's escape speed is about 2.3 per cent of the speed of light.
 
