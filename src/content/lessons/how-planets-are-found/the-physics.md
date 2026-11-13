@@ -2,13 +2,16 @@
 sources:
   - { label: "NASA Exoplanet Archive, Planetary Systems table (default values), queried 13 November 2026", url: "https://exoplanetarchive.ipac.caltech.edu/" }
   - { label: "Mayor and Queloz, A Jupiter-mass companion to a solar-type star (Nature, 1995)", url: "https://www.nature.com/articles/378355a0" }
-  - { label: "Cont and others 2026 (Astronomy and Astrophysics), the archive's source for 51 Pegasi b's mass", url: "https://ui.adsabs.harvard.edu/abs/2026A&A...710A.345C/abstract" }
+  - { label: "Cont and others, 51 Peg b revisited with VLT/CRIRES+ (Astronomy and Astrophysics, 2026): i about 50 degrees, 0.61 Jupiter masses", url: "https://arxiv.org/abs/2605.23582" }
+  - { label: "Brogi and others, Detection of molecular absorption in the dayside of exoplanet 51 Pegasi b? (Astrophysical Journal Letters, 2013)", url: "https://arxiv.org/abs/1302.6242" }
+  - { label: "Birkby and others, Discovery of water at high spectral resolution in the atmosphere of 51 Peg b (Astronomical Journal, 2017): 70 < i < 82.2 degrees", url: "https://arxiv.org/abs/1701.07257" }
   - { label: "Stassun and others 2017 (Astronomical Journal), the archive's source for HD 209458 b", url: "https://ui.adsabs.harvard.edu/abs/2017AJ....153..136S/abstract" }
   - { label: "Wikipedia, HD 209458 b (the first planet seen to transit)", url: "https://en.wikipedia.org/wiki/HD_209458_b" }
   - { label: "NASA NSSDC Sun fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html" }
   - { label: "NASA NSSDC Jupiter fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/jupiterfact.html" }
   - { label: "NIST, the Newtonian constant of gravitation", url: "https://physics.nist.gov/cgi-bin/cuu/Value?bg" }
 lastChecked: 2026-11-13
+recheck: { what: "Whether the tilt and true mass of 51 Pegasi b have been settled", by: 2027-11-13 }
 ---
 This level derives the two formulas behind most planets found round other stars, and then uses them on real measurements from NASA's Exoplanet Archive. One formula turns a star's wobble into a planet's mass. The other turns a dip in starlight into a planet's size. Put the two together and you can weigh a world nobody has seen and say what it is made of. The sums are done here unless a source is named.
 
@@ -56,7 +59,7 @@ $$
 
 Put the numbers in and $m \sin i$ comes out at 0.46 times the mass of Jupiter. Step two gives the size of the orbit: 0.052 au, about a seventh of Mercury's distance from the Sun. A planet half as heavy as Jupiter, going round its star in four days, was unlike anything in the Solar System.
 
-**Why only $m \sin i$.** The wobble alone cannot say how the orbit is tilted. A heavier planet in an orbit seen nearly face on gives the same $K$ as a lighter one seen edge on. So a wobble gives the least the mass can be. For 51 Pegasi b the archive's chosen value, from a 2026 study, is a true mass of 0.61 Jupiters, which means an orbit tilted about 40 degrees from edge on.
+**Why only $m \sin i$.** The wobble alone cannot say how the orbit is tilted. A heavier planet in an orbit seen nearly face on gives the same $K$ as a lighter one seen edge on. So a wobble gives the least the mass can be. Other measurements are needed for the tilt, and for 51 Pegasi b they disagree. Studies of the planet's own faint light, by Brogi and colleagues in 2013 and Birkby and colleagues in 2017, put $i$ at between about 70 and 82 degrees, close to edge on, with a true mass of about 0.46 to 0.48 Jupiters. A 2026 study by Cont and colleagues, with the CRIRES+ instrument in Chile, found $i$ of about 50 degrees and a mass of 0.61 Jupiters, and NASA's archive now uses those values. The authors trace the difference to a revised measurement of the planet's own speed. As of November 2026 the question is open.
 
 **The dip.** If the orbit happens to be edge on, the planet crosses the face of its star once each orbit. The star's light drops by the share of its disc that the planet covers:
 

@@ -64,10 +64,10 @@ This is only an estimate, good to within a factor of about two. But it lands clo
 **Real data: counting neutrinos.** Every helium made in the Sun also makes two neutrinos. Neutrinos pass straight through the Sun, so the number reaching the Earth each second should follow from the sunlight. At the Earth's distance each square metre receives 1,361 watts. Divide by 26.7 MeV for each helium, and multiply by two:
 
 $$
-\Phi = \frac{2 \times 1361 \ \text{W/m}^2}{26.7 \ \text{MeV}} = 6.4 \times 10^{14} \ \text{per m}^2 \text{ per second}
+\Phi = \frac{2 \times 1361 \ \text{W/m}^2}{26.7 \ \text{MeV}}
 $$
 
-That is 64 thousand million through every square centimetre each second, including the tip of your finger, by day and by night. Nearly all of them come from the first, slow step. In 2014 the Borexino detector, deep under a mountain in Italy, measured those first-step neutrinos directly: $(6.6 \pm 0.7) \times 10^{10}$ per square centimetre per second. The sum from sunlight and the count in the detector agree. The light we see left the Sun's surface 8 minutes ago, after a very long journey out from the core. The neutrinos left the core itself 8 minutes ago. Both say the Sun is burning at the same rate.
+which comes to $6.4 \times 10^{14}$ neutrinos through each square metre every second. That is 64 thousand million through every square centimetre each second, including the tip of your finger, by day and by night. Nearly all of them come from the first, slow step. In 2014 the Borexino detector, deep under a mountain in Italy, measured those first-step neutrinos directly: $(6.6 \pm 0.7) \times 10^{10}$ per square centimetre per second. The sum from sunlight and the count in the detector agree. The light we see left the Sun's surface 8 minutes ago, after a very long journey out from the core. The neutrinos left the core itself 8 minutes ago. Both say the Sun is burning at the same rate.
 
 **Try it yourself.** How much hydrogen, as a share of its mass, would the Sun need to fuse to shine at today's power for 10 billion years?
 
