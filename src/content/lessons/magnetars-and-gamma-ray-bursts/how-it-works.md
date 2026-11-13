@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "Hurley and others, An exceptionally bright flare from SGR 1806-20 (Nature, 2005): spike energy at 15 kpc", url: "https://arxiv.org/abs/astro-ph/0502329" }
   - { label: "Wikipedia, Magnetar", url: "https://en.wikipedia.org/wiki/Magnetar" }
   - { label: "Wikipedia, SGR 1806-20", url: "https://en.wikipedia.org/wiki/SGR_1806%E2%88%9220" }
   - { label: "Wikipedia, SGR 1900+14", url: "https://en.wikipedia.org/wiki/SGR_1900%2B14" }
@@ -23,7 +24,7 @@ The strongest magnetar field is about two thousand million million times the Ear
 
 **A short life.** A magnetar's field fades in about 10,000 years, and the flaring stops. So for every one seen, a great many must have gone quiet. One estimate is 30 million or more in our galaxy.
 
-**The flare of 2004.** The magnetar is called SGR 1806−20. It is at most 20 km across and turns once in 7.5 seconds. Its distance is given as about 42,000 light years. The energy let out in that tenth of a second was about 1 followed by 40 noughts in joules, and the gamma rays made the top of the Earth's air swell for a moment. An earlier flare, on 27 August 1998, came from the magnetar inside the ring of dust, 20,000 light years away. It kept the night-time upper air almost as electrified as it is by day.
+**The flare of 2004.** The magnetar is called SGR 1806−20. It is at most 20 km across and turns once in 7.5 seconds. Its distance is given as about 42,000 light years. The opening spike lasted about a fifth of a second. Hurley and colleagues measured its energy as nearly 4 followed by 39 noughts in joules, assuming the star is 15 kiloparsecs (49,000 light years) away and shone equally in every direction. At the closer distance above it would be about a quarter less. Its gamma rays made the top of the Earth's air swell for a moment. An earlier flare, on 27 August 1998, came from the magnetar inside the ring of dust, 20,000 light years away. It kept the night-time upper air almost as electrified as it is by day.
 
 **Radio flashes.** Since 2007 radio telescopes have caught bright flashes lasting a thousandth of a second from far galaxies, and nobody knew what made them. On 28 April 2020 a magnetar in our own galaxy gave off just such a flash. At least some of them, then, come from magnetars.
 
