@@ -16,7 +16,7 @@ export interface LowerScene {
   shadows?: boolean;
 }
 
-export interface Moon { orbitR: number; size: number; color: number; seed: number; speed: number; phase: number }
+export interface Moon { orbitR: number; size: number; color: number; seed: number; speed: number; phase: number; /** shown beside the moon while the camera is pulled back */ name?: string }
 
 export interface OrbitConfig {
   look: PlanetLook;

@@ -84,7 +84,16 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xd8d2c4, transparent: true, opacity: 0, depthWrite: false }));
       A.add(ring);
     }
-    return { m, mesh, ring };
+    // a small name beside the moon, in the page's own type, while pulled back
+    let tag: HTMLDivElement | null = null;
+    if (o.wide && m.name) {
+      tag = document.createElement('div');
+      tag.textContent = m.name;
+      tag.setAttribute('aria-hidden', 'true');
+      tag.style.cssText = 'position:fixed;left:0;top:0;z-index:3;pointer-events:none;opacity:0;font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;color:#efe6d4;text-shadow:0 0 6px #000,0 0 2px #000;white-space:nowrap;will-change:transform,opacity';
+      document.body.appendChild(tag);
+    }
+    return { m, mesh, ring, tag };
   });
   function moonPos(a: number, r: number, out: THREE.Vector3) {
     return out.copy(mRight).multiplyScalar(Math.cos(a) * r).addScaledVector(startDir, Math.sin(a) * r * mDepth).addScaledVector(mUp, Math.sin(a) * r * mTilt);
@@ -178,19 +187,33 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       planet.update(camA, h, tSim);
       // far out, the moons are drawn larger than life so they stay visible (the page says their sizes are not to scale)
       const grow = o.wide ? Math.min(7, Math.max(1, h / 12)) : 1;
-      const ringOn = o.wide ? 0.32 * clamp01((h - 6) / 10) : 0;
-      for (const { m, mesh, ring } of moons) {
+      // a phone is often read in daylight, so out there the rings and moons are drawn brighter on a small screen
+      const wideOn = o.wide ? clamp01((h - 6) / 10) : 0;
+      const ringOn = wideOn * (small ? 0.62 : 0.32);
+      camA.updateMatrixWorld();
+      for (const { m, mesh, ring, tag } of moons) {
         const a = m.phase + tSim * m.speed;
         moonPos(a, m.orbitR, mesh.position);
         mesh.rotation.y = a;
         mesh.scale.setScalar(grow);
-        if (ring) { (ring.material as THREE.LineBasicMaterial).opacity = ringOn; ring.visible = ringOn > 0.005; }
+        if (ring) {
+          (ring.material as THREE.LineBasicMaterial).opacity = ringOn; ring.visible = ringOn > 0.005;
+          const mat = mesh.material as THREE.MeshStandardMaterial;
+          mat.emissive.setHex(m.color); mat.emissiveIntensity = wideOn * (small ? 0.7 : 0.3);
+        }
+        if (tag) {
+          const v = mesh.position.clone().project(camA);
+          const show = wideOn > 0.02 && v.z < 1;
+          tag.style.opacity = show ? String(wideOn) : '0';
+          if (show) tag.style.transform = `translate(${((v.x + 1) / 2) * innerWidth + 8}px, ${((1 - v.y) / 2) * innerHeight - 16}px)`;
+        }
       }
       renderer.toneMapping = THREE.NoToneMapping;
       renderer.toneMappingExposure = 1;
       renderer.shadowMap.enabled = false;
       renderer.render(A, camA);
     }
+    else for (const { tag } of moons) if (tag) tag.style.opacity = '0';
     const hz = p < HANDOVER ? ease(clamp01((p - (HANDOVER - 0.035)) / 0.035)) : 1 - ease(clamp01((p - HANDOVER) / 0.05));
     haze.style.opacity = String(hz);
 
