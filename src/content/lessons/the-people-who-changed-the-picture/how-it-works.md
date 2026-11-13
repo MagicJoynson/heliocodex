@@ -17,7 +17,7 @@ sources:
 ---
 **Leavitt's law, 1912.** Leavitt had already listed 1,777 stars that change in brightness in the two Magellanic Clouds, in a paper of 1908. For 25 of those in the Small Cloud she worked out the period, the time each takes to brighten, fade and brighten again. The shortest took just over a day and the longest 127 days. When she set each star's brightness against its period, the points fell along a line.
 
-<figure class="photo">
+<figure class="photo print">
   <img src="/img/learn/leavitt-1912-figures.png" alt="Two old printed graphs side by side. In each, two rows of dots joined by lines run from lower left to upper right, one row above the other." width="866" height="431" loading="lazy" />
   <figcaption><b>Leavitt's own graphs, as printed in 1912.</b> Up the side is brightness, brighter towards the top. In the left graph the period in days runs along the bottom; on the right it is the logarithm of the period, which turns the curve into a straight line. The upper row is each star at its brightest, the lower row at its faintest. Public domain.</figcaption>
 </figure>

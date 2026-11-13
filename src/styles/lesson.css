@@ -116,3 +116,8 @@ body:has(.lesson) { background: #0b0b0c; }
 .prose figure.photo img { display: block; width: 100%; max-width: 34rem; height: auto; background: #000; }
 .prose figure.photo figcaption { font: italic 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .8rem; max-width: 34rem; }
 .prose figure.photo figcaption b { font: 400 .7rem/1 var(--r-mono); font-style: normal; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-right: .5rem; }
+
+/* old prints and paper scans: set smaller, in a warm grey mount and a little dimmed, so white paper does not glare on the dark page */
+.prose figure.photo.print { max-width: 30rem; background: #26221d; border: 1px solid rgba(233, 196, 138, .12); border-radius: 3px; padding: 1.25rem 1.25rem 1rem; }
+.prose figure.photo.print img { width: auto; max-width: 100%; max-height: 22rem; margin: 0 auto; background: none; filter: brightness(.8) sepia(.15); box-shadow: 0 1px 6px rgba(0, 0, 0, .45); }
+.prose figure.photo.print figcaption { margin-top: 1rem; }
