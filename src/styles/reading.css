@@ -69,7 +69,8 @@ body:has(.reading) { background: #0b0b0c; }
 .prose th:last-child, .prose td:last-child { padding-right: 0; }
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5em 0 1.7em; }
 .table-scroll table { margin: 0; min-width: 26rem; }
-/* a two-column table fits a phone as it is, so it wraps instead of scrolling */
+/* three columns fit a phone if they may wrap a little; a two-column table fits as it is */
+.table-scroll table:not(:has(th:nth-child(4))) { min-width: 20rem; }
 .table-scroll table:not(:has(th:nth-child(3))) { min-width: 0; }
 /* A long equation scrolls sideways inside its own line and leaves the page still. */
 .prose .katex-display { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; margin: 1.4em 0; padding: .3em 0; }
