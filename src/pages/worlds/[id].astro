@@ -46,7 +46,7 @@ const rows: [string, string][] = [
 const EARTH_KM = 12742, EARTH_KG = 5.972e24;
 const dKm = b.meanRadiusKm ? b.meanRadiusKm * 2 : null;
 const massKg = b.gmKm3S2 ? b.gmKm3S2 / 6.6743e-20 : null;
-const sup = (n: number) => String(n).split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)] ?? c).join('');
+const sup = (n: number) => `<sup>${String(n).replace('-', '−')}</sup>`;
 const parentName = nameOf(b.parent).replace(/^the /, 'the ');
 const pathWords = `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'}, ${o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`;
 const cells: Cell[] = [
@@ -139,15 +139,20 @@ const closeup = page?.globe ? page.picture : null;
         {isMoon && (
           <figure class="wo-size">
             <svg viewBox={`0 0 600 ${SH}`} role="img" aria-label={`${b.name} drawn to scale beside ${cmp ? 'our Moon and ' : ''}the edge of ${nameOf(b.parent)}`}>
-              <defs><clipPath id="sframe"><rect x="0" y="0" width="600" height={SH} /></clipPath><radialGradient id="shade" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient></defs>
-              <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />
+              <defs><clipPath id="sframe"><rect x="0" y="0" width="600" height={SH} /></clipPath><radialGradient id="shade" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient>
+                <radialGradient id="limb" gradientUnits="userSpaceOnUse" cx={parCx} cy={scy} r={parR}><stop offset={Math.max(0, 1 - 140 / parR)} stop-color="#2a2722" stop-opacity="0" /><stop offset="1" stop-color="#5a5244" stop-opacity=".9" /></radialGradient>
+                <linearGradient id="fadev" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".22" stop-color="#fff" /><stop offset=".78" stop-color="#fff" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></linearGradient>
+                <mask id="limbmask"><rect x="0" y="0" width="600" height={SH} fill="url(#fadev)" /></mask></defs>
+              {parR > 150
+                ? <g mask="url(#limbmask)"><circle cx={parCx} cy={scy} r={parR} fill="url(#limb)" /><circle cx={parCx} cy={scy} r={parR} class="s-limb" /></g>
+                : <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />}
               <circle cx={meCx} cy={scy} r={meR} fill="url(#shade)" />
               {cmp && <circle cx={moonCx} cy={scy} r={moonR} class="s-moon" />}
               <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `${nameOf(b.parent).replace(/^the /, 'The ')}’s edge` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
               <text x={meCx} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
               {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
             </svg>
-            <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.</figcaption>
+            <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.{parR > 150 && <> At this scale {nameOf(b.parent)} is so large that only a gently curving stretch of its edge fits.</>}</figcaption>
           </figure>
         )}
       </div>
@@ -201,6 +206,9 @@ const closeup = page?.globe ? page.picture : null;
   .draw-pair.one { grid-template-columns: minmax(0, 1fr); max-width: 44rem; }
   .wo-size svg { width: 100%; height: auto; display: block; }
   .wo-size .s-par { fill: #2a2722; stroke: rgba(233,196,138,.45); }
+  .wo-size .s-limb { fill: none; stroke: rgba(233,196,138,.6); stroke-width: 1.5; }
+  /* the two drawings side by side, in boxes of one height */
+  .draw-pair:not(.one) svg { height: clamp(12rem, 20vw, 18rem); }
   .wo-size .s-moon { fill: none; stroke: rgba(236,231,220,.55); stroke-dasharray: 3 4; }
   .wo-size .s-t { font: 400 20px var(--r-mono); fill: var(--ink-faint); }
   .wo-size .s-t.me { fill: var(--ink); }

@@ -70,7 +70,7 @@ $$
 M = \frac{4\pi^2 a^3}{G\, P^2}
 $$
 
-Io goes round Jupiter at 421,800 km in 1.769138 days. With $G = 6.67430 \times 10^{-11}$ m³ kg⁻¹ s⁻², this gives $1.90 \times 10^{27}$ kg. The listed mass of Jupiter is $1.898 \times 10^{27}$ kg.
+Io goes round Jupiter at 421,800 km in 1.769138 days. With $G = 6.67430 \times 10^{-11}$ m³ kg<sup>−1</sup> s<sup>−2</sup>, this gives $1.90 \times 10^{27}$ kg. The listed mass of Jupiter is $1.898 \times 10^{27}$ kg.
 
 Timing an orbit gives the product $GM$ far more exactly than either $G$ or $M$ is known alone. That is why JPL lists $GM$ for the Sun to 18 figures, while $G$ itself is uncertain by about 2 parts in 100,000.
 

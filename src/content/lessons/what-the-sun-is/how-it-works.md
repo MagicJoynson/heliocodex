@@ -27,7 +27,7 @@ Working outward from the centre:
 
 **The chromosphere and corona** lie above. The corona is extremely thin but has a temperature of more than a million kelvin, far hotter than the surface below it. Its outer edge has no end. It streams away past the planets as the solar wind.
 
-The whole output is 3.83 × 10²⁶ watts. The Earth catches less than a billionth of it.
+The whole output is 3.83 × 10<sup>26</sup> watts. The Earth catches less than a billionth of it.
 
 The Sun does not turn as a solid body. Its equator goes round in about 25 days and the regions near the poles take about 36.
 
@@ -37,7 +37,7 @@ The first is sound. The whole Sun rings like a bell. Its surface rises and falls
 
 The second is a particle. Fusion in the core makes neutrinos, which pass through the rest of the Sun as if it were not there and reach the Earth eight minutes later. Tens of billions of them pass through every square centimetre of the Earth, and of you, each second, and almost none are stopped. In the late 1960s Raymond Davis began catching a few of them with a tank of 380 cubic metres of dry-cleaning fluid, nearly 1.5 km down a gold mine in South Dakota. He found only a third of the number expected. For thirty years nobody knew whether the Sun or the sum was wrong. It was neither: neutrinos come in three kinds and change from one to another on the way, and his tank could catch only one kind. Detectors that catch all three found the full number in 2001. The fusion in the core is happening at the rate the theory says.
 
-**Checking the 4 million tonnes.** Einstein's equation says energy is mass multiplied by the speed of light squared. Turn that round: divide the Sun's output, 3.83 × 10²⁶ watts, by the speed of light squared, and the answer is 4.26 million tonnes of mass every second. NASA's fact sheet gives the same figure.
+**Checking the 4 million tonnes.** Einstein's equation says energy is mass multiplied by the speed of light squared. Turn that round: divide the Sun's output, 3.83 × 10<sup>26</sup> watts, by the speed of light squared, and the answer is 4.26 million tonnes of mass every second. NASA's fact sheet gives the same figure.
 
 That sounds like a rate nothing could keep up. But the Sun is very large. Over its whole life so far, about 4.6 billion years, it has turned about 100 times the mass of the Earth into light, and that is only three hundredths of one per cent of itself (sums made from the fact sheet).
 

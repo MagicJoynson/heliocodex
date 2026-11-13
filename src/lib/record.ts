@@ -33,3 +33,9 @@ export function ratio(x: number, what: string): string {
   if (x < 10) return `${x.toFixed(2)} times ${what}`;
   return `${sig(x, 2)} times ${what}`;
 }
+
+/** Plain text made safe for HTML, with powers such as 10²⁶ or s⁻² set as real superscripts (the text face has no glyphs for most of them). */
+export function supText(t: string): string {
+  const map: Record<string, string> = { '⁰': '0', '¹': '1', '²': '2', '³': '3', '⁴': '4', '⁵': '5', '⁶': '6', '⁷': '7', '⁸': '8', '⁹': '9', '⁻': '−' };
+  return esc(t).replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, (m) => /[⁰⁴-⁹⁻]/.test(m) ? `<sup>${[...m].map((c) => map[c]).join('')}</sup>` : m);
+}

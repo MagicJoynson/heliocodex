@@ -74,7 +74,7 @@ facts:
     basis: worked-out
     source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
   - id: sirius-near-and-bright
-    text: "Sirius, the brightest star in the night sky, is also one of the nearest, 8.6 light years away. It looks bright mostly because it is close. Rigel, in Orion, gives out about 2,000 times more light from a hundred times further off."
+    text: "Sirius, the brightest star in the night sky, is also one of the nearest, 8.6 light years away. It looks bright mostly because it is close. Rigel, in Orion, gives out about 2,200 times more visible light from a hundred times further off."
     about: [neighbourhood, night-sky, colour-and-brightness]
     basis: worked-out
     source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }

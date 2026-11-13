@@ -20,7 +20,7 @@ export const TEMPS: Record<string, { value: string; note: string; short: string 
 };
 
 const EARTH = facts.planets.earth.physical as unknown as Record<string, number>;
-const sup = (n: number) => String(n).replace('-', '⁻').split('').map((c) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(c)] ?? c).join('');
+const sup = (n: number) => `<sup>${String(n).replace('-', '−')}</sup>`;
 function sci(kg: number) { const ex = Math.floor(Math.log10(kg)); return `${(kg / 10 ** ex).toFixed(2)} × 10${sup(ex)}`; }
 const ORDINAL = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth'];
 const DENSITY_SAYS: Record<string, string> = {

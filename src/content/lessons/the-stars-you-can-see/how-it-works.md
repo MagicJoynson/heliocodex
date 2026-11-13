@@ -7,7 +7,7 @@ lastChecked: 2026-11-10
 ---
 What the eye can see is a sample of the galaxy, but a very unfair one. This level looks at how many stars there are to see, how far away they are, and why the sample is so lopsided.
 
-**How many.** Brightness in the sky is measured in magnitudes, where a smaller number means brighter. Sirius is -1.46, and the faintest stars the eye can pick out from a dark place are about magnitude 6. The star catalogue this site draws holds 4,940 stars of magnitude 6 or brighter, over the whole sky. Go a little fainter, to 6.5, and the count is about 9,000. Half the sky is below the horizon at any moment, and haze near the horizon hides more, so from one dark place you can see perhaps 2,500 at once.
+**How many.** Brightness in the sky is measured in magnitudes, where a smaller number means brighter. Sirius is −1.44, and the faintest stars the eye can pick out from a dark place are about magnitude 6. The star catalogue this site draws holds 4,940 stars of magnitude 6 or brighter, over the whole sky. Go a little fainter, to 6.5, and the count is about 9,000. Half the sky is below the horizon at any moment, and haze near the horizon hides more, so from one dark place you can see perhaps 2,500 at once.
 
 **How far.** These distances come from the same catalogue. They are worked out here from its positions.
 

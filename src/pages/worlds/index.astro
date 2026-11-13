@@ -33,7 +33,7 @@ const LANES = [
     const o = b.orbit as { aKm: number; e: number };
     const a = o.aKm / AU_KM, q = a * (1 - o.e), Q = a * (1 + o.e), r = radius(b);
     return { id: b.id, name: b.name, a, q, Q, xa: x(a), xq: x(q), xQ: x(Q), off: Q > 700, d: r ? Math.round(Math.min(12, 4 + Math.sqrt(r) / 3.5)) : 4,
-      moons: moonsOf(b.id), flip: x(Q) > 78 };
+      moons: moonsOf(b.id), flip: x(Q) > 78 && x(q) >= 30, over: x(Q) > 78 && x(q) < 30 };
   }).sort((p, q) => p.a - q.a),
 }));
 const ZONES = [
@@ -44,7 +44,6 @@ const ZONES = [
   { name: 'Far out', from: 100, to: 700, about: 'Long paths that reach far beyond the planets.' },
 ];
 const ticks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
-const nWritten = outlineWorlds.filter((b) => written(b.id)).length;
 
 // The phone map runs down the page, the Sun at the top. Marks sit in narrow columns on the left;
 // every name sits in a column on the right at the height of its world, pushed down only as far as
@@ -101,7 +100,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
           <h2 class="lane-h">{l.name} <small>{l.about}</small></h2>
           <ol>
             {l.rows.map((r) => (
-              <li class:list={['wr', { flip: r.flip }]} style={`--q:${r.xq};--Q:${r.xQ};--a:${r.xa};--d:${r.d}px`}>
+              <li class:list={['wr', { flip: r.flip, over: r.over }]} style={`--q:${r.xq};--Q:${r.xQ};--a:${r.xa};--d:${r.d}px`}>
                 <span class:list={['wr-span', { off: r.off }]} aria-hidden="true" />
                 <span class="wr-dot" aria-hidden="true" />
                 <span class="wr-name"><a href={`/worlds/${r.id}`}>{r.name}</a>{r.moons.map((m) => <> · <a class="wr-moon" href={`/worlds/${m.id}`}>{m.name}</a></>)}<small>{fmtAu(r.q)}–{r.off ? '700+' : fmtAu(r.Q)} au</small></span>
@@ -141,7 +140,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   <dl class="wm-key">
     {ZONES.map((z) => <div><dt>{z.name}</dt><dd>{z.from} to {z.to} au. {z.about}</dd></div>)}
   </dl>
-  <p class="w-more">Further out still, the Oort cloud has no outline page yet; you can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>. Stars have their own pages under <a href="/stars">Stars</a>.</p>
+  <p class="w-more">Further out still, the Oort cloud is thought to wrap the whole Solar System in a thin shell of icy bodies; you can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>. Stars have their own pages under <a href="/stars">Stars</a>.</p>
 </Reading>
 
 <style>
@@ -185,6 +184,8 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wr-dot { position: absolute; top: 50%; left: calc(var(--a) * 1%); width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); border-radius: 50%; background: #0b0b0c; border: 1px solid rgba(233,196,138,.9); box-sizing: border-box; }
   .wr-name { position: absolute; top: 50%; left: calc(var(--Q) * 1% + .5rem); transform: translateY(-50%); white-space: nowrap; font: 400 .92rem/1 var(--r-serif); }
   .wr.flip .wr-name { left: auto; right: calc((100 - var(--q)) * 1% + .5rem); }
+  /* a long path that starts near the Sun: no room on either side, so the name sits on the line, by its start */
+  .wr.over .wr-name { left: calc(var(--q) * 1% + .9rem); top: auto; bottom: 50%; transform: none; padding-bottom: 3px; }
   .wr-name a { color: var(--ink); border-bottom: 1px dashed rgba(233,196,138,.4); }
   .wr-name a.wr-moon { color: var(--ink-soft); font-size: .82rem; }
   .wr-name small { margin-left: .45rem; font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); }
