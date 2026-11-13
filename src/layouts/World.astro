@@ -205,7 +205,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
         return 1;
       }
       // copy fades out as it reaches the header, rather than sliding underneath it
-      const fadeEls = [...document.querySelectorAll<HTMLElement>('main .copy > *, main figure')];
+      const fadeEls = [...document.querySelectorAll<HTMLElement>('main .copy > *, main figure, main .psheet h2, main .psheet .rc, main .psheet-src')];
       function fadeCopy() {
         const top = innerWidth < 760 ? 46 : 64;
         for (const el of fadeEls) {

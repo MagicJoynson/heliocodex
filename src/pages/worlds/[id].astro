@@ -130,8 +130,8 @@ const closeup = page?.globe ? page.picture : null;
           {ringLabels.map((g) => <text x={g.x} y={ly + 4} class="ring-t">{g.name}</text>)}
           <ellipse cx={ecx} cy={fy} rx={erx} ry={ery} class="path" />
           {round && <circle cx={fx} cy={fy} r="6" class="centre sun" />}
-          {round && <text x={fx} y={fy + 22} class="foc-t" text-anchor="middle">Sun</text>}
-          {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 18} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
+          {round && <text x={fx} y={fy + 30} class="foc-t" text-anchor="middle">Sun</text>}
+          {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 26} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
           <circle cx={ecx + erx} cy={fy} r="5" class="me" />
         </svg>
         <figcaption>The path of {midName} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
@@ -198,7 +198,7 @@ const closeup = page?.globe ? page.picture : null;
   .wo-orbit .ring { fill: none; stroke: rgba(142,174,255,.18); }
   .wo-orbit .ring.crossed { stroke: rgba(142,174,255,.38); stroke-dasharray: 2 5; }
   .wo-orbit .ring-t { font: 400 12px var(--r-mono); fill: rgba(142,174,255,.8); text-anchor: middle; paint-order: stroke; stroke: #0b0b0c; stroke-width: 4px; }
-  .wo-orbit .foc-t, .wo-orbit .me-t { font: 400 12px var(--r-mono); fill: var(--ink-faint); }
+  .wo-orbit .foc-t, .wo-orbit .me-t { font: 400 20px var(--r-mono); fill: var(--ink-soft); }
   .wo-orbit .centre { fill: #c4bdaf; } .wo-orbit .centre.sun { fill: #f6d38e; filter: drop-shadow(0 0 6px rgba(246,211,142,.8)); }
   .wo-orbit .path { fill: none; stroke: var(--accent); stroke-width: 1.5; }
   .wo-orbit .me { fill: #ece7dc; }
