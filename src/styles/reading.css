@@ -7,7 +7,7 @@
 @import '@fontsource/ibm-plex-mono/400.css';
 
 .reading {
-  --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a;
+  --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --accent: #e9c48a;
   --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --rule: rgba(236, 231, 220, .14);
   --margin-col: 15rem; --text-col: 42rem;
@@ -69,6 +69,9 @@ body:has(.reading) { background: #0b0b0c; }
 .prose th:last-child, .prose td:last-child { padding-right: 0; }
 .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5em 0 1.7em; }
 .table-scroll table { margin: 0; min-width: 26rem; }
+/* three columns fit a phone if they may wrap a little; a two-column table fits as it is */
+.table-scroll table:not(:has(th:nth-child(4))) { min-width: 20rem; }
+.table-scroll table:not(:has(th:nth-child(3))) { min-width: 0; }
 /* A long equation scrolls sideways inside its own line and leaves the page still. */
 .prose .katex-display { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; margin: 1.4em 0; padding: .3em 0; }
 .prose .katex-display > .katex { white-space: nowrap; }

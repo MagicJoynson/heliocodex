@@ -130,7 +130,7 @@ terms:
     term: Apparent magnitude
     also: [magnitude]
     short: "How bright a star or planet looks from the Earth, on a scale where smaller numbers mean brighter."
-    more: "Five magnitudes is a factor of exactly 100 in brightness. Sirius is -1.46, and the faintest stars the eye can see from a dark place are about 6."
+    more: "Five magnitudes is a factor of exactly 100 in brightness. Sirius is −1.44, and the faintest stars the eye can see from a dark place are about 6."
     see: [absolute-magnitude, luminosity]
   - id: absolute-magnitude
     term: Absolute magnitude

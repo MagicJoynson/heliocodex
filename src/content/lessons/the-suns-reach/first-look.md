@@ -2,6 +2,8 @@
 sources:
   - { label: "NASA, The heliosphere", url: "https://science.nasa.gov/heliophysics/focus-areas/heliosphere/" }
   - { label: "NASA, Voyager", url: "https://science.nasa.gov/mission/voyager/" }
+  - { label: "Wikipedia, Solar wind (history)", url: "https://en.wikipedia.org/wiki/Solar_wind" }
+  - { label: "Wikipedia, Voyager 1", url: "https://en.wikipedia.org/wiki/Voyager_1" }
 ---
 The Sun gives out more than light. It also blows a wind.
 
@@ -33,3 +35,19 @@ Two spacecraft, Voyager 1 and Voyager 2, have flown all the way out of the bubbl
   <img src="/img/learn/voyager-2-testing-1977.jpg" alt="Engineers in white overalls and caps working round a spacecraft with a large white dish, in a clean room." width="1100" height="875" loading="lazy" />
   <figcaption><b>A photograph.</b> Voyager 2 being tested on 23 March 1977, five months before it left. The white dish, 3.7 metres across, is how it still talks to the Earth. A radio signal from Voyager 1 now takes nearly a whole day to arrive. Credit: NASA/JPL-Caltech.</figcaption>
 </figure>
+
+**How anyone guessed.** Nobody can see the wind. The first clue was the comets. A comet's gas tail always points straight away from the Sun, whichever way the comet itself is travelling, even when that means the tail goes in front. In the early 1950s a German astronomer, Ludwig Biermann, argued that something must be streaming out of the Sun all the time and pushing the tails back. In 1962 a spacecraft on its way to Venus flew through the wind and measured it.
+
+**How thin it is.** The wind is far too thin to feel. A space the size of a sugar cube holds only a few of its particles. You could hold your hand out in it and notice nothing. It matters because it never stops and because it carries magnetism with it.
+
+**How big the bubble is.** The edge is about 120 times as far from the Sun as the Earth is. Sunlight, which reaches us in 8 minutes, takes nearly 17 hours to get there (a sum). The wind itself, even at 400 km a second, needs more than a year.
+
+**Where Voyager 1 is now.** It is the most distant thing people have ever made. It is expected to reach a distance of one light-day from the Earth on about 18 November 2026. From then on a radio message to it, and the answer, will take two whole days.
+
+**What the bubble does.** Space between the stars is full of fast, harmful particles from exploded stars. The Sun's bubble turns a good share of them away. The whole Solar System lives inside a kind of shelter that the Sun blows for itself.
+
+**Common mistakes.**
+
+- *The solar wind is like wind on the Earth.* It is not moving air. It is a very thin stream of electric particles, and there is nothing in it to breathe or to feel.
+- *The Voyagers have left the Solar System.* They have left the Sun's bubble of wind. The Sun's gravity reaches very much further, and the most distant comets are far beyond them.
+- *The bubble has a wall.* Nothing solid is there. It is simply the distance at which the wind has thinned out so much that the thin gas between the stars can stop it.

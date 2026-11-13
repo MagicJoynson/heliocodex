@@ -151,8 +151,9 @@ export const PACKS: Pack[] = [
       { title: 'Getting off the ground', about: 'What a rocket does, what an orbit is, and how a spacecraft finds its way to another world.', lessons: ['how-a-rocket-works', 'what-an-orbit-is', 'leaving-and-arriving'] },
       { title: 'Where we have been', about: 'People as far as the Moon, machines to every planet and beyond, and telescopes above the air.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers', 'telescopes-in-space'] },
       { title: 'Staying there', about: 'Life aboard the Space Station, and what the body makes of it.', lessons: ['living-in-space'] },
+      { title: 'Going further', about: 'The plans to live on the Moon, and what it would take to reach Mars.', lessons: ['back-to-the-moon-and-on-to-mars'] },
     ],
-    coming: ['Going back to the Moon, and on to Mars'],
+    coming: [],
     look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
   },
   {
@@ -164,8 +165,9 @@ export const PACKS: Pack[] = [
       { title: 'The Earth moves', about: 'Two thousand years of argument, settled by a telescope and a stubborn planet.', lessons: ['why-the-sky-turns', 'from-a-still-earth-to-a-moving-one', 'keplers-laws', 'what-gravity-is'] },
       { title: 'How far, how big', about: 'From the Moon to the edge of what can be seen, one step at a time.', lessons: ['finding-the-size-of-everything', 'measuring-distance', 'the-distance-ladder', 'how-big-is-the-universe'] },
       { title: 'What it is all made of', about: 'Atoms, the four forces, and how light tells us what the stars are.', lessons: ['atoms-and-the-four-forces', 'reading-starlight', 'where-the-elements-come-from'] },
+      { title: 'The people', about: 'A planet found by arithmetic, and four astronomers of the 20th century who each saw something nobody expected.', lessons: ['finding-neptune', 'the-people-who-changed-the-picture'] },
     ],
-    coming: ['The people who changed the picture: Leavitt, Payne, Bell Burnell, Rubin', 'Finding Neptune with a pencil'],
+    coming: [],
     look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The same sky the first astronomers puzzled over, above your own horizon.' }],
   },
 ];

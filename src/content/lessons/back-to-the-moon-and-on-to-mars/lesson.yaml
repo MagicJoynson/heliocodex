@@ -1,0 +1,9 @@
+title: "Back to the Moon, and on to Mars"
+strand: exploring-space
+order: 5
+summary: "Nobody has stood on the Moon since 1972. The plans to go back aim for its south pole, where there is ice, and treat it as practice for Mars."
+scene: "Real photographs of the Moon's south pole from above, of the Earth over the far side of the Moon from Artemis II, and of the oxygen maker going into the Perseverance rover before it flew to Mars."
+view: { target: moon }
+terms: [transfer-orbit, light-time, regolith, escape-velocity, solar-wind, orbit]
+needs: [the-first-journeys, living-in-space]
+next: [looking-for-life-in-the-solar-system, robot-explorers]

@@ -52,6 +52,8 @@ const lessonLevels = defineCollection({
     sources: z.array(source).min(1),
     /** For levels that go out of date. */
     lastChecked: z.coerce.date().optional(),
+    /** For a level built on plans or news that will change: what to re-check, and by when. `npm run test:content` lists them. */
+    recheck: z.object({ what: z.string(), by: z.coerce.date() }).optional(),
   }),
 });
 

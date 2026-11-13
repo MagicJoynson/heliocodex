@@ -9,8 +9,8 @@
   --bg-raised: #0e1018;
   --line: #232738;
   --ink: #ebe6db;
-  --ink-soft: #b5b0a4;
-  --ink-faint: #7d7a72;
+  --ink-soft: #cdc7bb;
+  --ink-faint: #a29d92;
   --accent: #ffb347;
   --serif: 'Spectral', Georgia, serif;
   --sans: 'Inter Variable', system-ui, sans-serif;
@@ -51,14 +51,6 @@ p { margin: 0 0 1em; max-width: 66ch; }
 }
 .wordmark { display: block; line-height: 0; text-decoration: none; }
 .wordmark img { display: block; height: 28px; width: auto; }
-.site-nav { display: flex; align-items: center; gap: clamp(14px, 1.8vw, 24px); font: 400 0.72rem/1 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
-.site-nav a { text-decoration: none; color: var(--ink-soft); white-space: nowrap; }
-.site-nav a:hover, .site-nav a[aria-current] { color: var(--ink); }
-.site-nav a[href='/explore'] { color: var(--accent); }
-.nav-group { display: flex; gap: clamp(14px, 1.8vw, 24px); }
-.nav-group + .nav-group { padding-left: clamp(14px, 1.8vw, 24px); border-left: 1px solid rgba(236,231,220,.18); }
-.nav-group[data-group='explore'] a { color: var(--ink); }
-.nav-group[data-group='explore'] a[href='/explore'] { color: var(--accent); }
 .site-menu .menu-h { font: 400 .66rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); margin: 14px 18px 4px; }
 .site-menu-btn { display: none; font: 400 0.74rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; cursor: pointer; }
 .site-menu { position: absolute; top: calc(var(--header-h) - 4px); right: var(--gutter); width: min(22rem, calc(100vw - 2 * var(--gutter))); background: color-mix(in srgb, var(--bg-raised) 97%, transparent); border: 1px solid var(--line); padding: 6px 0; z-index: 30; max-height: calc(100dvh - var(--header-h) - 16px); overflow-y: auto; }

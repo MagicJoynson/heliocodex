@@ -1,0 +1,37 @@
+---
+// The full data sheet, directly under a planet's (or the Sun's) opening screen: the same record sheet as
+// every moon, star and small world, so any two can be compared.
+import { sheet } from '../lib/record';
+import { planetCells } from '../lib/planet-sheet';
+import '../styles/record.css';
+interface Props { world: string; name: string }
+const { world, name } = Astro.props;
+---
+<section class="psheet" id="sheet" aria-labelledby="sheet-h">
+  <div class="psheet-in">
+    <h2 id="sheet-h">{name} in numbers</h2>
+    <Fragment set:html={sheet(planetCells(world))} />
+    <p class="psheet-src">From the NASA planetary fact sheets and JPL. <a href="#more-h">Sources, lessons and more</a></p>
+  </div>
+</section>
+<style>
+  .psheet { position: relative; z-index: 5; background: #0b0b0c; color: #ece7dc; border-top: 1px solid rgba(236,231,220,.12); border-bottom: 1px solid rgba(236,231,220,.12);
+    --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace; --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --rule: rgba(236,231,220,.14); --accent: #e9c48a; }
+  /* the first scene after the sheet starts close under it, not after a screen of empty sky */
+  :global(.psheet + .beat) { min-height: 100svh; padding-top: clamp(40px, 8vh, 90px); align-content: start; }
+  .psheet-in { max-width: 72rem; margin: 0 auto; padding: clamp(36px, 6vw, 72px) var(--pad, 24px); }
+  .psheet h2 { font: 300 clamp(1.6rem, 2.6vw, 2.2rem)/1.15 var(--r-serif); letter-spacing: -.01em; margin: 0 0 1.2rem; color: var(--ink); text-shadow: none; }
+  .psheet h2::before { display: none !important; }
+  .psheet :global(.rec-sheet) { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .psheet :global(.rec-sheet .rc) { padding-left: 1.2rem; border-left: 1px solid var(--rule); }
+  .psheet :global(.rec-sheet .rc:nth-child(4n+1)) { padding-left: 0; border-left: 0; }
+  .psheet :global(.rec-sheet .rc:last-child:nth-child(odd)) { grid-column: auto; }
+  .psheet-src { font: 400 .92rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 1.1rem 0 0; }
+  .psheet-src a { color: var(--accent); margin-left: .6rem; }
+  @media (max-width: 1000px) {
+    .psheet :global(.rec-sheet) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .psheet :global(.rec-sheet .rc:nth-child(4n+1)) { padding-left: 1.2rem; border-left: 1px solid var(--rule); }
+    .psheet :global(.rec-sheet .rc:nth-child(odd)) { padding-left: 0; border-left: 0; }
+  }
+  @media (max-width: 420px) { .psheet :global(.rec-sheet .rc) { padding-right: .6rem; } .psheet :global(.rec-sheet .rc:nth-child(even)) { padding-left: .8rem; } }
+</style>

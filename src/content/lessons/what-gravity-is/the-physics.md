@@ -18,7 +18,7 @@ $$
 F = \frac{G\, m_1 m_2}{r^2}
 $$
 
-where $G = 6.67430 \times 10^{-11}$ m³ kg⁻¹ s⁻². A sphere pulls on things outside it exactly as if all its mass were at its centre, which is why $r$ is measured between centres.
+where $G = 6.67430 \times 10^{-11}$ m³ kg<sup>−1</sup> s<sup>−2</sup>. A sphere pulls on things outside it exactly as if all its mass were at its centre, which is why $r$ is measured between centres.
 
 **Why everything falls together.** Newton's second law says a force $F$ gives a mass $m$ an acceleration $a = F/m$. For a mass $m$ falling towards a much larger mass $M$,
 

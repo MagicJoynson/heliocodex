@@ -1,0 +1,21 @@
+---
+// The main navigation: four headings chosen from what the site is for, each opening the pages under it.
+// Used by every header: ordinary pages and the planet pages.
+import { groups } from '../lib/nav';
+interface Props { path: string }
+const { path } = Astro.props;
+import '../styles/header.css';
+---
+<nav class="site-nav" aria-label="Main">
+  {groups.map((g) => {
+    const here = g.sections.some((x) => x.match(path)) || path === g.href;
+    return (
+      <div class="nav-item">
+        <a class="nav-top" href={g.href} aria-current={here ? 'page' : undefined}>{g.name}</a>
+        <div class="nav-panel">
+          {g.sections.map((x) => <a href={x.href} data-outline={x.outline ? '' : undefined}><b>{x.label}</b><span>{x.about}</span></a>)}
+        </div>
+      </div>
+    );
+  })}
+</nav>
