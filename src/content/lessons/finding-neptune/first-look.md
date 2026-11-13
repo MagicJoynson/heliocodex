@@ -25,7 +25,7 @@ Uranus did not follow the tables. At first it ran a little ahead of where it sho
 
 **The sums.** In England a young Cambridge mathematician, John Couch Adams, began the calculation in 1843. In France Urbain Le Verrier, working on his own, began it in 1845. It was a hard problem: they had to work backwards from the errors to a planet whose mass, distance and position were all unknown.
 
-<figure class="photo">
+<figure class="photo print">
   <img src="/img/learn/le-verrier-lithograph.jpg" alt="A lithograph portrait of a man with wavy fair hair, in a dark coat and waistcoat with a patterned bow tie." width="669" height="851" loading="lazy" />
   <figcaption><b>A printed portrait.</b> Urbain Le Verrier, in a lithograph printed in Paris in the 19th century. Public domain, by way of Wikimedia Commons.</figcaption>
 </figure>
