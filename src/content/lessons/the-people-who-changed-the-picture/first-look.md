@@ -14,7 +14,7 @@ Most of what is known about the sky was not found in one flash by one genius. It
 **Henrietta Leavitt: how far away things are.** Working life: the 1890s to 1921.
 
 <figure class="photo">
-  <img src="/img/learn/henrietta-leavitt-1898.jpg" alt="An old black and white portrait of a woman with dark hair pinned up, wearing a dark dress with a wide lace collar." width="900" height="1195" loading="lazy" />
+  <img src="/img/learn/henrietta-leavitt-1898-wide.jpg" alt="An old black and white portrait of a woman with dark hair pinned up, wearing a dark dress with a wide lace collar." width="900" height="696" loading="lazy" />
   <figcaption><b>A photograph.</b> Henrietta Swan Leavitt in about 1898, aged about 30. Photographer unknown. Public domain, by way of Wikimedia Commons.</figcaption>
 </figure>
 
@@ -42,10 +42,12 @@ For a while the team half joked that it might be a signal from someone else, and
 **Vera Rubin: the matter nobody can see.** Working life: the 1950s to the 2010s.
 
 <figure class="photo">
-  <img src="/img/learn/vera-rubin-measuring-spectra-1974.jpg" alt="A black and white photograph of a woman in large glasses and a patterned dress, holding a small glass plate beside a heavy metal measuring machine." width="1100" height="874" loading="lazy" />
+  <img src="/img/learn/vera-rubin-measuring-spectra-1974.jpg" alt="A black and white photograph of a woman in large glasses and a patterned dress, holding a small glass plate beside a heavy metal measuring machine." width="1100" height="848" loading="lazy" />
   <figcaption><b>A photograph.</b> Vera Rubin measuring spectra at the Carnegie Institution in Washington in 1974. Credit: NOIRLab/NSF/AURA, CC BY 4.0.</figcaption>
 </figure>
 
 Rubin wanted to study astronomy at Princeton, which would not take women on its astronomy course. She studied elsewhere, and in the 1970s, with Kent Ford, she measured how fast stars and gas go round spiral galaxies. The outer parts should have gone round slowly, the way the outer planets go slowly round the Sun. They did not. They went round as fast as the inner parts. Something unseen, with far more mass than all the stars, must be holding them in. That is the best evidence for what is now called dark matter. A great telescope in Chile, the Vera C. Rubin Observatory, is named after her.
 
 **What they have in common.** Each of them looked hard at ordinary data, believed what it said when it said something odd, and was proved right. Each of them also worked at a time when a woman's name was easy to leave off the credit.
+
+**Not the whole list.** These four are a small part of a long story. Earlier people who changed the picture appear elsewhere on this site: Copernicus and Galileo in [From a still Earth to a moving one](/learn/from-a-still-earth-to-a-moving-one), Kepler in [Kepler's laws](/learn/keplers-laws), Newton in [What gravity is](/learn/what-gravity-is), and William Herschel, who found light beyond the red end of the rainbow in 1800, in [The whole spectrum](/learn/the-whole-spectrum).
