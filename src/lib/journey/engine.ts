@@ -20,6 +20,8 @@ export interface Journey {
 }
 
 export const HANDOVER = 0.5;
+/** for a world with `wide`: the share of the descent spent pulling back, and where the fall begins */
+const WIDE_OUT = 0.24, WIDE_HOLD = 0.44;
 
 export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, world: World): Journey {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
@@ -69,13 +71,32 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
   // moons, drawn on a plane that keeps them in shot from the start view
   const mRight = new THREE.Vector3().crossVectors(up, startDir).normalize();
   const mUp = new THREE.Vector3().crossVectors(startDir, mRight).normalize();
+  // seen from a little above the plane; a world with `wide` is seen from higher so its orbits read as rings
+  const mTilt = o.wide ? 0.26 : 0.1, mDepth = Math.sqrt(1 - mTilt * mTilt);
   const moons = o.moons.map((m) => {
     const mesh = potato(m.size, m.seed, m.color);
     A.add(mesh);
-    return { m, mesh };
+    // a faint ring along the orbit, shown only while the camera is pulled back far enough to see it whole
+    let ring: THREE.LineLoop | null = null;
+    if (o.wide) {
+      const pts: THREE.Vector3[] = [];
+      for (let i = 0; i < 160; i++) pts.push(moonPos((i / 160) * Math.PI * 2, m.orbitR, new THREE.Vector3()));
+      ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xd8d2c4, transparent: true, opacity: 0, depthWrite: false }));
+      A.add(ring);
+    }
+    // a small name beside the moon, in the page's own type, while pulled back
+    let tag: HTMLDivElement | null = null;
+    if (o.wide && m.name) {
+      tag = document.createElement('div');
+      tag.textContent = m.name;
+      tag.setAttribute('aria-hidden', 'true');
+      tag.style.cssText = 'position:fixed;left:0;top:0;z-index:3;pointer-events:none;opacity:0;font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;color:#efe6d4;text-shadow:0 0 6px #000,0 0 2px #000;white-space:nowrap;will-change:transform,opacity';
+      document.body.appendChild(tag);
+    }
+    return { m, mesh, ring, tag };
   });
   function moonPos(a: number, r: number, out: THREE.Vector3) {
-    return out.copy(mRight).multiplyScalar(Math.cos(a) * r).addScaledVector(startDir, Math.sin(a) * r * 0.97).addScaledVector(mUp, Math.sin(a) * r * 0.1);
+    return out.copy(mRight).multiplyScalar(Math.cos(a) * r).addScaledVector(startDir, Math.sin(a) * r * mDepth).addScaledVector(mUp, Math.sin(a) * r * mTilt);
   }
 
   // ---- lower scene --------------------------------------------------------
@@ -112,9 +133,23 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
     const p = progress;
 
     if (p < HANDOVER + 0.03) {
-      const e = clamp01(p / HANDOVER);
-      // altitude falls off exponentially so each stretch of scroll covers a similar change in view
-      const h = endAlt * Math.pow(o.startAltRadii / endAlt, Math.pow(1 - ease(e), 1.15));
+      const e0 = clamp01(p / HANDOVER);
+      let e = e0, h: number;
+      if (o.wide) {
+        // pull back until the widest orbit fits across the screen (with a margin), hold there, then fall
+        const half = Math.atan(Math.tan(THREE.MathUtils.degToRad(camA.fov / 2)) * camA.aspect);
+        const wideAlt = Math.max(o.startAltRadii, (o.wide.fit * 1.15) / Math.tan(half));
+        if (e0 < WIDE_HOLD) {
+          e = 0;
+          h = o.startAltRadii * Math.pow(wideAlt / o.startAltRadii, ease(clamp01(e0 / WIDE_OUT)));
+        } else {
+          e = (e0 - WIDE_HOLD) / (1 - WIDE_HOLD);
+          h = endAlt * Math.pow(wideAlt / endAlt, Math.pow(1 - ease(e), 1.15));
+        }
+      } else {
+        // altitude falls off exponentially so each stretch of scroll covers a similar change in view
+        h = endAlt * Math.pow(o.startAltRadii / endAlt, Math.pow(1 - ease(e), 1.15));
+      }
       text = fmtAlt(h * o.radiusKm);
       // ground track: most of the sideways travel happens high up
       const k = 1 - Math.pow(1 - ease(Math.min(1, e * 1.08)), 2.2);
@@ -144,20 +179,41 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       // a little parallax from the pointer
       camA.rotateY(-pointer.sx * 0.02);
       camA.rotateX(-pointer.sy * 0.015);
+      // on a tall phone screen the words fill the top half, so while pulled back, tip the view up and the moons sit below them
+      if (o.wide && camA.aspect < 1) camA.rotateX(clamp01((h - 6) / 10) * Math.atan(Math.tan(THREE.MathUtils.degToRad(camA.fov / 2)) * 0.6));
 
       stars.group.position.copy(pos);
       stars.setFade(o.look.airDensity <= 0 ? 1 : 1 - clamp01((o.look.skyTop - h) / (o.look.skyTop * 0.6)) * (o.look.airDensity > 0.6 ? 1 : 0.6));
       planet.update(camA, h, tSim);
-      for (const { m, mesh } of moons) {
+      // far out, the moons are drawn larger than life so they stay visible (the page says their sizes are not to scale)
+      const grow = o.wide ? Math.min(7, Math.max(1, h / 12)) : 1;
+      // a phone is often read in daylight, so out there the rings and moons are drawn brighter on a small screen
+      const wideOn = o.wide ? clamp01((h - 6) / 10) : 0;
+      const ringOn = wideOn * (small ? 0.62 : 0.32);
+      camA.updateMatrixWorld();
+      for (const { m, mesh, ring, tag } of moons) {
         const a = m.phase + tSim * m.speed;
         moonPos(a, m.orbitR, mesh.position);
         mesh.rotation.y = a;
+        mesh.scale.setScalar(grow);
+        if (ring) {
+          (ring.material as THREE.LineBasicMaterial).opacity = ringOn; ring.visible = ringOn > 0.005;
+          const mat = mesh.material as THREE.MeshStandardMaterial;
+          mat.emissive.setHex(m.color); mat.emissiveIntensity = wideOn * (small ? 0.7 : 0.3);
+        }
+        if (tag) {
+          const v = mesh.position.clone().project(camA);
+          const show = wideOn > 0.02 && v.z < 1;
+          tag.style.opacity = show ? String(wideOn) : '0';
+          if (show) tag.style.transform = `translate(${((v.x + 1) / 2) * innerWidth + 8}px, ${((1 - v.y) / 2) * innerHeight - 16}px)`;
+        }
       }
       renderer.toneMapping = THREE.NoToneMapping;
       renderer.toneMappingExposure = 1;
       renderer.shadowMap.enabled = false;
       renderer.render(A, camA);
     }
+    else for (const { tag } of moons) if (tag) tag.style.opacity = '0';
     const hz = p < HANDOVER ? ease(clamp01((p - (HANDOVER - 0.035)) / 0.035)) : 1 - ease(clamp01((p - HANDOVER) / 0.05));
     haze.style.opacity = String(hz);
 

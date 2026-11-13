@@ -212,11 +212,13 @@ export const worlds: Record<string, World> = {
       target: { lat: -20.5, lon: -44 }, startYaw: 1.1, startTilt: 0.15,
       landing: { sunElev: 25, sunYaw: -110, faceYaw: 90, pitch: 4 },
       moons: [
-        { orbitR: 5.9, size: 0.05, color: 0xd9c46a, seed: 2, speed: 0.34, phase: 0.4 },
-        { orbitR: 9.4, size: 0.045, color: 0xcfc4b4, seed: 6, speed: 0.17, phase: 2.2 },
-        { orbitR: 15, size: 0.07, color: 0x8f877a, seed: 7, speed: 0.085, phase: 3.4 },
-        { orbitR: 26.3, size: 0.065, color: 0x5a5148, seed: 8, speed: 0.036, phase: 5.0 },
+        { orbitR: 5.9, size: 0.05, color: 0xd9c46a, seed: 2, speed: 0.34, phase: 0.4, name: 'Io' },
+        { orbitR: 9.4, size: 0.045, color: 0xcfc4b4, seed: 6, speed: 0.17, phase: 2.2, name: 'Europa' },
+        { orbitR: 15, size: 0.07, color: 0x8f877a, seed: 7, speed: 0.085, phase: 3.4, name: 'Ganymede' },
+        { orbitR: 26.3, size: 0.065, color: 0x5a5148, seed: 8, speed: 0.036, phase: 5.0, name: 'Callisto' },
       ],
+      // the 'Four moons' step says the orbits are to scale, so all four must be in view there
+      wide: { fit: 26.3 },
     },
     buildLower: () => createClouds({
       sunDir: [-0.85, 0.42, 0.31],

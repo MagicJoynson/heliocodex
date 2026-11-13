@@ -16,7 +16,7 @@ export interface LowerScene {
   shadows?: boolean;
 }
 
-export interface Moon { orbitR: number; size: number; color: number; seed: number; speed: number; phase: number }
+export interface Moon { orbitR: number; size: number; color: number; seed: number; speed: number; phase: number; /** shown beside the moon while the camera is pulled back */ name?: string }
 
 export interface OrbitConfig {
   look: PlanetLook;
@@ -35,6 +35,8 @@ export interface OrbitConfig {
     sun?: [number, number, number]; faceSouth?: boolean;
   };
   moons: Moon[];
+  /** pull back early in the descent until the orbit of this radius (in planet radii) fits the screen, then fall */
+  wide?: { fit: number };
 }
 
 export interface World {
