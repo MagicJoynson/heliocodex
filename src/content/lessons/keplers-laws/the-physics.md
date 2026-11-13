@@ -28,6 +28,11 @@ $$
 
 For Mars, $a = 227.956$ million km and $e = 0.0935$. That gives 206.6 and 249.3 million km. The fact sheet lists 206.650 and 249.261.
 
+<figure class="photo">
+  <img src="/img/learn/charts/an-ellipse-and-its-focus.svg" alt="An oval orbit with the Sun at a point right of centre and a cross marking an empty point the same distance left of centre. The orbit's nearest and farthest points lie at either end of the long axis. Bars below measure a times one plus e from the far end to the Sun, a times one minus e from the Sun to the near end, and 2a across the whole." width="800" height="700" loading="lazy" />
+  <figcaption><b>Where the Sun sits.</b> The Sun is not at the centre of the ellipse but at one of two points called foci, a distance <i>ae</i> from the centre. The other focus is empty. The two distances to the ends of the long axis then add up to 2<i>a</i>. Drawn here with <i>e</i> = 0.6, far more stretched than any planet's orbit: Mars's, at 0.0935, would look like a circle.</figcaption>
+</figure>
+
 **Equal areas.** In a short time the line from the Sun to the planet sweeps a thin triangle. Its area depends only on the distance $r$ and on the part of the velocity that is at right angles to the line, $v_\perp$:
 
 $$

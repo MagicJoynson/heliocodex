@@ -21,6 +21,11 @@ $$
 M v_\star = m v_p
 $$
 
+<figure class="photo">
+  <img src="/img/learn/charts/star-and-planet-round-their-centre.svg" alt="A large gold star and a small blue planet on opposite sides of a cross marking their shared centre. The planet moves on a big dashed circle and the star on a small one, so the planet's arrow is long and the star's is short, and they point opposite ways. An arrow at the bottom right points towards us." width="800" height="640" loading="lazy" />
+  <figcaption><b>Both move.</b> The star and the planet go round the point between them, on opposite sides of it, so when the planet moves one way the star moves the other. The heavier the star, the smaller its circle and the slower it goes. The part of its motion towards and away from us is what shifts its light. Not to scale: for a real star the shared centre is usually inside the star.</figcaption>
+</figure>
+
 **Step two: how fast the planet goes.** For a circular orbit of radius $a$ and period $P$, the planet's speed is $v_p = 2\pi a / P$. Kepler's third law, in Newton's form, links $a$ to $P$. When the planet is far lighter than the star it is
 
 $$
