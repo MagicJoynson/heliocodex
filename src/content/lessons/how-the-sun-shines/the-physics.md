@@ -32,7 +32,10 @@ In the middle of the 1800s this was the best explanation anyone had, worked out 
 **Sum two: what fusion gives.** Four hydrogen atoms become one helium atom. NIST gives their masses in atomic mass units:
 
 $$
-4 \times 1.007825 - 4.002603 = 0.028697
+\begin{aligned}
+4 \times 1.007825 &= 4.031300 \\
+4.031300 - 4.002603 &= 0.028697
+\end{aligned}
 $$
 
 That is 0.71 per cent of the mass that went in. Using $E = mc^2$, one atomic mass unit is 931.5 MeV of energy, so each helium made releases 26.7 MeV. The Sun's power, divided by $c^2$, says it turns

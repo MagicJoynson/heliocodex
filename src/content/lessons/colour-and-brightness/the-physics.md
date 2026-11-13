@@ -35,7 +35,10 @@ $$
 This has no neat answer, but it can be solved by trying a number, putting it into the right side, and repeating. Start at 5 and it settles in a few steps at $x = 4.965$. Turned back into a wavelength,
 
 $$
-\lambda_{\text{peak}} = \frac{hc}{4.965\, k T} = \frac{2.898 \times 10^{-3} \ \text{m K}}{T}
+\begin{aligned}
+\lambda_{\text{peak}} &= \frac{hc}{4.965\, k T} \\
+&= \frac{2.898 \times 10^{-3} \ \text{m K}}{T}
+\end{aligned}
 $$
 
 That is the "2.9 million divided by the temperature in nanometres" of the level before, and NIST's value of the constant is $2.897\,772 \times 10^{-3}$ m K. At 5,772 K the peak is at 502 nm.

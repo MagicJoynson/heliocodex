@@ -19,7 +19,11 @@ $$
 At $\theta = 0$ this gives the nearest point, and at $\theta = 180^\circ$ the furthest:
 
 $$
-r_{\text{near}} = a\,(1 - e), \qquad r_{\text{far}} = a\,(1 + e)
+r_{\text{near}} = a\,(1 - e)
+$$
+
+$$
+r_{\text{far}} = a\,(1 + e)
 $$
 
 For Mars, $a = 227.956$ million km and $e = 0.0935$. That gives 206.6 and 249.3 million km. The fact sheet lists 206.650 and 249.261.
