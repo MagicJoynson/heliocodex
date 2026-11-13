@@ -151,8 +151,9 @@ export const PACKS: Pack[] = [
       { title: 'Getting off the ground', about: 'What a rocket does, what an orbit is, and how a spacecraft finds its way to another world.', lessons: ['how-a-rocket-works', 'what-an-orbit-is', 'leaving-and-arriving'] },
       { title: 'Where we have been', about: 'People as far as the Moon, machines to every planet and beyond, and telescopes above the air.', lessons: ['the-first-journeys', 'the-moon', 'robot-explorers', 'telescopes-in-space'] },
       { title: 'Staying there', about: 'Life aboard the Space Station, and what the body makes of it.', lessons: ['living-in-space'] },
+      { title: 'Going further', about: 'The plans to live on the Moon, and what it would take to reach Mars.', lessons: ['back-to-the-moon-and-on-to-mars'] },
     ],
-    coming: ['Going back to the Moon, and on to Mars'],
+    coming: [],
     look: [{ href: '/explore', text: 'Fly round the planets in 3D', about: 'Every world the robot explorers have visited, where it is today.' }, { href: '/atlas', text: 'The atlas', about: 'Maps made from what the spacecraft sent back.' }],
   },
   {
