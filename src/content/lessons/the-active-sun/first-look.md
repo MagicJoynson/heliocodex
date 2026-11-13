@@ -9,6 +9,11 @@ Never look straight at the Sun. It will damage your eyes. But with a safe filter
 
 There are dark spots on it. Each one is a patch that is a little cooler than the rest, and many are bigger than the whole Earth. They come and go over days or weeks.
 
+<figure class="photo">
+  <img src="/img/learn/sun-sunspots-sdo.jpg" alt="The whole Sun as an orange disc with a cluster of dark spots below the middle." width="1024" height="990" loading="lazy" />
+  <figcaption><b>A photograph.</b> The Sun in ordinary light in October 2014, by NASA's Solar Dynamics Observatory, which watches it from space without a break. The dark group below the middle was the largest for 24 years, about ten Earths across. Credit: NASA/SDO.</figcaption>
+</figure>
+
 The number of spots rises and falls. About every eleven years there are many, and in between there are almost none.
 
 When there are many spots the Sun is stormy. Sometimes it hurls a great cloud of gas out into space. If the cloud comes our way, it lights up the sky near the Earth's poles with moving curtains of green and red. These are the northern and southern lights.
@@ -20,6 +25,11 @@ When there are many spots the Sun is stormy. Sometimes it hurls a great cloud of
 **Why are they dark?** A sunspot is a place where strong magnetism has broken through the surface and is holding back the heat coming up from below. The spot is 1,500 degrees or more cooler than the gas round it. It is still hotter than molten iron, and on its own it would shine brilliantly. It looks black only because everything round it is brighter still.
 
 **The Sun has weather.** Apart from the spots there are sudden flashes called flares, and vast loops and clouds of glowing gas that rise off the surface and sometimes break free. A thin stream of particles, the solar wind, blows out from the Sun all the time and fills the space between the planets. When the Sun is stormy the wind is gusty.
+
+<figure class="photo">
+  <img src="/img/learn/solar-flare-sdo-2014.jpg" alt="A close view of part of the Sun in gold, with glowing loops and a white-hot burst of light just above the middle." width="673" height="505" loading="lazy" />
+  <figcaption><b>A picture in light our eyes cannot see.</b> A flare on 29 March 2014, the strongest kind, called X-class, taken by the Solar Dynamics Observatory in two shades of extreme ultraviolet, with colour added. The loops are hot gas following the Sun's magnetism. The straight streaks through the flash happen when that much light swamps the camera; they are not on the Sun. Credit: NASA/SDO.</figcaption>
+</figure>
 
 **What a storm does here.** The Earth is well protected. Its magnetism turns most of the Sun's particles aside, and its air stops the rest, so a solar storm cannot hurt anyone on the ground. What it can upset is our machinery: satellites, radio, and the long wires of power grids. In March 1989 a storm cut the electricity to the Canadian province of Quebec for nine hours.
 

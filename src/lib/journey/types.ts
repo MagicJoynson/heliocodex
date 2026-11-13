@@ -35,6 +35,8 @@ export interface OrbitConfig {
     sun?: [number, number, number]; faceSouth?: boolean;
   };
   moons: Moon[];
+  /** pull back early in the descent until the orbit of this radius (in planet radii) fits the screen, then fall */
+  wide?: { fit: number };
 }
 
 export interface World {

@@ -217,6 +217,8 @@ export const worlds: Record<string, World> = {
         { orbitR: 15, size: 0.07, color: 0x8f877a, seed: 7, speed: 0.085, phase: 3.4 },
         { orbitR: 26.3, size: 0.065, color: 0x5a5148, seed: 8, speed: 0.036, phase: 5.0 },
       ],
+      // the 'Four moons' step says the orbits are to scale, so all four must be in view there
+      wide: { fit: 26.3 },
     },
     buildLower: () => createClouds({
       sunDir: [-0.85, 0.42, 0.31],
