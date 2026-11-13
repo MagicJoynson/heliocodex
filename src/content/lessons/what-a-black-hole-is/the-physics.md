@@ -59,7 +59,7 @@ The orbit is a long ellipse. At its closest S2 is 120 au from the centre, moving
 
 <figure class="photo">
   <img src="/img/learn/charts/s2-round-the-black-hole.svg" alt="A long gold ellipse, the orbit of the star S2, with the star at its far left end. Near the right end of the ellipse is a tiny dot, the black hole of 4.3 million Suns, ringed by a blue circle about the size of a full stop: Neptune's orbit, drawn to the same scale." width="800" height="700" loading="lazy" />
-  <figcaption><b>S2's orbit, to scale.</b> The ellipse uses the sizes above: 1,030 au across half its long axis and 120 au at its closest. The blue ring is Neptune's orbit round the Sun, 30 au, drawn to the same scale. The mass that holds S2 in its 16-year orbit must lie inside its closest approach, only four times the width of that ring. The orbit is shown face on; on the sky it is seen tilted.</figcaption>
+  <figcaption><b>S2's orbit, to scale.</b> The ellipse uses the sizes above: 1,030 au across half its long axis and 120 au at its closest. The blue ring is Neptune's orbit round the Sun, 30 au, drawn to the same scale. The mass that holds S2 in its 16-year orbit must lie within 120 au of the centre, which is four times the ring's radius. The orbit is shown face on; on the sky it is seen tilted.</figcaption>
 </figure>
 
 **Mass turned into ripples.** When two black holes merge, the final hole has less mass than the two that made it. The difference leaves as gravitational waves, with energy
