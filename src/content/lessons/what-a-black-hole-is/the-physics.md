@@ -57,6 +57,11 @@ The star S2 goes round the centre of the galaxy every 16 years. The GRAVITY team
 
 The orbit is a long ellipse. At its closest S2 is 120 au from the centre, moving at 7,650 km/s, which is 2.6 per cent of the speed of light. That distance is about 1,400 times $r_s$. So 4.3 million Suns sit inside a space only four times the width of Neptune's orbit, and nothing known but a black hole can be that heavy and that small. At this distance the team measured two effects that Newton's laws do not allow: the star's light is stretched as it climbs away, and the ellipse itself turns slowly, as Mercury's does.
 
+<figure class="photo">
+  <img src="/img/learn/charts/s2-round-the-black-hole.svg" alt="A long gold ellipse, the orbit of the star S2, with the star at its far left end. Near the right end of the ellipse is a tiny dot, the black hole of 4.3 million Suns, ringed by a blue circle about the size of a full stop: Neptune's orbit, drawn to the same scale." width="800" height="700" loading="lazy" />
+  <figcaption><b>S2's orbit, to scale.</b> The ellipse uses the sizes above: 1,030 au across half its long axis and 120 au at its closest. The blue ring is Neptune's orbit round the Sun, 30 au, drawn to the same scale. The mass that holds S2 in its 16-year orbit must lie inside its closest approach, only four times the width of that ring. The orbit is shown face on; on the sky it is seen tilted.</figcaption>
+</figure>
+
 **Mass turned into ripples.** When two black holes merge, the final hole has less mass than the two that made it. The difference leaves as gravitational waves, with energy
 
 $$

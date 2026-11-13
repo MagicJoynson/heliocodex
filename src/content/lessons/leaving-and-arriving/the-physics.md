@@ -87,6 +87,11 @@ where $v_{\text{esc}} = 11.01$ km a second at that height. That gives 11.40, a b
 
 On those two dates the craft was about the same distance from Jupiter, 17.5 and 16.1 million km. As seen from Jupiter its speed hardly changed. As seen from the Sun it doubled. At 5.2 au, the escape speed from the Sun is about 18.5 km a second. Voyager 2 arrived at Jupiter bound to the Sun, with an energy of −121 megajoules per kilogram, and left with a positive energy, enough to leave the Solar System. It still had to call at Saturn, Uranus and Neptune first.
 
+<figure class="photo">
+  <img src="/img/learn/charts/voyager-2-at-jupiter.svg" alt="A diagram of arrows. A grey arrow is Jupiter's own motion. From its tip, two blue arrows of equal length, on a dashed circle, show Voyager 2's speed seen from Jupiter before and after the pass, turned through a large angle. Gold arrows from the start of the grey arrow to the tips of the blue ones show the speed seen from the Sun: short before, much longer after." width="800" height="760" loading="lazy" />
+  <figcaption><b>Adding Jupiter's motion.</b> Seen from the Sun, the craft's motion is Jupiter's motion plus its motion seen from Jupiter. The pass only turns the blue arrow round the dashed circle; it does not lengthen it. But turning it to point more along Jupiter's path makes the gold arrow, the sum, twice as long. The lengths are the speeds from Horizons; the angles between them are worked out from those speeds, and the drawing is flat, where the real pass was not.</figcaption>
+</figure>
+
 **Try it yourself.** Use vis-viva for the cheapest route from the Earth, at 1 au, to Jupiter, at 5.203 au. How long does it take, and what excess speed does it need on leaving the Earth?
 
 The answer: $a = 3.10$ au, so the trip is half of $3.10^{3/2}$ years, about 2.7 years, and the excess speed is 8.8 km a second. Voyager 2 took 23 months, from August 1977 to July 1979, by leaving faster on a longer orbit, as Perseverance did for Mars.

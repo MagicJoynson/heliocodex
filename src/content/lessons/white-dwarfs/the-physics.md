@@ -74,6 +74,11 @@ $$
 
 With NIST's constants that is 0.46 Suns. This is an order-of-magnitude argument, not a result: the $\sim$ signs mean every number in front has been dropped, so 0.46 says only that the limit is about the mass of the Sun, and that above it gravity beats the electrons whatever the size. Chandrasekhar's full calculation puts the numbers back. It works out the pressure and density at every depth, with the electrons' energy treated exactly and the star's mass concentrated towards its centre, and the number in front comes out as 3.10, giving 1.43 Suns. It earned him a share of the Nobel prize in 1983. Sirius B, at 1.018, is safely below. The remarkable thing is what goes into the limit: Planck's constant, the speed of light, the constant of gravity and the mass of a proton, and nothing about any particular star.
 
+<figure class="photo">
+  <img src="/img/learn/charts/electrons-against-gravity.svg" alt="A graph of energy per electron against how far the star is squeezed. Three straight lines rise from the corner. The middle one is labelled electrons push out. A steeper line above it is labelled gravity, heavier star, and a shallower one below is labelled gravity, lighter star." width="800" height="640" loading="lazy" />
+  <figcaption><b>Why squeezing does not help.</b> For electrons moving near the speed of light, both energies grow in step as the star shrinks, so on this drawing they are straight lines from the same corner. If gravity's line is the steeper, it stays ahead at every size and the star cannot stop shrinking. Which line is steeper depends only on the mass. In a lighter white dwarf the electrons move more slowly, and their line bends upwards, so a balance is found. Not to scale.</figcaption>
+</figure>
+
 **Try it yourself.** Use the escape speed formula, $\sqrt{2GM/R}$, to show that Sirius B's escape speed is about 2.3 per cent of the speed of light.
 
 **What this level leaves out.** The rough limit ignores that the electrons in a lighter white dwarf are not moving near the speed of light, which is why lighter white dwarfs are bigger. A real white dwarf also has a thin layer of hydrogen or helium on top, which changes the radius a little. Bond and colleagues find that Sirius B's mass and radius together fit the full theory of white dwarfs for a core of carbon and oxygen, which these rough sums cannot test.
