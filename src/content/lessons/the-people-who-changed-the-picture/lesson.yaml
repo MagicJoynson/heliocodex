@@ -1,0 +1,9 @@
+title: "The people who changed the picture"
+strand: how-we-found-out
+order: 3
+summary: "Four astronomers of the 20th century, Henrietta Leavitt, Cecilia Payne, Jocelyn Bell and Vera Rubin, each saw something nobody expected, often with little credit at the time."
+scene: "Real photographs of Henrietta Leavitt, Cecilia Payne and Vera Rubin at work, Leavitt's own graphs from 1912, the pulsar at the heart of the Crab Nebula, and a drawing of how fast stars go round a galaxy."
+view: { target: local-group, highlight: [andromeda] }
+terms: [cepheid, variable-star, spectral-line, hydrogen, neutron-star, dark-matter, radio-waves]
+needs: [reading-starlight, the-distance-ladder]
+next: [the-distance-ladder, dark-matter-and-dark-energy, neutron-stars-and-pulsars]

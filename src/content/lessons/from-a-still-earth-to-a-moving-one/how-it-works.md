@@ -33,12 +33,12 @@ The path of Mars is squashed very little. Its nearest point to the Sun is about 
 
 **The last piece.** The shift in the stars that the Greeks had looked for was finally measured in 1838, by Friedrich Bessel, for a star called 61 Cygni. It is tiny, because the stars are so far away. The Earth does move. The Church took Copernicus's book off its list of forbidden books in 1758.
 
-<figure class="photo">
+<figure class="photo print">
   <img src="/img/learn/copernicus-sun-centred-diagram-1543.jpg" alt="An old printed page with a diagram of circles one inside another. The word Sol is at the centre and Latin labels run round each ring." width="1100" height="943" loading="lazy" />
   <figcaption><b>A photograph of a printed page.</b> The diagram from Copernicus's book of 1543. The Sun, "Sol", is at the centre. The Earth is on the fifth ring from the outside, with the Moon beside it. The outermost ring is the stars. Public domain, by way of Wikimedia Commons.</figcaption>
 </figure>
 
-<figure class="photo">
+<figure class="photo print">
   <img src="/img/learn/galileo-moon-drawings-1610.jpg" alt="Five round drawings of the Moon at different phases, in black and white, showing craters and a ragged line between light and dark." width="937" height="1300" loading="lazy" />
   <figcaption><b>Drawings, not photographs.</b> The Moon as Galileo drew it from what he saw through his telescope, printed in his book of 1610. The ragged edge between light and dark told him that the Moon has mountains. Public domain, by way of Wikimedia Commons.</figcaption>
 </figure>
