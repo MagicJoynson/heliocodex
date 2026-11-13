@@ -165,9 +165,9 @@ export const PACKS: Pack[] = [
       { title: 'The Earth moves', about: 'Two thousand years of argument, settled by a telescope and a stubborn planet.', lessons: ['why-the-sky-turns', 'from-a-still-earth-to-a-moving-one', 'keplers-laws', 'what-gravity-is'] },
       { title: 'How far, how big', about: 'From the Moon to the edge of what can be seen, one step at a time.', lessons: ['finding-the-size-of-everything', 'measuring-distance', 'the-distance-ladder', 'how-big-is-the-universe'] },
       { title: 'What it is all made of', about: 'Atoms, the four forces, and how light tells us what the stars are.', lessons: ['atoms-and-the-four-forces', 'reading-starlight', 'where-the-elements-come-from'] },
-      { title: 'The people', about: 'Four astronomers of the 20th century who each saw something nobody expected.', lessons: ['the-people-who-changed-the-picture'] },
+      { title: 'The people', about: 'A planet found by arithmetic, and four astronomers of the 20th century who each saw something nobody expected.', lessons: ['finding-neptune', 'the-people-who-changed-the-picture'] },
     ],
-    coming: ['Finding Neptune with a pencil'],
+    coming: [],
     look: [{ href: '/sky', text: 'Tonight’s sky', about: 'The same sky the first astronomers puzzled over, above your own horizon.' }],
   },
 ];

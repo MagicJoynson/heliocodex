@@ -1,0 +1,9 @@
+title: "Finding Neptune with a pencil"
+strand: how-we-found-out
+order: 4
+summary: "In 1846 a planet was found where the arithmetic said it had to be: Uranus was being tugged off course, and the tug pointed to Neptune."
+scene: "A real photograph of Neptune from Voyager 2, a portrait of Urbain Le Verrier, and a drawing of how Neptune pulled Uranus ahead and then held it back."
+view: { target: neptune }
+terms: [gravity, orbit, orbital-period, ice-giant]
+needs: [what-gravity-is, keplers-laws]
+next: [the-people-who-changed-the-picture, gravity-as-bent-space-and-time]
