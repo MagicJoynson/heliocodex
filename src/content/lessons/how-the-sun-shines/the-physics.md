@@ -56,6 +56,11 @@ The typical energy of a particle in a gas at temperature $T$ is about $kT$, wher
 
 The way round is quantum tunnelling. A proton is not a hard ball with a sharp position but is spread out like a wave, and a wave has a small chance of turning up on the far side of a barrier it does not have the energy to climb. At the Sun's centre the chance for any one pair at any one meeting is tiny, which is why the first step of fusion is so slow, and why the Sun lasts billions of years and does not explode. Without tunnelling there would be no sunlight at all.
 
+<figure class="photo">
+  <img src="/img/learn/charts/protons-and-the-barrier.svg" alt="A graph of energy against the distance between two protons. Coming in from the right, a gold curve rises ever more steeply to a peak labelled 0.86 MeV, then drops straight down into a pit labelled fuse. A blue proton comes in from the right along a flat line well below the peak; the line turns to dots where it passes under the curve, labelled tunnels through." width="800" height="680" loading="lazy" />
+  <figcaption><b>The barrier.</b> Read from the right. As two protons close in, the energy needed to push them closer rises, to 0.86 MeV when they touch. Then the strong force takes over and they can fuse. A proton's energy, the blue line, is far below the peak, so by the old physics it must turn back where the line meets the curve. Instead, now and then, it tunnels through the dotted part. Not to scale: at the Sun's centre the blue line would be more than 600 times lower than the peak.</figcaption>
+</figure>
+
 **Sum four: how hot the centre must be.** Here is a rough check on the 15.7 million K. The gas at the centre must be hot enough for its pressure to hold up the weight of everything above. That means the energy of motion of each particle, about $kT$, must be roughly comparable to the energy gravity gives a proton falling in from the surface, $G M m_p / R$:
 
 $$

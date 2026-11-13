@@ -38,6 +38,11 @@ $$
 
 This is the equilibrium temperature. The 4 underneath comes from the ratio of the whole surface to the disc that catches the light. The fourth root means the temperature changes slowly: double the sunlight and the temperature goes up only by the fourth root of 2, about 19 per cent.
 
+<figure class="photo">
+  <img src="/img/learn/charts/sunlight-in-heat-out.svg" alt="Parallel gold arrows of sunlight come from the left and stop on a dark planet. A dashed oval through the planet marks the disc that catches them. Red arrows of heat leave the planet in every direction." width="800" height="600" loading="lazy" />
+  <figcaption><b>In through a disc, out all round.</b> Sunlight arrives from one direction, so the planet catches only what falls on its shadow, a disc of area πR². It gives out heat from its whole surface, four times that area. That ratio is the 4 in the formula.</figcaption>
+</figure>
+
 **Real data: three planets.** NASA's fact sheets give the sunlight and albedo of each planet, and the average temperature measured at its surface.
 
 Venus gets 2,601 watts on each square metre and reflects 0.77 of it. The Earth gets 1,361 and reflects 0.294. Mars gets 586 and reflects 0.25.
