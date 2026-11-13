@@ -1,6 +1,8 @@
 ---
 sources:
   - { label: "Wikipedia, Artemis program", url: "https://en.wikipedia.org/wiki/Artemis_program" }
+  - { label: "Wikipedia, Artemis I", url: "https://en.wikipedia.org/wiki/Artemis_I" }
+  - { label: "Wikipedia, Artemis II", url: "https://en.wikipedia.org/wiki/Artemis_II" }
   - { label: "SpacePolicyOnline, NASA is full steam ahead on Artemis III, IV and V (23 October 2026)", url: "https://spacepolicyonline.com/news/nasa-is-full-steam-ahead-on-artemis-iii-iv-and-v/" }
   - { label: "The Register, NASA ditches the Lunar Gateway (24 March 2026)", url: "https://www.theregister.com/2026/03/24/goodbye_lunar_gateway_nasa_ditches/" }
   - { label: "CGTN, China gears up for crewed Moon landing by 2030 (28 February 2026)", url: "https://news.cgtn.com/news/2026-02-28/China-gears-up-for-crewed-moon-landing-by-2030-1L7SwMwUaVa/p.html" }
@@ -14,8 +16,14 @@ sources:
   - { label: "Wikipedia, Perseverance (rover)", url: "https://en.wikipedia.org/wiki/Perseverance_(rover)" }
   - { label: "NASA image library, Crescent Earth over the lunar horizon, Artemis II (art002e015231)", url: "https://images.nasa.gov/details/art002e015231" }
 lastChecked: 2026-11-13
+recheck: { what: "The Artemis, Moon base and Chinese landing plans and dates, and whether Starship has been refuelled in orbit", by: 2027-02-13 }
 ---
 **The plan, as it stood on 13 November 2026.** Every date after today is a target, not a promise.
+
+<figure class="photo">
+  <img src="/img/learn/charts/artemis-flights.svg" alt="A time line from 2022 to 2029 with five Artemis flights. I in late 2022 and II in spring 2026 are filled dots, before today. III in 2027 and IV and V in 2028 are open dots, after today." width="800" height="280" loading="lazy" />
+  <figcaption><b>A chart.</b> The five Artemis flights in order. The two flown are filled in; the three still planned are open, placed where the plans stood on 13 November 2026. Planned dates are drawn mid-year or early and late in the year, as the plans give them, not on exact days.</figcaption>
+</figure>
 
 | Flight | What it is for |
 |---|---|

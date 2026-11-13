@@ -83,6 +83,18 @@ for f in glob.glob(path('src', 'content', '**', '*.md'), recursive=True) + glob.
     for world in ('jupiter', 'saturn', 'uranus', 'neptune', 'pluto'):
         for n in re.findall(world.capitalize() + r"[^.]{0,40}?\b(\d{1,3}) (?:known |confirmed )?moons", text):
             if int(n) != moon_n.get(world): bad.append(f'{os.path.relpath(f, ROOT)}: says {world.capitalize()} has {n} moons; the list in src/data/bodies/moons.json has {moon_n.get(world)}')
+# pages built on plans or news: list them with when they were last checked, and say which are due
+import datetime
+due = []
+for f in sorted(glob.glob(path('src', 'content', 'lessons', '*', '*.md'))):
+    m = re.match(r'---\n(.*?)\n---', open(f, encoding='utf-8').read(), re.S)
+    head = yaml.safe_load(m.group(1)) if m else {}
+    r = (head or {}).get('recheck')
+    if r:
+        by = r['by'] if isinstance(r['by'], datetime.date) else datetime.date.fromisoformat(str(r['by']))
+        due.append((by, os.path.relpath(f, ROOT), head.get('lastChecked'), r['what']))
+for by, f, last, what in due:
+    print(f'{"DUE  " if by <= datetime.date.today() else "     "}re-check by {by}: {f} (last checked {last}): {what}')
 for b in bad: print(b)
 print(f'{len(lessons)} lessons, {len(terms)} glossary terms, {len(facts)} facts, {len(targets)} places to point at: ' + (f'{len(bad)} broken links' if bad else 'all links hold'))
 sys.exit(1 if bad else 0)

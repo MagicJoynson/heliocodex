@@ -9,6 +9,7 @@ sources:
   - { label: "NASA image library, Clementine mosaic of the Moon's south pole (PIA00001)", url: "https://images.nasa.gov/details/PIA00001" }
   - { label: "NASA image library, Engineers lower MOXIE into Perseverance (PIA24176)", url: "https://images.nasa.gov/details/PIA24176" }
 lastChecked: 2026-11-13
+recheck: { what: "The Artemis, Moon base and Chinese landing plans and dates, and whether Starship has been refuelled in orbit", by: 2027-02-13 }
 ---
 Twelve people walked on the Moon between July 1969 and December 1972. Then nobody went back. For more than fifty years every person who left the ground stayed within a few hundred kilometres of it, going round and round the Earth.
 
