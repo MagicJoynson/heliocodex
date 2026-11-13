@@ -1,4 +1,5 @@
 ---
+import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { moonCount } from '../data/moon-counts';
 import '@fontsource-variable/archivo/wdth.css';
@@ -30,6 +31,8 @@ const rows: [string, string][] = [
       <WorldGlance world="mercury" />
     </div>
   </section>
+
+  <PlanetSheet world="mercury" name="Mercury" />
 
   <section class="beat" data-p="0.17">
     <div class="copy">
@@ -79,9 +82,9 @@ const rows: [string, string][] = [
 
   <section class="beat last ground" data-p="1">
     <div class="copy">
-      <h2>In numbers</h2>
+      <h2>More numbers</h2>
       <dl class="numbers">
-        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        {rows.filter(([k]) => !/^(Distance from the Sun|A year|A day|Mass|Known moons|Moons|Average density|Temperature|Surface temperature|Average temperature|Day and night|Width|Diameter|Light to|Radius$|Sunrise to sunrise|Surface \(photosphere\)|Share of|One turn$)/.test(k)).map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>
       <p class="aside">NASA NSSDC Mercury Fact Sheet and JPL orbital elements. Only two spacecraft have visited so far, Mariner 10 in 1974 and 1975 and MESSENGER. BepiColombo, from Europe and Japan, is on its way into orbit.</p>
       <nav class="onward">

@@ -1,0 +1,17 @@
+---
+// Search in the header: planets, moons and small worlds, stars, constellations, glossary words, lessons.
+// The index (/search.json) loads the first time the box is used. Without scripts the form goes to /search.
+import '../styles/header.css';
+---
+<form class="find" role="search" action="/search" method="get">
+  <label class="find-label" for="find-q">Search</label>
+  <input id="find-q" class="find-q" name="q" type="search" placeholder="Search planets, moons, stars, words…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="find-list" aria-autocomplete="list" />
+  <ul id="find-list" class="find-list" role="listbox" aria-label="Results" hidden></ul>
+</form>
+<button type="button" class="find-btn" aria-label="Search" aria-expanded="false">
+  <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" stroke-width="1.6" /><path d="M13 13l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" /></svg>
+</button>
+<script>
+  import { wireSearch } from '../lib/search';
+  wireSearch(document.querySelector<HTMLFormElement>('.find')!, document.querySelector<HTMLButtonElement>('.find-btn')!);
+</script>

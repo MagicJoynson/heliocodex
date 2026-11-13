@@ -24,3 +24,7 @@
 }
 
 .star-head h1.long { font-size: clamp(2.2rem, 6vw, 4.6rem); }
+/* on the record layout the star's drawing sits beside its data sheet */
+.rec-pic.star-face canvas { max-height: 26rem; }
+.rec-pic.star-face figcaption { text-align: left; margin: 0; }
+@media (max-width: 860px) { .rec-pic.star-face canvas { max-height: 15rem; } }

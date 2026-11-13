@@ -1,0 +1,28 @@
+---
+// The search results page: where the header search goes without scripts, or when Enter has no single pick.
+import Base from '../layouts/Base.astro';
+import '../styles/reading.css';
+---
+<Base title="Search" path="/search" description="Search Heliocodex: planets, moons, stars, constellations, words and lessons." noindex>
+  <main class="reading search-page">
+    <h1>Search</h1>
+    <ol class="search-results" aria-live="polite"></ol>
+  </main>
+</Base>
+<style>
+  .search-page h1 { font: 300 clamp(2rem, 4vw, 3rem)/1.1 var(--r-serif); margin: 0 0 1.6rem; }
+  .search-results { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; max-width: 44rem; }
+  .search-results :global(a) { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); text-decoration: none; font: 400 1.15rem/1.3 var(--r-serif); }
+  .search-results :global(span) { font: 400 .8rem/1.3 var(--r-mono); color: var(--ink-faint); }
+</style>
+<script>
+  import { loadIndex, rank } from '../lib/search';
+  const q = new URLSearchParams(location.search).get('q') ?? '';
+  const ol = document.querySelector('.search-results')!;
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
+  document.querySelector('.search-page h1')!.textContent = q ? `Search: ${q}` : 'Search';
+  loadIndex().then((all) => {
+    const hits = rank(all, q, 60);
+    ol.innerHTML = hits.length ? hits.map((h) => `<li><a href="${h[2]}">${esc(h[0])}<span>${esc(h[1])}</span></a></li>`).join('') : q ? `<li>Nothing found for “${esc(q)}”.</li>` : '';
+  });
+</script>

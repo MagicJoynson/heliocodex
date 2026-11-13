@@ -1,4 +1,5 @@
 ---
+import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/italiana';
@@ -31,6 +32,8 @@ const rows: [string, string][] = [
       <WorldGlance world="saturn" />
     </div>
   </section>
+
+  <PlanetSheet world="saturn" name="Saturn" />
 
   <section class="beat" data-p="0.17">
     <div class="copy">
@@ -80,9 +83,9 @@ const rows: [string, string][] = [
 
   <section class="beat last sky" data-p="1">
     <div class="copy">
-      <h2>In numbers</h2>
+      <h2>More numbers</h2>
       <dl class="numbers">
-        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        {rows.filter(([k]) => !/^(Distance from the Sun|A year|A day|Mass|Known moons|Moons|Average density|Temperature|Surface temperature|Average temperature|Day and night|Width|Diameter|Light to|Radius$|Sunrise to sunrise|Surface \(photosphere\)|Share of|One turn$)/.test(k)).map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>
       <p class="aside">NASA NSSDC Saturn Fact Sheet and JPL orbital elements. Ring edges from the NASA Saturnian Rings Fact Sheet. Cassini orbited Saturn from 2004 until 15 September 2017, when it was steered into the planet. In 2025 the rings were edge-on to Earth and almost vanished in small telescopes.</p>
       <nav class="onward">

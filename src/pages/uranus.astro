@@ -1,4 +1,5 @@
 ---
+import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/instrument-serif/400.css';
@@ -32,6 +33,8 @@ const rows: [string, string][] = [
       <WorldGlance world="uranus" />
     </div>
   </section>
+
+  <PlanetSheet world="uranus" name="Uranus" />
 
   <section class="beat" data-p="0.17">
     <div class="copy">
@@ -82,9 +85,9 @@ const rows: [string, string][] = [
 
   <section class="beat last haze" data-p="1">
     <div class="copy">
-      <h2>In numbers</h2>
+      <h2>More numbers</h2>
       <dl class="numbers">
-        {rows.map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
+        {rows.filter(([k]) => !/^(Distance from the Sun|A year|A day|Mass|Known moons|Moons|Average density|Temperature|Surface temperature|Average temperature|Day and night|Width|Diameter|Light to|Radius$|Sunrise to sunrise|Surface \(photosphere\)|Share of|One turn$)/.test(k)).map(([k, v]) => <div><dt>{k}</dt><dd>{v}</dd></div>)}
       </dl>
       <p class="aside">NASA NSSDC Uranus Fact Sheet and JPL orbital elements. Most of the moons are named after characters from Shakespeare and Alexander Pope. In 2022 American planetary scientists picked an orbiter and probe for Uranus as the next big mission they most wanted NASA to fly.</p>
       <nav class="onward">

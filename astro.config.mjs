@@ -8,5 +8,7 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
   build: { format: 'file' },
+  // /bodies was a second list of the planets; the Solar System page (/worlds) is now the one way in
+  redirects: { '/bodies': '/worlds' },
   markdown: { processor: satteri({ features: { math: true }, mdastPlugins: [equations, charts] }) },
 });

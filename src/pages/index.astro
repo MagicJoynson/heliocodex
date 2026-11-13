@@ -2,15 +2,36 @@
 import Base from '../layouts/Base.astro';
 import '../styles/reading.css';
 import { portraits } from '../lib/portraits';
-import { PACKS, packLessons } from '../lib/learn/packs';
 import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
-import { PLACES, along } from '../lib/learn/map';
 import facts from '../data/facts.json';
 import { bodies } from '../data/bodies';
+import { planetCells } from '../lib/planet-sheet';
+import { properStars } from '../lib/sky/starlist';
+import { slugOf } from '../lib/sky/star';
+import { allTerms, STRAND_ORDER } from '../lib/v2/margin/content';
+import { WORLD_PAGES } from '../data/world-pages';
 import { outlineWorlds } from '../lib/worlds';
-import { plannedCount } from '../data/plan';
+import { body } from '../data/bodies/index';
 
 const lessons = await allLessons();
+// what the site holds, shown by name: the brightest named stars, well-known constellations, every subject with
+// a few of its lessons, the moons with full pages (with their pictures), the small worlds, and some glossary words
+const brightStars = properStars().sort((a, b) => a.appMag - b.appMag).slice(0, 12);
+const CONS = ['Orion', 'Ursa Major', 'Cassiopeia', 'Cygnus', 'Scorpius', 'Leo', 'Taurus', 'Crux', 'Lyra', 'Andromeda'];
+const strands = STRAND_ORDER.map((strand) => ({ strand, name: STRAND_NAMES[strand], lessons: lessons.filter((l) => l.data.strand === strand).sort((a, b) => a.data.order - b.data.order).slice(0, 3) })).filter((g) => g.lessons.length);
+const moonCards = Object.entries(WORLD_PAGES).sort(([a], [b]) => (a === 'moon' ? -1 : b === 'moon' ? 1 : 0)).map(([id, pg]) => ({ id, name: body(id)!.name.replace(/^The /, 'The '), src: (pg.globe ?? pg.picture).src }));
+const KIND_LABEL: [string, string][] = [['dwarf', 'Dwarf planets'], ['asteroid', 'Asteroids'], ['comet', 'Comets']];
+const smallKinds = KIND_LABEL.map(([kind, label]) => ({ label, items: outlineWorlds.filter((b) => b.kind === kind).slice(0, 10) }));
+const terms = await allTerms();
+const WORD_IDS = ['light-year', 'orbit', 'parallax', 'redshift', 'black-hole', 'nebula', 'exoplanet', 'supernova', 'apparent-magnitude', 'galaxy', 'tide', 'aurora', 'equinox'];
+const words = WORD_IDS.map((id) => terms.find((t) => t.id === id)).filter((t): t is (typeof terms)[number] => !!t);
+// the start of the reference, on the first screen: each world's first three record numbers
+const plain = (h: string) => h.replace(/<[^>]+>/g, '');
+const ledger = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].map((slug) => {
+  const c = planetCells(slug);
+  const get = (k: string) => { const x = c.find((y) => y.key === k)!; return plain(`${x.value}${x.unit ? ` ${x.unit.replace(' on average', '').replace(' across', '')}` : ''}`); };
+  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: get('temperature') };
+});
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
 const jupiterKm = portraits.find((p) => p.slug === 'jupiter')!.km;
 // every picture is sized so that its disc is (diameter ÷ Jupiter's) × --j across
@@ -28,8 +49,6 @@ const far = worlds.map((w) => {
   const ih = d / w.disc;
   return { ...w, a, x: au(a), d: Math.round(d), ih: Math.round(ih), iw: Math.round(ih * (w.width / w.height)), light: lightTime(a) };
 });
-const tint = (t: number) => `color-mix(in oklab, #f0c27a, #8eaeff ${Math.round(t * 100)}%)`;
-const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.strand)).map((p) => ({ ...p, name: STRAND_NAMES[p.strand], a: along(p.from), b: along(p.to), tint: tint((along(p.from) + along(p.to)) / 2) }));
 ---
 <Base title="Heliocodex" path="/" description="The Sun, its planets and everything beyond, from real photographs and real measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
   <script is:inline>
@@ -39,13 +58,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
 
   <section class="home-hero" aria-labelledby="home-h">
     <div class="home-text">
-      <p class="label">The Sun, its worlds and everything beyond</p>
-      <h1 id="home-h">Our corner of the universe, at its true size</h1>
-      <p class="lead">Real photographs and real measurements, from the Sun out to the oldest light there is. Fly through it in 3D, learn how it works in short lessons, or step outside and find what is above you tonight.</p>
-      <p class="ctas">
-        <a class="cta primary" href="/explore">Enter the 3D solar system</a>
-        <a class="cta" href="/learn">Start learning</a>
-      </p>
+      <h1 id="home-h">The Sun, its worlds and everything beyond</h1>
     </div>
 
     <figure class="family">
@@ -66,18 +79,65 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
         The Sun and its eight planets in real spacecraft photographs, all drawn to one scale. The distances would never fit: at this size, Neptune would be <b id="nep">about 5 kilometres</b> off to the right. <a href="/explore">See it at true size and distance</a>.
       </figcaption>
     </figure>
+    <div class="ledger">
+      <table>
+        <caption>The Sun and the eight planets: the first three numbers of each record</caption>
+        <thead><tr><th scope="col">World</th><th scope="col">From the Sun</th><th scope="col">Size</th><th scope="col">Temperature</th></tr></thead>
+        <tbody>
+          {ledger.map((r) => (
+            <tr><th scope="row"><a href={`/${r.slug}`}>{r.name}</a></th><td>{r.dist}</td><td>{r.size}</td><td>{r.temp}</td></tr>
+          ))}
+        </tbody>
+      </table>
+      <p class="ledger-go"><a href="/worlds">Every moon and small world, by distance</a></p>
+    </div>
   </section>
 
   <div class="reading home">
-    <section class="row wide feature">
-      <a class="shot" href="/explore">
-        <img src="/img/home/explore.jpg" alt="The 3D view seen from above at a slant: the paths of the planets round the Sun as fine rings, the planets as points of light on them, and the stars behind." width="1280" height="720" loading="lazy" />
-      </a>
-      <div class="feature-words">
-        <p class="label">Explore in 3D</p>
-        <h2>The whole Solar System, where it is today</h2>
-        <p class="body">Every planet and its main moons in their real places, worked out from NASA’s orbital data. Click a world to glide to it, zoom out past the stars to the Milky Way and the cosmic web, or switch on <em>easier to see</em> to make the planets large enough to spot. Works on a phone.</p>
-        <p class="go"><a class="btn" href="/explore">Enter the 3D solar system</a></p>
+    <section class="band" aria-labelledby="b-sky">
+      <h2 id="b-sky"><a href="/sky">Sky</a></h2>
+      <div class="b-body">
+        <p class="b-line"><a href="/sky">What is up tonight</a>, wherever you are, with every planet and bright star named.</p>
+        <p class="b-k">Named stars</p>
+        <p class="b-list">{brightStars.map((t, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/stars/${t.slug}`}>{t.name}</a></>)}</p>
+        <p class="b-k">Constellations</p>
+        <p class="b-list">{CONS.map((c, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/stars/in/${slugOf(c)}`}>{c}</a></>)} <a class="b-all" href="/stars#constellations">All 88</a></p>
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="b-learn">
+      <h2 id="b-learn"><a href="/learn">Learn</a></h2>
+      <div class="b-body b-strands">
+        {strands.map((g) => (
+          <div class="b-strand">
+            <p class="b-k"><a href={`/learn/subject/${g.strand}`}>{g.name}</a></p>
+            <ul>{g.lessons.map((l) => <li><a href={`/learn/${l.id}`}>{l.data.title}</a></li>)}</ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="b-worlds">
+      <h2 id="b-worlds"><a href="/worlds">Moons and small worlds</a></h2>
+      <div class="b-body">
+        <ul class="b-moons">
+          {moonCards.map((m) => <li><a href={`/worlds/${m.id}`}><img src={m.src} alt="" width="96" height="96" loading="lazy" /><span>{m.name}</span></a></li>)}
+        </ul>
+        {smallKinds.map((k) => (
+          <>
+            <p class="b-k">{k.label}</p>
+            <p class="b-list">{k.items.map((b, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/worlds/${b.id}`}>{b.name.replace(/^The /, '')}</a></>)}</p>
+          </>
+        ))}
+      </div>
+    </section>
+
+    <section class="band" aria-labelledby="b-ref">
+      <h2 id="b-ref"><a href="/glossary">Reference</a></h2>
+      <div class="b-body">
+        <p class="b-k">Glossary words</p>
+        <p class="b-list">{words.map((t, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/glossary#${t.id}`}>{t.term}</a></>)} <a class="b-all" href="/glossary">A to Z</a></p>
+        <p class="b-list b-refs"><a href="/atlas">Charts, drawn to scale</a><a href="/explore">The Solar System in 3D</a><a href="/learn/facts">Facts</a><a href="/sources">Sources</a></p>
       </div>
     </section>
 
@@ -103,45 +163,9 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
           ))}
         </ol>
       </div>
-      <p class="far-more"><a href="/worlds" data-outline>Beyond the eight planets: {outlineWorlds.length} moons, dwarf planets, asteroids and comets</a> are set out on the map of worlds. Their pages are outlines for now, and are being written.</p>
+      <p class="far-more">Beyond the eight planets, the moons, dwarf planets, asteroids and comets are set out on <a href="/worlds">the map of the Solar System</a>.</p>
     </section>
 
-    <section class="learnband" aria-labelledby="learn-h">
-      <div class="lb-words">
-        <p class="label">Learn</p>
-        <h2 id="learn-h">From the ground under your feet to the oldest light</h2>
-        <p class="body">{lessons.length} short lessons, each written at more than one depth, set out by how long their light takes to reach you. Begin with ten first looks that cover the whole subject, or go straight to the part you want. {plannedCount} more are outlined and being written.</p>
-        <p class="go"><a class="btn" href={`/learn/${packLessons(PACKS[0])[0]}`}>Begin with ten lessons</a> <a class="lb-all" href="/learn">All {lessons.length} lessons</a></p>
-      </div>
-      <ol class="ladder" aria-label="Subjects, nearest first">
-        {places.map((p) => (
-          <li>
-            <a href={`/learn/subject/${p.strand}`} style={`--a:${p.a};--b:${p.b};--tint:${p.tint}`}>
-              <span class="l-name">{p.name}</span>
-              <span class="l-track" aria-hidden="true"><span class:list={['l-bar', { dot: p.b - p.a < 0.012 }]} /></span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
-
-    <section class="lookup" aria-labelledby="look-h">
-      <a class="dome" href="/sky" aria-label="Tonight’s sky">
-        <span class="dome-sky"><img src="/img/home/sky.jpg" alt="" width="960" height="600" loading="lazy" /></span>
-        <span class="dome-ground" aria-hidden="true"><b>E</b><b>S</b><b>W</b></span>
-      </a>
-      <div class="look-words">
-        <p class="label">Look up</p>
-        <h2 id="look-h">What is above you tonight</h2>
-        <p class="body">A live map of your own sky, for wherever you are and whenever you look, with every planet and bright star named.</p>
-        <p class="go"><a class="btn" href="/sky">Open tonight’s sky</a></p>
-        <ul class="refs">
-          <li><a href="/stars">Meet a star</a><span>All 8,770 stars you can see by eye, and the one whose light set out when you were born.</span></li>
-          <li><a href="/atlas">The atlas</a><span>Flat charts of everything in the 3D view, drawn to scale and good enough to print.</span></li>
-          <li><a href="/glossary">Glossary</a><span>Every word on the site, explained in a line.</span></li>
-        </ul>
-      </div>
-    </section>
   </div>
 
   <script>
@@ -158,10 +182,20 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
 </Base>
 
 <style>
-  .home-hero { position: relative; overflow: hidden; background: #000; border-bottom: 1px solid rgba(236,231,220,.12); font-family: 'Spectral', Georgia, serif; --ink: #ece7dc; --ink-soft: #c4bdaf; --ink-faint: #8a8478; --accent: #e9c48a; }
-  .home-hero .home-text { position: relative; z-index: 2; max-width: 46rem; padding: clamp(40px, 7vw, 96px) var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
+  .home-hero { position: relative; overflow: hidden; background: #000; border-bottom: 1px solid rgba(236,231,220,.12); font-family: 'Spectral', Georgia, serif; --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --accent: #e9c48a; }
+  .ledger { position: relative; z-index: 2; padding: clamp(18px, 2.6vw, 30px) var(--gutter) clamp(28px, 4vw, 48px); margin-left: clamp(0px, 14vw, 220px); max-width: 60rem; }
+  .ledger table { width: 100%; border-collapse: collapse; font: 400 1.02rem/1.3 'Spectral', Georgia, serif; color: var(--ink-soft); }
+  .ledger caption { text-align: left; font: 400 .74rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding: 0 0 .6rem; }
+  .ledger th, .ledger td { text-align: left; padding: .42rem 1rem .42rem 0; border-top: 1px solid rgba(236,231,220,.12); font-weight: 400; }
+  .ledger thead th { font: 400 .72rem/1.3 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); border-top: 0; }
+  .ledger tbody th a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.45); }
+  .ledger tbody th a:hover { color: var(--accent); }
+  .ledger-go { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; margin: 1rem 0 0; }
+  .ledger-go a { font: 400 .78rem/1 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
+  @media (max-width: 560px) { .ledger table { font-size: .92rem; } .ledger th, .ledger td { padding-right: .5rem; } }
+  .home-hero .home-text { position: relative; z-index: 2; max-width: 46rem; padding: clamp(22px, 3.4vw, 40px) var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
   .home-hero .label { font: 400 .72rem/1.5 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.1rem; }
-  .home-hero h1 { font: 300 clamp(2.4rem, 6vw, 4.6rem)/1.02 'Spectral', Georgia, serif; letter-spacing: -.02em; margin: 0 0 1.2rem; text-wrap: balance; color: var(--ink); }
+  .home-hero h1 { font: 300 clamp(1.7rem, 3vw, 2.4rem)/1.1 'Spectral', Georgia, serif; letter-spacing: -.02em; margin: 0 0 1.2rem; text-wrap: balance; color: var(--ink); }
   .home-hero .lead { font: 300 clamp(1.08rem, 1rem + .4vw, 1.3rem)/1.55 'Spectral', Georgia, serif; color: var(--ink-soft); max-width: 38rem; margin: 0; }
   .ctas { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; margin: 1.8rem 0 0; }
   .cta { font: 400 .78rem/1 'IBM Plex Mono', monospace; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 15px 0; border-bottom: 1px solid rgba(233,196,138,.5); }
@@ -170,7 +204,7 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
   .cta.primary:hover { background: #f3d4a2; color: #160f05; }
 
   /* the family portrait: --j is Jupiter's width in pixels; everything else follows from real diameters */
-  .family { margin: 0; padding: clamp(28px, 5vw, 56px) 0 22px; --j: clamp(64px, 11vw, 168px); }
+  .family { margin: 0; padding: clamp(14px, 2.4vw, 28px) 0 14px; --j: clamp(64px, 11vw, 168px); }
   .strip { position: relative; display: flex; align-items: center; height: calc(var(--j) * 1.6); }
   .sunlimb { position: absolute; top: 50%; height: calc(var(--j) * var(--sun-h)); width: auto; max-width: none; right: calc(100% - var(--j) * 1.35); transform: translateY(-50%); pointer-events: none; }
   .worlds { position: relative; list-style: none; margin: 0 0 0 calc(var(--j) * 1.6); padding: 0 var(--gutter) 0 0; display: flex; align-items: center; gap: calc(var(--j) * .12); }
@@ -180,17 +214,54 @@ const places = PLACES.filter((p) => lessons.some((l) => l.data.strand === p.stra
   .worlds span { font: 400 .62rem/1 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; position: absolute; top: calc(50% + var(--j) * .62); }
   .worlds li { position: relative; display: grid; justify-items: center; min-width: 4.6rem; }
   .worlds a:hover span, .worlds a:focus-visible span { color: var(--accent); }
-  .family figcaption { font: italic 300 .95rem/1.5 'Spectral', Georgia, serif; color: var(--ink-faint); max-width: 44rem; padding: 2.4rem var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
+  .family figcaption { position: relative; z-index: 2; font: italic 300 .95rem/1.5 'Spectral', Georgia, serif; color: var(--ink-soft); max-width: 44rem; padding: 1.2rem var(--gutter) 0; margin-left: clamp(0px, 14vw, 220px); }
   .family figcaption b { font-weight: 400; color: var(--ink-soft); }
   .family figcaption a { color: var(--ink-soft); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; }
+  /* on a phone all eight fit across, still to one scale; the small rocky planets' names alternate above and below */
   @media (max-width: 700px) {
-    .family { --j: 22vw; }
-    .strip { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; height: calc(var(--j) * 1.9); }
-    .strip::-webkit-scrollbar { display: none; }
-    .worlds span { font-size: .56rem; }
+    .family { --j: 11vw; }
+    .strip { height: calc(var(--j) * 2.2); }
+    .worlds { margin-left: calc(var(--j) * .7); padding-right: 6px; gap: 3px; }
+    .worlds li { min-width: 1.5rem; }
+    .worlds span { font-size: .5rem; letter-spacing: .06em; top: calc(50% + var(--j) * .55); }
+    .worlds .w-venus span, .worlds .w-mars span, .worlds .w-uranus span { top: auto; bottom: calc(50% + var(--j) * .55); }
+    .sunlimb { right: calc(100% - var(--j) * .55); }
+    .home-hero .home-text, .ledger, .family figcaption { margin-left: 0; }
+    .ledger td, .ledger th { white-space: nowrap; }
+    .ledger table { font-size: .9rem; }
+    .ledger thead th { white-space: normal; }
   }
 
-  .home { padding-top: clamp(24px, 4vw, 48px); }
+  .home { padding-top: clamp(8px, 2vw, 24px); }
+  /* the breadth of the site, by name: one compact band per part */
+  .band { display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: .8rem 3rem; padding: clamp(22px, 3vw, 34px) 0; border-top: 1px solid var(--rule); }
+  .band h2 { font: 400 clamp(1.35rem, 2vw, 1.7rem)/1.15 var(--r-serif); margin: 0; }
+  .band h2 a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.45); }
+  .b-body { min-width: 0; }
+  .b-line { font: 300 1.08rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 .8rem; }
+  .b-k { font: 400 .74rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: .9rem 0 .35rem; }
+  .b-k:first-child { margin-top: 0; }
+  .b-k a { color: var(--ink-soft); }
+  .b-list { font: 400 1.04rem/1.6 var(--r-serif); color: var(--ink-faint); margin: 0; }
+  .b-list a { white-space: nowrap; color: var(--ink); text-decoration-color: rgba(236,231,220,.25); text-underline-offset: .18em; }
+  .b-list a:hover { color: var(--accent); }
+  .b-all { margin-left: .6rem; font: 400 .74rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent) !important; }
+  .b-refs { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin-top: 1rem; }
+  .b-strands { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1rem 2rem; }
+  .b-strand ul { list-style: none; margin: 0; padding: 0; }
+  .b-strand li { font: 400 .98rem/1.4 var(--r-serif); margin: 0 0 .3rem; }
+  .b-strand li a { color: var(--ink); text-decoration: none; }
+  .b-strand li a:hover { color: var(--accent); }
+  .b-strand .b-k { margin: 0 0 .4rem; font: 500 .98rem/1.3 var(--r-serif); letter-spacing: 0; text-transform: none; color: var(--accent); }
+  .b-strand .b-k a { color: var(--accent); text-decoration: none; }
+  .b-strand .b-k a:hover { text-decoration: underline; }
+  .b-strand li { padding-left: .8rem; border-left: 1px solid var(--rule); }
+  .b-moons { list-style: none; margin: 0 0 .4rem; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 1rem .8rem; }
+  @media (max-width: 1100px) { .b-moons { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .b-moons a { display: grid; justify-items: center; gap: .45rem; text-decoration: none; color: var(--ink); font: 400 .98rem/1.2 var(--r-serif); }
+  .b-moons img { width: 5.4rem; height: 5.4rem; object-fit: cover; border-radius: 50%; display: block; }
+  .b-moons a:hover { color: var(--accent); }
+  @media (max-width: 760px) { .band { grid-template-columns: minmax(0, 1fr); } .b-moons { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .8rem .5rem; } .b-moons img { width: 4.2rem; height: 4.2rem; } .b-moons a { font-size: .86rem; } }
   .feature { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem 3.5rem; align-items: center; border-top: 0; }
   .feature h2 { font: 300 clamp(1.8rem, 3.2vw, 2.7rem)/1.1 var(--r-serif); letter-spacing: -.015em; margin: .8rem 0 0; text-wrap: balance; }
   .shot { display: block; border: 1px solid rgba(236,231,220,.14); line-height: 0; border-radius: 4px; overflow: hidden; }
