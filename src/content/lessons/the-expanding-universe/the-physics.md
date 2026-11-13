@@ -3,7 +3,7 @@ sources:
   - { label: "Planck Collaboration, Planck 2018 results VI: cosmological parameters (Astronomy and Astrophysics, 2020)", url: "https://arxiv.org/abs/1807.06209" }
   - { label: "Riess and others (SH0ES), A comprehensive measurement of the local value of the Hubble constant with 1 km/s/Mpc uncertainty (Astrophysical Journal Letters, 2022)", url: "https://arxiv.org/abs/2112.04510" }
   - { label: "Freedman and others (CCHP), Status report on the Chicago-Carnegie Hubble Program: measurement of the Hubble constant using the Hubble and James Webb space telescopes (Astrophysical Journal, 2025)", url: "https://arxiv.org/abs/2408.06153" }
-  - { label: "H0 Distance Network, The Local Distance Network: a community consensus report on the measurement of the Hubble constant at 1% precision (2025)", url: "https://arxiv.org/abs/2510.23823" }
+  - { label: "H0 Distance Network, The Local Distance Network: a community consensus report on the measurement of the Hubble constant at 1% precision (Astronomy and Astrophysics, 2026)", url: "https://doi.org/10.1051/0004-6361/202557993" }
   - { label: "NIST, fundamental physical constants (G, the proton's mass)", url: "https://physics.nist.gov/cuu/Constants/" }
 lastChecked: 2026-11-13
 recheck: { what: "Whether the gap between the Hubble constant from the oldest light and from the distance ladder has closed or been explained", by: 2027-11-13 }
@@ -76,9 +76,9 @@ Here $h$ is $H_0$ divided by 100, so ordinary matter, the stuff of stars and peo
 | Planck, 2018 | Oldest light, standard model | 67.4 ± 0.5 |
 | SH0ES, 2022 | Cepheid stars, then supernovae | 73.04 ± 1.04 |
 | CCHP, 2025 | Red giant stars, then supernovae | 70.4 ± 2.0 |
-| Distance Network, 2025 | Many ladders combined | 73.50 ± 0.81 |
+| Distance Network, 2026 | Many ladders combined | 73.50 ± 0.81 |
 
-The CCHP uncertainty here is its three stated parts added together in the usual way. The SH0ES team and the Distance Network, a combination agreed by many groups and still a preprint, find the ladder well above Planck, by five times the uncertainty or more, and argue that something is missing from the standard model. The CCHP team, using the Webb telescope, find a value between the two and consistent with the standard model, and argue that the gap comes from how the nearby stars are measured. As of November 2026 the question is open.
+The CCHP uncertainty here is its three stated parts added together in the usual way. The SH0ES team and the Distance Network, a combination agreed by many groups and published in 2026, find the ladder well above Planck, by five times the uncertainty or more, and argue that something is missing from the standard model. The CCHP team, using the Webb telescope, find a value between the two and consistent with the standard model, and argue that the gap comes from how the nearby stars are measured. As of November 2026 the question is open.
 
 **Try it yourself.** In a flat universe holding only matter, the age works out at exactly two thirds of the Hubble time. Taking $H_0 = 67.4$, how old would that universe be?
 

@@ -72,7 +72,7 @@ $$
 h \approx \frac{4}{d} \left(\frac{G \mathcal{M}}{c^2}\right)^{5/3} \left(\frac{\pi f}{c}\right)^{2/3}
 $$
 
-At the full analysis's distance of 410 megaparsecs and a frequency of 150 a second this gives $2.4 \times 10^{-21}$. The peak measured was $1.0 \times 10^{-21}$. The formula assumes the orbit is seen face on and the detector is ideally turned, and neither was true, so a measured value a little smaller is what is expected.
+At the full analysis's distance of 410 megaparsecs and a frequency of 150 a second this gives $2.4 \times 10^{-21}$. The peak measured was $1.0 \times 10^{-21}$, so the simple formula overestimates by a factor of about 2.4. That is expected, not a failure: the formula assumes the orbit is seen face on and the detector is turned the best way to catch the wave, and neither was true, which can only make the measured strength smaller. It gets the size right, a few parts in $10^{21}$, but it is not a match.
 
 **The proof before the waves.** The pulsar PSR B1913+16, found by Russell Hulse and Joseph Taylor in 1974, is in an 8-hour orbit with another neutron star. The same power formula says the orbit should shrink at a set rate. After 35 years of timing, Joel Weisberg and Yuping Huang found the measured shrinking to be 0.9983 of the prediction, give or take 0.0016.
 
