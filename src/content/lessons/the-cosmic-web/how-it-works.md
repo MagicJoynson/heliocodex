@@ -1,7 +1,7 @@
 ---
 sources:
   - { label: "NASA, Large scale structures", url: "https://science.nasa.gov/universe/galaxies/large-scale-structures/" }
-  - { label: "Huchra et al. 2012, Astrophysical Journal Supplement 199, 26 (the 2MASS Redshift Survey)", url: "https://doi.org/10.1088/0067-0049/199/2/26" }
+  - { label: "Sloan Digital Sky Survey, Data Release 18", url: "https://www.sdss.org/" }
   - { label: "Tully et al. 2014, Nature 513, 71", url: "https://doi.org/10.1038/nature13674" }
   - { label: "Mei et al. 2007, Astrophysical Journal 655, 144", url: "https://doi.org/10.1086/509598" }
 lastChecked: 2026-11-10
@@ -26,7 +26,7 @@ A cluster is more than its galaxies. It also holds a great deal of gas at tens o
 
 speed = Hubble constant × distance
 
-The speed can be read from the galaxy's light, which is shifted towards red by an amount that depends on it. The 3D view takes the Hubble constant as 70 km a second for every megaparsec, so a galaxy moving away at 7,000 km/s is placed 100 megaparsecs away, about 330 million light years. The survey drawn here measured that shift for more than 43,000 galaxies over 91% of the sky. The missing strip, called the Zone of Avoidance, lies behind the disc of our own galaxy, which is why the web has an empty wedge in it. The flat chart in the atlas reaches out to 310 megaparsecs, about a billion light years.
+The speed can be read from the galaxy's light, which is shifted towards red by an amount that depends on it. The 3D view takes the Hubble constant as 70 km a second for every megaparsec, so a galaxy moving away at 7,000 km/s is placed 100 megaparsecs away, about 330 million light years. The survey drawn here, the Sloan Digital Sky Survey, measured that shift for about 42,000 galaxies in the part of the sky it mapped. The rest of the sky is blank, because nobody has measured it with this survey. Another blank strip, called the Zone of Avoidance, lies behind the disc of our own galaxy, where dust hides what is beyond. The flat chart in the atlas reaches out to 600 megaparsecs, about two billion light years.
 
 **The clusters the view names.** These distances are worked out that way from each cluster's speed.
 
