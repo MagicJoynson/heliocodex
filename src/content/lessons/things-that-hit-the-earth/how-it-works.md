@@ -42,7 +42,7 @@ lastChecked: 2026-11-11
 
 <figure class="photo">
   <img src="/img/learn/dimorphos-tail-hubble.jpg" alt="A bright blue point of light with a long straight blue tail running to the upper right, and a scatter of faint blue dots round it." width="1100" height="977" loading="lazy" />
-  <figcaption><b>A photograph.</b> Dimorphos on 19 December 2022, nearly four months after the crash, by the Hubble Space Telescope. The tail is dust knocked off by DART. The faint dots round the asteroid are 37 boulders, from 1 to 7 metres across, drifting away at less than 1 km an hour. The blue is the colour chosen for the picture. Credit: NASA, ESA and David Jewitt (UCLA); image processing by Alyssa Pagan (STScI).</figcaption>
+  <figcaption><b>A photograph.</b> Dimorphos on 19 December 2022, nearly four months after the crash, by the Hubble Space Telescope. The tail is dust knocked off by DART. The faint dots round the asteroid are 37 boulders, from 1 to 7 metres across, drifting away at less than 1 km an hour. The blue is the colour chosen for the picture. Credit: NASA, ESA, D. Jewitt (UCLA), CC BY 4.0; image processing by Alyssa Pagan (STScI).</figcaption>
 </figure>
 
 **What comes next.** The European Space Agency's Hera spacecraft was launched on 7 October 2024 to go and look at the result. It is due to reach the two asteroids in late 2026, to measure the mass of Dimorphos and see what DART did to it.

@@ -7,7 +7,7 @@ Four hundred years ago Johannes Kepler spent years working through careful measu
 
 <figure class="photo">
   <img src="/img/learn/mars-hubble-2018.jpg" alt="Mars as an orange globe with white caps at top and bottom and its markings blurred by dust." width="869" height="900" loading="lazy" />
-  <figcaption><b>A photograph.</b> Mars, the planet whose odd path gave the game away. The Hubble Space Telescope took this in 2018, when a dust storm had spread over the whole planet. Credit: NASA, ESA and STScI.</figcaption>
+  <figcaption><b>A photograph.</b> Mars, the planet whose odd path gave the game away. The Hubble Space Telescope took this in 2018, when a dust storm had spread over the whole planet. Credit: NASA, ESA and STScI, CC BY 4.0.</figcaption>
 </figure>
 
 **One.** A planet's path is not a circle. It is a slightly squashed circle called an ellipse, and the Sun is not in the middle but a little to one side.
