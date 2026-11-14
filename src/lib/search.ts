@@ -1,4 +1,4 @@
-/** The header search: loads /search.json once, ranks matches, and drives the result list from the keyboard. */
+/** The header and home-page search: loads /search.json once, ranks matches, and drives the result list from the keyboard. */
 export type Entry = [string, string, string, string?];
 let index: Promise<Entry[]> | null = null;
 export const loadIndex = () => (index ??= fetch('/search.json').then((r) => r.json() as Promise<Entry[]>));
@@ -7,11 +7,50 @@ const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCa
 const KIND_RANK: Record<string, number> = { Planet: 0, Star: 2, Page: 1, Constellation: 2, Glossary: 3, Lesson: 3, 'Star (catalogue)': 6 };
 const kindRank = (k: string) => KIND_RANK[k] ?? (k.startsWith('Moon') || k === 'Dwarf planet' ? 1 : k === 'Asteroid' || k === 'Comet' ? 2 : 4);
 
-/** The best matches for a query: whole-name first, then start of name, start of a word, then anywhere. */
+/** Edit distance that counts a swapped pair of letters as one slip (optimal string alignment). Gives up past `cap`. */
+export function slips(a: string, b: string, cap = 3): number {
+  if (Math.abs(a.length - b.length) > cap) return cap + 1;
+  let prev2: number[] = [], prev = Array.from({ length: b.length + 1 }, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    let rowMin = i;
+    for (let j = 1; j <= b.length; j++) {
+      let d = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d = Math.min(d, prev2[j - 2] + 1);
+      cur[j] = d;
+      if (d < rowMin) rowMin = d;
+    }
+    if (rowMin > cap) return cap + 1;
+    prev2 = prev; prev = cur;
+  }
+  return prev[b.length];
+}
+
+/** How many slips a typed word may have: none for very short words, one up to five letters, two beyond that. */
+const allowed = (len: number) => (len < 4 ? 0 : len < 6 ? 1 : 2);
+
+/** The closest a typed word comes to a name's words, as slips: against each whole word, and against its opening letters while still typing. */
+function fuzzy(q: string, words: string[]): number {
+  const max = allowed(q.length);
+  if (!max) return Infinity;
+  let best = Infinity;
+  for (const w of words) {
+    if (w.length < 3) continue;
+    let d = slips(q, w, max);
+    if (d > max && w.length > q.length) d = Math.min(d, slips(q, w.slice(0, q.length), max) + 1);
+    if (d < best) best = d;
+  }
+  return best <= max ? best : Infinity;
+}
+
+/** The best matches for a query: whole-name first, then start of name, start of a word, then anywhere; and, for a query that is
+ *  not found as typed, names with a slip or two ("jupitor", "betelguese"). Catalogue numbers are only ever matched as typed. */
 export function rank(all: Entry[], query: string, max = 8): Entry[] {
   const q = norm(query.trim());
   if (!q) return [];
   const scored: [number, Entry][] = [];
+  const near: [number, Entry][] = [];
+  const tryFuzzy = q.length >= 4 && !/\d/.test(q) && !q.includes(' ');
   for (const e of all) {
     const name = norm(e[0]), also = e[3] ? norm(e[3]) : '';
     let s = -1;
@@ -21,32 +60,57 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
     else if (also && also.split(/\s+/).some((w) => w.startsWith(q))) s = 25;
     else if (q.length > 2 && (name.includes(q) || also.includes(q))) s = 30;
     if (s >= 0) scored.push([s + kindRank(e[1]) * 2 + name.length / 100, e]);
+    else if (tryFuzzy && e[1] !== 'Star (catalogue)') {
+      const d = fuzzy(q, [...name.split(/[\s-]+/), ...(also ? also.split(/\s+/) : [])]);
+      if (d < Infinity) near.push([d * 8 + kindRank(e[1]) + name.length / 100, e]);
+    }
   }
-  return scored.sort((a, b) => a[0] - b[0]).slice(0, max).map((x) => x[1]);
+  const out = scored.sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+  // As-typed matches always come first; near misses only fill the list.
+  if (out.length < max) out.push(...near.sort((a, b) => a[0] - b[0]).map((x) => x[1]).slice(0, max - out.length));
+  return out.slice(0, max);
 }
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
-export function wireSearch(form: HTMLFormElement, btn: HTMLButtonElement) {
+/** Wires a search box to a result list. `btn` is the header's small-screen toggle; the home page's box has none. */
+export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
   const input = form.querySelector<HTMLInputElement>('input')!, list = form.querySelector<HTMLUListElement>('ul')!;
-  let hits: Entry[] = [], at = -1;
+  // Tells a screen reader how many suggestions there are, since the list itself is not announced as it changes.
+  const status = document.createElement('div');
+  status.setAttribute('role', 'status');
+  status.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';
+  form.append(status);
+  let hits: Entry[] = [], at = -1, asked = '';
   const show = (open: boolean) => { list.hidden = !open; input.setAttribute('aria-expanded', String(open)); };
   const paint = () => {
+    const typed = input.value.trim();
     list.innerHTML = hits.length
-      ? hits.map((h, i) => `<li role="option" id="find-${i}" aria-selected="${i === at}"><a href="${h[2]}" tabindex="-1"><b>${esc(h[0])}</b><span>${esc(h[1])}</span></a></li>`).join('')
-      : `<li class="none">Nothing found for “${esc(input.value.trim())}”.</li>`;
-    if (at >= 0) input.setAttribute('aria-activedescendant', `find-${at}`); else input.removeAttribute('aria-activedescendant');
-    show(input.value.trim().length > 0);
+      ? hits.map((h, i) => `<li role="option" id="${list.id}-${i}" aria-selected="${i === at}" data-href="${esc(h[2])}"><b>${esc(h[0])}</b><span>${esc(h[1])}</span></li>`).join('')
+      : `<li class="none" role="presentation">Nothing found for “${esc(typed)}”.</li>`;
+    if (at >= 0) input.setAttribute('aria-activedescendant', `${list.id}-${at}`); else input.removeAttribute('aria-activedescendant');
+    status.textContent = typed ? (hits.length ? `${hits.length} suggestion${hits.length > 1 ? 's' : ''}. Use the up and down arrow keys, then Enter.` : `Nothing found for ${typed}.`) : '';
+    show(typed.length > 0);
   };
+  list.addEventListener('click', (e) => { const li = (e.target as Element).closest<HTMLElement>('li[data-href]'); if (li) location.href = li.dataset.href!; });
   input.addEventListener('focus', () => { loadIndex(); });
-  input.addEventListener('input', async () => { const all = await loadIndex(); hits = rank(all, input.value); at = hits.length ? 0 : -1; paint(); });
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown' && hits.length) { e.preventDefault(); at = (at + 1) % hits.length; paint(); }
-    else if (e.key === 'ArrowUp' && hits.length) { e.preventDefault(); at = (at - 1 + hits.length) % hits.length; paint(); }
-    else if (e.key === 'Escape') { show(false); if (document.body.classList.contains('finding')) { document.body.classList.remove('finding'); btn.setAttribute('aria-expanded', 'false'); btn.focus(); } }
+  input.addEventListener('input', async () => {
+    asked = input.value;
+    const all = await loadIndex();
+    if (asked !== input.value) return; // a newer keystroke is already on its way
+    hits = rank(all, input.value); at = hits.length ? 0 : -1; paint();
   });
-  form.addEventListener('submit', (e) => { if (at >= 0 && hits[at]) { e.preventDefault(); location.href = hits[at][2]; } });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' && hits.length) { e.preventDefault(); if (list.hidden) show(true); else at = (at + 1) % hits.length; paint(); }
+    else if (e.key === 'ArrowUp' && hits.length) { e.preventDefault(); at = (at - 1 + hits.length) % hits.length; paint(); }
+    else if (e.key === 'Escape') {
+      if (!list.hidden) { show(false); e.stopPropagation(); }
+      else if (btn && document.body.classList.contains('finding')) { document.body.classList.remove('finding'); btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
+    }
+  });
+  form.addEventListener('submit', (e) => { if (!list.hidden && at >= 0 && hits[at]) { e.preventDefault(); location.href = hits[at][2]; } });
   document.addEventListener('click', (e) => { if (!form.contains(e.target as Node) && e.target !== btn) show(false); });
+  if (!btn) return;
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement)) { e.preventDefault(); openSmall(true); input.focus(); }
   });
