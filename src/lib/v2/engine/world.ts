@@ -1,7 +1,7 @@
 import * as THREE from 'three/webgpu';
 import { uniform, positionLocal, texture, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
 import { createSky, GLINT, FAR as SKY_FAR } from './sky';
-import { createDeep, PC, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
+import { createDeep, PC, radecToEngine, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
 import { createTerrain } from './terrain';
 import { loadDemSpec } from './dem';
 import type { SourceSpec } from './tilebuild';
@@ -357,7 +357,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const PLACE_NAMES: Record<string, string> = {
     'solar-system': 'the Solar System', 'oort-cloud': 'the Oort cloud', neighbourhood: 'the Sun’s neighbourhood',
     'night-sky': 'the stars of our night sky', 'milky-way': 'the Milky Way', 'local-group': 'the Local Group',
-    'cosmic-web': 'the cosmic web', cmb: 'the edge of what we can see',
+    'cosmic-web': 'the cosmic web', cmb: 'the edge of what we can see', pleiades: 'the Pleiades', 'orion-nebula': 'the Orion Nebula',
   };
   /** what is drawn from a model rather than measured, out where each place is */
   const PLACE_NOTES: Record<string, string> = {
@@ -616,6 +616,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       dist: ly(3.5e6),
       dir: () => { const m = deep.lgCentre(); const line = m ? norm(sub(m, GAL_CENTRE)) : GAL_X; return norm(add(norm(cross(line, GAL_Z)), scale(GAL_Z, 0.6))); },
     },
+    // two famous places inside the Milky Way. Each is one measured distance (see the sources page); the stars are the catalogue's own
+    pleiades: { centre: () => add(sunPos, scale(radecToEngine(56.75, 24.12), 136.2 * PC)), dist: ly(60), dir: () => norm(add(scale(radecToEngine(56.75, 24.12), -1), [0, 0.15, 0])) },
+    'orion-nebula': { centre: () => add(sunPos, scale(radecToEngine(83.82, -5.39), 388 * PC)), dist: ly(60), dir: () => norm(add(scale(radecToEngine(83.82, -5.39), -1), [0, 0.15, 0])) },
     'cosmic-web': { centre: () => sunPos, dist: ly(500e6), dir: () => SUPERGAL_POLE },
     // far enough out to see the whole sphere the oldest light comes from, 46 billion light years in radius
     cmb: { centre: () => sunPos, dist: ly(110e9), dir: () => norm(add(SUPERGAL_POLE, [0, 0.4, 0])) },
