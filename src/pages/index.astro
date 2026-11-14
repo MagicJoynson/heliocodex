@@ -67,7 +67,7 @@ const far = worlds.map((w) => {
           <button type="submit">Search</button>
         </div>
       </form>
-      <p class="front-or">Or <a href="/sky">look up at tonight's sky</a>, or <a href="/learn/packs/start-here">start learning in ten short lessons</a>.</p>
+      <p class="front-or">Or <a href="/sky">look up at tonight’s sky</a>, or <a href="/learn/packs/start-here">start learning in ten short lessons</a>.</p>
     </div>
     <div class="front-scene">
       <svg class="front-orbits" viewBox="0 0 1200 420" aria-hidden="true" focusable="false"><ellipse class="ring" cx="600" cy="470" rx="150" ry="90" /><ellipse class="ring" cx="600" cy="470" rx="250" ry="160" /><ellipse class="ring" cx="600" cy="470" rx="380" ry="240" /><ellipse class="ring" cx="600" cy="470" rx="520" ry="330" /><ellipse class="ring" cx="600" cy="470" rx="680" ry="430" /><circle r="5" fill="#7fb2e8"><animateMotion dur="38s" begin="-4s" repeatCount="indefinite" path="M 350 470 a 250 160 0 1 1 500 0 a 250 160 0 1 1 -500 0" /></circle><circle r="4.5" fill="#d9784a"><animateMotion dur="70s" begin="-30s" repeatCount="indefinite" path="M 220 470 a 380 240 0 1 1 760 0 a 380 240 0 1 1 -760 0" /></circle><circle r="9" fill="#e3c79a"><animateMotion dur="120s" begin="-60s" repeatCount="indefinite" path="M 80 470 a 520 330 0 1 1 1040 0 a 520 330 0 1 1 -1040 0" /></circle><circle r="7" fill="#e9d9a8"><animateMotion dur="190s" begin="-20s" repeatCount="indefinite" path="M -80 470 a 680 430 0 1 1 1360 0 a 680 430 0 1 1 -1360 0" /></circle></svg>
@@ -216,7 +216,7 @@ const far = worlds.map((w) => {
   .front-or { font: 300 1rem/1.5 'Spectral', Georgia, serif; color: var(--ink-soft); margin: 1rem 0 0; }
   .front-or a { color: var(--ink); text-decoration-color: rgba(233,196,138,.6); text-underline-offset: .18em; }
   .front-or a:hover { color: var(--accent); }
-  .front-scene { position: relative; z-index: 1; height: clamp(330px, 36vw, 520px); margin-top: clamp(-10px, 0vw, 0px); --sw: min(150vw, 1900px); --arc: clamp(90px, 15vw, 230px); }
+  .front-scene { position: relative; z-index: 1; overflow: hidden; height: clamp(330px, 36vw, 520px); margin-top: clamp(-10px, 0vw, 0px); --sw: min(150vw, 1900px); --arc: clamp(90px, 15vw, 230px); }
   .front-sun { position: absolute; left: 50%; max-width: none; width: var(--sw); height: auto; top: calc(100% - var(--arc) - var(--sw) * .062); transform: translateX(-50%); pointer-events: none; -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); }
   .front-orbits { position: absolute; left: 50%; bottom: 0; width: min(1200px, 130vw); height: auto; transform: translateX(-50%); }
   .front-orbits { -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); mask-image: linear-gradient(to bottom, #000 55%, transparent 96%); }
