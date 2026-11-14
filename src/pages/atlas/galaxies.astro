@@ -102,7 +102,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
     <div class="hang">
       <p class="label">Drawing II</p>
       <h2>The Milky Way’s companions</h2>
-      <p class="note">The {sats.inside.length} small galaxies in this catalogue that lie within about a million light years of the centre of the Milky Way. Most are held by the Milky Way’s gravity and go round it. The two Magellanic Clouds are the only ones easy to see by eye, from the southern half of the Earth.</p>
+      <p class="note">The {sats.inside.length} small galaxies on this chart that lie within about a million light years of the centre of the Milky Way. Most are held by the Milky Way’s gravity and go round it. The two Magellanic Clouds are the only ones easy to see by eye, from the southern half of the Earth.</p>
       <p class="note">The grey disc in the middle is the Milky Way of drawing I, to scale. Each dot is where a galaxy really is. A bigger dot is a brighter galaxy, but the dots are not to scale: most of these would be smaller than a full stop.</p>
       <p class="note scale">The drawing is {fmtLy(lyOfKpc(600))} across.</p>
     </div>
@@ -121,9 +121,9 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
       <p class="label">Drawing III</p>
       <h2>The Local Group</h2>
       <p class="note">Step back five times. The Milky Way and Andromeda are the two big galaxies of a group about ten million light years wide. Each has its own swarm of small ones, and Triangulum is the third in size.</p>
-      <p class="note">Andromeda is about 2.5 million light years away ({Math.round(andromeda.kpc)} kiloparsecs in the catalogue), the furthest thing most people can see without a telescope. It and the Milky Way are falling towards each other.</p>
-      <p class="note">A ring instead of a dot means the catalogue gives no brightness for that galaxy.</p>
-      <p class="note scale">The drawing is {fmtLy(lyOfKpc(3000))} across. The catalogue’s other {outside} galaxies are further off than that, just beyond the group. They are in the 3D view.</p>
+      <p class="note">Andromeda is about 2.5 million light years away ({Math.round(andromeda.kpc)} kiloparsecs), the furthest thing most people can see without a telescope. It and the Milky Way are falling towards each other.</p>
+      <p class="note">A ring instead of a dot means no brightness is given for that galaxy here.</p>
+      <p class="note scale">The drawing is {fmtLy(lyOfKpc(3000))} across.{outside > 0 ? ` ${outside} more galaxies are further off than that, just beyond the group. They are in the 3D view.` : ' The galaxies shown are the best known ones. Many more small galaxies lie in and round the group.'}</p>
       <p class="note print-hide"><a href="/explore?go=local-group">See the Local Group in 3D</a></p>
     </div>
     <figure class="plate-holder">
@@ -169,7 +169,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
   <section class="row family-row" id="brightest">
     <div class="hang">
       <h2>The larger galaxies near us</h2>
-      <p class="note">Andromeda and the {listed.length - 1} galaxies in the catalogue that give out more visible light than about 30 million Suns, nearest first. All {groupGalaxies.length} are in the 3D view.</p>
+      <p class="note">Andromeda and the {listed.length - 1} galaxies among those shown that give out more visible light than about 30 million Suns, nearest first. All {groupGalaxies.length} are in the 3D view.</p>
     </div>
     <table class="moons worlds">
       <thead><tr><th scope="col">Galaxy</th><th scope="col">Distance from us</th><th scope="col">Light it gives out</th></tr></thead>
@@ -194,7 +194,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
         <li>The Sun’s distance from the centre of the Milky Way: <a href="https://doi.org/10.1051/0004-6361/201935656">GRAVITY Collaboration 2019, Astronomy &amp; Astrophysics 625, L10</a>.</li>
       </ul>
       <p>The Milky Way in drawing I is the model used by the 3D view. Its arms follow the usual picture of four arms winding out from a central bar, but their exact places are our own choice and should not be read as measurements.</p>
-      <p>The light a galaxy gives out is its visible light, compared with the Sun’s, worked out here from the brightness given in the catalogue.</p>
+      <p>The light a galaxy gives out is its visible light, compared with the Sun’s, worked out here from each galaxy’s measured brightness.</p>
     </div>
   </section>
 </Reading>

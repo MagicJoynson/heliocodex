@@ -470,7 +470,7 @@ test('the galaxies: Andromeda, the Magellanic Clouds and Virgo are where they sh
   near((g('Andromeda').kpc * 1000 * LY_PER_PC) / 1e6, 2.55, 0.1);
   near(g('LMC').kpc, 50, 3); near(g('SMC').kpc, 62, 5);
   assert.ok(g('LMC').p[2] < 0 && g('SMC').p[2] < 0, 'the Magellanic Clouds are south of the disc');
-  assert.equal(groupGalaxies.length, 101);
+  assert.equal(groupGalaxies.length, 26);
   const virgo = clusters.find((c) => c.name === 'Virgo Cluster')!;
   assert.ok(virgo.inSlab && Math.hypot(virgo.x, virgo.y) > 13 && Math.hypot(virgo.x, virgo.y) < 19);
   // the Virgo Cluster is a real crowd in the data: several times more galaxies within 4 Mpc of it than in an average patch that near

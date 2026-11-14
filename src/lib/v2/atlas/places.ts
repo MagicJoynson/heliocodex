@@ -51,7 +51,7 @@ export const places: Place[] = [
     drawn: 'The shape of the Milky Way here is a model, built from its measured size, its bar and the pitch of its arms. It is not a map: nobody knows where every arm runs.',
     credits: [] },
   { id: 'local-group', chart: '/atlas/galaxies#figure-local-group', name: 'The Local Group', model: true,
-    what: 'The Milky Way, Andromeda and the hundred or so small galaxies around them.',
+    what: 'The Milky Way, Andromeda and the best known of the small galaxies around them.',
     drawn: 'Each galaxy is at its measured place. The shapes of Andromeda, Triangulum and the two Magellanic Clouds are models, set at their real size and tilt.',
     credits: [MCCONNACHIE] },
   { id: 'cosmic-web', chart: '/atlas/galaxies#figure-web', name: 'The cosmic web', model: false,
