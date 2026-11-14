@@ -44,6 +44,11 @@ $$
 
 With $n/p = 1/7$ this is $\tfrac{2}{7} \div \tfrac{8}{7} = 0.25$. The measured value is $Y_p = 0.245 \pm 0.003$.
 
+<figure class="photo">
+  <img src="/img/learn/charts/counting-the-helium.svg" alt="Sixteen small balls, fourteen gold protons and two blue neutrons, become one helium nucleus of two protons and two neutrons, and twelve single gold protons, which are hydrogen." width="800" height="600" loading="lazy" />
+  <figcaption><b>Counting the helium.</b> Take 16 particles with one neutron for every seven protons: 2 neutrons and 14 protons. Each helium nucleus needs two of each, so the two neutrons make one helium and use up two protons. That leaves 12 protons as hydrogen. A neutron and a proton weigh almost the same, so helium has 4 of the 16 shares of the mass: 25 per cent.</figcaption>
+</figure>
+
 The answer hardly depends on how fast the nuclear reactions go. It depends on the mass difference $Q$, the neutron's lifetime and the rate of expansion, which is why the helium fraction is such a clean test.
 
 **Why it stopped at helium.** There is no stable nucleus with five particles and none with eight. Adding a proton or a neutron to helium-4, or joining two helium-4 nuclei, makes nothing that lasts. By the time this mattered, ordinary matter was no denser than air, and the building stopped. Stars do get past the gap, much later, by fusing helium into carbon in their dense cores.

@@ -55,6 +55,11 @@ The Earth has 81.30 times the mass of the Moon, and the two are 384,400 km apart
 
 The Sun has 1,047 times the mass of Jupiter, which orbits at 778.479 million km. Their balance point is 742,600 km from the Sun's centre. The Sun's radius is 695,700 km, so the point lies 47,000 km above the visible surface.
 
+<figure class="photo">
+  <img src="/img/learn/charts/balance-points-to-scale.svg" alt="Above, a large circle for the Sun with a cross just outside its right edge, marked with Jupiter, and an arrow pointing to Jupiter. Below, a smaller circle for the Earth with a cross inside it, about three quarters of the way from the centre to the edge, marked with the Moon, and an arrow pointing to the Moon." width="800" height="760" loading="lazy" />
+  <figcaption><b>The balance points, each pair to scale.</b> Each pair goes round the point marked with a cross. The Sun and Jupiter's lies just outside the Sun, so the Sun swings round a point beyond its own surface every 12 years. The Earth and Moon's lies inside the Earth, so the Earth wobbles round a point 1,700 km under the ground every month. The Sun and the Earth are each drawn to their own scale.</figcaption>
+</figure>
+
 **Energy and escape.** Lifting a mass $m$ against gravity stores energy. Counted from zero at a very great distance, the energy at distance $r$ is
 
 $$

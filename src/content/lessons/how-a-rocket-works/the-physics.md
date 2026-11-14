@@ -36,6 +36,11 @@ $$
 m\, dv = -v_e\, dm
 $$
 
+<figure class="photo">
+  <img src="/img/learn/charts/rocket-a-moment-later.svg" alt="Two rows. Above, labelled before, a rocket of mass m moves right at speed v. Below, labelled a moment later, the same rocket is a little further on, moving faster, with mass m minus dm and speed v plus dv, while a small red blob of exhaust, dm, flies off backwards." width="800" height="600" loading="lazy" />
+  <figcaption><b>A moment of burning.</b> The rocket throws a small mass backwards and moves forwards a little faster. Nothing outside has pushed, so the momentum of rocket and exhaust together is the same before and after, and that one fact gives the equation above.</figcaption>
+</figure>
+
 The minus sign is there because the rocket's mass goes down as its speed goes up. Divide by $m$:
 
 $$

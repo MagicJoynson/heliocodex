@@ -17,13 +17,17 @@ This level derives the tide from Newton's law of gravity, step by step, and then
 **Step one: the difference in pull.** The Moon, of mass $M$, is a distance $d$ from the Earth's centre. The Earth's radius is $R$. Newton's law gives the Moon's pull on each kilogram as $GM/r^2$ at a distance $r$. So on the side facing the Moon, and at the centre, it is
 
 $$
-a_{\text{near}} = \frac{GM}{(d - R)^2}, \qquad a_{\text{centre}} = \frac{GM}{d^2}
+a_{\text{near}} = \frac{GM}{(d - R)^2}
 $$
 
-The whole Earth falls towards the Moon with the pull at the centre, so what is left over, the tide, is the difference. Take out $GM/d^2$ and write $x = R/d$:
+$$
+a_{\text{centre}} = \frac{GM}{d^2}
+$$
+
+The whole Earth falls towards the Moon with the pull at the centre, so what is left over, the tide, is the difference, $\Delta a = a_{\text{near}} - a_{\text{centre}}$. Take out $GM/d^2$ and write $x = R/d$:
 
 $$
-a_{\text{near}} - a_{\text{centre}} = \frac{GM}{d^2}\left[\frac{1}{(1-x)^2} - 1\right]
+\Delta a = \frac{GM}{d^2}\left[\frac{1}{(1-x)^2} - 1\right]
 $$
 
 **Step two: a small number.** The Earth's radius is only 1.66 per cent of the Moon's distance, so $x$ is small, and for small $x$

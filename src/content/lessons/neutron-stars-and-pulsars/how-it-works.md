@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "Hurley and others, An exceptionally bright flare from SGR 1806-20 (Nature, 2005): spike energy at 15 kpc", url: "https://arxiv.org/abs/astro-ph/0502329" }
   - { label: "NASA Imagine the Universe, Neutron stars", url: "https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html" }
   - { label: "NASA, Messier 1 (the Crab Nebula)", url: "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-1/" }
   - { label: "Nobel Prize in Physics 1974, Antony Hewish", url: "https://www.nobelprize.org/prizes/physics/1974/hewish/facts/" }
@@ -33,7 +34,7 @@ A neutron star is one of the three things a star can leave behind when it dies. 
 
 **How they were found.** In 1967, at Cambridge, Jocelyn Bell and Antony Hewish picked up a radio source that pulsed at extremely regular intervals. Nothing like it was known. It turned out to be a spinning neutron star, and the discovery proved that such stars exist. Hewish shared the Nobel Prize in Physics in 1974 for his part in the discovery.
 
-**Magnetars.** An ordinary neutron star has a magnetic field trillions of times stronger than the Earth's. A magnetar's is another thousand times stronger. The crust of a neutron star is locked to its magnetic field, so when the crust slips, the field is shaken too, and a magnetar can let go a vast burst of energy. In one burst lasting a tenth of a second, the magnetar SGR 1806-20 gave out more energy than the Sun has in the last 100,000 years.
+**Magnetars.** An ordinary neutron star has a magnetic field trillions of times stronger than the Earth's. A magnetar's is another thousand times stronger. The crust of a neutron star is locked to its magnetic field, so when the crust slips, the field is shaken too, and a magnetar can let go a vast burst of energy. In one burst lasting about a fifth of a second, the magnetar SGR 1806-20 gave out as much energy as the Sun does in a quarter of a million years.
 
 **A clock that tested Einstein.** A pulsar keeps time very steadily, which makes it a measuring tool. In 1974 Russell Hulse and Joseph Taylor found a pulsar in orbit round another star of about the same mass, the two going round each other in less than eight hours. Einstein's theory of gravity says such a pair should lose energy by giving off gravitational waves, and so draw slowly closer. Timing the pulses showed exactly that: the orbit is getting shorter by about 75 millionths of a second every year. The measured change agrees with the calculated one, which the Nobel committee called an indirect proof that gravitational waves exist, long before any were detected directly. Hulse and Taylor were given the prize in 1993.
 
