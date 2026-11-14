@@ -1,6 +1,6 @@
 ---
 sources:
-  - { label: "Gaia Data Release 3 (ESA/Gaia/DPAC): radial velocities of Kapteyn's Star and Barnard's Star, from the Gaia archive. Licence: CC BY-SA 3.0 IGO", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
+  - { label: "Gaia Data Release 3 (ESA/Gaia/DPAC): radial velocities of Kapteyn's Star and Barnard's Star, from the Gaia archive. Gaia data are under CC BY-NC 3.0 IGO; individual values quoted here with credit", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
   - { label: "Cherepashchuk, Dodin and Postnov, Unique microquasar SS433: new results, new issues (Physics-Uspekhi, 2025): the jet speed over 45 years and the shifted centre of the moving lines", url: "https://arxiv.org/abs/2506.01106" }
   - { label: "Margon, Observations of SS 433 (Annual Review of Astronomy and Astrophysics, 1984)", url: "https://doi.org/10.1146/annurev.aa.22.090184.002451" }
   - { label: "Planck Collaboration, Planck 2018 results VI: cosmological parameters (Astronomy and Astrophysics, 2020): the expansion rate and matter density used for the distances", url: "https://arxiv.org/abs/1807.06209" }

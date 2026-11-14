@@ -1,6 +1,6 @@
 ---
 sources:
-  - { label: "Gaia Data Release 3 (ESA/Gaia/DPAC): parallaxes of Proxima Centauri, Barnard's Star, 61 Cygni A, Kapteyn's Star and Delta Cephei, from the Gaia archive. Licence: CC BY-SA 3.0 IGO", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
+  - { label: "Gaia Data Release 3 (ESA/Gaia/DPAC): parallaxes of Proxima Centauri, Barnard's Star, 61 Cygni A, Kapteyn's Star and Delta Cephei, from the Gaia archive. Gaia data are under CC BY-NC 3.0 IGO; individual values quoted here with credit", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
   - { label: "Lindegren and others, Gaia Early Data Release 3: the astrometric solution (Astronomy and Astrophysics, 2021): typical parallax uncertainties", url: "https://arxiv.org/abs/2012.03380" }
   - { label: "Lindegren and others, Gaia Early Data Release 3: parallax bias versus magnitude, colour and position (Astronomy and Astrophysics, 2021): the zero-point offset", url: "https://arxiv.org/abs/2012.01742" }
   - { label: "Gaia DR3 documentation: the RUWE column of the main star catalogue", url: "https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html" }
