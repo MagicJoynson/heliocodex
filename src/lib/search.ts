@@ -4,7 +4,7 @@ let index: Promise<Entry[]> | null = null;
 export const loadIndex = () => (index ??= fetch('/search.json').then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<Entry[]>; }).catch((e) => { index = null; throw e; }));
 
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’']/g, '');
-const KIND_RANK: Record<string, number> = { Planet: 0, Star: 2, Page: 1, Constellation: 2, Glossary: 3, Lesson: 3, 'Star (catalogue)': 6 };
+const KIND_RANK: Record<string, number> = { Planet: 0, 'Atlas landmark': 2, Star: 2, Page: 1, Constellation: 2, Glossary: 3, Lesson: 3, 'Star (catalogue)': 6 };
 const kindRank = (k: string) => KIND_RANK[k] ?? (k.startsWith('Moon') || k === 'Dwarf planet' ? 1 : k === 'Asteroid' || k === 'Comet' ? 2 : 4);
 
 /** Edit distance that counts a swapped pair of letters as one slip (optimal string alignment). Gives up past `cap`. */

@@ -13,8 +13,9 @@ const top = (q: string, n = 3) => rank(all, q, 8).slice(0, n).map((e) => e[0]);
 test('slips counts a swapped pair as one', () => { assert.equal(slips('mras', 'mars'), 1); assert.equal(slips('jupitor', 'jupiter'), 1); assert.equal(slips('abc', 'xyz'), 3); });
 for (const [typed, want] of [
   ['jupitor', 'Jupiter'], ['betelguese', 'Betelgeuse'], ['saturm', 'Saturn'], ['nepture', 'Neptune'], ['andormeda', 'Andromeda'],
-  ['parralax', 'Parallax'], ['plutto', 'Pluto'], ['uranis', 'Uranus'], ['mecury', 'Mercury'], ['siruis', 'Sirius'], ['cassiopia', 'Cassiopeia'],
+  ['parralax', 'Parallax'], ['plutto', 'Pluto'], ['uranis', 'Uranus'], ['mecury', 'Mercury'], ['siruis', 'Sirius'], ['cassiopia', 'Cassiopeia'], ['pleiedes', 'Pleiades'], ['andromida galaxy', 'Andromeda'], ['magelanic', 'Magellanic'],
 ] as const) test(`typo "${typed}" finds ${want}`, () => assert.ok(top(typed, 4).some((n) => n.toLowerCase().includes(want.toLowerCase())), `got ${top(typed, 4).join(', ')}`));
+test('landmarks are found as typed', () => { for (const [q, w] of [['pleiades', 'Pleiades'], ['seven sisters', 'Pleiades'], ['m31', 'Andromeda galaxy'], ['sagittarius a', 'black hole'], ['lmc', 'Magellanic']] as const) assert.ok(top(q, 3).some((n) => n.includes(w)), `${q}: ${top(q, 3).join(', ')}`); });
 for (const [typed, want] of [['jup', 'Jupiter'], ['europa', 'Europa'], ['betel', 'Betelgeuse'], ['mars', 'Mars']] as const)
   test(`as typed "${typed}" still puts ${want} first`, () => assert.equal(top(typed, 1)[0], want));
 for (const [typed, want] of [['proxima centuri', 'Proxima'], ['ursa magor', 'Ursa Major'], ['millky way', 'Milky Way'], ['blackhole', 'Black hole']] as const)
