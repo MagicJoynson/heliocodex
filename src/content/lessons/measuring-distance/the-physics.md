@@ -1,6 +1,9 @@
 ---
 sources:
-  - { label: "Gaia Data Release 3 (ESA/Gaia/DPAC): parallaxes of Proxima Centauri, Barnard's Star, 61 Cygni A, Kapteyn's Star and Delta Cephei, from the Gaia archive. Gaia data are under CC BY-NC 3.0 IGO; individual values quoted here with credit", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
+  - { label: "Reylé and others, The 10 parsec sample in the Gaia era (Astronomy and Astrophysics, 2021): the Gaia parallax of Proxima Centauri, credited ESA/Gaia/DPAC", url: "https://doi.org/10.1051/0004-6361/202140985" }
+  - { label: "González Hernández and others, A sub-Earth-mass planet orbiting Barnard's star (Astronomy and Astrophysics, 2024): the Gaia DR3 parallax of Barnard's Star, credited ESA/Gaia/DPAC", url: "https://doi.org/10.1051/0004-6361/202451311" }
+  - { label: "Tabernero and others, SteParSyn (Astronomy and Astrophysics, 2022): the Gaia parallax of 61 Cygni A, credited ESA/Gaia/DPAC", url: "https://doi.org/10.1051/0004-6361/202141763" }
+  - { label: "Gaia Data Release 3 (ESA/Gaia/DPAC): parallaxes of Kapteyn's Star and Delta Cephei, from the Gaia archive. Gaia data are under CC BY-NC 3.0 IGO; individual values quoted here with credit", url: "https://www.cosmos.esa.int/web/gaia/dr3" }
   - { label: "Lindegren and others, Gaia Early Data Release 3: the astrometric solution (Astronomy and Astrophysics, 2021): typical parallax uncertainties", url: "https://arxiv.org/abs/2012.03380" }
   - { label: "Lindegren and others, Gaia Early Data Release 3: parallax bias versus magnitude, colour and position (Astronomy and Astrophysics, 2021): the zero-point offset", url: "https://arxiv.org/abs/2012.01742" }
   - { label: "Gaia DR3 documentation: the RUWE column of the main star catalogue", url: "https://gea.esac.esa.int/archive/documentation/GDR3/Gaia_archive/chap_datamodel/sec_dm_main_source_catalogue/ssec_dm_gaia_source.html" }
@@ -40,6 +43,8 @@ with $d$ in parsecs and $\varpi$ in seconds of arc. Gaia gives parallaxes in mil
 | 61 Cygni A | 285.995 ± 0.060 | 3.4966 |
 | Kapteyn's Star | 254.199 ± 0.017 | 3.9339 |
 | Delta Cephei | 3.555 ± 0.148 | 281 |
+
+All five are Gaia's measurements, credited ESA/Gaia/DPAC. The first three are as published by Reylé and others (2021), González Hernández and others (2024) and Tabernero and others (2022), and the last two are from the Gaia archive.
 
 Proxima Centauri comes out at 4.2465 light years, and 61 Cygni A, Bessel's star, at 11.404.
 

@@ -22,9 +22,9 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       caption: '<b>A photograph.</b> Titan in natural colour, from NASA’s Cassini spacecraft, released in April 2012. The haze hides the ground; the darker cap at the top is a hood of haze over the north pole. Credit: NASA/JPL-Caltech/Space Science Institute.',
     },
     picture: {
-      src: '/img/learn/titan-surface-huygens.jpg', width: 311, height: 623,
-      alt: 'An orange, hazy plain strewn with rounded pale pebbles, the nearest a hand’s width across.',
-      caption: '<b>A photograph.</b> The surface of Titan, taken on 14 January 2005 by the European Space Agency’s Huygens probe after it landed. The colour was worked out from the probe’s own measurements of the light. Credit: NASA/JPL/ESA/University of Arizona.',
+      src: '/img/learn/titan-infrared-cassini-2015.jpg', width: 900, height: 900,
+      alt: 'A sea-green globe with soft dark bands across its middle, forming a sideways letter H, and a few sharper rectangular patches near its left edge.',
+      caption: '<b>A real picture, in infrared.</b> Titan seen through its haze by NASA’s Cassini spacecraft on 13 November 2015. Infrared light passes through the haze that hides the ground in ordinary light. The dark bands are fields of dunes, and the sharper patches are parts seen from closer. The colours were chosen, each standing for one wavelength of infrared. Credit: NASA/JPL/University of Arizona/University of Idaho.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
@@ -43,7 +43,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'Pioneer 11 passed in 1979 and Voyager 1 in November 1980. Voyager 1 flew close, but its cameras saw nothing but haze.',
-        'The Cassini spacecraft went into orbit round Saturn in 2004 and stayed until 2017, flying past Titan 127 times on purpose. It carried the European Space Agency’s Huygens probe, which parachuted through Titan’s air on 14 January 2005 and landed on a damp plain of rounded pebbles. It was the first landing on any world in the outer Solar System, and it is still the most distant.',
+        'The Cassini spacecraft went into orbit round Saturn in 2004 and stayed until 2017, flying past Titan 127 times on purpose. It carried the European Space Agency’s Huygens probe, which parachuted through Titan’s air on 14 January 2005 and landed on a damp plain of rounded pebbles, which it photographed. Its pictures are on ESA’s Huygens pages, linked in the sources below. It was the first landing on any world in the outer Solar System, and it is still the most distant.',
         'NASA plans to send Dragonfly, a flying robot the size of a car, with eight rotors. Its launch is planned for 2028 and its arrival for 2034. It is to hop from place to place, sampling the ground.',
       ] },
       { title: 'What is still unknown', paras: [
