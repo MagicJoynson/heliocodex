@@ -1,0 +1,56 @@
+---
+import Reading from '../../layouts/Reading.astro';
+import { places } from '../../lib/v2/atlas/places';
+const LY = 9.4607304725808e15;
+// how far from the Sun each place is, in words (the same distances the 3D view shows)
+const HOW_FAR: Record<string, string> = {
+  'solar-system': 'about 30 times the Earth’s distance from the Sun, out to Neptune',
+  'oort-cloud': 'about a light year and a half',
+  neighbourhood: 'a few dozen light years',
+  'night-sky': 'a few thousand light years',
+  'milky-way': 'about 100,000 light years across',
+  'local-group': 'about 3 million light years across',
+  'cosmic-web': 'a few hundred million light years',
+  cmb: '46 billion light years, the edge of what we can see',
+};
+void LY;
+const bodies = [['sun', 'The Sun'], ['mercury', 'Mercury'], ['venus', 'Venus'], ['earth', 'Earth'], ['mars', 'Mars'], ['jupiter', 'Jupiter'], ['saturn', 'Saturn'], ['uranus', 'Uranus'], ['neptune', 'Neptune']];
+---
+<Reading
+  title="Travel the universe, without the 3D view · Heliocodex"
+  description="Every stop on the way from the Sun out to the oldest light, as a plain list with the same facts, distances and links as the 3D explorer."
+  path="/explore/list">
+  <h1>Travel the universe, in a list</h1>
+  <p class="lede">The 3D explorer takes you from the Sun out to the oldest light there is. This page is the same journey as plain text: every stop, how far it is, what is real and what is a model, and where to read more. It works with a keyboard, a screen reader or no graphics at all. <a href="/explore">Open the 3D explorer</a>.</p>
+
+  <h2 id="worlds">The Sun and the planets</h2>
+  <ul>
+    {bodies.map(([id, name]) => <li><a href={id === 'sun' ? '/sun' : `/${id}`}>{name}</a> · <a href={`/explore?go=${id}`}>see it in 3D</a></li>)}
+  </ul>
+  <p>Moons, dwarf planets and small bodies are on <a href="/worlds">the Solar System page</a>.</p>
+
+  <h2 id="ladder">Out to the edge, in eight steps</h2>
+  <ol>
+    {places.map((p) => (
+      <li id={p.id}>
+        <h3>{p.name}</h3>
+        <p><b>How far:</b> {HOW_FAR[p.id]}.</p>
+        <p>{p.what}</p>
+        <p><b>{p.model ? 'A model.' : 'Real measurements.'}</b> {p.drawn}</p>
+        <p>
+          <a href={`/explore?go=${p.id}`}>See it in 3D</a>
+          {p.chart && <> · <a href={p.chart}>See the chart</a></>}
+        </p>
+        {p.credits.length > 0 && <p class="note">From {p.credits.map((c, i) => <>{i > 0 && ', '}<a href={c.url}>{c.label}</a></>)}.</p>}
+      </li>
+    ))}
+  </ol>
+
+  <h2 id="more">Keep reading</h2>
+  <ul>
+    <li><a href="/learn">Lessons</a>, from a first look to the deep end</li>
+    <li><a href="/sky">Tonight’s sky</a></li>
+    <li><a href="/atlas">The charts</a></li>
+    <li><a href="/sources">Where every figure comes from</a></li>
+  </ul>
+</Reading>

@@ -5,6 +5,7 @@ import '@fontsource/spectral/300.css';
 import '@fontsource/spectral/300-italic.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import Margin from '../components/v2/Margin.astro';
+import SiteNav from '../components/SiteNav.astro';
 const site = Astro.site!;
 const title = 'Explore in 3D · Heliocodex';
 const description = 'Fly through the Solar System at its true size and distance, from beyond Neptune down to the ground of Mars, then out past the stars to the oldest light there is. With lessons for wherever you are.';
@@ -36,23 +37,23 @@ import { sections } from '../lib/nav';
     <Analytics />
   </head>
   <body>
-    <canvas id="space" tabindex="-1" aria-label="The Solar System at its true size and distance. Everything shown here is also on the Planets, Learn, Sky and Atlas pages, and the controls below work from the keyboard."></canvas>
+    <a class="skiplink" href="#where">Skip to what you are looking at</a>
+    <canvas id="space" tabindex="-1" aria-label="The Solar System at its true size and distance. The whole journey is also available as a list at Travel the universe in a list, and the controls work from the keyboard."></canvas>
     <div class="veil" id="veil" aria-hidden="true"></div>
 
     <header class="top">
       <a class="mark" href="/" aria-label="Heliocodex, home"><img src="/brand/heliocodex-lockup.svg" alt="" width="660" height="133" /></a>
       <a class="back-to" id="back-to" href="/" hidden><span aria-hidden="true">←</span> <span id="back-name">Back</span></a>
-      <nav class="pages" aria-label="Sections">
-        {sections.filter((x) => x.href !== '/explore').map((x) => <a href={x.href}>{x.label}</a>)}
-      </nav>
+      <SiteNav path="/explore" />
       <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
     </header>
-    <nav class="menu" id="menu" aria-label="Sections" hidden>
+    <nav class="menu" id="menu" aria-label="Main, small screens" hidden>
       <a href="/"><b>Home</b><span>Where to start</span></a>
       {sections.filter((x) => x.href !== '/explore').map((x) => <a href={x.href}><b>{x.label}</b><span>{x.about}</span></a>)}
       <a href="/sources"><b>Sources</b><span>Where every number comes from</span></a>
     </nav>
 
+    <main id="main">
     <section class="threshold" id="threshold">
       <p class="name">Heliocodex</p>
       <p class="line">The Sun and its worlds at their true size and distance. Go in to Mars, click any planet to visit it, then keep going, past the stars, out to the oldest light there is.</p>
@@ -64,12 +65,13 @@ import { sections } from '../lib/nav';
         </svg>
         <span class="word">Enter</span>
       </button>
+      <p class="note alt"><a href="/explore/list">Prefer text? Travel the universe as a list</a></p>
       <p class="note" id="status">Loading the Solar System…</p>
       <div class="nope" id="nope" hidden>
-        <p>This browser cannot draw the 3D view, but the rest of Heliocodex works without it.</p>
+        <p>This browser cannot draw the 3D view, but the rest of Heliocodex works without it. <a href="/explore/list">The whole journey is also here as a plain list.</a></p>
         <p class="links"><a href="/learn">Learn</a><a href="/worlds">The Solar System</a><a href="/sky">Tonight’s sky</a><a href="/atlas">Atlas</a></p>
       </div>
-      <noscript><p class="nope-ns">The 3D view needs JavaScript. Everything else is on the <a href="/learn">Learn</a>, <a href="/worlds">Solar System</a>, <a href="/sky">Sky</a> and <a href="/atlas">Atlas</a> pages.</p></noscript>
+      <noscript><p class="nope-ns">The 3D view needs JavaScript. <a href="/explore/list">The whole journey is available as a plain list</a>. Everything else is on the <a href="/learn">Learn</a>, <a href="/worlds">Solar System</a>, <a href="/sky">Sky</a> and <a href="/atlas">Atlas</a> pages.</p></noscript>
     </section>
 
     <!-- where you are: a map of the Solar System from above, and what you are looking at -->
@@ -89,7 +91,7 @@ import { sections } from '../lib/nav';
     </div>
 
     <!-- the controls: always in the same place, all reachable by keyboard -->
-    <div class="controls" id="controls" role="toolbar" aria-label="3D view controls">
+    <div class="controls" id="controls" inert role="toolbar" aria-label="3D view controls">
       <div class="zoom">
         <button type="button" id="z-in" aria-label="Closer" title="Closer (W or +)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg></button>
         <button type="button" id="z-out" aria-label="Further away" title="Further away (S or −)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12" /></svg></button>
@@ -134,6 +136,7 @@ import { sections } from '../lib/nav';
     <p class="tech" id="tech"></p>
     <p class="gen" id="gen"></p>
     <Margin />
+    </main>
 
     <script>
       import { createWorld } from '../lib/v2/engine/world';
@@ -233,6 +236,8 @@ import { sections } from '../lib/nav';
           },
           onArrive() {
             body.classList.add('in', 'arrived');
+            $('controls').removeAttribute('inert');
+            $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
             $('hint').classList.add('show');
             setTimeout(() => $('hint').classList.remove('show'), 9000);
             // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
@@ -256,6 +261,7 @@ import { sections } from '../lib/nav';
             if (early && !params.has('gl') && !tried) { params.set('gl', ''); location.search = params.toString(); return; }
             $('status').textContent = 'The graphics stopped. Reload the page to carry on.';
             body.classList.remove('in', 'arrived');
+            $('controls').setAttribute('inert', '');
           },
         });
         world.setReduced(reducedNow());
@@ -447,7 +453,7 @@ import { sections } from '../lib/nav';
       pad.addEventListener('pointerup', off);
       pad.addEventListener('pointercancel', off);
 
-      if (params.has('low')) body.classList.add('in', 'arrived');
+      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); }
     </script>
 
     <style is:global>
@@ -458,6 +464,8 @@ import { sections } from '../lib/nav';
       button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
       :focus-visible { outline: 2px solid var(--warm); outline-offset: 3px; }
       #space { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+      .skiplink { position: fixed; z-index: 60; left: 12px; top: -60px; padding: 10px 14px; background: #000; color: var(--ink); border: 1px solid var(--warm); font: 400 .8125rem/1 var(--mono); }
+      .skiplink:focus { top: 12px; }
       .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
       /* a black veil that lifts after a jump, for reduced motion */
@@ -472,6 +480,8 @@ import { sections } from '../lib/nav';
       .mark img { display: block; height: 24px; width: auto; }
       body:not(.in) .mark { opacity: 0; pointer-events: none; }
       .mark { transition: opacity 1s ease .6s; }
+      .top .site-nav { height: 44px; }
+      .top .nav-top { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
       .pages a, .menu-btn { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
       .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
@@ -487,9 +497,9 @@ import { sections } from '../lib/nav';
       .menu span { font: 300 .9rem/1.35 var(--serif); color: var(--faint); }
       .menu a:hover, .menu a:focus-visible { background: rgba(241,201,142,.08); outline: none; }
       .menu a:hover b, .menu a:focus-visible b { color: var(--warm); }
-      @media (max-width: 860px) { .pages { display: none; } .menu-btn { display: block; } }
+      @media (max-width: 980px) { .menu-btn { display: block; } }
       body.margin-open .top { z-index: 28; }
-      body.margin-open .pages, body.margin-open .menu-btn { visibility: hidden; }
+      body.margin-open .site-nav, body.margin-open .menu-btn { visibility: hidden; }
 
       /* ---- threshold */
       .threshold::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 46% 40% at 50% 46%, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%); transition: opacity 1s ease; }
@@ -507,6 +517,7 @@ import { sections } from '../lib/nav';
       .aperture:hover .word, .aperture:focus-visible .word { color: var(--warm); }
       .aperture:focus-visible { outline: none; }
       .aperture::after { content: ''; position: absolute; inset: 47%; border-radius: 50%; background: radial-gradient(circle, #fff6e6 0%, rgba(255,214,150,.6) 35%, rgba(255,180,90,0) 70%); opacity: 0; transition: opacity .5s ease .3s, inset .8s cubic-bezier(.6,0,.3,1); }
+      .note.alt { margin-top: 14px; opacity: .9; } .note.alt a { color: var(--soft); }
       .note { margin: clamp(28px, 5vh, 48px) 0 0; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase; }
       .nope { max-width: 26em; margin-top: 8px; }
       .nope p, .nope-ns { font: 300 1.05rem/1.55 var(--serif); color: var(--soft); margin: 0 0 1rem; }
