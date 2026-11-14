@@ -24,15 +24,15 @@ $$
 x = \frac{hc}{\lambda k T}
 $$
 
-which compares the energy of one packet of light with $kT$. Then $F_\lambda$ is proportional to $x^5/(e^x - 1)$, times a number that depends only on $T$.
+which compares the energy of one packet of light with $kT$. Then $F_\lambda$ is proportional to ${x^5/(e^x - 1)}$, times a number that depends only on $T$.
 
-**Where the peak is.** At the peak the slope is zero. Differentiate $x^5/(e^x - 1)$ and set the result to zero, and after tidying up
+**Where the peak is.** At the peak the slope is zero. Differentiate ${x^5/(e^x - 1)}$ and set the result to zero, and after tidying up
 
 $$
 x = 5 \left(1 - e^{-x}\right)
 $$
 
-This has no neat answer, but it can be solved by trying a number, putting it into the right side, and repeating. Start at 5 and it settles in a few steps at $x = 4.965$. Turned back into a wavelength,
+This has no neat answer, but it can be solved by trying a number, putting it into the right side, and repeating. Start at 5 and it settles in a few steps at ${x = 4.965}$. Turned back into a wavelength,
 
 $$
 \begin{aligned}
@@ -41,7 +41,7 @@ $$
 \end{aligned}
 $$
 
-That is the "2.9 million divided by the temperature in nanometres" of the level before, and NIST's value of the constant is $2.897\,772 \times 10^{-3}$ m K. At 5,772 K the peak is at 502 nm.
+That is the "2.9 million divided by the temperature in nanometres" of the level before, and NIST's value of the constant is ${2.897\,772 \times 10^{-3}}$ m K. At 5,772 K the peak is at 502 nm.
 
 **All colours together.** The total power from each square metre is the area under Planck's curve. Changing to $x$, the integral becomes
 
@@ -55,9 +55,9 @@ $$
 F = \sigma T^4, \qquad \sigma = \frac{2 \pi^5 k^4}{15 c^2 h^3}
 $$
 
-The $T^4$ is the Stefan-Boltzmann law: double the temperature and the power goes up 16 times. Put in NIST's values of $k$, $c$ and $h$ and $\sigma$ comes out at $5.670\,374 \times 10^{-8}$ W m⁻² K⁻⁴, NIST's own value to every figure given. Josef Stefan found the $T^4$ by experiment in 1879. Planck's formula explains it, and gives the constant from three of the basic numbers of physics.
+The $T^4$ is the Stefan-Boltzmann law: double the temperature and the power goes up 16 times. Put in NIST's values of $k$, $c$ and $h$ and $\sigma$ comes out at ${5.670\,374 \times 10^{-8}}$ W m⁻² K⁻⁴, NIST's own value to every figure given. Josef Stefan found the $T^4$ by experiment in 1879. Planck's formula explains it, and gives the constant from three of the basic numbers of physics.
 
-**The Sun's temperature from its sunlight.** Above the air, the Earth gets 1,361 watts on each square metre facing the Sun. That light left the Sun's surface, of radius 695,700 km, and has spread out over a sphere the size of the Earth's orbit. So each square metre of the Sun's surface gives out 1,361 times $(1 \ \text{au}/R_\odot)^2$, which is 46,000 times as much, $6.29 \times 10^7$ watts. Set that equal to $\sigma T^4$ and $T = 5{,}772$ K. That is the Sun's surface temperature, as the International Astronomical Union defines it.
+**The Sun's temperature from its sunlight.** Above the air, the Earth gets 1,361 watts on each square metre facing the Sun. That light left the Sun's surface, of radius 695,700 km, and has spread out over a sphere the size of the Earth's orbit. So each square metre of the Sun's surface gives out 1,361 times $(1 \ \text{au}/R_\odot)^2$, which is 46,000 times as much, ${6.29 \times 10^7}$ watts. Set that equal to $\sigma T^4$ and ${T = 5{,}772}$ K. That is the Sun's surface temperature, as the International Astronomical Union defines it.
 
 <figure class="photo">
   <img src="/img/learn/charts/sunlight-measured-and-formula.svg" alt="A chart of sunlight, with wavelength along the bottom from 250 to 2,500 nanometres and power up the side. A solid gold line, measured, rises steeply to a jagged peak near 470 nanometres and falls away slowly towards the infrared. A dashed blue line, the 5,772 K formula, follows it closely, with a smooth peak near 500. A pale band marks the colours the eye sees, from 400 to 700." width="800" height="600" loading="lazy" />
@@ -82,6 +82,6 @@ At 5,772 K that is a peak at 883 nm, in the infrared. Redrawn this way, the meas
 
 **Try it yourself.** Sirius A has a surface temperature of 9,845 K and a radius of 1.714 times the Sun's. Using $\sigma T^4$ times the area of its surface, how many times the Sun's power does it give out?
 
-The answer: $1.714^2 \times (9{,}845/5{,}772)^4$, about 24.9. Bond and colleagues, adding up its measured light at every colour, give 24.7.
+The answer: ${1.714^2 \times (9{,}845/5{,}772)^4}$, about 24.9. Bond and colleagues, adding up its measured light at every colour, give 24.7.
 
 **What this level leaves out.** No star is a perfect glowing body. Light reaching us comes from layers at different depths and temperatures, and each element in the star takes its own bites out of the spectrum. The temperature given for a star is the one that would give out the same total power from the same surface, which is why it is called the effective temperature. And the 1,361 watts changes by about 0.1 per cent over the Sun's 11-year cycle of spots.

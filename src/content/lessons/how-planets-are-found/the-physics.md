@@ -26,19 +26,19 @@ $$
   <figcaption><b>Both move.</b> The star and the planet go round the point between them, on opposite sides of it, so when the planet moves one way the star moves the other. The heavier the star, the smaller its circle and the slower it goes. The part of its motion towards and away from us is what shifts its light. Not to scale: for a real star the shared centre is usually inside the star.</figcaption>
 </figure>
 
-**Step two: how fast the planet goes.** For a circular orbit of radius $a$ and period $P$, the planet's speed is $v_p = 2\pi a / P$. Kepler's third law, in Newton's form, links $a$ to $P$. When the planet is far lighter than the star it is
+**Step two: how fast the planet goes.** For a circular orbit of radius $a$ and period $P$, the planet's speed is ${v_p = 2\pi a / P}$. Kepler's third law, in Newton's form, links $a$ to $P$. When the planet is far lighter than the star it is
 
 $$
 a^3 = \frac{G M P^2}{4 \pi^2}
 $$
 
-**Step three: put them together.** Take $v_\star = (m/M)\,v_p$, put in $v_p = 2\pi a/P$, and replace $a$ using step two. The radius drops out and what is left is
+**Step three: put them together.** Take ${v_\star = (m/M)\,v_p}$, put in ${v_p = 2\pi a/P}$, and replace $a$ using step two. The radius drops out and what is left is
 
 $$
 v_\star = \left(\frac{2 \pi G}{P}\right)^{1/3} \frac{m}{M^{2/3}}
 $$
 
-We see the orbit from some angle $i$, where $i = 90°$ means edge on. Only the part of the star's motion along our line of sight shifts its light, so what is measured is
+We see the orbit from some angle $i$, where ${i = 90°}$ means edge on. Only the part of the star's motion along our line of sight shifts its light, so what is measured is
 
 $$
 K = \left(\frac{2 \pi G}{P}\right)^{1/3} \frac{m \sin i}{M^{2/3}}
@@ -103,7 +103,7 @@ $$
 
 For HD 209458 b it is about 360 kg/m³, about a third of the density of water and about a quarter of Jupiter's. It is a gas giant swollen by its star's heat, and nothing rocky. This sum, mass from the wobble and size from the dip, is how most planets beyond the Solar System with a known density have been sorted into rocky, watery and gassy.
 
-**Try it yourself.** The archive gives Proxima Centauri b, round the nearest star to the Sun, a period of 11.185 days and $K = 1.226$ m/s, and the star a mass of 0.122 Suns. What is the least its mass can be, in Earth masses? (The Earth is 0.00315 Jupiters.)
+**Try it yourself.** The archive gives Proxima Centauri b, round the nearest star to the Sun, a period of 11.185 days and ${K = 1.226}$ m/s, and the star a mass of 0.122 Suns. What is the least its mass can be, in Earth masses? (The Earth is 0.00315 Jupiters.)
 
 The answer: about 1.06 Earth masses. Proxima b has never been seen to cross its star, so only this lower limit is known.
 

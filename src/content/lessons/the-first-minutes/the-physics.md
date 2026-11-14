@@ -42,7 +42,7 @@ $$
 Y_p = \frac{2\,(n/p)}{1 + n/p}
 $$
 
-With $n/p = 1/7$ this is $\tfrac{2}{7} \div \tfrac{8}{7} = 0.25$. The measured value is $Y_p = 0.245 \pm 0.003$.
+With ${n/p = 1/7}$ this is ${\tfrac{2}{7} \div \tfrac{8}{7} = 0.25}$. The measured value is ${Y_p = 0.245 \pm 0.003}$.
 
 <figure class="photo">
   <img src="/img/learn/charts/counting-the-helium.svg" alt="Sixteen small balls, fourteen gold protons and two blue neutrons, become one helium nucleus of two protons and two neutrons, and twelve single gold protons, which are hydrogen." width="800" height="600" loading="lazy" />
@@ -59,7 +59,7 @@ $$
 \mathrm{D/H} = (25.47 \pm 0.29) \times 10^{-6}
 $$
 
-by number. Matching it fixes the number of protons and neutrons for every particle of light at about $6 \times 10^{-10}$. The oldest light gives the same number by a completely separate route. Lithium does not fit: the prediction for $^7\mathrm{Li/H}$ is 3.1 times the $(1.6 \pm 0.3) \times 10^{-10}$ found in old stars.
+by number. Matching it fixes the number of protons and neutrons for every particle of light at about ${6 \times 10^{-10}}$. The oldest light gives the same number by a completely separate route. Lithium does not fit: the prediction for $^7\mathrm{Li/H}$ is 3.1 times the ${(1.6 \pm 0.3) \times 10^{-10}}$ found in old stars.
 
 **The colour of the oldest light.** A blackbody at temperature $T$ is brightest at a wavelength
 

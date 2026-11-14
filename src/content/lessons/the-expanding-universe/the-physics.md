@@ -24,7 +24,7 @@ $$
 t_H = \frac{1}{H_0}
 $$
 
-For $H_0 = 67.4$ km/s per megaparsec this is 14.5 billion years. The real age is a little different, because the expansion has not run at a steady rate, but it shows why the Hubble constant and the age of the universe go together.
+For ${H_0 = 67.4}$ km/s per megaparsec this is 14.5 billion years. The real age is a little different, because the expansion has not run at a steady rate, but it shows why the Hubble constant and the age of the universe go together.
 
 **A ball of galaxies.** Pick any galaxy and draw a sphere round us that just reaches it, of radius $R$. Newton showed that matter spread evenly outside a sphere pulls on nothing inside it, so only the mass inside counts:
 
@@ -43,7 +43,7 @@ $$
   <figcaption><b>Only the inside counts.</b> A galaxy on the edge of any sphere round us is pulled back by the matter inside the sphere, and the matter outside has no overall effect. Whether the galaxy escapes or falls back is the same question as for a ball thrown from a planet. Not to scale.</figcaption>
 </figure>
 
-**The Friedmann equation.** Divide by $R^2/2$ and use $\dot R / R = H$, the Hubble rate at that time:
+**The Friedmann equation.** Divide by $R^2/2$ and use ${\dot R / R = H}$, the Hubble rate at that time:
 
 $$
 H^2 = \frac{8 \pi G}{3} \rho - \frac{k}{R^2}
@@ -57,7 +57,7 @@ $$
 \rho_c = \frac{3 H^2}{8 \pi G}
 $$
 
-With $H_0 = 67.4$ this is $8.5 \times 10^{-27}$ kg/m³, the mass of about five protons in every cubic metre. It is a tiny density, far emptier than any vacuum made on Earth.
+With ${H_0 = 67.4}$ this is ${8.5 \times 10^{-27}}$ kg/m³, the mass of about five protons in every cubic metre. It is a tiny density, far emptier than any vacuum made on Earth.
 
 **Real data: what Planck found.** The pattern of warm and cool patches in the oldest light, measured by the Planck spacecraft, fits a flat universe and gives, among other things:
 
@@ -80,7 +80,7 @@ Here $h$ is $H_0$ divided by 100, so ordinary matter, the stuff of stars and peo
 
 The CCHP uncertainty here is its three stated parts added together in the usual way. The SH0ES team and the Distance Network, a combination agreed by many groups and published in 2026, find the ladder well above Planck, by five times the uncertainty or more, and argue that something is missing from the standard model. The CCHP team, using the Webb telescope, find a value between the two and consistent with the standard model, and argue that the gap comes from how the nearby stars are measured. As of November 2026 the question is open.
 
-**Try it yourself.** In a flat universe holding only matter, the age works out at exactly two thirds of the Hubble time. Taking $H_0 = 67.4$, how old would that universe be?
+**Try it yourself.** In a flat universe holding only matter, the age works out at exactly two thirds of the Hubble time. Taking ${H_0 = 67.4}$, how old would that universe be?
 
 The answer: two thirds of 14.5 billion years, about 9.7 billion years. That is far less than the 13.8 billion years Planck gives for the real universe, in which dark energy has made the expansion speed up for the last several billion years.
 

@@ -15,7 +15,7 @@ $$
 \omega = \pi f
 $$
 
-**Energy in the orbit.** For masses $m_1$ and $m_2$, with total $M$ and separation $r$, Kepler's third law in Newton's form gives $r^3 = GM/\omega^2$. The energy of the orbit, motion and height together, is
+**Energy in the orbit.** For masses $m_1$ and $m_2$, with total $M$ and separation $r$, Kepler's third law in Newton's form gives ${r^3 = GM/\omega^2}$. The energy of the orbit, motion and height together, is
 
 $$
 E = -\frac{G m_1 m_2}{2 r}
@@ -31,13 +31,13 @@ $$
 
 The $c^5$ underneath is why the waves are so faint: in ordinary units it is a number with 42 noughts.
 
-**The runaway.** The power lost comes out of the orbit's energy, so $dE/dt = -P$. Write both $E$ and $P$ in terms of $\omega$, using Kepler's law to remove $r$, and differentiate. The masses come out in one combination, the chirp mass
+**The runaway.** The power lost comes out of the orbit's energy, so ${dE/dt = -P}$. Write both $E$ and $P$ in terms of $\omega$, using Kepler's law to remove $r$, and differentiate. The masses come out in one combination, the chirp mass
 
 $$
 \mathcal{M} = \frac{(m_1 m_2)^{3/5}}{M^{1/5}}
 $$
 
-and, after putting $\omega = \pi f$ back, the rate at which the frequency rises is
+and, after putting ${\omega = \pi f}$ back, the rate at which the frequency rises is
 
 $$
 \dot f = \frac{96}{5} \pi^{8/3} \left(\frac{G \mathcal{M}}{c^3}\right)^{5/3} f^{11/3}
@@ -72,11 +72,11 @@ $$
 h \approx \frac{4}{d} \left(\frac{G \mathcal{M}}{c^2}\right)^{5/3} \left(\frac{\pi f}{c}\right)^{2/3}
 $$
 
-At the full analysis's distance of 410 megaparsecs and a frequency of 150 a second this gives $2.4 \times 10^{-21}$. The peak measured was $1.0 \times 10^{-21}$, so the simple formula overestimates by a factor of about 2.4. That is expected, not a failure: the formula assumes the orbit is seen face on and the detector is turned the best way to catch the wave, and neither was true, which can only make the measured strength smaller. It gets the size right, a few parts in $10^{21}$, but it is not a match.
+At the full analysis's distance of 410 megaparsecs and a frequency of 150 a second this gives ${2.4 \times 10^{-21}}$. The peak measured was ${1.0 \times 10^{-21}}$, so the simple formula overestimates by a factor of about 2.4. That is expected, not a failure: the formula assumes the orbit is seen face on and the detector is turned the best way to catch the wave, and neither was true, which can only make the measured strength smaller. It gets the size right, a few parts in $10^{21}$, but it is not a match.
 
 **The proof before the waves.** The pulsar PSR B1913+16, found by Russell Hulse and Joseph Taylor in 1974, is in an 8-hour orbit with another neutron star. The same power formula says the orbit should shrink at a set rate. After 35 years of timing, Joel Weisberg and Yuping Huang found the measured shrinking to be 0.9983 of the prediction, give or take 0.0016.
 
-**Try it yourself.** The Sun and Jupiter also give out gravitational waves. Using the power formula, with Jupiter's mass $1.90 \times 10^{27}$ kg, the Sun's $1.99 \times 10^{30}$ kg, and a separation of $7.78 \times 10^{11}$ m, how much power do they send out?
+**Try it yourself.** The Sun and Jupiter also give out gravitational waves. Using the power formula, with Jupiter's mass ${1.90 \times 10^{27}}$ kg, the Sun's ${1.99 \times 10^{30}}$ kg, and a separation of ${7.78 \times 10^{11}}$ m, how much power do they send out?
 
 The answer: about 5,200 watts, the power of a couple of electric kettles, from the largest planet in the Solar System.
 
