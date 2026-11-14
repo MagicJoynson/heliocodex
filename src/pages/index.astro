@@ -63,8 +63,9 @@ const far = worlds.map((w) => {
       <form class="front-find" role="search" action="/search" method="get">
         <label for="front-q">Search the whole site</label>
         <div class="front-row">
-          <input id="front-q" name="q" type="search" placeholder="Try Europa or parallax" autocomplete="off" spellcheck="false" />
+          <input id="front-q" name="q" type="search" placeholder="Try Europa or parallax" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="front-list" aria-autocomplete="list" aria-haspopup="listbox" />
           <button type="submit">Search</button>
+          <ul id="front-list" class="front-list" role="listbox" aria-label="Suggestions" hidden></ul>
         </div>
       </form>
       <p class="front-or">Or <a href="/sky">look up at tonight’s sky</a>, or <a href="/learn/packs/start-here">start learning in ten short lessons</a>.</p>
@@ -185,6 +186,8 @@ const far = worlds.map((w) => {
   </div>
 
   <script>
+    import { wireSearch } from '../lib/search';
+    wireSearch(document.querySelector<HTMLFormElement>('.front-find')!);
     // the orbits in the front scene stand still for visitors who ask for less motion
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelector<SVGSVGElement>('.front-orbits')?.pauseAnimations();
     // How far off Neptune would sit if the strip's scale carried on: Jupiter is drawn --j pixels wide.
@@ -207,7 +210,14 @@ const far = worlds.map((w) => {
   .front h1 { font: 300 clamp(2rem, 4.4vw, 3.5rem)/1.06 'Spectral', Georgia, serif; letter-spacing: -.02em; margin: 0 0 .9rem; text-wrap: balance; color: var(--ink); }
   .front-lede { font: 300 clamp(1.05rem, 1rem + .35vw, 1.2rem)/1.5 'Spectral', Georgia, serif; color: var(--ink-soft); margin: 0 auto 1.4rem; max-width: 30rem; }
   .front-find label { display: block; font: 400 .8125rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 .45rem; }
-  .front-row { display: flex; gap: .5rem; max-width: 30rem; margin: 0 auto; }
+  .front-row { position: relative; display: flex; gap: .5rem; max-width: 30rem; margin: 0 auto; }
+  .front-list { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + .4rem); margin: 0; padding: .35rem 0; list-style: none; text-align: left; background: #14110d; border: 1px solid rgba(236,231,220,.35); border-radius: .9rem; box-shadow: 0 18px 40px rgba(0,0,0,.6); }
+  .front-list[hidden] { display: none; }
+  .front-list :global(li[role='option']) { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .7rem 1.1rem; color: var(--ink); cursor: pointer; }
+  .front-list :global(b) { font: 400 1.05rem/1.25 'Spectral', Georgia, serif; }
+  .front-list :global(span) { font: 400 .8125rem/1.2 'IBM Plex Mono', monospace; color: var(--ink-faint); white-space: nowrap; }
+  .front-list :global(li[aria-selected='true']), .front-list :global(li[role='option']:hover) { background: rgba(233,196,138,.16); }
+  .front-list :global(.none) { overflow-wrap: anywhere; padding: .7rem 1.1rem; color: var(--ink-soft); }
   .front-row input { flex: 1; min-width: 0; font: 400 1rem/1.2 'Spectral', Georgia, serif; color: var(--ink); background: rgba(236,231,220,.08); border: 1px solid rgba(236,231,220,.35); border-radius: 999px; padding: .8rem 1.1rem; }
   .front-row input::placeholder { color: #a8a296; }
   .front-row input:focus-visible, .front-row button:focus-visible, .front-or a:focus-visible, .front-enter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

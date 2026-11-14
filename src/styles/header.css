@@ -20,11 +20,11 @@
 .find-q:focus { outline: none; border-color: var(--hd-accent); background-color: rgba(236,231,220,.09); }
 .find-list { position: absolute; top: calc(100% + 8px); right: 0; width: min(26rem, calc(100vw - 2 * var(--hd-gutter))); margin: 0; padding: 6px 0; list-style: none; background: var(--hd-raised); border: 1px solid var(--hd-line); box-shadow: 0 18px 40px rgba(0,0,0,.55); z-index: 45; }
 .find-list[hidden] { display: none; }
-.find-list a { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 9px 16px; text-decoration: none; }
-.find-list li[aria-selected='true'] a, .find-list a:hover { background: color-mix(in srgb, var(--hd-accent) 12%, transparent); }
+.find-list li[role='option'] { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 9px 16px; cursor: pointer; }
+.find-list li[aria-selected='true'], .find-list li[role='option']:hover { background: color-mix(in srgb, var(--hd-accent) 12%, transparent); }
 .find-list b { font: 400 1.02rem/1.25 var(--hd-serif); color: var(--hd-ink); }
 .find-list span { font: 400 .78rem/1.2 var(--hd-sans); color: var(--hd-soft); white-space: nowrap; }
-.find-list .none { padding: 10px 16px; color: var(--hd-soft); font-size: .9rem; }
+.find-list .none { overflow-wrap: anywhere; padding: 10px 16px; color: var(--hd-soft); font-size: .9rem; }
 .find-btn { display: none; align-items: center; justify-content: center; width: 40px; height: 40px; margin-left: auto; margin-right: 8px; color: var(--hd-ink); background: transparent; border: 1px solid var(--hd-line); border-radius: 999px; cursor: pointer; }
 .nav-panel a[data-outline]::after { display: none; }
 .nav-panel a[data-outline] b::after { content: ''; display: inline-block; width: 6px; height: 6px; margin-left: 7px; vertical-align: .15em; border: 1px dashed currentColor; border-radius: 50%; opacity: .8; }
