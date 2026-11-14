@@ -2,7 +2,7 @@
 title: "Licences and credits"
 description: "Who owns what on Heliocodex, the licences behind every picture, map, catalogue, font and tool we use, and how to reuse our work or tell us about a problem."
 lead: "Heliocodex stands on other people's work, most of it given freely to the public by NASA and by astronomers who put their catalogues online. This page says whose each part is, on what terms it is shared and what you may do with it."
-updated: 2026-11-12
+updated: 2026-11-14
 ---
 
 <div class="short-version">
@@ -62,6 +62,16 @@ The Earth-by-night map is built from NASA's Black Marble, and the Earth-by-day m
 | Constellation figures | [d3-celestial](https://github.com/ofrohn/d3-celestial) by Olaf Frohn, © 2015 | BSD 3-Clause licence. The full notice is in [this file](/data/deep/constellations.LICENSE.txt). |
 | Planet sizes, masses, gravity, temperatures and moon counts | NASA's [Space Science Data Coordinated Archive](https://nssdc.gsfc.nasa.gov/planetary/factsheet/) planetary fact sheets | NASA data, used under NASA's guidelines |
 | Positions of the planets | [NASA/JPL Solar System Dynamics](https://ssd.jpl.nasa.gov/planets/approx_pos.html), approximate positions of the major planets, and [JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) | NASA/JPL data, used under NASA's guidelines |
+| About 2,900 pulsars in the chart in the physics level on neutron stars | [ATNF Pulsar Catalogue](https://www.atnf.csiro.au/research/pulsar/psrcat/), version 2.9.0, kept by CSIRO | Published scientific data, cited as the catalogue asks (see below) |
+| About 6,000 planets round other stars, in the chart in the lesson on the kinds of planet out there | [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/), Planetary Systems Composite Data table, 11 November 2026 | Published scientific data, acknowledged as the archive asks (see below) |
+
+**Acknowledgements, in the words their holders ask for.**
+
+- The ATNF Pulsar Catalogue: Manchester, R. N., Hobbs, G. B., Teoh, A. and Hobbs, M., Astronomical Journal, 129, 1993–2006 (2005), [astro-ph/0412641](https://arxiv.org/abs/astro-ph/0412641), and the catalogue at https://www.atnf.csiro.au/research/pulsar/psrcat/.
+- The NASA Exoplanet Archive: "This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program."
+- The Yale Bright Star Catalogue, through HEASARC: "This research has made use of data and/or software provided by the High Energy Astrophysics Science Archive Research Center (HEASARC), which is a service of the Astrophysics Science Division at NASA/GSFC."
+- The 2MASS Redshift Survey, which is built on 2MASS: Huchra and others 2012, Astrophysical Journal Supplement 199, 26, and "This publication makes use of data products from the Two Micron All Sky Survey, which is a joint project of the University of Massachusetts and the Infrared Processing and Analysis Center/California Institute of Technology, funded by the National Aeronautics and Space Administration and the National Science Foundation."
+- The Local Group galaxies: McConnachie 2012, Astronomical Journal 144, 4.
 
 Facts, figures and measurements aren't covered by copyright in themselves, but the collections they come from can be, and many authors ask to be cited. We cite every source we use on the page that uses it, and a full list is on the [sources](/sources) page.
 
@@ -113,4 +123,5 @@ We look at every message promptly, normally within 5 working days. Where somethi
 
 We update this page when we add a new source, picture or tool, and change the date at the top.
 
+- **14 November 2026.** Added the pulsar and exoplanet catalogues to the table, and the acknowledgements each catalogue asks for, in their own words.
 - **11 November 2026.** First version, written for the launch of the new Heliocodex.

@@ -105,7 +105,10 @@ $$
 Write the planet's mass as $\tfrac{4}{3}\pi R^3 \rho_P$ and this becomes
 
 $$
-d = R \left(\frac{2 \rho_P}{\rho_m}\right)^{1/3} \approx 1.26\, R \left(\frac{\rho_P}{\rho_m}\right)^{1/3}
+\begin{aligned}
+d &= R \left(\frac{2 \rho_P}{\rho_m}\right)^{1/3} \\
+&\approx 1.26\, R \left(\frac{\rho_P}{\rho_m}\right)^{1/3}
+\end{aligned}
 $$
 
 This is for a rigid ball held only by its gravity. A moon that can flow, or a loose pile of rubble, is stretched out of shape by the tide, which makes it easier to pull apart. Édouard Roche worked out in 1848 that for a fluid the number in front is about 2.44 instead of 1.26.
