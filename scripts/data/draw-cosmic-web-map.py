@@ -11,11 +11,7 @@ c = N / 2; k = (N / 2 - 70) / MAXR
 fnt = lambda s: ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', s)
 for r in (100, 200, 300, 400, 500, 600):
     dr.ellipse([c - r * k, c - r * k, c + r * k, c + r * k], outline=(60, 60, 70, 255), width=1)
-    ly = r * 3.2616
-    label = f'{ly / 1000:.2f} billion light years' if ly >= 1000 else f'{round(ly)} million light years'
-    tb = dr.textbbox((c + 6, c + r * k + 3), label, font=fnt(24))
-    dr.rectangle([tb[0] - 4, tb[1] - 2, tb[2] + 4, tb[3] + 2], fill=(4, 4, 6, 235))
-    dr.text((c + 6, c + r * k + 3), label, font=fnt(24), fill=(170, 166, 156, 255))
+    pass
 n = 0
 for i in range(len(raw) // 16):
     x, y, z, _ = struct.unpack_from('<4f', raw, i * 16)
@@ -24,6 +20,12 @@ for i in range(len(raw) // 16):
         continue
     px, py = c + ex * k, c - ey * k
     dr.ellipse([px - 1.6, py - 1.6, px + 1.6, py + 1.6], fill=(236, 214, 178, 190)); n += 1
+for r in (100, 200, 300, 400, 500, 600):
+    ly = r * 3.2616
+    label = f'{ly / 1000:.2f} billion light years' if ly >= 1000 else f'{round(ly)} million light years'
+    tb = dr.textbbox((c + 6, c + r * k + 3), label, font=fnt(24))
+    dr.rectangle([tb[0] - 4, tb[1] - 2, tb[2] + 4, tb[3] + 2], fill=(4, 4, 6, 235))
+    dr.text((c + 6, c + r * k + 3), label, font=fnt(24), fill=(170, 166, 156, 255))
 dr.ellipse([c - 7, c - 7, c + 7, c + 7], outline=(241, 201, 138, 255), width=2)
 dr.text((c + 14, c + 8), 'We are here', font=fnt(20), fill=(241, 201, 138, 255))
 dr.text((24, 20), 'Galaxies measured by the Sloan Digital Sky Survey (DR18)', font=fnt(22), fill=(236, 231, 220, 255))
