@@ -712,7 +712,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     if (!starF || !Number.isInteger(n) || n < 0 || n >= starF.length / 5) return null;
     return [starF[n * 5], starF[n * 5 + 1], starF[n * 5 + 2]];
   };
-  return { update, ready: settled, dispose, lgCentre: lgMid, starAt, load: () => open() };
+  return { update, ready: settled, dispose, lgCentre: lgMid, starAt, starName: (i: number) => starNames.find((s) => s.i === i)?.name, load: () => open() };
 }
 
 function smooth(a: number, b: number, x: number) {

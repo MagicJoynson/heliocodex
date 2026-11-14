@@ -77,6 +77,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
     <Analytics />
   </head>
   <body data-world={world}>
+    <a class="skip-to" href="#main">Skip to the content</a>
     <canvas id="journey" aria-hidden="true"></canvas>
     <div id="haze" aria-hidden="true"></div>
     <div id="shade" aria-hidden="true"></div>
@@ -100,7 +101,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       <span class="ruler"><i id="tick"></i></span>
     </aside>
 
-    <main><slot /></main>
+    <main id="main" tabindex="-1"><slot /></main>
     <section class="more" aria-labelledby="more-h">
       <div class="more-in">
         <h2 id="more-h">Keep exploring</h2>
