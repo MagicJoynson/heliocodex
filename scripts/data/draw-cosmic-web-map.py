@@ -12,7 +12,10 @@ fnt = lambda s: ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.
 for r in (100, 200, 300, 400, 500, 600):
     dr.ellipse([c - r * k, c - r * k, c + r * k, c + r * k], outline=(60, 60, 70, 255), width=1)
     ly = r * 3.2616
-    dr.text((c + 6, c + r * k + 3), f'{ly / 1000:.2f} billion light years' if ly >= 1000 else f'{round(ly)} million light years', font=fnt(24), fill=(170, 166, 156, 255))
+    label = f'{ly / 1000:.2f} billion light years' if ly >= 1000 else f'{round(ly)} million light years'
+    tb = dr.textbbox((c + 6, c + r * k + 3), label, font=fnt(24))
+    dr.rectangle([tb[0] - 4, tb[1] - 2, tb[2] + 4, tb[3] + 2], fill=(4, 4, 6, 235))
+    dr.text((c + 6, c + r * k + 3), label, font=fnt(24), fill=(170, 166, 156, 255))
 n = 0
 for i in range(len(raw) // 16):
     x, y, z, _ = struct.unpack_from('<4f', raw, i * 16)
