@@ -21,7 +21,7 @@ Step back further and a pattern appears. The clusters are joined by long threads
 
 <figure class="photo">
   <img src="/img/learn/cosmic-web-map-sdss.jpg" alt="A map of thousands of pale dots gathered into knots and threads with dark gaps between, marked We are here at the centre, with the Coma Cluster ringed. Large dark wedges are parts of the sky that were not surveyed" width="1400" height="1400" loading="lazy" />
-  <figcaption><b>A map drawn from measurements.</b> Each dot is a real galaxy: 11,384 of them, in a slice of space 326 million light years thick, reaching about two billion light years from us. The dots thin out far away only because faint galaxies were not recorded. The big dark wedges are not empty space: the survey never looked in those directions. Drawn from the Sloan Digital Sky Survey, Data Release 18, whose public data is in the public domain.</figcaption>
+  <figcaption><b>A map drawn from measurements.</b> Each dot is a real galaxy: 11,384 of them, in a slice of space about 330 million light years thick, reaching about two billion light years from us. The dots thin out far away only because faint galaxies were not recorded. The big dark wedges are not empty space: the survey never looked in those directions. Drawn from the Sloan Digital Sky Survey, Data Release 18, whose public data is in the public domain.</figcaption>
 </figure>
 
 Gravity made it. Wherever there was slightly more matter to begin with, more was pulled in, and the places that started slightly emptier were drained. Over billions of years the difference grew into knots, threads and holes.
