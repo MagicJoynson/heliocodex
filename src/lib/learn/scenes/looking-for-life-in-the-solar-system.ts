@@ -33,9 +33,9 @@ const enceladus = photoScene({
 });
 
 const titan = photoScene({
-  src: '/img/learn/titan-surface-huygens.jpg',
-  caption: 'A real photograph: the surface of Titan, taken on 14 January 2005 by the European Space Agency’s Huygens probe after it landed. The colour was worked out from the probe’s own measurements of the light. Credit: NASA/JPL/ESA/University of Arizona.',
-  say: ['Titan: the ground of another world', 'Minus 179 °C, under an orange sky'], zoom: [0.95, 1.08], focus: [0.5, 0.55],
+  src: '/img/learn/titan-infrared-cassini-2015.jpg',
+  caption: 'A real picture, in infrared: Titan seen through its haze by NASA’s Cassini spacecraft on 13 November 2015. The dark bands are fields of dunes. The colours were chosen, each standing for one wavelength of infrared. Credit: NASA/JPL/University of Arizona/University of Idaho.',
+  say: ['Titan: seen through its haze', 'Minus 179 °C at the ground'], zoom: [0.95, 1.08], focus: [0.5, 0.5], tag: 'Infrared picture',
 });
 
 // ---- 6. where they are

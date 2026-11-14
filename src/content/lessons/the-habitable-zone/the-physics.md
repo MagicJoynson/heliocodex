@@ -24,7 +24,7 @@ $$
 P_{\text{in}} = (1 - A)\, S\, \pi R^2
 $$
 
-**Energy out.** A warm body gives out heat as infrared light. The Stefan-Boltzmann law says each square metre at temperature $T$ gives out $\sigma T^4$, where $\sigma = 5.67 \times 10^{-8}$ W m⁻² K⁻⁴. If the planet spreads its heat round evenly, as a fast-spinning planet with air or oceans does, the whole surface, $4 \pi R^2$, radiates:
+**Energy out.** A warm body gives out heat as infrared light. The Stefan-Boltzmann law says each square metre at temperature $T$ gives out $\sigma T^4$, where ${\sigma = 5.67 \times 10^{-8}}$ W m⁻² K⁻⁴. If the planet spreads its heat round evenly, as a fast-spinning planet with air or oceans does, the whole surface, $4 \pi R^2$, radiates:
 
 $$
 P_{\text{out}} = 4 \pi R^2 \sigma T^4
