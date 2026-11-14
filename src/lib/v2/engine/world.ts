@@ -365,7 +365,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     'oort-cloud': 'The Oort cloud is drawn from a model; nobody has seen it, only comets that come from it',
     'milky-way': 'Our galaxy’s shape is a model built from measurements; we cannot see it from outside',
     'local-group': 'Andromeda, Triangulum and the Magellanic Clouds are models, placed and tilted as measured',
-    'cosmic-web': 'Each point is a measured galaxy; distances come from redshift, which stretches clusters towards us',
+    'cosmic-web': 'Real SDSS galaxies. Blank sky was not surveyed',
     cmb: 'You are outside the sphere of all we can see, 46 billion light years in radius. Nothing is really this far away, and the tiny differences in its light are shown far stronger than they are',
   };
   function placeAt(fromSun: number, nearId: string): { id: string; band: Context['band'] } | null {

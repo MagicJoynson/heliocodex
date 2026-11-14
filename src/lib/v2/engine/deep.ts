@@ -4,7 +4,7 @@ import { add, cross, len, norm, scale, type V3 } from './vec';
 
 /**
  * Everything beyond the Solar System, drawn in the space layer: the stars at their real distances,
- * a model of the Milky Way, the galaxies of the Local Group, the galaxies of the 2MASS Redshift
+ * a model of the Milky Way, the galaxies of the Local Group, the galaxies of the Sloan Digital Sky
  * Survey, and the oldest light. Positions are in parsecs from the Sun, in the engine's frame.
  *
  * Every object is drawn as a direction from the camera at the space layer's fixed distance (so
@@ -16,7 +16,8 @@ import { add, cross, len, norm, scale, type V3 } from './vec';
  * - the Milky Way's shape: a model built from measured averages (see makeSpiral). Not a map.
  * - Local Group galaxies: positions and brightness measured (McConnachie 2012); Andromeda, Triangulum
  *   and the two Magellanic Clouds are drawn as models of their shape at their real place and tilt.
- * - 2MRS galaxies: positions on the sky measured; distances from redshift (d = cz / 70 km/s/Mpc).
+ * - SDSS DR18 galaxies: positions on the sky measured, but only where the survey looked (a large part of the northern sky
+ *   and a strip along the equator); distances from redshift (d = cz / 70 km/s/Mpc). The rest of the sky is empty here because it was not mapped.
  * - the oldest light: the WMAP nine-year map, on a sphere 14.1 Gpc (46 billion light years) away.
  */
 
@@ -55,7 +56,7 @@ export function radecToEngine(ra: number, dec: number): V3 {
   return [x, -y * Math.sin(EPS) + z * Math.cos(EPS), -(y * Math.cos(EPS) + z * Math.sin(EPS))];
 }
 
-/** Galaxy clusters to name in the cosmic web. Positions from NED; distances from redshift, as 2MRS. */
+/** Galaxy clusters to name in the cosmic web. Positions from NED; distances from redshift, as the SDSS galaxies. */
 const CLUSTERS: { name: string; ra: number; dec: number; cz: number }[] = [
   { name: 'Virgo Cluster', ra: 187.7, dec: 12.39, cz: 1100 },
   { name: 'Fornax Cluster', ra: 54.62, dec: -35.45, cz: 1379 },
@@ -492,9 +493,9 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     points(P.length / 4, cloudMaterial(P, new Float32Array(col), lgGain, exposureFor(nMW, 0.02)), -13, lgGain);
   }));
 
-  // ---- the 2MASS Redshift Survey: forty thousand galaxies, each a point of light
+  // ---- the Sloan Digital Sky Survey (DR18): forty thousand galaxies in the part of the sky it mapped, each a point of light
   const webGain = u1(0);
-  ready.push(later('/data/deep/2mrs.bin').then((r) => r.arrayBuffer()).then((buf) => {
+  ready.push(later('/data/deep/sdss.bin').then((r) => r.arrayBuffer()).then((buf) => {
     const f = new Float32Array(buf);
     const n = f.length / 4;
     const mat = new THREE.PointsNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: false });
@@ -503,8 +504,8 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     const d = max(length(rel), float(1));
     mat.positionNode = rel.div(d).mul(FAR);
     // brighter galaxies a little brighter, but every one visible, so the web shows; dimmer far off
-    const L = clamp(exp2(P.w.add(23).mul(-0.4 * 3.321928)).pow(0.3), 0.35, 1.6);
-    const a = vary(L.mul(clamp(float(1.5e8).div(d), 0.3, 1)).mul(0.3).mul(webGain));
+    const L = clamp(exp2(P.w.add(21).mul(-0.4 * 3.321928)).pow(0.3), 0.35, 1.6);
+    const a = vary(L.mul(clamp(float(4e8).div(d), 0.3, 1)).mul(0.3).mul(webGain));
     mat.sizeNode = float(2.3).mul(pxr);
     mat.colorNode = vec4(vec3(1, 0.86, 0.72).mul(a).mul(fall), 1);
     points(n, mat, -12, webGain);

@@ -3,7 +3,7 @@
 // Local Group, and the cosmic web. The same data the 3D view draws, from the same files.
 import Reading from '../../layouts/Reading.astro';
 import DeepPlate from '../../components/atlas/DeepPlate.astro';
-import { MCCONNACHIE, TWO_MRS } from '../../lib/v2/atlas/places';
+import { MCCONNACHIE, SDSS } from '../../lib/v2/atlas/places';
 import { LY_PER_PC, R, R0_PC, armPath, clusters, dotPath, fmtLy, galaxyDot, groupGalaxies, limits, localArmPath, milkyWay, modelOnPage, onPage, placeLabels, ringLabelBox, webGalaxies } from '../../lib/v2/atlas/deep';
 import '../../styles/atlas.css';
 
@@ -49,7 +49,7 @@ const outside = groupGalaxies.length - group.inside.length;
 // ---- drawing IV: the cosmic web
 const WEB_HALF = limits.webMpc;
 const lyOfMpc = (mpc: number) => mpc * 1e6 * LY_PER_PC;
-const webRings = rings([250e6, 500e6, 750e6, 1e9], lyOfMpc(WEB_HALF));
+const webRings = rings([500e6, 1e9, 1.5e9, 2e9], lyOfMpc(WEB_HALF));
 const web = dotPath(webGalaxies.map(([x, y]) => [(x / WEB_HALF) * R, (-y / WEB_HALF) * R]));
 const named = clusters.filter((c) => c.inSlab).map((c) => ({ x: (c.x / WEB_HALF) * R, y: (-c.y / WEB_HALF) * R, r: 6, text: c.name }));
 const webNames = placeLabels(named, 18, webRings.map((g) => ringLabelBox(g.r, g.label)));
@@ -141,13 +141,13 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
       <p class="label">Drawing IV</p>
       <h2>The cosmic web</h2>
       <p class="note">Step back two hundred times more. Each dot is now a whole galaxy: {webGalaxies.length.toLocaleString('en-GB')} of them, in a slice of space {fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick with us in the middle. Galaxies are not scattered evenly. They gather into clusters and threads, with great empty voids between.</p>
-      <p class="note"><strong>Three things here are not real.</strong> The dots thin out towards the edge only because faint galaxies far away were too dim for the survey. Along a narrow line to the left and right of the middle there are fewer dots, because the Milky Way’s own disc hides what lies behind it. And a rich cluster is smeared into a streak pointing at us, because distance is worked out from speed and the galaxies in a cluster are also flying round each other.</p>
+      <p class="note"><strong>Three things here are not real.</strong> The dots thin out towards the edge only because faint galaxies far away were too dim for the survey. Where the slice is empty, in most directions, the survey did not look: those places are unmapped, not empty space. And a rich cluster is smeared into a streak pointing at us, because distance is worked out from speed and the galaxies in a cluster are also flying round each other.</p>
       <p class="note scale">The drawing is {fmtLy(lyOfMpc(WEB_HALF * 2))} across.</p>
       <p class="note print-hide"><a href="/explore?go=cosmic-web">See the cosmic web in 3D</a></p>
     </div>
     <figure class="plate-holder">
-      <DeepPlate id="web" numeral="IV" title="Galaxies out to a billion light years" rings={webRings} footLeft={`A slice ${fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick`} footRight="2MASS Redshift Survey"
-        summary={`A chart of ${webGalaxies.length.toLocaleString('en-GB')} galaxies in a thin slice of space reaching a billion light years from us in every direction. They gather into clusters and threads round empty voids. The Virgo Cluster is the nearest rich cluster.`}>
+      <DeepPlate id="web" numeral="IV" title="Galaxies out to two billion light years" rings={webRings} footLeft={`A slice ${fmtLy(lyOfMpc(limits.webSlabMpc * 2))} thick`} footRight="Sloan Digital Sky Survey"
+        summary={`A chart of ${webGalaxies.length.toLocaleString('en-GB')} galaxies in a thin slice of space reaching about two billion light years from us, only in the part of the sky the Sloan Digital Sky Survey mapped. They gather into clusters and threads round empty voids. The Coma Cluster is the richest cluster in the slice.`}>
         <path class="dust" d={web} stroke-width="1.7" />
         <g>{webNames.placed.map((l) => <circle class="edge" cx={l.x.toFixed(1)} cy={l.y.toFixed(1)} r="6" />)}</g>
         <g class="here"><circle r="5" /></g>
@@ -160,7 +160,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
     <div class="hang"><h2>How to read it</h2></div>
     <div class="prose key">
       <p>Drawings I to III look straight down on the disc of the Milky Way from its north side, the same way up as the <a href="/atlas/stars">chart of the stars</a>. A flat drawing cannot show height, so galaxies that look close together on the page may be far apart above and below it.</p>
-      <p>Drawing IV is turned a different way, to lie along the sheet in which most of the nearby galaxies are found. Astronomers call it the supergalactic plane. We are the ring in the middle.</p>
+      <p>Drawing IV is turned a different way, to lie along the line of the celestial equator, the Earth’s equator projected out into space, seen from the north. We are the ring in the middle. The Sloan Digital Sky Survey mapped only part of the sky, so it fills the slice only in some directions.</p>
       <p>The distances in drawing IV come from redshift: the faster a galaxy is moving away, the further it is, at {limits.h0} km a second for every megaparsec (3.26 million light years). That is good to about a tenth far away, and poor close in.</p>
       <p class="print-hide"><button type="button" class="print-button" onclick="window.print()">Print these drawings</button></p>
     </div>
@@ -190,7 +190,7 @@ const listed = groupGalaxies.filter((g) => g.name === 'Andromeda' || (g.absMag ?
     <div class="prose">
       <ul>
         <li>Drawings II and III: <a href={MCCONNACHIE.url}>{MCCONNACHIE.label}</a>, “The observed properties of dwarf galaxies in and around the Local Group”.</li>
-        <li>Drawing IV: <a href={TWO_MRS.url}>{TWO_MRS.label}</a>. The survey measured {limits.webAll.toLocaleString('en-GB')} galaxies over the whole sky, and the slice drawn here holds about a quarter of them.</li>
+        <li>Drawing IV: <a href={SDSS.url}>{SDSS.label}</a>, which says that all data in its public releases “are considered in the public domain”. We use {limits.webAll.toLocaleString('en-GB')} of its galaxies, one in fifteen, and the slice drawn here holds about a quarter of them.</li>
         <li>The Sun’s distance from the centre of the Milky Way: <a href="https://doi.org/10.1051/0004-6361/201935656">GRAVITY Collaboration 2019, Astronomy &amp; Astrophysics 625, L10</a>.</li>
       </ul>
       <p>The Milky Way in drawing I is the model used by the 3D view. Its arms follow the usual picture of four arms winding out from a central bar, but their exact places are our own choice and should not be read as measurements.</p>

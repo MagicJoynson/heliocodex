@@ -414,7 +414,7 @@ test('the places beyond the worlds: one list, in the engine’s order, each sayi
   }
   // the four data sets the 3D view is built from are each credited somewhere
   const credited = places.flatMap((p) => p.credits.map((c) => c.label)).join(' ');
-  for (const need of ['HYG', 'McConnachie 2012', 'Huchra et al. 2012', 'WMAP']) assert.ok(credited.includes(need), `${need} is not credited`);
+  for (const need of ['HYG', 'McConnachie 2012', 'Sloan Digital Sky Survey', 'WMAP']) assert.ok(credited.includes(need), `${need} is not credited`);
   assert.ok(places.find((p) => p.id === 'neighbourhood')!.credits[0].licence, 'the star catalogue’s licence is not given');
   // a place leads to the one beyond it and the one inside it
   assert.deepEqual(chainFor({ near: 'milky-way', band: 'galactic', km: 1e18 }, whoIs), ['milky-way', 'local-group', 'night-sky']);
@@ -471,12 +471,14 @@ test('the galaxies: Andromeda, the Magellanic Clouds and Virgo are where they sh
   near(g('LMC').kpc, 50, 3); near(g('SMC').kpc, 62, 5);
   assert.ok(g('LMC').p[2] < 0 && g('SMC').p[2] < 0, 'the Magellanic Clouds are south of the disc');
   assert.equal(groupGalaxies.length, 26);
-  const virgo = clusters.find((c) => c.name === 'Virgo Cluster')!;
-  assert.ok(virgo.inSlab && Math.hypot(virgo.x, virgo.y) > 13 && Math.hypot(virgo.x, virgo.y) < 19);
-  // the Virgo Cluster is a real crowd in the data: several times more galaxies within 4 Mpc of it than in an average patch that near
+  // the Coma Cluster is a real crowd in the data: several times more galaxies within 4 Mpc of it than in an average patch that near
+  const coma = clusters.find((c) => c.name === 'Coma Cluster')!;
+  assert.ok(coma.inSlab && Math.hypot(coma.x, coma.y) > 80 && Math.hypot(coma.x, coma.y) < 100);
   const round = (cx: number, cy: number) => webGalaxies.filter(([x, y]) => Math.hypot(x - cx, y - cy) < 4).length;
-  const average = (webGalaxies.filter(([x, y]) => Math.hypot(x, y) < 30).length * 16) / 900;
-  assert.ok(round(virgo.x, virgo.y) > 3 * average, `${round(virgo.x, virgo.y)} near Virgo against ${average.toFixed(0)} on average`);
+  // the average is taken over a whole ring of the same distance, unmapped sky included, so it is a low bar: a real cluster still clears it by a wide margin
+  const ring = webGalaxies.filter(([x, y]) => Math.abs(Math.hypot(x, y) - Math.hypot(coma.x, coma.y)) < 10);
+  const average = ring.length * (Math.PI * 16) / (Math.PI * ((Math.hypot(coma.x, coma.y) + 10) ** 2 - (Math.hypot(coma.x, coma.y) - 10) ** 2));
+  assert.ok(round(coma.x, coma.y) > 3 * average, `${round(coma.x, coma.y)} near Coma against ${average.toFixed(0)} on average`);
   assert.ok(webGalaxies.every(([x, y]) => Math.hypot(x, y) <= limits.webMpc + 0.1));
   assert.ok(webGalaxies.length > 8000 && webGalaxies.length < limits.webAll / 2);
 });

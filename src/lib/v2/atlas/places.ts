@@ -26,7 +26,7 @@ export const HYG: Credit = { label: 'HYG star database v4.4, David Nash', url: '
 /** The line figures of the constellations, for the layer that draws them. */
 export const D3_CELESTIAL: Credit = { label: 'd3-celestial, Olaf Frohn (constellation lines)', url: 'https://github.com/ofrohn/d3-celestial', licence: 'BSD 3-Clause' };
 export const MCCONNACHIE: Credit = { label: 'McConnachie 2012, Astronomical Journal 144, 4', url: 'https://doi.org/10.1088/0004-6256/144/1/4' };
-export const TWO_MRS: Credit = { label: 'Huchra et al. 2012, Astrophysical Journal Supplement 199, 26 (the 2MASS Redshift Survey)', url: 'https://doi.org/10.1088/0067-0049/199/2/26' };
+export const SDSS: Credit = { label: 'Sloan Digital Sky Survey, Data Release 18', url: 'https://www.sdss.org/' };
 export const WMAP: Credit = { label: 'WMAP nine-year map, NASA / WMAP Science Team', url: 'https://lambda.gsfc.nasa.gov/product/wmap/dr5/ilc_map_get.html' };
 
 export const places: Place[] = [
@@ -55,9 +55,9 @@ export const places: Place[] = [
     drawn: 'Each galaxy is at its measured place. The shapes of Andromeda, Triangulum and the two Magellanic Clouds are models, set at their real size and tilt.',
     credits: [MCCONNACHIE] },
   { id: 'cosmic-web', chart: '/atlas/galaxies#figure-web', name: 'The cosmic web', model: false,
-    what: 'Tens of thousands of galaxies, gathered into clusters, threads and empty voids.',
-    drawn: 'Every point is a real galaxy. Its place on the sky is measured, and its distance is worked out from how fast it is moving away from us.',
-    credits: [TWO_MRS] },
+    what: 'Tens of thousands of galaxies, gathered into clusters, threads and empty voids, in the part of the sky that has been surveyed.',
+    drawn: 'Every point is a real galaxy from the Sloan Digital Sky Survey. Its place on the sky is measured, and its distance is worked out from how fast it is moving away from us. The survey mapped only part of the sky, so the rest is blank here because it was not surveyed, not because it is empty.',
+    credits: [SDSS] },
   { id: 'cmb', name: 'The edge of what we can see', model: false,
     what: 'The oldest light there is, coming from every direction at once.',
     drawn: 'The mottled sphere is a real map of the oldest light, made by the WMAP spacecraft. Its colours stand for differences in temperature of less than a thousandth of a degree.',

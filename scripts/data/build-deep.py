@@ -5,8 +5,9 @@ Sources (download first, into one folder, then run: python3 scripts/data/build-d
                    https://codeberg.org/astronexus/hyg  (Hipparcos, Yale, Gliese; distances from parallax)
   lg.tsv           McConnachie 2012, AJ 144, 4: galaxies in and around the Local Group (VizieR J/AJ/144/4/catalog)
                    asu-tsv, columns Name,MType,RAJ2000,DEJ2000,D,VMag,R1,PA,Ell
-  2mrs.tsv         Huchra et al. 2012, ApJS 199, 26: the 2MASS Redshift Survey (VizieR J/ApJS/199/26/table3)
-                   asu-tsv, columns RAJ2000,DEJ2000,Ktmag,cz,b/a
+  sdss.csv         Sloan Digital Sky Survey, Data Release 18 (public domain, per https://www.sdss.org/collaboration/image-use-policy/),
+                   one galaxy in fifteen of the clean primary spectra with 0.005 < z < 0.15. Columns ra,dec,z,r (r = dereddened Petrosian r).
+                   Fetch with the SkyServer query in the comment above the SDSS block below.
   ilc.fits         WMAP 9-year Internal Linear Combination map (NASA / WMAP Science Team, LAMBDA), public domain
                    https://lambda.gsfc.nasa.gov/data/map/dr5/dfp/ilc/wmap_ilc_9yr_v5.fits
 
@@ -17,7 +18,7 @@ Outputs:
   public/data/deep/stars.bin     float32 [x, y, z, absmag, colour index B-V] per star
   public/data/deep/stars.json    names for the labels: [[index, name], ...]
   public/data/deep/local-group.json
-  public/data/deep/2mrs.bin      float32 [x, y, z, absolute Ks magnitude] per galaxy
+  public/data/deep/sdss.bin      float32 [x, y, z, absolute r magnitude] per galaxy
   public/textures/cmb_wmap9.webp the WMAP map baked onto the engine's sphere (three.js SphereGeometry UVs)
 """
 import csv, gzip, json, math, os, struct, sys
@@ -96,6 +97,9 @@ json.dump(names, open(os.path.join(out, 'stars.json'), 'w'), separators=(',', ':
 print(len(rows), 'stars,', len(names), 'named')
 
 
+KEEP = {'Canis Major', 'Sagittarius dSph', 'LMC', 'SMC', 'Draco', 'Ursa Minor', 'Sculptor', 'Sextans (I)', 'Carina', 'Fornax', 'Leo I', 'Leo II', 'Bootes (I)', 'Andromeda', 'M32', 'NGC 205', 'Triangulum', 'NGC 147', 'NGC 185', 'IC 10', 'IC 1613', 'NGC 6822', 'WLM (Wolf-Lundmark-Melotte)', 'Leo A', 'Pegasus dIrr', 'Phoenix'}
+
+
 def tsv(path):
     lines = [l for l in open(path, encoding='utf-8') if not l.startswith('#') and l.strip()]
     head = lines[0].rstrip('\n').split('\t')
@@ -118,6 +122,8 @@ lg = []
 for r in tsv(os.path.join(src, 'lg.tsv')):
     if not r['D'] or not r['RAJ2000']:
         continue  # the Milky Way itself: the engine draws it as a model
+    if r['Name'] not in KEEP:
+        continue  # only individually cited galaxies; no open licence covers the catalogue as a whole
     d = float(r['D']) * 1000  # pc
     ra, dec = hms(r['RAJ2000']), dms(r['DEJ2000'])
     x, y, z = radec(ra, dec, d)
@@ -136,23 +142,25 @@ json.dump({'source': 'McConnachie 2012, AJ 144, 4 (VizieR J/AJ/144/4)', 'galaxie
           open(os.path.join(out, 'local-group.json'), 'w'), separators=(',', ':'), ensure_ascii=False)
 print(len(lg), 'Local Group galaxies')
 
-# ---- 2MRS: distance from redshift, d = cz / H0
+# ---- SDSS DR18: distance from redshift, d = cz / H0. Only the part of the sky SDSS surveyed has galaxies.
+# Query (SkyServer, DR18, run once, saved as sdss.csv):
+#   SELECT s.ra, s.dec, s.z, (p.petroMag_r - p.extinction_r) AS r
+#   FROM SpecObj AS s JOIN PhotoObj AS p ON p.objID = s.bestObjID
+#   WHERE s.class = 'GALAXY' AND s.zWarning = 0 AND s.scienceprimary = 1
+#     AND s.z BETWEEN 0.005 AND 0.15 AND s.specObjID % 15 = 0
 H0 = 70.0
+C = 299792.458
 n = 0
-with open(os.path.join(out, '2mrs.bin'), 'wb') as f:
-    for r in tsv(os.path.join(src, '2mrs.tsv')):
-        if not r['cz']:
+with open(os.path.join(out, 'sdss.bin'), 'wb') as f:
+    for r in csv.DictReader(l for l in open(os.path.join(src, 'sdss.csv'), encoding='utf-8') if not l.startswith('#')):
+        z = float(r['z']); mr = float(r['r'])
+        if not 5 < mr < 25:
             continue
-        cz = float(r['cz'])
-        # below a few hundred km/s, motions swamp the expansion and the Local Group catalogue takes over
-        if cz < 400:
-            continue
-        d = cz / H0 * 1e6  # pc
-        x, y, z = radec(float(r['RAJ2000']), float(r['DEJ2000']), d)
-        mk = float(r['Ktmag']) - 5 * math.log10(d / 10)
-        f.write(struct.pack('<4f', x, y, z, mk))
+        d = C * z / H0 * 1e6  # pc (low redshift: the straight-line approximation)
+        x, y, zz = radec(float(r['ra']), float(r['dec']), d)
+        f.write(struct.pack('<4f', x, y, zz, mr - 5 * math.log10(d / 10)))
         n += 1
-print(n, '2MRS galaxies')
+print(n, 'SDSS galaxies')
 
 # ---- the CMB, on the engine's sphere
 import healpy as hp

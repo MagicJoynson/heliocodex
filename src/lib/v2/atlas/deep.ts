@@ -28,7 +28,7 @@ export const skyStars: V3[] = raw.sky;
 export const skyNamed = raw.skyNamed.map((s) => ({ p: [s[0], s[1], s[2]] as V3, mag: s[3], name: s[4], ly: dist(s) }));
 /** McConnachie's galaxies. Galactic frame, kpc from the Sun. */
 export const groupGalaxies: Galaxy[] = raw.group.map((g) => ({ p: [g[0], g[1], g[2]], absMag: g[3], name: g[4], kpc: dist(g) }));
-/** 2MRS galaxies near the supergalactic plane, Mpc from us in that plane. */
+/** SDSS galaxies near the plane of the celestial equator, Mpc from us in that plane. Only the part of the sky the survey mapped. */
 export const webGalaxies: [number, number][] = raw.web.map((w) => [w[0] / 10, w[1] / 10]);
 export const clusters = raw.clusters.map((c) => ({ x: c[0], y: c[1], z: c[2], name: c[3], inSlab: Math.abs(c[2]) <= raw.webSlabMpc }));
 
