@@ -37,8 +37,7 @@ import { sections } from '../lib/nav';
     <Analytics />
   </head>
   <body>
-    <a class="skiplink" href="#where">Skip to what you are looking at</a>
-    <canvas id="space" tabindex="-1" aria-label="The Solar System at its true size and distance. The whole journey is also available as a list at Travel the universe in a list, and the controls work from the keyboard."></canvas>
+    <a class="skiplink" href="#main">Skip to what you are looking at</a>
     <div class="veil" id="veil" aria-hidden="true"></div>
 
     <header class="top">
@@ -53,7 +52,9 @@ import { sections } from '../lib/nav';
       <a href="/sources"><b>Sources</b><span>Where every number comes from</span></a>
     </nav>
 
-    <main id="main">
+    <main id="main" tabindex="-1">
+    <canvas id="space" tabindex="-1" aria-label="The Solar System at its true size and distance. The whole journey is also available as a list at Travel the universe in a list, and the controls work from the keyboard."></canvas>
+
     <section class="threshold" id="threshold">
       <p class="name">Heliocodex</p>
       <p class="line">The Sun and its worlds at their true size and distance. Go in to Mars, click any planet to visit it, then keep going, past the stars, out to the oldest light there is.</p>
@@ -237,6 +238,7 @@ import { sections } from '../lib/nav';
           onArrive() {
             body.classList.add('in', 'arrived');
             $('controls').removeAttribute('inert');
+            $('threshold').setAttribute('inert', '');
             $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
             $('hint').classList.add('show');
             setTimeout(() => $('hint').classList.remove('show'), 9000);
@@ -262,6 +264,7 @@ import { sections } from '../lib/nav';
             $('status').textContent = 'The graphics stopped. Reload the page to carry on.';
             body.classList.remove('in', 'arrived');
             $('controls').setAttribute('inert', '');
+            $('threshold').removeAttribute('inert');
           },
         });
         world.setReduced(reducedNow());
@@ -453,7 +456,7 @@ import { sections } from '../lib/nav';
       pad.addEventListener('pointerup', off);
       pad.addEventListener('pointercancel', off);
 
-      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); }
+      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); }
     </script>
 
     <style is:global>
@@ -480,7 +483,10 @@ import { sections } from '../lib/nav';
       .mark img { display: block; height: 24px; width: auto; }
       body:not(.in) .mark { opacity: 0; pointer-events: none; }
       .mark { transition: opacity 1s ease .6s; }
+      main:focus { outline: none; }
       .top .site-nav { height: 44px; }
+      .top .nav-item:nth-last-child(-n+2) .nav-panel { left: auto; right: 0; }
+      .menu { max-height: calc(100dvh - var(--top) - 70px); overflow-y: auto; overscroll-behavior: contain; }
       .top .nav-top { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
       .pages a, .menu-btn { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
