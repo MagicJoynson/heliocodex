@@ -58,18 +58,21 @@ The small moons right at the boundary are a test of a different kind. JPL gives 
 The difference is Saturn's shape. It spins in under eleven hours and bulges at its equator, and the bulge pulls on close orbits a little more than a round planet would. The measure of this is called $J_2$, and for Saturn it is $16{,}298 \times 10^{-6}$. With it, the speed round the orbit, $n$, and the rate at which an oval orbit swings in and out, $\kappa$, are no longer equal:
 
 $$
-n^2 = \frac{GM}{r^3}\left(1 + \tfrac{3}{2} J_2 \tfrac{R^2}{r^2}\right), \qquad
+n^2 = \frac{GM}{r^3}\left(1 + \tfrac{3}{2} J_2 \tfrac{R^2}{r^2}\right)
+$$
+
+$$
 \kappa^2 = \frac{GM}{r^3}\left(1 - \tfrac{3}{2} J_2 \tfrac{R^2}{r^2}\right)
 $$
 
-and the pull from Mimas builds up where $n - \kappa/2$ equals Mimas's own rate of turning. Solved here, that is at 117,530 km, 21 km beyond the measured edge. Joseph Spitale and Carolyn Porco, from Cassini's images, find that the resonance with Mimas holds the edge only in part, and that the edge also ripples in shapes of its own.
+and the pull from Mimas builds up where $n - \kappa/2$ equals Mimas's own rate of turning. Solved here, that is at 117,530 km, 21 km beyond the measured edge. So the outer edge of the B ring, which is the inner edge of the Cassini Division, sits within 21 km of the resonance. The match is close, but one resonance is not the whole story: Joseph Spitale and Carolyn Porco, from Cassini's images, find that Mimas holds the edge only in part, and that the edge also ripples in shapes of its own, perhaps stirred by unseen moonlets near it.
 
 **Real data: weighing the rings.** In 2017 Cassini flew between Saturn and its rings, so that the rings pulled on it from outside while the planet pulled from inside, and the tracking separated the two. Luciano Iess and colleagues found the rings' mass to be $1.54 \pm 0.49 \times 10^{19}$ kg. Mimas, from JPL's figures, has a mass of $3.75 \times 10^{19}$ kg, so the rings are 0.41 of Mimas.
 
 The A, B and C rings, from 74,658 to 136,780 km, cover an area of $\pi (r_2^2 - r_1^2)$, which is $4.13 \times 10^{16}$ m². Spread over that, the mass is 373 kg on each square metre: if it were packed into solid ice, a layer about 40 cm thick. NSSDC's table gives 14 to 50 kg/m² for the C ring and 200 to 1,000 kg/m² for the B ring, so the average lies between them, as it should, with most of the mass in the B ring.
 
 <figure class="photo">
-  <img src="/img/learn/charts/where-the-rings-end.svg" alt="A strip to scale outwards from Saturn's centre. Half of Saturn's disc is at the left. The C ring is a faint band, the B ring a bright band, then a dark gap, the Cassini Division, then the A ring. A dashed line just inside the outer edge of the A ring marks the Roche limit for a loose pile of ice. Small moons cluster just beyond it, and Mimas is further out. A curved arrow links Mimas to the outer edge of the B ring, labelled 2 laps to 1." width="800" height="620" loading="lazy" />
+  <img src="/img/learn/charts/where-the-rings-end.svg" alt="A strip to scale outwards from Saturn's centre. Half of Saturn's disc is at the left. The C ring is a faint band, the B ring a bright band, then a dark gap, the Cassini Division, then the A ring. A dashed line just inside the outer edge of the A ring marks the Roche limit for a loose pile of ice. Small moons cluster just beyond it, and Mimas is further out. A mark at the outer edge of the B ring is labelled 2 laps for 1 of Mimas." width="800" height="660" loading="lazy" />
   <figcaption><b>Where the rings end.</b> Distances outwards from Saturn's centre, to scale. The rings stop, and the moons begin, close to the Roche limit for a loose pile of ice. The outer edge of the B ring is where a piece would go round twice for each orbit of Mimas. Data: NSSDC; NASA JPL.</figcaption>
 </figure>
 
