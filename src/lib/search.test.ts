@@ -17,6 +17,12 @@ for (const [typed, want] of [
 ] as const) test(`typo "${typed}" finds ${want}`, () => assert.ok(top(typed, 4).some((n) => n.toLowerCase().includes(want.toLowerCase())), `got ${top(typed, 4).join(', ')}`));
 for (const [typed, want] of [['jup', 'Jupiter'], ['europa', 'Europa'], ['betel', 'Betelgeuse'], ['mars', 'Mars']] as const)
   test(`as typed "${typed}" still puts ${want} first`, () => assert.equal(top(typed, 1)[0], want));
+for (const [typed, want] of [['proxima centuri', 'Proxima'], ['ursa magor', 'Ursa Major'], ['millky way', 'Milky Way'], ['blackhole', 'Black hole']] as const)
+  test(`typo "${typed}" finds ${want}`, () => assert.ok(top(typed, 4).some((n) => n.toLowerCase().includes(want.toLowerCase())), `got ${top(typed, 4).join(', ')}`));
+for (const q of ['europa', 'mars', 'uranus', 'nebula', 'eclipse']) test(`"${q}" gets no guessed neighbours`, () => {
+  const stray = rank(all, q, 8).filter((e) => !e[0].toLowerCase().includes(q) && !(e[3] ?? '').toLowerCase().includes(q));
+  assert.equal(stray.length, 0, `stray: ${stray.map((e) => e[0]).join(', ')}`);
+});
 test('short words are not guessed at', () => assert.equal(rank(all, 'xyq').length, 0));
 test('catalogue numbers are matched as typed only', () => assert.ok(rank(all, 'HD 99999999').length === 0));
 test('empty query gives nothing', () => assert.equal(rank(all, '   ').length, 0));

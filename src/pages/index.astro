@@ -217,7 +217,7 @@ const far = worlds.map((w) => {
   .front-list :global(b) { font: 400 1.05rem/1.25 'Spectral', Georgia, serif; }
   .front-list :global(span) { font: 400 .8125rem/1.2 'IBM Plex Mono', monospace; color: var(--ink-faint); white-space: nowrap; }
   .front-list :global(li[aria-selected='true']), .front-list :global(li[role='option']:hover) { background: rgba(233,196,138,.16); }
-  .front-list :global(.none) { padding: .7rem 1.1rem; color: var(--ink-soft); }
+  .front-list :global(.none) { overflow-wrap: anywhere; padding: .7rem 1.1rem; color: var(--ink-soft); }
   .front-row input { flex: 1; min-width: 0; font: 400 1rem/1.2 'Spectral', Georgia, serif; color: var(--ink); background: rgba(236,231,220,.08); border: 1px solid rgba(236,231,220,.35); border-radius: 999px; padding: .8rem 1.1rem; }
   .front-row input::placeholder { color: #a8a296; }
   .front-row input:focus-visible, .front-row button:focus-visible, .front-or a:focus-visible, .front-enter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

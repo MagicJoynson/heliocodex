@@ -1,7 +1,7 @@
 /** The header and home-page search: loads /search.json once, ranks matches, and drives the result list from the keyboard. */
 export type Entry = [string, string, string, string?];
 let index: Promise<Entry[]> | null = null;
-export const loadIndex = () => (index ??= fetch('/search.json').then((r) => r.json() as Promise<Entry[]>));
+export const loadIndex = () => (index ??= fetch('/search.json').then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<Entry[]>; }).catch((e) => { index = null; throw e; }));
 
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’']/g, '');
 const KIND_RANK: Record<string, number> = { Planet: 0, Star: 2, Page: 1, Constellation: 2, Glossary: 3, Lesson: 3, 'Star (catalogue)': 6 };
@@ -43,31 +43,63 @@ function fuzzy(q: string, words: string[]): number {
   return best <= max ? best : Infinity;
 }
 
-/** The best matches for a query: whole-name first, then start of name, start of a word, then anywhere; and, for a query that is
- *  not found as typed, names with a slip or two ("jupitor", "betelguese"). Catalogue numbers are only ever matched as typed. */
+/** Names split into words once, so each keystroke only compares. */
+type Prepared = { name: string; also: string; words: string[]; joined: string };
+const prepared = new WeakMap<Entry[], Prepared[]>();
+function prepare(all: Entry[]): Prepared[] {
+  let p = prepared.get(all);
+  if (!p) {
+    p = all.map((e) => {
+      const name = norm(e[0]), also = e[3] ? norm(e[3]) : '';
+      const words = [...name.split(/[\s-]+/), ...(also ? also.split(/\s+/) : [])];
+      return { name, also, words, joined: name.replace(/[\s-]+/g, '') };
+    });
+    prepared.set(all, p);
+  }
+  return p;
+}
+
+/** Slips for a whole query against one name: each typed word must be a start of, or a slip away from, one of the name's words;
+ *  a query typed as one word ("blackhole") may also be a slip away from the joined name. */
+function nearness(tokens: string[], e: Prepared): number {
+  let total = 0;
+  for (const t of tokens) {
+    if (e.words.some((w) => w.startsWith(t))) continue;
+    const d = fuzzy(t, e.words);
+    if (d === Infinity) { total = Infinity; break; }
+    total += d;
+  }
+  if (total === Infinity && tokens.length === 1) total = fuzzy(tokens[0], [e.joined]);
+  return total;
+}
+
+/** The best matches for a query: whole-name first, then start of name, start of a word, then anywhere; and, when nothing
+ *  matches well as typed, names with a slip or two ("jupitor", "betelguese", "proxima centuri"). Catalogue numbers are only matched as typed. */
 export function rank(all: Entry[], query: string, max = 8): Entry[] {
-  const q = norm(query.trim());
+  const q = norm(query.trim()).replace(/\s+/g, ' ');
   if (!q) return [];
+  const list = prepare(all);
+  const tokens = q.split(' ');
+  const tryFuzzy = q.length >= 4 && !/\d/.test(q) && tokens.some((t) => t.length >= 4);
   const scored: [number, Entry][] = [];
   const near: [number, Entry][] = [];
-  const tryFuzzy = q.length >= 4 && !/\d/.test(q) && !q.includes(' ');
-  for (const e of all) {
-    const name = norm(e[0]), also = e[3] ? norm(e[3]) : '';
+  let bestAsTyped = Infinity;
+  for (let i = 0; i < all.length; i++) {
+    const e = all[i], { name, also, words } = list[i];
     let s = -1;
     if (name === q) s = 0;
     else if (name.startsWith(q)) s = 10;
-    else if (name.split(/[\s-]+/).some((w) => w.startsWith(q))) s = 20;
-    else if (also && also.split(/\s+/).some((w) => w.startsWith(q))) s = 25;
+    else if (words.some((w) => w.startsWith(q))) s = 20;
     else if (q.length > 2 && (name.includes(q) || also.includes(q))) s = 30;
-    if (s >= 0) scored.push([s + kindRank(e[1]) * 2 + name.length / 100, e]);
+    if (s >= 0) { scored.push([s + kindRank(e[1]) * 2 + name.length / 100, e]); if (s < bestAsTyped) bestAsTyped = s; }
     else if (tryFuzzy && e[1] !== 'Star (catalogue)') {
-      const d = fuzzy(q, [...name.split(/[\s-]+/), ...(also ? also.split(/\s+/) : [])]);
+      const d = nearness(tokens, list[i]);
       if (d < Infinity) near.push([d * 8 + kindRank(e[1]) + name.length / 100, e]);
     }
   }
   const out = scored.sort((a, b) => a[0] - b[0]).map((x) => x[1]);
-  // As-typed matches always come first; near misses only fill the list.
-  if (out.length < max) out.push(...near.sort((a, b) => a[0] - b[0]).map((x) => x[1]).slice(0, max - out.length));
+  // As-typed matches always come first. Near misses are offered only when the query found no name or word it begins.
+  if (bestAsTyped > 20 && out.length < max) out.push(...near.sort((a, b) => a[0] - b[0]).map((x) => x[1]).slice(0, max - out.length));
   return out.slice(0, max);
 }
 
@@ -92,11 +124,13 @@ export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
     status.textContent = typed ? (hits.length ? `${hits.length} suggestion${hits.length > 1 ? 's' : ''}. Use the up and down arrow keys, then Enter.` : `Nothing found for ${typed}.`) : '';
     show(typed.length > 0);
   };
+  form.addEventListener('focusout', (e) => { const to = e.relatedTarget as Node | null; if (to && !form.contains(to) && to !== btn) show(false); });
   list.addEventListener('click', (e) => { const li = (e.target as Element).closest<HTMLElement>('li[data-href]'); if (li) location.href = li.dataset.href!; });
   input.addEventListener('focus', () => { loadIndex(); });
   input.addEventListener('input', async () => {
     asked = input.value;
-    const all = await loadIndex();
+    let all: Entry[] = [];
+    try { all = await loadIndex(); } catch { /* offline: Enter still goes to the search page */ }
     if (asked !== input.value) return; // a newer keystroke is already on its way
     hits = rank(all, input.value); at = hits.length ? 0 : -1; paint();
   });
@@ -104,6 +138,7 @@ export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
     if (e.key === 'ArrowDown' && hits.length) { e.preventDefault(); if (list.hidden) show(true); else at = (at + 1) % hits.length; paint(); }
     else if (e.key === 'ArrowUp' && hits.length) { e.preventDefault(); at = (at - 1 + hits.length) % hits.length; paint(); }
     else if (e.key === 'Escape') {
+      e.preventDefault(); // the browser would otherwise empty a search box
       if (!list.hidden) { show(false); e.stopPropagation(); }
       else if (btn && document.body.classList.contains('finding')) { document.body.classList.remove('finding'); btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
     }
