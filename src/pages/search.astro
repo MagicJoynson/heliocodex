@@ -4,10 +4,10 @@ import Base from '../layouts/Base.astro';
 import '../styles/reading.css';
 ---
 <Base title="Search" path="/search" description="Search Heliocodex: planets, moons, stars, constellations, words and lessons." noindex>
-  <main class="reading search-page">
+  <div class="reading search-page">
     <h1>Search</h1>
     <ol class="search-results" aria-live="polite"></ol>
-  </main>
+  </div>
 </Base>
 <style>
   .search-page h1 { font: 300 clamp(2rem, 4vw, 3rem)/1.1 var(--r-serif); margin: 0 0 1.6rem; }

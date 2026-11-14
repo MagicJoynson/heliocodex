@@ -643,7 +643,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const secs = reduced ? 0 : opts?.secs ?? -1;
       if (P) {
         focusId = ''; focusHold = 0;
-        focusKey = id; focusName = PLACE_NAMES[id] ?? (sp ? 'the star' : id);
+        focusKey = id; focusName = PLACE_NAMES[id] ?? (sp ? (deep.starName(starAim) ?? 'the star') : id);
         const c = P.centre();
         flight.startCruise({ to: len(c) < 1 ? sunFocus : { centre: () => c, radius: 0 }, endDist: view.distanceKm ? view.distanceKm * 1000 : P.dist, endDir: P.dir(), secs });
       } else {
