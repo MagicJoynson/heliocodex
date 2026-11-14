@@ -2,7 +2,7 @@
 // Every world the site knows, set out by distance from the Sun. Worlds with a full page are written in
 // full; the rest have outline pages built from their measured orbits, marked as outlines.
 import Reading from '../../layouts/Reading.astro';
-import { outlineWorlds, PLANET_PAGES, sunAu, AU_KM } from '../../lib/worlds';
+import { outlineWorlds, IAU_DWARFS, PLANET_PAGES, sunAu, AU_KM } from '../../lib/worlds';
 import { SHOW_OUTLINES } from '../../lib/site';
 import { body } from '../../data/bodies/index';
 import { moonCount } from '../../data/moon-counts';
@@ -32,7 +32,7 @@ const LANES = [
   rows: outlineWorlds.filter((b) => b.kind === l.kind).map((b) => {
     const o = b.orbit as { aKm: number; e: number };
     const a = o.aKm / AU_KM, q = a * (1 - o.e), Q = a * (1 + o.e), r = radius(b);
-    return { id: b.id, name: b.name, a, q, Q, xa: x(a), xq: x(q), xQ: x(Q), off: Q > 700, d: r ? Math.round(Math.min(12, 4 + Math.sqrt(r) / 3.5)) : 4,
+    return { id: b.id, name: b.name, likely: b.kind === 'dwarf' && !IAU_DWARFS.has(b.id), a, q, Q, xa: x(a), xq: x(q), xQ: x(Q), off: Q > 700, d: r ? Math.round(Math.min(12, 4 + Math.sqrt(r) / 3.5)) : 4,
       moons: moonsOf(b.id), flip: x(Q) > 78 && x(q) >= 30, over: x(Q) > 78 && x(q) < 30 };
   }).sort((p, q) => p.a - q.a),
 }));
@@ -64,7 +64,7 @@ const COLS: Record<string, [number, number]> = { asteroid: [70, 3], comet: [128,
 for (const l of LANES) l.rows.forEach((r, i) => {
   const mx = COLS[l.kind][0] + i * COLS[l.kind][1];
   vmarks.push({ kind: l.kind, mx, y1: vy(r.q), y2: vy(r.Q), ya: vy(r.a), d: Math.max(4, Math.round(r.d * .7)), out: true, off: r.off });
-  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, sub: `${fmtAu(r.q)}–${r.off ? '700+' : fmtAu(r.Q)} au`, subs: r.moons.map((m) => ({ id: m.id, name: m.name })), y: vy(r.a), mx, my: vy(r.a), out: true });
+  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, sub: `${r.likely ? 'likely dwarf planet · ' : ''}${fmtAu(r.q)}–${r.off ? '700+' : fmtAu(r.Q)} au`, subs: r.moons.map((m) => ({ id: m.id, name: m.name })), y: vy(r.a), mx, my: vy(r.a), out: true });
 });
 vlabels.sort((a, b) => a.y - b.y);
 let floor = 0;
@@ -103,7 +103,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
               <li class:list={['wr', { flip: r.flip, over: r.over }]} style={`--q:${r.xq};--Q:${r.xQ};--a:${r.xa};--d:${r.d}px`}>
                 <span class:list={['wr-span', { off: r.off }]} aria-hidden="true" />
                 <span class="wr-dot" aria-hidden="true" />
-                <span class="wr-name"><a href={`/worlds/${r.id}`}>{r.name}</a>{r.moons.map((m) => <> · <a class="wr-moon" href={`/worlds/${m.id}`}>{m.name}</a></>)}<small>{fmtAu(r.q)}–{r.off ? '700+' : fmtAu(r.Q)} au</small></span>
+                <span class="wr-name"><a href={`/worlds/${r.id}`}>{r.name}</a>{r.moons.map((m) => <> · <a class="wr-moon" href={`/worlds/${m.id}`}>{m.name}</a></>)}<small>{r.likely && 'likely · '}{fmtAu(r.q)}–{r.off ? '700+' : fmtAu(r.Q)} au</small></span>
               </li>
             ))}
           </ol>
