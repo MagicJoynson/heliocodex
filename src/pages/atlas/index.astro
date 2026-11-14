@@ -50,11 +50,20 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
     <p class="lead">Flat charts of everything in the 3D model, drawn to scale and good enough to print. Below them, one ruler that runs from your own height to the edge of what can be seen.</p>
   </header>
 
+  <nav class="row atlas-toc" aria-label="On this page">
+    <span>On this page</span>
+    <a href="#charts">Charts, by how far they reach</a>
+    <a href="#moon-charts">The moons, world by world</a>
+    <a href="#ruler">The ruler</a>
+    <a href="#marks">The landmarks</a>
+    <a href="#how-far">How far is far</a>
+  </nav>
+
   <section class="row wide reach" id="charts">
     <div class="reach-words">
       <h2>Every chart, by how far it reaches</h2>
       <p class="note">Each ring is one chart or one view in 3D, drawn at how far out from the Sun it goes, every ring ten times or more the one inside it. Charts show where things are today, and every name on a chart will fly you there in 3D. Where part of a view is a model and not a map, it says so. <a href="/sources#beyond">Where the data comes from.</a></p>
-      <div class="moon-charts">
+      <div class="moon-charts" id="moon-charts">
         <h3 class="label">The moons, world by world</h3>
         <ul class="plain-list">
           {moonCharts.map((m) => <li><a href={m.href}>{m.name}</a><span>{m.n}</span></li>)}
@@ -62,7 +71,7 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
       </div>
     </div>
     <figure class="reach-fig">
-      <svg viewBox={`0 0 ${RW} ${RH}`} role="img" aria-label="Rings round the Sun, one for each chart, from the Moon's orbit out to the edge of what can be seen.">
+      <svg viewBox={`0 0 ${RW} ${RH}`} role="group" aria-label="Rings round the Sun, one for each chart, from the Moon's orbit out to the edge of what can be seen.">
         <circle cx={OX} cy={OY} r="7" class="r-sun" />
         {rings.map((g, i) => (
           <g class:list={['ring', { model: g.model }]}>
@@ -109,7 +118,7 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
     </dl>
   </section>
 
-  <section class="row">
+  <section class="row" id="how-far">
     <div class="hang"><h2>How far is far</h2></div>
     <div class="prose">
       <p>A light year is how far light travels in a year: 9.46 trillion km. Past the planets, kilometres stop meaning much, so the ruler changes to light years.</p>
@@ -120,6 +129,10 @@ const KNOWN = { theory: 'Never seen. This comes from theory.', derived: 'Worked 
 </Reading>
 
 <style>
+  .atlas-toc { display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; align-items: baseline; padding: .9rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: clamp(18px, 3vw, 32px); }
+  .atlas-toc span { font: 400 .8125rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .atlas-toc a { font: 400 1rem/1.4 var(--r-serif); color: var(--ink); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .2em; }
+  .atlas-toc a:hover { color: var(--accent); }
   .reach { display: grid; grid-template-columns: minmax(0, 22rem) minmax(0, 1fr); gap: 1rem clamp(24px, 4vw, 64px); align-items: start; }
   .reach-words h2 { margin: 0 0 1rem; }
   .reach-fig { margin: 0; }

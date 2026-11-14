@@ -177,9 +177,3 @@ p { margin: 0 0 1em; max-width: 66ch; }
 /* a section that is laid out but still being written: a small dashed ring after its name in every menu */
 a[data-outline]::after { content: ''; display: inline-block; width: 6px; height: 6px; margin-left: 6px; vertical-align: .15em; border: 1px dashed currentColor; border-radius: 50%; opacity: .8; }
 
-/* phone floor: no text under 13 px (.8125rem) on a phone. One rule for the small mono labels and counts used across pages. */
-@media (max-width: 700px) {
-  .site-menu .menu-h, .site-menu-btn, .foot-h, .p-count, .i-count, .d-count, .outline-n, .scale-here, .start-btn, .start-link,
-  .k-built, .k-out, .lane-h, .wp-au, .wr-name small, .wm-ticks b, .wm-zone span, .alt-label, .kicker, .more-btn, .more-link, .more-h3, .ml-strand, .wmenu-h, .wmenu-btn,
-  .label, .scale-track b, .ledger th, .ledger td, .wm-v small, .wm-v a, .wm-vl small, .wm-vl a, .vl-moons, .vl-moons a, .w, .sky-hint { font-size: .8125rem !important; }
-}

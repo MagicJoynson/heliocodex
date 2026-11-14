@@ -26,7 +26,7 @@ P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && p.x - q.x <
 const LANES = [
   { kind: 'asteroid', name: 'Asteroids', about: 'rocky and metal worlds' },
   { kind: 'comet', name: 'Comets', about: 'icy, on stretched paths' },
-  { kind: 'dwarf', name: 'Dwarf planets', about: 'round, but sharing their path' },
+  { kind: 'dwarf', name: 'Dwarf planets', about: 'five named by the IAU, the rest likely' },
 ].map((l) => ({
   ...l,
   rows: outlineWorlds.filter((b) => b.kind === l.kind).map((b) => {

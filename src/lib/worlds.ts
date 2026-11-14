@@ -13,6 +13,9 @@ export const outlineWorlds: Body[] = allBodies.filter((b) =>
   (b.kind === 'moon' && ((b.meanRadiusKm ?? 0) >= 100 || b.parent === 'mars')) || b.kind === 'dwarf' || b.kind === 'asteroid' || b.kind === 'comet');
 
 export const KIND_NAMES: Record<string, string> = { moon: 'Moon', dwarf: 'Dwarf planet', asteroid: 'Asteroid', comet: 'Comet' };
+/** The five bodies the International Astronomical Union has named dwarf planets. The others are likely dwarf planets it has not ruled on. */
+export const IAU_DWARFS = new Set(['ceres', 'pluto', 'haumea', 'makemake', 'eris']);
+export const kindName = (b: Body) => (b.kind === 'dwarf' && !IAU_DWARFS.has(b.id) ? 'Likely dwarf planet' : KIND_NAMES[b.kind]);
 export const nameOf = (id: string | null) => (id ? (id === 'sun' ? 'the Sun' : id === 'earth' ? 'the Earth' : body(id)?.name ?? id) : '');
 export const why = (id: string) => smallBodies.find((s) => s.id === id);
 

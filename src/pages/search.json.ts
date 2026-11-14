@@ -2,7 +2,7 @@
 // stars, constellations, glossary words, lessons and the main pages. Each entry is [title, kind, url, also].
 import type { APIRoute } from 'astro';
 import { allBodies } from '../data/bodies/index';
-import { outlineWorlds, PLANET_PAGES, KIND_NAMES, nameOf } from '../lib/worlds';
+import { outlineWorlds, PLANET_PAGES, KIND_NAMES, kindName, nameOf } from '../lib/worlds';
 import { allStars, pageStars } from '../lib/sky/starlist';
 import { slugOf } from '../lib/sky/star';
 import { allTerms, allLessons } from '../lib/v2/margin/content';
@@ -15,7 +15,7 @@ export const GET: APIRoute = async () => {
     out.push([b.name.replace(/^The /, ''), id === 'sun' ? 'Star' : 'Planet', `/${id}`]);
   }
   for (const b of outlineWorlds) {
-    const kind = b.kind === 'moon' ? `Moon of ${nameOf(b.parent).replace(/^the /, '')}` : KIND_NAMES[b.kind];
+    const kind = b.kind === 'moon' ? `Moon of ${nameOf(b.parent).replace(/^the /, '')}` : kindName(b);
     out.push([b.name.replace(/^The /, ''), kind, `/worlds/${b.id}`, b.id === 'moon' ? 'Luna' : undefined]);
   }
   const cons = new Set<string>();
