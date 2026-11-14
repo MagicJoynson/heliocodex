@@ -15,7 +15,7 @@ export const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(
 export function sheet(cells: Cell[]): string {
   const have = new Map(cells.map((c) => [c.key, c]));
   const list = ORDER.filter((k) => have.has(k)).map((k) => have.get(k)!);
-  return `<dl class="rec-sheet">${list.map((c) => `<div class="rc" data-k="${c.key}"><dt>${c.label || LABEL[c.key]}</dt><dd><b>${c.value}</b>${c.unit ? ` <span>${c.unit}</span>` : ''}</dd>${c.note ? `<p>${c.note}</p>` : ''}</div>`).join('')}</dl>`;
+  return `<dl class="rec-sheet">${list.map((c) => `<div class="rc" data-k="${c.key}"><dt>${c.label || LABEL[c.key]}</dt><dd><b>${c.value}</b>${c.unit ? ` <span>${c.unit}</span>` : ''}${c.note ? `<p>${c.note}</p>` : ''}</dd></div>`).join('')}</dl>`;
 }
 
 /** The top of a record: where it sits, its name and kind on one line, and one sentence. */

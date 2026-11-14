@@ -10,7 +10,7 @@ import { properStars } from '../lib/sky/starlist';
 import { slugOf } from '../lib/sky/star';
 import { allTerms, STRAND_ORDER } from '../lib/v2/margin/content';
 import { WORLD_PAGES } from '../data/world-pages';
-import { outlineWorlds } from '../lib/worlds';
+import { outlineWorlds, IAU_DWARFS } from '../lib/worlds';
 import { body } from '../data/bodies/index';
 
 const lessons = await allLessons();
@@ -20,8 +20,8 @@ const brightStars = properStars().sort((a, b) => a.appMag - b.appMag).slice(0, 1
 const CONS = ['Orion', 'Ursa Major', 'Cassiopeia', 'Cygnus', 'Scorpius', 'Leo', 'Taurus', 'Crux', 'Lyra', 'Andromeda'];
 const strands = STRAND_ORDER.map((strand) => ({ strand, name: STRAND_NAMES[strand], lessons: lessons.filter((l) => l.data.strand === strand).sort((a, b) => a.data.order - b.data.order).slice(0, 3) })).filter((g) => g.lessons.length);
 const moonCards = Object.entries(WORLD_PAGES).sort(([a], [b]) => (a === 'moon' ? -1 : b === 'moon' ? 1 : 0)).map(([id, pg]) => ({ id, name: body(id)!.name.replace(/^The /, 'The '), src: (pg.globe ?? pg.picture).src }));
-const KIND_LABEL: [string, string][] = [['dwarf', 'Dwarf planets'], ['asteroid', 'Asteroids'], ['comet', 'Comets']];
-const smallKinds = KIND_LABEL.map(([kind, label]) => ({ label, items: outlineWorlds.filter((b) => b.kind === kind).slice(0, 10) }));
+const KIND_LABEL: [string, string][] = [['dwarf', 'Dwarf planets, named by the IAU'], ['likely', 'Likely dwarf planets'], ['asteroid', 'Asteroids'], ['comet', 'Comets']];
+const smallKinds = KIND_LABEL.map(([kind, label]) => ({ label, items: outlineWorlds.filter((b) => (kind === 'dwarf' ? b.kind === 'dwarf' && IAU_DWARFS.has(b.id) : kind === 'likely' ? b.kind === 'dwarf' && !IAU_DWARFS.has(b.id) : b.kind === kind)).slice(0, 10) }));
 const terms = await allTerms();
 const WORD_IDS = ['light-year', 'orbit', 'parallax', 'redshift', 'black-hole', 'nebula', 'exoplanet', 'supernova', 'apparent-magnitude', 'galaxy', 'tide', 'aurora', 'equinox'];
 const words = WORD_IDS.map((id) => terms.find((t) => t.id === id)).filter((t): t is (typeof terms)[number] => !!t);
@@ -78,7 +78,7 @@ const far = worlds.map((w) => {
   </section>
 
   <section class="home-hero" aria-label="The Sun and the eight planets">
-    <figure class="family">
+    <figure class="family" tabindex="0" role="group" aria-label="The Sun's eight planets to one scale. On a phone, scroll sideways.">
       <div class="strip" style={`--sun-h:${sun.h}`}>
         <ol class="worlds">
           {worlds.map((w) => (
@@ -274,8 +274,13 @@ const far = worlds.map((w) => {
     .strip { height: calc(var(--j) * 2.2); }
     .worlds { margin-left: var(--gutter); padding-right: 6px; gap: 3px; }
     .worlds li { min-width: 1.5rem; }
-    /* eight names cannot fit across a phone at a readable size: each stays as the link's name for screen readers, and the table below names them all */
-    .worlds span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    /* eight names at a readable size do not fit across a phone, so the row scrolls sideways; the names alternate above and below */
+    .family { overflow-x: auto; overscroll-behavior-x: contain; }
+    .strip { min-width: 33rem; height: calc(var(--j) * 2.4); }
+    .worlds li { min-width: 3.9rem; }
+    .worlds span { font-size: .8125rem; letter-spacing: .04em; top: calc(50% + var(--j) * .62); }
+    .worlds li:nth-child(even) span { top: auto; bottom: calc(50% + var(--j) * .62); }
+    .family figcaption { position: sticky; left: 0; max-width: 100vw; }
     .home-hero .home-text, .ledger, .family figcaption { margin-left: 0; }
     .ledger td, .ledger th { white-space: nowrap; }
     .ledger table { font-size: .9rem; }

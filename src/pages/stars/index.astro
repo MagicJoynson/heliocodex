@@ -74,7 +74,7 @@ import { PLANNED_LESSONS } from '../../data/plan';
   <section class="row wide" id="map">
     <div class="hang"><h2>Every named star, by colour and true brightness</h2><p class="note">How bright each star really is, not how bright it looks from here, against how hot it is. Most stars, the Sun among them, fall on one band; the giants and the dead stars sit apart. Touch or click a dot to meet that star.</p></div>
     <figure class="hr">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`A chart of ${hr.length} named stars, by colour across and true brightness up the side`}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label={`A chart of ${hr.length} named stars, by colour across and true brightness up the side`}>
         <defs><linearGradient id="hr-sky" x1="0" x2="1"><stop offset="0" stop-color="#9db4ff" stop-opacity=".07" /><stop offset=".5" stop-color="#fff4e8" stop-opacity=".03" /><stop offset="1" stop-color="#ff9b5a" stop-opacity=".07" /></linearGradient></defs>
         <rect x={PADL} y="10" width={W - PADL - 10} height={H - PADB - 10} fill="url(#hr-sky)" />
         {lumTicks.map((t) => <g class="tick"><line x1={PADL} x2={W - 10} y1={t.y} y2={t.y} /><text x={PADL - 8} y={t.y + 4} text-anchor="end">{t.l}</text></g>)}

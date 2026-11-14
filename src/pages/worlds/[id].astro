@@ -2,7 +2,7 @@
 // An outline page for one world: a moon, dwarf planet, asteroid or comet that has no full page yet.
 // Everything shown is measured data from src/data/bodies; the chapters to come are headings only.
 import Reading from '../../layouts/Reading.astro';
-import { outlineWorlds, KIND_NAMES, CHAPTERS, nameOf, why, AU_KM, PLANET_PAGES } from '../../lib/worlds';
+import { outlineWorlds, kindName, CHAPTERS, nameOf, why, AU_KM, PLANET_PAGES } from '../../lib/worlds';
 import { body } from '../../data/bodies/index';
 import { plates } from '../../lib/v2/atlas/plates';
 import { fmt } from '../../lib/format';
@@ -29,7 +29,7 @@ const periodSays = periodDays < 2 ? `${fmt(periodDays * 24, 2)} hours` : periodD
 const outSays = round ? `${fmt(aAu, 3)} au from the Sun on average` : `${fmt(o.aKm)} km from ${nameOf(b.parent)} on average`;
 const MOON_KM = 1737.4;
 const sizeSays = b.meanRadiusKm ? `${fmt(b.meanRadiusKm * 2)} km across${b.kind === 'moon' && b.id !== 'moon' ? `, ${fmt((b.meanRadiusKm / MOON_KM) * 100, 2)} per cent of our Moon’s width` : ''}` : 'Size not well measured';
-const kindLine = b.kind === 'moon' ? `Moon of ${nameOf(b.parent)}` : KIND_NAMES[b.kind];
+const kindLine = b.kind === 'moon' ? `Moon of ${nameOf(b.parent)}` : kindName(b);
 const parentHref = b.parent && PLANET_PAGES.includes(b.parent) ? `/${b.parent}` : b.parent && b.parent !== 'sun' ? `/worlds/${b.parent}` : null;
 const chart = b.kind === 'moon' && b.parent && (plates as Record<string, unknown>)[b.parent] ? `/atlas/${b.parent}` : b.kind === 'dwarf' && (plates as Record<string, unknown>)[b.id] ? `/atlas/${b.id}` : b.kind === 'asteroid' || b.kind === 'comet' ? '/atlas/small-bodies' : b.kind === 'dwarf' ? '/atlas/solar-system' : null;
 const note = why(b.id);
