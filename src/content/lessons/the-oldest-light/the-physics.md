@@ -5,7 +5,7 @@ sources:
   - { label: "Fixsen, The temperature of the cosmic microwave background (Astrophysical Journal, 2009)", url: "https://arxiv.org/abs/0911.1955" }
   - { label: "Planck Collaboration, Planck 2018 results VI: cosmological parameters (Astronomy and Astrophysics, 2020), Table 2", url: "https://arxiv.org/abs/1807.06209" }
   - { label: "Noterdaeme and others, The evolution of the cosmic microwave background temperature (Astronomy and Astrophysics, 2011)", url: "https://arxiv.org/abs/1012.3164" }
-  - { label: "Wikipedia, Recombination (cosmology): the Saha equation and Peebles's delayed recombination", url: "https://en.wikipedia.org/wiki/Recombination_(cosmology)" }
+  - { label: "Hu, Lecture notes on CMB theory: from nucleosynthesis to recombination (2008): the Saha equation, and Peebles's calculation of how recombination lags", url: "https://arxiv.org/abs/0802.3688" }
   - { label: "NIST, fundamental physical constants", url: "https://physics.nist.gov/cuu/Constants/" }
 lastChecked: 2026-11-13
 ---
@@ -51,12 +51,15 @@ The reason is the 1.6 billion. Even when the typical particle of light is far to
 The careful version of this count is the Saha equation, which also allows for the room the loose electrons have to move. For the fraction $X$ of hydrogen still split,
 
 $$
-\frac{X^2}{1 - X} = \frac{1}{n_\text{H}} \left(\frac{m_e k T}{2 \pi \hbar^2}\right)^{3/2} e^{-13.6\ \text{eV} / kT}
+\begin{aligned}
+\frac{X^2}{1 - X} &= \frac{1}{n_\text{H}} \left(\frac{m_e k T}{2 \pi \hbar^2}\right)^{3/2} \\
+&\quad \times e^{-13.6\ \text{eV} / kT}
+\end{aligned}
 $$
 
-where $n_\text{H}$ is the number of hydrogen nuclei in each cubic metre, since about three quarters of ordinary matter, by mass, is hydrogen. Solved here, it gives half the hydrogen joined into atoms at about 3,700 K, a redshift of about 1,370. Wikipedia's account rounds the same sum to about 4,000 K.
+where $n_\text{H}$ is the number of hydrogen nuclei in each cubic metre, since about three quarters of ordinary matter, by mass, is hydrogen. Solved here, it gives half the hydrogen joined into atoms at about 3,700 K, a redshift of about 1,370. Wayne Hu's lecture notes on the oldest light, from the same equation, say the gas becomes mostly neutral at about 0.3 electronvolts, some 3,500 K. Both are for the gas in balance with the light, and both are the start of the clearing, not the moment the light went free.
 
-The real joining lagged behind even that. Each atom that forms gives out light that can split a neighbour, and in 1968 Jim Peebles in the United States, and Yakov Zel'dovich and colleagues in the Soviet Union, worked out how slowly that light escapes. Planck's fit puts the moment the light last bounced off the electrons at a redshift of 1,089.92 ± 0.25. The temperature then was 1,090.92 times today's, about 2,970 K.
+The real joining lagged behind the balance. Each atom that forms gives out light that can split a neighbour, and in 1968 Jim Peebles worked out how slowly that light escapes, so the gas finished joining later and cooler than the Saha equation says. Planck's fit puts the moment the light last bounced off the electrons at a redshift of 1,089.92 ± 0.25. The temperature then was 1,090.92 times today's, about 2,970 K. That, not 3,700 K, is when the oldest light set out.
 
 **The glow cools as space stretches.** As space grows by a factor $1 + z$, every wavelength grows by the same factor, and the number of particles in each cubic metre falls by $(1 + z)^3$. Put both into Planck's formula and it keeps exactly the same shape, with the temperature divided by $1 + z$. A glowing body stays a glowing body, only cooler:
 
