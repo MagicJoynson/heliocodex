@@ -64,6 +64,7 @@ The Earth-by-night map is built from NASA's Black Marble, and the Earth-by-day m
 | Positions of the planets | [NASA/JPL Solar System Dynamics](https://ssd.jpl.nasa.gov/planets/approx_pos.html), approximate positions of the major planets, and [JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) | NASA/JPL data, used under NASA's guidelines |
 | About 2,900 pulsars in the chart in the physics level on neutron stars | [ATNF Pulsar Catalogue](https://www.atnf.csiro.au/research/pulsar/psrcat/), version 2.9.0, kept by CSIRO | Published scientific data, cited as the catalogue asks (see below) |
 | About 6,000 planets round other stars, in the chart in the lesson on the kinds of planet out there | [NASA Exoplanet Archive](https://exoplanetarchive.ipac.caltech.edu/), Planetary Systems Composite Data table, 11 November 2026 | Published scientific data, acknowledged as the archive asks (see below) |
+| Parallaxes of five stars in the level on measuring distance | [Gaia Data Release 3](https://www.cosmos.esa.int/web/gaia/dr3), ESA/Gaia/DPAC | [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/). Credited on the page as ESA/Gaia/DPAC. |
 
 **Acknowledgements, in the words their holders ask for.**
 
@@ -123,5 +124,5 @@ We look at every message promptly, normally within 5 working days. Where somethi
 
 We update this page when we add a new source, picture or tool, and change the date at the top.
 
-- **14 November 2026.** Added the pulsar and exoplanet catalogues to the table, and the acknowledgements each catalogue asks for, in their own words.
+- **14 November 2026.** Added the pulsar and exoplanet catalogues to the table, and the acknowledgements each catalogue asks for, in their own words. Added Gaia, for the star parallaxes in the level on measuring distance.
 - **11 November 2026.** First version, written for the launch of the new Heliocodex.
