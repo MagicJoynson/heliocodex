@@ -18,7 +18,7 @@ $$
 
 With the engine off, nothing adds or takes away energy, so $\varepsilon$ stays the same all along the path. The second term is negative because the craft is in a well: it would have to be given energy to climb out.
 
-Two results follow at once. A circle of radius $r$ needs gravity to supply exactly the pull that keeps the craft turning, $v^2/r = GM/r^2$, so $v = \sqrt{GM/r}$. To escape, $\varepsilon$ must reach zero, so $v = \sqrt{2GM/r}$. That is why the level before could say escape speed is always 1.4 times the orbital speed: the factor is $\sqrt 2$.
+Two results follow at once. A circle of radius $r$ needs gravity to supply exactly the pull that keeps the craft turning, ${v^2/r = GM/r^2}$, so ${v = \sqrt{GM/r}}$. To escape, $\varepsilon$ must reach zero, so ${v = \sqrt{2GM/r}}$. That is why the level before could say escape speed is always 1.4 times the orbital speed: the factor is $\sqrt 2$.
 
 **The vis-viva equation.** For an oval orbit, take its two ends, closest to the Sun at $r_p$ and farthest at $r_a$. At both ends the craft moves at right angles to the line to the Sun, so the turning effect of its motion, its angular momentum, is just distance times speed. That is also kept the same, so
 
@@ -32,7 +32,7 @@ $$
 v_p^2 = \frac{2 G M\, r_a}{r_p (r_p + r_a)}
 $$
 
-The half-width of the oval along its long axis is $a = (r_p + r_a)/2$. Put $v_p$ back into the energy and it simplifies to
+The half-width of the oval along its long axis is ${a = (r_p + r_a)/2}$. Put $v_p$ back into the energy and it simplifies to
 
 $$
 \varepsilon = -\frac{G M}{2 a}
@@ -55,9 +55,9 @@ This is called the vis-viva equation, from the old Latin name for energy of moti
 | 13 Dec 2020 | 1.406 au | 24.27 km/s |
 | 12 Jan 2021 | 1.492 au | 22.74 km/s |
 
-The craft slowed by about 10 km a second as it climbed out from the Sun. Work out $\varepsilon$ for each row and all four come to −336.3 megajoules per kilogram, the same to within 0.1 per cent. The energy is kept, as it should be. Then $\varepsilon = -GM/2a$ gives the size of the orbit: $a = 1.319$ au. Its near end is 1.013 au from the Sun, just inside the Earth's path, and its far end 1.625 au, beyond Mars's.
+The craft slowed by about 10 km a second as it climbed out from the Sun. Work out $\varepsilon$ for each row and all four come to −336.3 megajoules per kilogram, the same to within 0.1 per cent. The energy is kept, as it should be. Then ${\varepsilon = -GM/2a}$ gives the size of the orbit: ${a = 1.319}$ au. Its near end is 1.013 au from the Sun, just inside the Earth's path, and its far end 1.625 au, beyond Mars's.
 
-**The cheapest route.** The route in the level before touches the Earth's orbit at 1 au and Mars's at 1.524 au, so $a = 1.262$ au. Vis-viva gives the speeds at its two ends, and the circle formula gives the planets' own speeds:
+**The cheapest route.** The route in the level before touches the Earth's orbit at 1 au and Mars's at 1.524 au, so ${a = 1.262}$ au. Vis-viva gives the speeds at its two ends, and the circle formula gives the planets' own speeds:
 
 | | Planet | Craft |
 | --- | --- | --- |
@@ -72,7 +72,7 @@ $$
 v = \sqrt{v_\infty^2 + v_{\text{esc}}^2}
 $$
 
-where $v_{\text{esc}} = 11.01$ km a second at that height. That gives 11.40, a burn of 3.61 km a second. To reach escape and then add 2.94 separately would take 3.23 plus 2.94, which is 6.17. Burning deep in the Earth's well, while moving fast, is far more effective.
+where ${v_{\text{esc}} = 11.01}$ km a second at that height. That gives 11.40, a burn of 3.61 km a second. To reach escape and then add 2.94 separately would take 3.23 plus 2.94, which is 6.17. Burning deep in the Earth's well, while moving fast, is far more effective.
 
 **Real data: buying time with energy.** Horizons puts Perseverance 200,000 km from the Earth on 31 July 2020, moving away at 4.29 km a second. Take off the energy it still had to spend climbing out of the Earth's pull, and its excess speed was 3.80 km a second, more than the cheapest route's 2.94. That extra speed stretched its orbit beyond Mars's, as the table showed, and cut the trip short. It reached Mars on 18 February 2021, 1.570 au from the Sun, 203 days after its launch on 30 July, having gone 142 degrees round the Sun. The cheapest route between those same two distances takes 268 days and goes half way round. Kepler's laws, applied to the orbit worked out from the table, put the crossing of 1.570 au 202.5 days after the reading on 31 July. Horizons has it arriving 202 days after that same reading, so the sum lands within half a day. From a low orbit the extra speed would have cost a burn of 3.86 km a second against 3.61.
 
@@ -94,6 +94,6 @@ On those two dates the craft was about the same distance from Jupiter, 17.5 and 
 
 **Try it yourself.** Use vis-viva for the cheapest route from the Earth, at 1 au, to Jupiter, at 5.203 au. How long does it take, and what excess speed does it need on leaving the Earth?
 
-The answer: $a = 3.10$ au, so the trip is half of $3.10^{3/2}$ years, about 2.7 years, and the excess speed is 8.8 km a second. Voyager 2 took 23 months, from August 1977 to July 1979, by leaving faster on a longer orbit, as Perseverance did for Mars.
+The answer: ${a = 3.10}$ au, so the trip is half of $3.10^{3/2}$ years, about 2.7 years, and the excess speed is 8.8 km a second. Voyager 2 took 23 months, from August 1977 to July 1979, by leaving faster on a longer orbit, as Perseverance did for Mars.
 
 **What this level leaves out.** These sums treat each part of the journey as if only one body pulled at a time: the Earth near the Earth, the Sun in between, the planet at the end. Real routes are worked out by computer with every pull at once, and with orbits that are ovals, slightly tilted to each other. The 1.570 au and 203 days are the real figures. The cheapest route's 259 and 268 days are from circles, which is why its distances do not quite match.

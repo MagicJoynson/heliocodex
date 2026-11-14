@@ -10,9 +10,9 @@ This level works through four sums. Two show that nothing but fusion could have 
 
 | | Value |
 | --- | --- |
-| Mass $M$ | $1.989 \times 10^{30}$ kg |
+| Mass $M$ | ${1.989 \times 10^{30}}$ kg |
 | Radius $R$ | 695,700 km |
-| Power $L$ | $3.828 \times 10^{26}$ W |
+| Power $L$ | ${3.828 \times 10^{26}}$ W |
 | Temperature at the centre | 15.7 million K |
 
 **Sum one: could gravity do it?** A ball of gas that shrinks lets out energy, as a falling weight does. To pull the Sun together from scattered gas releases energy of roughly
@@ -21,7 +21,7 @@ $$
 E \sim \frac{G M^2}{R}
 $$
 
-The exact number in front depends on how the mass is spread inside, and is close to 1 for a star like the Sun. That is $3.8 \times 10^{41}$ joules. Divide by the Sun's power to see how long it could last:
+The exact number in front depends on how the mass is spread inside, and is close to 1 for a star like the Sun. That is ${3.8 \times 10^{41}}$ joules. Divide by the Sun's power to see how long it could last:
 
 $$
 t \sim \frac{G M^2}{R L} \approx 31 \text{ million years}
@@ -38,7 +38,7 @@ $$
 \end{aligned}
 $$
 
-That is 0.71 per cent of the mass that went in. Using $E = mc^2$, one atomic mass unit is 931.5 MeV of energy, so each helium made releases 26.7 MeV. The Sun's power, divided by $c^2$, says it turns
+That is 0.71 per cent of the mass that went in. Using ${E = mc^2}$, one atomic mass unit is 931.5 MeV of energy, so each helium made releases 26.7 MeV. The Sun's power, divided by $c^2$, says it turns
 
 $$
 \frac{L}{c^2} = 4.26 \times 10^{9} \ \text{kg}
@@ -75,10 +75,10 @@ $$
 \Phi = \frac{2 \times 1361 \ \text{W/m}^2}{26.7 \ \text{MeV}}
 $$
 
-which comes to $6.4 \times 10^{14}$ neutrinos through each square metre every second. That is 64 thousand million through every square centimetre each second, including the tip of your finger, by day and by night. Nearly all of them come from the first, slow step. In 2014 the Borexino detector, deep under a mountain in Italy, measured those first-step neutrinos directly: $(6.6 \pm 0.7) \times 10^{10}$ per square centimetre per second. The sum from sunlight and the count in the detector agree. The light we see left the Sun's surface 8 minutes ago, after a very long journey out from the core. The neutrinos left the core itself 8 minutes ago. Both say the Sun is burning at the same rate.
+which comes to ${6.4 \times 10^{14}}$ neutrinos through each square metre every second. That is 64 thousand million through every square centimetre each second, including the tip of your finger, by day and by night. Nearly all of them come from the first, slow step. In 2014 the Borexino detector, deep under a mountain in Italy, measured those first-step neutrinos directly: ${(6.6 \pm 0.7) \times 10^{10}}$ per square centimetre per second. The sum from sunlight and the count in the detector agree. The light we see left the Sun's surface 8 minutes ago, after a very long journey out from the core. The neutrinos left the core itself 8 minutes ago. Both say the Sun is burning at the same rate.
 
 **Try it yourself.** How much hydrogen, as a share of its mass, would the Sun need to fuse to shine at today's power for 10 billion years?
 
-The answer: in 10 billion years it turns $4.26 \times 10^{9}$ kg a second, times $3.16 \times 10^{17}$ seconds, into energy, which is $1.3 \times 10^{27}$ kg. That is 0.71 per cent of $1.9 \times 10^{29}$ kg of hydrogen, about a tenth of the Sun's mass. As the level before says, only about the innermost tenth ever gets hot enough.
+The answer: in 10 billion years it turns ${4.26 \times 10^{9}}$ kg a second, times ${3.16 \times 10^{17}}$ seconds, into energy, which is ${1.3 \times 10^{27}}$ kg. That is 0.71 per cent of ${1.9 \times 10^{29}}$ kg of hydrogen, about a tenth of the Sun's mass. As the level before says, only about the innermost tenth ever gets hot enough.
 
 **What this level leaves out.** A small share of each helium's 26.7 MeV is carried off by the neutrinos and never heats the Sun, so the true count is a little higher than the simple sum. The Sun also makes helium by a second route, using carbon as a go-between, which matters more in heavier stars. And the full models of the Sun's inside, which give the 15.7 million K, solve the balance of pressure, gravity and energy flow at every depth, not just at the centre.

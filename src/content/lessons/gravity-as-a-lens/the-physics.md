@@ -9,7 +9,7 @@ lastChecked: 2026-11-13
 ---
 This level works out how far gravity bends light, first as Newton's laws would have it and then as Einstein's do, and follows the test of the difference from the eclipse of 1919 to radio telescopes today. It then turns the bending into the lens equation, which says where the copies of a lensed object appear and how much brighter they are. The sums are done here unless a source is named.
 
-**Newton's answer.** Treat light as something moving at speed $c$ that gravity can pull on. A ray passes a mass $M$ with closest distance $b$. Over its journey the pull across its path adds up to a small sideways speed. Adding up the sideways part of the pull, $GM b / (b^2 + x^2)^{3/2}$, as the ray moves along $x$ from far away to far away, and dividing by $c$ for the time, gives
+**Newton's answer.** Treat light as something moving at speed $c$ that gravity can pull on. A ray passes a mass $M$ with closest distance $b$. Over its journey the pull across its path adds up to a small sideways speed. Adding up the sideways part of the pull, ${GM b / (b^2 + x^2)^{3/2}}$, as the ray moves along $x$ from far away to far away, and dividing by $c$ for the time, gives
 
 $$
 \Delta v = \frac{2 G M}{b c}
@@ -60,9 +60,9 @@ $$
 \theta_E = \sqrt{\frac{4 G M}{c^2} \, \frac{D_{ls}}{D_l D_s}}
 $$
 
-is the Einstein radius. If the source is exactly behind the lens, $\beta = 0$, and every direction at angle $\theta_E$ works: the image is a ring. If it is a little off the line, the equation is a quadratic in $\theta$ with two answers, one on each side of the lens. That is why a single lens gives two copies.
+is the Einstein radius. If the source is exactly behind the lens, ${\beta = 0}$, and every direction at angle $\theta_E$ works: the image is a ring. If it is a little off the line, the equation is a quadratic in $\theta$ with two answers, one on each side of the lens. That is why a single lens gives two copies.
 
-**Microlensing.** For a star of half the Sun's mass, halfway to a star 8 kiloparsecs away near the middle of the Galaxy, the Einstein radius is 0.71 thousandths of a second of arc. No telescope can split two images that close, so all that is seen is the two added together. Each image is stretched as well as moved, and with $u = \beta/\theta_E$ the total brightening comes out as
+**Microlensing.** For a star of half the Sun's mass, halfway to a star 8 kiloparsecs away near the middle of the Galaxy, the Einstein radius is 0.71 thousandths of a second of arc. No telescope can split two images that close, so all that is seen is the two added together. Each image is stretched as well as moved, and with ${u = \beta/\theta_E}$ the total brightening comes out as
 
 $$
 A = \frac{u^2 + 2}{u \sqrt{u^2 + 4}}

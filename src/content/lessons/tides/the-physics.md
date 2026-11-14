@@ -24,7 +24,7 @@ $$
 a_{\text{centre}} = \frac{GM}{d^2}
 $$
 
-The whole Earth falls towards the Moon with the pull at the centre, so what is left over, the tide, is the difference, $\Delta a = a_{\text{near}} - a_{\text{centre}}$. Take out $GM/d^2$ and write $x = R/d$:
+The whole Earth falls towards the Moon with the pull at the centre, so what is left over, the tide, is the difference, $\Delta a = a_{\text{near}} - a_{\text{centre}}$. Take out $GM/d^2$ and write ${x = R/d}$:
 
 $$
 \Delta a = \frac{GM}{d^2}\left[\frac{1}{(1-x)^2} - 1\right]
@@ -36,7 +36,7 @@ $$
 \frac{1}{(1-x)^2} \approx 1 + 2x
 $$
 
-This is the first step of the binomial expansion. It can be checked with a calculator: for $x = 0.01$ the left side is 1.0203 and the right is 1.02. So the tidal pull on the near side is
+This is the first step of the binomial expansion. It can be checked with a calculator: for ${x = 0.01}$ the left side is 1.0203 and the right is 1.02. So the tidal pull on the near side is
 
 $$
 a_{\text{tide}} \approx \frac{2 G M R}{d^3}
@@ -46,14 +46,14 @@ On the far side the same working gives the same size, pointing away from the Moo
 
 **Why the cube.** The pull itself falls with the square of the distance. The tide is the change in the pull across the Earth, and a change across a fixed width falls one power faster. This is the formula behind the sums in the level before.
 
-The Moon has a mass of $7.35 \times 10^{22}$ kg and is 384,400 km away. The Sun has $1.99 \times 10^{30}$ kg and is 149.6 million km away. The Earth's radius is 6,371 km.
+The Moon has a mass of ${7.35 \times 10^{22}}$ kg and is 384,400 km away. The Sun has ${1.99 \times 10^{30}}$ kg and is 149.6 million km away. The Earth's radius is 6,371 km.
 
 | | Ordinary pull on the Earth | Tidal pull at the surface |
 | --- | --- | --- |
-| The Moon | 1 | $1.10 \times 10^{-6}$ m/s² |
-| The Sun | 179 times the Moon's | $5.05 \times 10^{-7}$ m/s² |
+| The Moon | 1 | ${1.10 \times 10^{-6}}$ m/s² |
+| The Sun | 179 times the Moon's | ${5.05 \times 10^{-7}}$ m/s² |
 
-The Moon's tide is 2.18 times the Sun's. Both are tiny. The Moon's is about one nine-millionth of the pull of the Earth's own gravity, $g = 9.81$ m/s².
+The Moon's tide is 2.18 times the Sun's. Both are tiny. The Moon's is about one nine-millionth of the pull of the Earth's own gravity, ${g = 9.81}$ m/s².
 
 **Step three: the squeeze at the sides.** At a point a quarter of the way round, the Moon is the same distance away as from the centre, but in a slightly different direction. That small change of direction gives a pull towards the Earth's centre of
 
@@ -74,7 +74,7 @@ $$
 \Phi = -\frac{G M R^2}{2 d^3}\left(3\cos^2\theta - 1\right)
 $$
 
-The pull is how fast this changes with height. Differentiate with respect to $R$ and change the sign: at $\theta = 0$ this gives $2GMR/d^3$ outwards, and at $\theta = 90°$ it gives $GMR/d^3$ inwards, the two results above. A formula that reproduces what was derived by hand is a good sign it is right.
+The pull is how fast this changes with height. Differentiate with respect to $R$ and change the sign: at ${\theta = 0}$ this gives $2GMR/d^3$ outwards, and at ${\theta = 90°}$ it gives $GMR/d^3$ inwards, the two results above. A formula that reproduces what was derived by hand is a good sign it is right.
 
 **How high the water stands.** Water settles where the total energy per kilogram is the same everywhere on its surface. Raising water by a height $h$ costs $g h$ per kilogram, so the water rises where $\Phi$ is lowest:
 
@@ -82,7 +82,7 @@ $$
 h(\theta) = \frac{G M R^2}{2 g d^3}\left(3\cos^2\theta - 1\right)
 $$
 
-For the Moon the factor in front is 0.179 m. Under the Moon and opposite it, $\cos\theta = \pm 1$ and the water stands 0.357 m higher than average. A quarter of the way round it stands 0.179 m lower. From high to low is 0.54 m, the half a metre in the level before.
+For the Moon the factor in front is 0.179 m. Under the Moon and opposite it, ${\cos\theta = \pm 1}$ and the water stands 0.357 m higher than average. A quarter of the way round it stands 0.179 m lower. From high to low is 0.54 m, the half a metre in the level before.
 
 This is the equilibrium tide, the height the sea would reach if it could keep up. As the level before explains, it cannot, so real tides are shaped by the oceans and coasts. But it sets the scale, and it is what drives everything else.
 
@@ -137,7 +137,7 @@ $$
 \dot L = \frac{m}{2} \sqrt{\frac{G M_E}{a}}\ \dot a
 $$
 
-With $\dot a = 3.8$ cm a year, the Moon gains $1.42 \times 10^{24}$ kg m²/s of angular momentum every year. The Earth's spin must lose the same. Its spin angular momentum is $I\omega$, where $I = 0.331\, M_E R^2 = 8.0 \times 10^{37}$ kg m². So the Earth's rate of spin falls by $\dot L / I$ each year, and the length of the day, $2\pi/\omega$, grows in proportion.
+With ${\dot a = 3.8}$ cm a year, the Moon gains ${1.42 \times 10^{24}}$ kg m²/s of angular momentum every year. The Earth's spin must lose the same. Its spin angular momentum is $I\omega$, where ${I = 0.331\, M_E R^2 = 8.0 \times 10^{37}}$ kg m². So the Earth's rate of spin falls by $\dot L / I$ each year, and the length of the day, $2\pi/\omega$, grows in proportion.
 
 The answer is 2.1 thousandths of a second a century. A laser aimed at mirrors on the Moon and the ancient records of when the day was shorter are two views of one exchange.
 

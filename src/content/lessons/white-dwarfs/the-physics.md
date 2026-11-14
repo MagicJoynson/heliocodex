@@ -40,7 +40,7 @@ $$
 \frac{R}{R_\odot} = \sqrt{\frac{L}{L_\odot}} \left(\frac{T_\odot}{T}\right)^2
 $$
 
-With the Sun at 5,772 K this gives 0.0081 of the Sun's radius, 5,630 km. Sirius B holds the mass of the Sun in a ball smaller than the Earth. Its mean density is $2.7 \times 10^9$ kg/m³, which is 2.7 tonnes in each cubic centimetre, and gravity at its surface is about 430,000 times the Earth's.
+With the Sun at 5,772 K this gives 0.0081 of the Sun's radius, 5,630 km. Sirius B holds the mass of the Sun in a ball smaller than the Earth. Its mean density is ${2.7 \times 10^9}$ kg/m³, which is 2.7 tonnes in each cubic centimetre, and gravity at its surface is about 430,000 times the Earth's.
 
 **Step five: a prediction.** Light climbing out of a deep gravity well loses energy and is stretched to longer wavelengths. General relativity says the stretch, written as the speed of a Doppler shift that would give the same effect, is
 
@@ -60,7 +60,7 @@ $$
 E_{\text{electron}} \sim \frac{\hbar c\, N^{1/3}}{R}
 $$
 
-Each electron comes with about two nucleons of mass $m_H$, so the star's mass is $M \approx 2 N m_H$. The gravitational energy per electron is about
+Each electron comes with about two nucleons of mass $m_H$, so the star's mass is ${M \approx 2 N m_H}$. The gravitational energy per electron is about
 
 $$
 E_{\text{gravity}} \sim \frac{G M \,(2 m_H)}{R}

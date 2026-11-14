@@ -39,8 +39,8 @@ It falls with the square of the mass. This is bookkeeping, since the mass is not
 
 | Mass | Mean density inside the horizon |
 | --- | --- |
-| The Sun | $1.8 \times 10^{19}$ kg/m³ |
-| 10 Suns | $1.8 \times 10^{17}$ kg/m³ |
+| The Sun | ${1.8 \times 10^{19}}$ kg/m³ |
+| 10 Suns | ${1.8 \times 10^{17}}$ kg/m³ |
 | 4.3 million Suns | 1.0 million kg/m³, a thousand times water |
 | 136 million Suns | 1,000 kg/m³, the same as water |
 | A billion Suns | 18 kg/m³, less than a fiftieth of water |
@@ -53,7 +53,7 @@ $$
 M = \frac{a^3}{P^2}
 $$
 
-The star S2 goes round the centre of the galaxy every 16 years. The GRAVITY team's fit to its orbit and those of three other stars gives $4.30 \times 10^6$ Suns, to about a quarter of one per cent. A 16 year orbit round that mass has a semi-major axis of about 1,030 au.
+The star S2 goes round the centre of the galaxy every 16 years. The GRAVITY team's fit to its orbit and those of three other stars gives ${4.30 \times 10^6}$ Suns, to about a quarter of one per cent. A 16 year orbit round that mass has a semi-major axis of about 1,030 au.
 
 The orbit is a long ellipse. At its closest S2 is 120 au from the centre, moving at 7,650 km/s, which is 2.6 per cent of the speed of light. That distance is about 1,400 times $r_s$. So 4.3 million Suns sit inside a space only four times the width of Neptune's orbit, and nothing known but a black hole can be that heavy and that small. At this distance the team measured two effects that Newton's laws do not allow: the star's light is stretched as it climbs away, and the ellipse itself turns slowly, as Mercury's does.
 
@@ -68,7 +68,7 @@ $$
 E = \Delta m\, c^2
 $$
 
-In the first merger detected, holes of 36 and 29 Suns made one of 62, and 3.0 Suns of mass were radiated. That is $5.4 \times 10^{47}$ joules, 4.6 per cent of the mass the two began with. The Sun, at its present brightness, would take 44 trillion years to give out as much.
+In the first merger detected, holes of 36 and 29 Suns made one of 62, and 3.0 Suns of mass were radiated. That is ${5.4 \times 10^{47}}$ joules, 4.6 per cent of the mass the two began with. The Sun, at its present brightness, would take 44 trillion years to give out as much.
 
 **Why falling gas shines so brightly.** Gas in a circular orbit of radius $r$ has given up an energy of $GMm/2r$ for each mass $m$, compared with gas at rest far away. As a share of the gas's own rest energy $mc^2$ that is
 
