@@ -32,7 +32,7 @@ The temperature itself is harder to pin down than the shape, because it depends 
   <figcaption><b>The oldest light on Planck's curve.</b> Top: COBE's measurements and the formula for a glowing body at 2.725 K. Bottom: measured minus formula, at a thousand times the scale, with each point's uncertainty. The three highest frequencies, whose uncertainties run off the panel, are left out. Data: Fixsen and others, 1996.</figcaption>
 </figure>
 
-**Where the peak is.** Counted per unit of frequency, the same steps as before give the peak at $h\nu = 2.821\,kT$. At 2.72548 K that is 160.2 GHz, which lies between COBE's points at 149.6 and 163.4 GHz, as the data show. Counted per metre of wavelength, the peak is at $hc/\lambda = 4.965\,kT$, a wavelength of 1.063 mm.
+**Where the peak is.** Counted per unit of frequency, the same steps as before give the peak at ${h\nu = 2.821\,kT}$. At 2.72548 K that is 160.2 GHz, which lies between COBE's points at 149.6 and 163.4 GHz, as the data show. Counted per metre of wavelength, the peak is at ${hc/\lambda = 4.965\,kT}$, a wavelength of 1.063 mm.
 
 **Counting the particles of light.** Each particle of light at frequency $\nu$ carries energy $h\nu$. Divide the energy in each range of frequency by $h\nu$ and add up, and the number in each cubic metre comes out as
 
@@ -42,11 +42,11 @@ $$
 
 The integral is a pure number, 2.404. At 2.72548 K this gives 411 particles of light in every cubic centimetre.
 
-Planck's measurement of ordinary matter, $\Omega_b h^2 = 0.0224$, from the level on the expanding universe, is a quarter of a proton in each cubic metre, a quarter of a millionth in each cubic centimetre. So for every particle of ordinary matter there are 1.6 billion particles of light. Both numbers have fallen together as space has stretched, so the ratio has stayed the same since the first minutes.
+Planck's measurement of ordinary matter, ${\Omega_b h^2 = 0.0224}$, from the level on the expanding universe, is a quarter of a proton in each cubic metre, a quarter of a millionth in each cubic centimetre. So for every particle of ordinary matter there are 1.6 billion particles of light. Both numbers have fallen together as space has stretched, so the ratio has stayed the same since the first minutes.
 
 **Why the fog cleared so late.** Pulling the electron off a hydrogen atom takes 13.6 electronvolts. That much energy is $kT$ at a temperature of 158,000 K. Yet the universe stayed foggy, full of loose electrons, until it was more than fifty times cooler.
 
-The reason is the 1.6 billion. Even when the typical particle of light is far too weak to split an atom, the rare ones in the high-energy tail of Planck's curve are not. Roughly, a fraction $e^{-13.6\ \text{eV}/kT}$ of them can split an atom, and while that fraction times 1.6 billion is more than one, there is a splitter for every atom. That stays true until $13.6\ \text{eV}/kT$ reaches $\ln(1.6 \times 10^9)$, which is 21, at about 7,400 K.
+The reason is the 1.6 billion. Even when the typical particle of light is far too weak to split an atom, the rare ones in the high-energy tail of Planck's curve are not. Roughly, a fraction ${e^{-13.6\ \text{eV}/kT}}$ of them can split an atom, and while that fraction times 1.6 billion is more than one, there is a splitter for every atom. That stays true until $13.6\ \text{eV}/kT$ reaches ${\ln(1.6 \times 10^9)}$, which is 21, at about 7,400 K.
 
 The careful version of this count is the Saha equation, which also allows for the room the loose electrons have to move. For the fraction $X$ of hydrogen still split,
 
@@ -61,13 +61,13 @@ where $n_\text{H}$ is the number of hydrogen nuclei in each cubic metre, since a
 
 The real joining lagged behind the balance. Each atom that forms gives out light that can split a neighbour, and in 1968 Jim Peebles worked out how slowly that light escapes, so the gas finished joining later and cooler than the Saha equation says. Planck's fit puts the moment the light last bounced off the electrons at a redshift of 1,089.92 ± 0.25. The temperature then was 1,090.92 times today's, about 2,970 K. That, not 3,700 K, is when the oldest light set out.
 
-**The glow cools as space stretches.** As space grows by a factor $1 + z$, every wavelength grows by the same factor, and the number of particles in each cubic metre falls by $(1 + z)^3$. Put both into Planck's formula and it keeps exactly the same shape, with the temperature divided by $1 + z$. A glowing body stays a glowing body, only cooler:
+**The glow cools as space stretches.** As space grows by a factor ${1 + z}$, every wavelength grows by the same factor, and the number of particles in each cubic metre falls by ${(1 + z)^3}$. Put both into Planck's formula and it keeps exactly the same shape, with the temperature divided by ${1 + z}$. A glowing body stays a glowing body, only cooler:
 
 $$
 T(z) = T_0 \, (1 + z)
 $$
 
-**Real data: thermometers in far-off clouds.** The oldest light warms the gas clouds it passes through, and the molecules in them can be read like thermometers. Noterdaeme and colleagues measured carbon monoxide in clouds seen against far quasars, out to a redshift of about 3. Writing the rule as $T_0 (1 + z)^{1 - \beta}$, they found $\beta = -0.007 \pm 0.027$. Zero is what pure stretching predicts, and zero is well inside the uncertainty.
+**Real data: thermometers in far-off clouds.** The oldest light warms the gas clouds it passes through, and the molecules in them can be read like thermometers. Noterdaeme and colleagues measured carbon monoxide in clouds seen against far quasars, out to a redshift of about 3. Writing the rule as ${T_0 (1 + z)^{1 - \beta}}$, they found ${\beta = -0.007 \pm 0.027}$. Zero is what pure stretching predicts, and zero is well inside the uncertainty.
 
 **Try it yourself.** Today the glow peaks at a wavelength of 1.063 mm. Where did it peak when the light was set free, at a redshift of 1,089.92?
 
