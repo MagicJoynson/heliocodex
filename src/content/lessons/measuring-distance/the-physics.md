@@ -37,7 +37,7 @@ with $d$ in parsecs and $\varpi$ in seconds of arc. Gaia gives parallaxes in mil
 | --- | --- | --- |
 | Proxima Centauri | 768.067 ± 0.050 | 1.3020 |
 | Barnard's Star | 546.976 ± 0.040 | 1.8282 |
-| 61 Cygni A | 286.005 ± 0.029 | 3.4964 |
+| 61 Cygni A | 285.995 ± 0.060 | 3.4966 |
 | Kapteyn's Star | 254.199 ± 0.017 | 3.9339 |
 | Delta Cephei | 3.555 ± 0.148 | 281 |
 

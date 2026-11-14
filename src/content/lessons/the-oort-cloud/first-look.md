@@ -25,5 +25,5 @@ Nobody has ever seen the cloud itself. Each lump is small, dark and much too far
 
 <figure class="photo">
   <img src="/img/learn/comet-bernardinelli-bernstein-hubble.jpg" alt="A fuzzy blue glow with a bright point at its centre, on a dark background." width="400" height="340" loading="lazy" />
-  <figcaption><b>A real picture, in a chosen colour.</b> One lump on its way in. Comet Bernardinelli-Bernstein, seen by the Hubble Space Telescope on 8 January 2022, is the largest comet yet measured, with a solid centre up to about 135 km across. Even Hubble shows only the haze of gas and dust round it. Credit: NASA, ESA, Man-To Hui (Macau University of Science and Technology), David Jewitt (UCLA), Alyssa Pagan (STScI).</figcaption>
+  <figcaption><b>A real picture, in a chosen colour.</b> One lump on its way in. Comet Bernardinelli-Bernstein, seen by the Hubble Space Telescope on 8 January 2022, is the largest comet yet measured, with a solid centre up to about 135 km across. Even Hubble shows only the haze of gas and dust round it. Credit: NASA, ESA, Man-To Hui (Macau University of Science and Technology), David Jewitt (UCLA), Alyssa Pagan (STScI), CC BY 4.0.</figcaption>
 </figure>

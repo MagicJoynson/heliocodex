@@ -27,7 +27,7 @@ Saturn is not the only planet with rings. Jupiter, Uranus and Neptune have them 
 
 <figure class="photo">
   <img src="/img/learn/uranus-rings-webb.jpg" alt="Uranus as a pale blue-white ball with a bright white cap, circled by sharp thin rings and a few dots that are moons." width="800" height="578" loading="lazy" />
-  <figcaption><b>A real picture, in infrared.</b> The rings of Uranus, seen face on by the James Webb Space Telescope and released in December 2023. They are far easier to see in infrared light than in light the eye can see. The colours were chosen. The dots nearby are some of its moons. Credit: NASA, ESA, CSA, STScI.</figcaption>
+  <figcaption><b>A real picture, in infrared.</b> The rings of Uranus, seen face on by the James Webb Space Telescope and released in December 2023. They are far easier to see in infrared light than in light the eye can see. The colours were chosen. The dots nearby are some of its moons. Credit: NASA, ESA, CSA, STScI, CC BY 4.0.</figcaption>
 </figure>
 
 **Galileo's puzzle.** Galileo was the first to see the rings, in 1610, but his telescope was too weak to show what they were. He saw a blob on each side of Saturn and wrote that the planet had "ears". Two years later the ears vanished, and he did not know what to say. The rings had turned edge-on to the Earth, and they are far too thin to see that way. It was 1655 before a Dutch astronomer, Christiaan Huygens, with a better telescope, worked out that Saturn is surrounded by a thin, flat ring that touches it nowhere.

@@ -11,7 +11,7 @@ updated: 2026-11-14
 
 - The words, lessons, drawings, 3D scenes and software are ours. Share links freely and quote short extracts with credit. Ask before reusing more.
 - Photographs from NASA and its missions are free to use for education and information, with NASA credited as the source and with no suggestion that NASA endorses you. NASA's logos are not free to use.
-- The planet maps are from Solar System Scope (CC BY 4.0). The star catalogue is HYG (CC BY-SA 4.0). Every other source is named below, with its licence.
+- The planet maps are from Solar System Scope (CC BY 4.0). The star catalogue is HYG (CC BY-SA 4.0), whose distances come mostly from ESA's Hipparcos Catalogue (Credit: ESA). Every other source is named below, with its licence.
 - Our star data files that are made from HYG are shared under the same CC BY-SA 4.0 licence. You are welcome to use them.
 - Heliocodex is not connected to NASA, ESA, JPL or any of the missions and organisations named here.
 - If you think we have used something we shouldn't, or got a credit wrong, tell us and we will put it right quickly.
@@ -40,6 +40,10 @@ The photographs on the planet pages are from NASA missions and photographers. Ea
 
 **Images that have an owner besides NASA.** Where NASA has used a third party's picture, or a person has processed NASA's data and credited themselves, that person keeps their rights and their credit, and NASA's permission does not pass on theirs. If you want to reuse a photograph from this site, please go to NASA or the source in the credit, check the terms that come with the original and use their copy, not ours.
 
+**Pictures from ESA/Hubble, ESA/Webb and ESO.** Pictures from the Hubble and Webb space telescopes that ESA/Hubble or ESA/Webb have released, and pictures from ESO, are shared under the [Creative Commons Attribution 4.0 International licence](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0). Each carries its full credit, in the words its release page gives, and "CC BY 4.0" beside it.
+
+**Pictures with more than one agency in the credit.** Some NASA pictures also credit a partner, such as the German Aerospace Center (DLR) on some pictures from Dawn and Galileo. We show the credit exactly as NASA gives it.
+
 **People in pictures.** Where people appear in an image, such as the launch photograph, the rights in their likeness aren't covered by the NASA guidelines. Don't use those images commercially without checking.
 
 **Videos.** A few lessons carry a video made by NASA, mostly by its Goddard Space Flight Center and Scientific Visualization Studio, and hosted on NASA's own YouTube channels. Like NASA's photographs, NASA video is generally not subject to copyright in the United States, and its media guidelines apply: NASA is credited beside each video, and nothing here suggests that NASA endorses Heliocodex. The still picture shown before you press play is a frame from the same video. A video plays from YouTube only when you press its Play button; see [cookies and storage](/cookies) for what that does.
@@ -54,7 +58,7 @@ The Earth-by-night map is built from NASA's Black Marble, and the Earth-by-day m
 
 | What | Where from | Licence or terms |
 | --- | --- | --- |
-| About 109,000 stars in the 3D view, the star pages, the sky map and the birthday-star finder | [HYG star database, version 4.4](https://codeberg.org/astronexus/hyg), by David Nash, put together from the Hipparcos, Yale and Gliese catalogues | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Our files made from it are shared under the same licence (see section 5). |
+| About 109,000 stars in the 3D view, the star pages, the sky map and the birthday-star finder | [HYG star database, version 4.4](https://codeberg.org/astronexus/hyg), by David Nash, put together from the Hipparcos, Yale and Gliese catalogues. Most of its distances come from the [Hipparcos Catalogue](https://www.cosmos.esa.int/web/hipparcos/catalogues) of the European Space Agency, in the 2007 reduction by van Leeuwen | HYG: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Our files made from it are shared under the same licence (see section 5). ESA distributes the Hipparcos Catalogue under [CC BY-NC 3.0 IGO](https://creativecommons.org/licenses/by-nc/3.0/igo/), and asks for the credit "Credit: ESA" (see below). |
 | The 9,000 or so bright stars behind each planet scene | The Yale Bright Star Catalogue, 5th revised edition (Hoffleit and Warren), through NASA HEASARC | A published scientific catalogue, used as the source describes |
 | About a hundred galaxies near us | [McConnachie 2012](https://doi.org/10.1088/0004-6256/144/1/4), Astronomical Journal 144, 4 | Published scientific data, cited as the paper asks |
 | About 43,000 galaxies in the cosmic web | The 2MASS Redshift Survey ([Huchra and others 2012](https://doi.org/10.1088/0067-0049/199/2/26)), Astrophysical Journal Supplement 199, 26 | Published scientific data, cited as the paper asks |
@@ -73,6 +77,7 @@ The Earth-by-night map is built from NASA's Black Marble, and the Earth-by-day m
 - The Yale Bright Star Catalogue, through HEASARC: "This research has made use of data and/or software provided by the High Energy Astrophysics Science Archive Research Center (HEASARC), which is a service of the Astrophysics Science Division at NASA/GSFC."
 - The 2MASS Redshift Survey, which is built on 2MASS: Huchra and others 2012, Astrophysical Journal Supplement 199, 26, and "This publication makes use of data products from the Two Micron All Sky Survey, which is a joint project of the University of Massachusetts and the Infrared Processing and Analysis Center/California Institute of Technology, funded by the National Aeronautics and Space Administration and the National Science Foundation."
 - The Local Group galaxies: McConnachie 2012, Astronomical Journal 144, 4.
+- Hipparcos, behind the HYG distances: Credit: ESA. ESA, 1997, The Hipparcos and Tycho Catalogues, ESA SP-1200; and van Leeuwen, F., 2007, Validation of the new Hipparcos reduction, Astronomy and Astrophysics 474, 653.
 - Gaia: "This work has made use of data from the European Space Agency (ESA) mission Gaia (https://www.cosmos.esa.int/gaia), processed by the Gaia Data Processing and Analysis Consortium (DPAC, https://www.cosmos.esa.int/web/gaia/dpac/consortium). Funding for the DPAC has been provided by national institutions, in particular the institutions participating in the Gaia Multilateral Agreement."
 
 Facts, figures and measurements aren't covered by copyright in themselves, but the collections they come from can be, and many authors ask to be cited. We cite every source we use on the page that uses it, and a full list is on the [sources](/sources) page.
@@ -125,5 +130,6 @@ We look at every message promptly, normally within 5 working days. Where somethi
 
 We update this page when we add a new source, picture or tool, and change the date at the top.
 
+- **14 November 2026, later.** Added ESA's Hipparcos Catalogue as the source of most of HYG's distances, with the credit ESA asks for. Added the licence to four pictures from Hubble and Webb, and a note on pictures that credit more than one agency.
 - **14 November 2026.** Added the pulsar and exoplanet catalogues to the table, and the acknowledgements each catalogue asks for, in their own words. Added Gaia, for the star parallaxes in the level on measuring distance and the star speeds in the level on redshift, with the acknowledgement Gaia asks for.
 - **11 November 2026.** First version, written for the launch of the new Heliocodex.
