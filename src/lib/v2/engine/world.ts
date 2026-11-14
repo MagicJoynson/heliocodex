@@ -178,12 +178,18 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const W = THREE.MathUtils.degToRad((w0 + rate * (system.jd() - 2451545)) % 360);
     bodyFrame.setFromMatrix4(new THREE.Matrix4().makeRotationY(-W).multiply(H.transpose()));
   }
+  // the globes' maps are about 3 MB between them and only matter once you are on your way, so they are
+  // fetched when you go in (after the first view has its bandwidth), not before
+  const lazyMaps: (() => void)[] = [];
   for (const p of PLANETS) {
-    const map = loader.load(`/textures/${TEX[p]}`);
+    const map = new THREE.Texture();
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
+    lazyMaps.push(() => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; }).catch((e) => console.error(`the map of ${p} did not load`, e)); });
     makeGlobe(p, RADII[p], map);
   }
+  let farLoaded = false;
+  const loadFar = () => { if (farLoaded) return; farLoaded = true; deep.load(); for (const f of lazyMaps) f(); };
   let saturnShadows: { holder: THREE.Group; ball: THREE.Mesh; sunH: { value: THREE.Vector3 }; sunL: { value: THREE.Vector3 } } | null = null;
   // Saturn's rings, from the inner C ring to the F ring, mapped by distance from the centre
   {
@@ -335,6 +341,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   let frameAvg = quality.target;
   let sinceAdjust = 0, goodWindows = 0;
   let readoutAt = 0;
+  // frames actually drawn each second, every frame counted (frameAvg leaves out the slow ones, so it flatters)
+  let fpsCount = 0, fpsAt = performance.now(), fpsShown = 0;
 
   const timer = new THREE.Timer();
   let arrived = false;
@@ -427,6 +435,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   function frame() {
     timer.update();
+    fpsCount++;
+    { const now = performance.now(); if (now - fpsAt >= 1000) { fpsShown = Math.round((fpsCount * 1000) / (now - fpsAt)); fpsCount = 0; fpsAt = now; } }
     const wall = Math.min(timer.getDelta(), 1);
     const dt = Math.min(wall, 0.1);
     // the governor ignores one-off stalls (a tab switch, a shader compiling)
@@ -578,7 +588,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
       note: (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
-      tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${Math.round(1000 / frameAvg)} fps · ${ratio.toFixed(2)}x`,
+      tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${fpsShown} fps · ${ratio.toFixed(2)}x`,
     });
   }
   renderer.setAnimationLoop(frame);
@@ -621,6 +631,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const engine: Engine = {
     canFlyTo,
     flyTo(view: View, opts) {
+      loadFar();
       const id = typeof view.target === 'string' ? view.target : '';
       if (!canFlyTo(id)) return Promise.reject(new Error(`cannot fly to ${id || 'that place yet'}`));
       // only now, with somewhere to go, does the flight in progress give way
@@ -679,6 +690,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     enter(secs = 7) {
       if (pendingFly) { pendingFly.reject(abort('replaced by the way in')); pendingFly = null; }
       entered = true;
+      loadFar();
       focusKey = bodySlug; focusName = 'Mars';
       flight.startCruise({ to: focusOf(bodySlug), endDist: terrain.radius * 3.2, endDir: enterDir, secs: reduced ? 0 : secs });
       cruising = true;

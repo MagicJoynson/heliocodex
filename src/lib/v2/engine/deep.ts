@@ -335,8 +335,13 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   let starNames: { i: number; name: string; p: V3; M: number }[] = [];
   let starF: Float32Array | null = null;
   const ready: Promise<unknown>[] = [];
-  const starsBuf = fetch('/data/deep/stars.bin').then((r) => r.arrayBuffer());
-  ready.push(Promise.all([starsBuf, fetch('/data/deep/stars.json').then((r) => r.json())]).then(([buf, names]: [ArrayBuffer, [number, string][]]) => {
+  // nothing beyond the Solar System is fetched until the page asks (when you go in), so the first view
+  // has the whole connection to itself: the star file alone is 2 MB, the galaxy survey 0.7 MB
+  let open: () => void = () => {};
+  const gate = new Promise<void>((res) => { open = res; });
+  const later = (url: string) => gate.then(() => fetch(url));
+  const starsBuf = later('/data/deep/stars.bin').then((r) => r.arrayBuffer());
+  ready.push(Promise.all([starsBuf, later('/data/deep/stars.json').then((r) => r.json())]).then(([buf, names]: [ArrayBuffer, [number, string][]]) => {
     const f = new Float32Array(buf);
     starF = f;
     const n = f.length / 5;
@@ -355,7 +360,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   const figGain = u1(0);
   let figures: THREE.LineSegments | null = null;
   let figNames: { name: string; stars: V3[] }[] = [];
-  ready.push(Promise.all([starsBuf, fetch('/data/deep/constellations.json').then((r) => r.json())]).then(([buf, cons]: [ArrayBuffer, { id: string; name: string; lines: [number, number][] }[]]) => {
+  ready.push(Promise.all([starsBuf, later('/data/deep/constellations.json').then((r) => r.json())]).then(([buf, cons]: [ArrayBuffer, { id: string; name: string; lines: [number, number][] }[]]) => {
     const f = new Float32Array(buf);
     const at = (i: number): V3 => [f[i * 5], f[i * 5 + 1], f[i * 5 + 2]];
     let n = 0;
@@ -446,7 +451,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   const lgGain = u1(0);
   type LG = { name: string; type: string | null; p: V3; ra: number; dec: number; kpc: number; mv?: number; rh?: number; pa?: number; ell?: number };
   let lg: LG[] = [];
-  ready.push(fetch('/data/deep/local-group.json').then((r) => r.json()).then((j: { galaxies: LG[] }) => {
+  ready.push(later('/data/deep/local-group.json').then((r) => r.json()).then((j: { galaxies: LG[] }) => {
     lg = j.galaxies;
     const by = (n: string) => lg.find((g) => g.name === n);
     const pos: number[] = [], col: number[] = [];
@@ -489,7 +494,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
 
   // ---- the 2MASS Redshift Survey: forty thousand galaxies, each a point of light
   const webGain = u1(0);
-  ready.push(fetch('/data/deep/2mrs.bin').then((r) => r.arrayBuffer()).then((buf) => {
+  ready.push(later('/data/deep/2mrs.bin').then((r) => r.arrayBuffer()).then((buf) => {
     const f = new Float32Array(buf);
     const n = f.length / 4;
     const mat = new THREE.PointsNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: false });
@@ -507,8 +512,9 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
 
   // ---- the oldest light: a sphere round the Sun, 46 billion light years out (scaled to fit the layer)
   const cmbGain = u1(0);
-  const cmbTex = new THREE.TextureLoader().load('/textures/cmb_wmap9.webp');
+  const cmbTex = new THREE.Texture();
   cmbTex.colorSpace = THREE.SRGBColorSpace;
+  gate.then(() => new THREE.TextureLoader().loadAsync('/textures/cmb_wmap9.webp')).then((t) => { cmbTex.image = t.image; cmbTex.needsUpdate = true; }).catch((e) => console.error('the oldest-light map did not load', e));
   const cmbMat = new THREE.MeshBasicNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, side: THREE.FrontSide });
   cmbMat.colorNode = vec4(texture(cmbTex).rgb, 1);
   cmbMat.opacityNode = cmbGain;
@@ -558,7 +564,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   // just above the 3D view and below everything else on the page
   o.labelsAfter.after(labels);
   const pool: HTMLSpanElement[] = [];
-  const tagStyle = 'position:absolute;left:0;top:0;white-space:nowrap;font:400 .62rem/1 var(--mono, monospace);letter-spacing:.08em;color:rgba(236,231,220,.72);padding-left:12px;will-change:transform;text-shadow:0 0 3px #000,0 0 6px #000;background:radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px) no-repeat;';
+  const tagStyle = 'position:absolute;left:0;top:0;white-space:nowrap;font:400 .8125rem/1 var(--mono, monospace);letter-spacing:.08em;color:rgba(236,231,220,.72);padding-left:12px;will-change:transform;text-shadow:0 0 3px #000,0 0 6px #000;background:radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px) no-repeat;';
 
   const ringBg = 'radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px)';
   const v = new THREE.Vector3();
@@ -706,7 +712,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     if (!starF || !Number.isInteger(n) || n < 0 || n >= starF.length / 5) return null;
     return [starF[n * 5], starF[n * 5 + 1], starF[n * 5 + 2]];
   };
-  return { update, ready: settled, dispose, lgCentre: lgMid, starAt };
+  return { update, ready: settled, dispose, lgCentre: lgMid, starAt, load: () => open() };
 }
 
 function smooth(a: number, b: number, x: number) {
