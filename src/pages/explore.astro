@@ -470,11 +470,11 @@ import { sections } from '../lib/nav';
         }
         // you, and which way you are facing
         const [yx, yy, yau] = at(st.cam);
-        if (yau > EDGE) {
+        if (yau > 100) {
           const distAu = Math.hypot(st.cam[0], st.cam[1], st.cam[2]) / AU;
           mctx.clearRect(0, 0, S, S);
           drawLadder(c, R, dpr, st.cam, distAu);
-          const next = RUNGS.find(([, , au]) => au > distAu * 1.02);
+          const next = RUNGS.find(([, , au]) => au > distAu * 3);
           $('where-d').textContent = `${fmt(distAu * AU)} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
           map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(distAu * AU)} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
           map.classList.add('beyond');
