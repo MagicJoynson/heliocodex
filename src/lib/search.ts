@@ -44,15 +44,15 @@ function fuzzy(q: string, words: string[]): number {
 }
 
 /** Names split into words once, so each keystroke only compares. */
-type Prepared = { name: string; also: string; words: string[]; joined: string };
+type Prepared = { name: string; also: string; nameWords: string[]; alsoWords: string[]; words: string[]; joined: string };
 const prepared = new WeakMap<Entry[], Prepared[]>();
 function prepare(all: Entry[]): Prepared[] {
   let p = prepared.get(all);
   if (!p) {
     p = all.map((e) => {
       const name = norm(e[0]), also = e[3] ? norm(e[3]) : '';
-      const words = [...name.split(/[\s-]+/), ...(also ? also.split(/\s+/) : [])];
-      return { name, also, words, joined: name.replace(/[\s-]+/g, '') };
+      const nameWords = name.split(/[\s-]+/), alsoWords = also ? also.split(/\s+/) : [];
+      return { name, also, nameWords, alsoWords, words: [...nameWords, ...alsoWords], joined: name.replace(/[\s-]+/g, '') };
     });
     prepared.set(all, p);
   }
@@ -85,11 +85,12 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
   const near: [number, Entry][] = [];
   let bestAsTyped = Infinity;
   for (let i = 0; i < all.length; i++) {
-    const e = all[i], { name, also, words } = list[i];
+    const e = all[i], { name, also, nameWords, alsoWords } = list[i];
     let s = -1;
     if (name === q) s = 0;
     else if (name.startsWith(q)) s = 10;
-    else if (words.some((w) => w.startsWith(q))) s = 20;
+    else if (nameWords.some((w) => w.startsWith(q))) s = 20;
+    else if (alsoWords.some((w) => w.startsWith(q))) s = 25;
     else if (q.length > 2 && (name.includes(q) || also.includes(q))) s = 30;
     if (s >= 0) { scored.push([s + kindRank(e[1]) * 2 + name.length / 100, e]); if (s < bestAsTyped) bestAsTyped = s; }
     else if (tryFuzzy && e[1] !== 'Star (catalogue)') {
@@ -99,7 +100,7 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
   }
   const out = scored.sort((a, b) => a[0] - b[0]).map((x) => x[1]);
   // As-typed matches always come first. Near misses are offered only when the query found no name or word it begins.
-  if (bestAsTyped > 20 && out.length < max) out.push(...near.sort((a, b) => a[0] - b[0]).map((x) => x[1]).slice(0, max - out.length));
+  if (bestAsTyped > 25 && out.length < max) out.push(...near.sort((a, b) => a[0] - b[0]).map((x) => x[1]).slice(0, max - out.length));
   return out.slice(0, max);
 }
 
@@ -124,7 +125,7 @@ export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
     status.textContent = typed ? (hits.length ? `${hits.length} suggestion${hits.length > 1 ? 's' : ''}. Use the up and down arrow keys, then Enter.` : `Nothing found for ${typed}.`) : '';
     show(typed.length > 0);
   };
-  form.addEventListener('focusout', (e) => { const to = e.relatedTarget as Node | null; if (to && !form.contains(to) && to !== btn) show(false); });
+  form.addEventListener('focusout', (e) => { if (e.relatedTarget && e.relatedTarget !== input) show(false); });
   list.addEventListener('click', (e) => { const li = (e.target as Element).closest<HTMLElement>('li[data-href]'); if (li) location.href = li.dataset.href!; });
   input.addEventListener('focus', () => { loadIndex(); });
   input.addEventListener('input', async () => {
