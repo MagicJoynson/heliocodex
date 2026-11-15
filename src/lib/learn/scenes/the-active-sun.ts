@@ -36,21 +36,21 @@ const spotTemp: Scene = {
   stillAt: 4,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.25);
-    const x0 = w * 0.3, x1 = w * 0.9, y0 = h * 0.28, k = ease(clamp(t / 2.5, 0, 1)), top = 6000;
-    line(ctx, [x0, y0 - 30, x0, y0 + 150], 'rgba(236,231,220,.4)');
+    const x0 = w * 0.08, x1 = w * 0.64, y0 = h * 0.26, k = ease(clamp(t / 2.5, 0, 1)), top = 6000;
+    line(ctx, [x0, y0 - 24, x0, y0 + 130], 'rgba(236,231,220,.4)');
     ([['Surface around a spot', 5500, '#f5a742'], ['Middle of a sunspot', 3900, '#a35a24']] as [string, number, string][]).forEach(([name, v, col], i) => {
-      const y = y0 + i * 80, len = (v / top) * (x1 - x0) * k;
-      label(ctx, name, x0 - 10, y, { align: 'right', colour: SOFT, size: 10 });
-      ctx.fillStyle = col; ctx.fillRect(x0, y - 16, len, 32);
+      const y = y0 + i * 70, len = (v / top) * (x1 - x0) * k;
+      label(ctx, name, x0 + 8, y - 24, { align: 'left', colour: SOFT, size: 10 });
+      ctx.fillStyle = col; ctx.fillRect(x0, y - 14, len, 28);
       if (k > 0.95) label(ctx, `About ${v.toLocaleString('en-GB')} °C`, x0 + len + 10, y, { align: 'left', colour: SOFT, size: 11 });
     });
-    label(ctx, 'Temperature, from zero', x0, y0 + 190, { colour: FAINT, size: 9 });
+    label(ctx, 'Temperature, from zero', x0, y0 + 150, { colour: FAINT, size: 9 });
     say('Cooler, not cold', 'It only looks dark beside the brighter surface');
   },
 };
 
 // ---- 3. the dates the lesson gives, on one line
-const EVENTS: [number, string][] = [[1610, 'Galileo sees spots'], [1826, 'Schwabe starts counting'], [1859, 'Carrington storm'], [1908, 'Hale finds magnetism'], [1989, 'Quebec blackout'], [2024, 'Strongest storm in 20 years']];
+const EVENTS: [number, string][] = [[1610, 'Galileo'], [1826, 'Schwabe'], [1859, 'Carrington storm'], [1908, 'Hale'], [1989, 'Quebec'], [2024, 'Big storm']];
 const timeline: Scene = {
   caption: 'Dates from the lesson on one line from 1600 to 2030. The shaded stretch, about 1645 to 1715, is the Maunder Minimum, when sunspots almost vanished. The eleven-year beat is an average, and single cycles have run from about nine to fourteen years.',
   stillAt: 6,
@@ -63,9 +63,9 @@ const timeline: Scene = {
     for (let yr = 1600; yr <= 2000; yr += 100) { line(ctx, [X(yr), y - 5, X(yr), y + 5], 'rgba(236,231,220,.5)'); label(ctx, String(yr), X(yr), y + 18, { align: 'center', colour: FAINT, size: 9 }); }
     EVENTS.forEach(([yr, name], i) => {
       if (X(yr) > x0 + (x1 - x0) * k) return;
-      const up = i % 2 === 0, ly = up ? y - 74 - (i % 4) * 8 : y + 62 + (i % 4) * 8;
+      const up = i % 2 === 0, level = i < 2 ? 0 : i < 4 ? 1 : 0, ly = up ? y - 58 - level * 0 : y + 50 + (i === 3 ? 22 : 0), edge = X(yr) < x0 + 50 ? 'left' : X(yr) > x1 - 50 ? 'right' : 'center';
       line(ctx, [X(yr), y, X(yr), up ? ly + 8 : ly - 8], 'rgba(233,196,138,.5)'); dot(ctx, X(yr), y, 3.2, ACCENT);
-      label(ctx, `${yr}`, X(yr), ly, { align: 'center', colour: ACCENT, size: 10 }); label(ctx, name, X(yr), ly + (up ? -14 : 14), { align: 'center', colour: SOFT, size: 9 });
+      label(ctx, `${yr}`, X(yr), ly, { align: edge as CanvasTextAlign, colour: ACCENT, size: 10 }); label(ctx, name, X(yr), ly + (up ? -14 : 14), { align: edge as CanvasTextAlign, colour: SOFT, size: 9 });
     });
     say('We have watched the Sun for four hundred years', 'And the eleven-year beat is only an average');
   },
@@ -77,19 +77,19 @@ const race: Scene = {
   stillAt: 8,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.25);
-    const x0 = w * 0.1, x1 = w * 0.9, y0 = h * 0.26, step = h * 0.15, hours = t * 4;
-    dot(ctx, x0, y0 + step, 9, '#ffcf6a'); label(ctx, 'Sun', x0, y0 + step + 22, { align: 'center', colour: SOFT, size: 10 });
-    dot(ctx, x1, y0 + step, 6, '#7fb2e5'); label(ctx, 'Earth', x1, y0 + step + 24, { align: 'center', colour: SOFT, size: 10 });
+    const x0 = w * 0.1, x1 = w * 0.9, y0 = h * 0.3, step = h * 0.15, hours = Math.min(48, t * 4);
+    line(ctx, [x0, y0 - 30, x0, y0 + step * 2 + 16], 'rgba(255,207,106,.35)', 1, [3, 5]); line(ctx, [x1, y0 - 30, x1, y0 + step * 2 + 16], 'rgba(127,178,229,.35)', 1, [3, 5]);
+    label(ctx, 'Sun', x0, y0 - 44, { align: 'center', colour: ACCENT, size: 10 }); label(ctx, 'Earth', x1, y0 - 44, { align: 'center', colour: '#7fb2e5', size: 10 });
     ([['Light from a flare', 8 / 60, '#fff6e0', '8 minutes'], ['The cloud of 1859', 17.6, '#d0584a', '17.6 hours'], ['A typical cloud', 48, '#9fc0e6', 'about 2 days']] as [string, number, string, string][]).forEach(([name, hr, col, when], i) => {
       const y = y0 + i * step, f = clamp(hours / hr, 0, 1), x = x0 + (x1 - x0) * f;
       line(ctx, [x0, y, x1, y], 'rgba(236,231,220,.12)');
-      dot(ctx, x, y, 5, col); label(ctx, name, x0, y - 16, { align: 'left', colour: SOFT, size: 10 });
-      if (f >= 1) label(ctx, `Arrives: ${when}`, x1, y - 16, { align: 'right', colour: ACCENT, size: 10 });
+      dot(ctx, x, y, 5, col); label(ctx, name, x0 + 8, y - 16, { align: 'left', colour: SOFT, size: 10 });
+      if (f >= 1) label(ctx, `Arrives: ${when}`, x1 - 8, y - 16, { align: 'right', colour: ACCENT, size: 10 });
     });
-    label(ctx, hours < 1 ? `${Math.round(hours * 60)} minutes gone` : `${hours.toFixed(1)} hours gone`, w / 2, h * 0.9, { align: 'center', colour: SOFT, size: 11 });
+    label(ctx, hours < 1 ? `${Math.round(hours * 60)} minutes gone` : `${hours.toFixed(1)} hours gone`, w / 2, y0 + step * 2 + 48, { align: 'center', colour: SOFT, size: 11 });
     say('Light comes first, the storm cloud later', 'A warning of hours to days');
   },
 };
 
 // one picture to each step of the first look: its paragraphs and photographs, in order
-export const scenes: Scene[] = [lens, lens, timeline, race, timeline, lens, spotTemp, race, race, race, race];
+export const scenes: Scene[] = [lens, lens, timeline, race, timeline, lens, spotTemp, race, timeline, timeline, timeline];

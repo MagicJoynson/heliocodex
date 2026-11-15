@@ -92,4 +92,4 @@ const tails: Scene = {
 };
 
 // one picture to each step of the first look: its paragraphs and photographs, in order
-export const scenes: Scene[] = [lens, distance, tails, tails, tails, lens, distance, lens, tails, lens, lens];
+export const scenes: Scene[] = [lens, distance, tails, tails, tails, tails, distance, lens, tails, tails, tails];
