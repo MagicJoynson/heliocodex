@@ -227,7 +227,7 @@ const far = worlds.map((w) => {
   .front-or a { color: var(--ink); text-decoration-color: rgba(233,196,138,.6); text-underline-offset: .18em; }
   .front-or a:hover { color: var(--accent); }
   .front-scene { position: relative; z-index: 1; overflow: hidden; height: clamp(300px, 31vw, 450px); margin-top: clamp(-10px, 0vw, 0px); --sw: min(150vw, 1900px); --arc: clamp(90px, 15vw, 230px); }
-  .front-sun { position: absolute; left: 50%; max-width: none; width: var(--sw); height: auto; top: calc(100% - var(--arc) - var(--sw) * .062); transform: translateX(-50%); pointer-events: none; -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); }
+  .front-sun { position: absolute; left: 50%; max-width: none; width: calc(var(--sw) * 1.03); height: auto; top: calc(100% - var(--arc) - var(--sw) * .120); transform: translateX(-50%); pointer-events: none; -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); }
   .front-orbits { position: absolute; left: 50%; bottom: 0; width: min(1200px, 130vw); height: auto; transform: translateX(-50%); }
   .front-orbits { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 55%, transparent 96%); mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 55%, transparent 96%); }
   .front-orbits .ring { fill: none; stroke: rgba(236,231,220,.22); stroke-width: 1; }
