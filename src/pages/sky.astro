@@ -572,7 +572,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   }
   /* the dock: on a phone the controls are four big slots, each opening a sheet above them */
   .sky-dock { display: none; }
-  @media (max-width: 600px) {
+  @media (max-width: 600px) and (min-height: 480px) {
     .sky-bar { display: block; padding: 0 0 env(safe-area-inset-bottom, 0px); background: rgba(6, 7, 11, .94); border-top: 1px solid var(--rule); }
     .sky-bar .bar-more, .sky-bar .pop { position: static; }
     .sky-bar .pop summary { display: none; }
