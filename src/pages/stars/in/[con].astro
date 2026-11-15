@@ -30,12 +30,13 @@ const high = Math.round(90 - Math.abs(LAT - dec));
 const dayOfYear = new Date(Date.UTC(2001, 2, 21) + ((((ra - 9) % 24) + 24) % 24) / 24 * 365.25 * 864e5);
 const bestMonth = MONTHS[dayOfYear.getUTCMonth()];
 const side = dec < LAT ? 'south' : 'north';
+const topAlt = Math.round(90 - LAT + sorted[sorted.length - 1]);
 const wheres = neverRises ? `${name} never rises above the horizon from London, so it cannot be seen from there.`
   : neverSets ? `${name} never sets from London. It goes round the Pole Star all night, all year, so it can be seen on any clear night.`
   : mostlyUp ? `Most of ${name} never sets from London. It goes round the Pole Star, so it can be seen on any clear night, though its lowest stars dip below the horizon. It is highest in the evening, about 9 pm, in ${bestMonth}.`
-  : high <= 0 ? `Only the northern part of ${name} climbs above the horizon from London, low in the south. It is highest in the evening, about 9 pm, in ${bestMonth}.`
+  : high <= 0 ? (topAlt < 3 ? `Only a sliver of the northern edge of ${name} climbs above the horizon from London, and only a few degrees, so in practice it cannot be seen from there.` : `Only the northern part of ${name} climbs above the horizon from London, no more than about ${topAlt}° up in the south. It is highest in the evening, about 9 pm, in ${bestMonth}.`)
   : `${name} rises and sets, so it is in the evening sky only part of the year. It is highest in the evening, about 9 pm, in ${bestMonth}.`;
-const heights = neverRises || high <= 0 ? '' : high < 20 ? `Even at its highest its middle is only about ${high}° above the horizon, to the ${side}, so it needs a clear low horizon.` : `At its highest its middle is about ${high}° up (a fist held out at arm's length is about 10°), to the ${side}.`;
+const heights = neverRises || high <= 0 ? '' : high < 20 ? `Even at its highest its middle is only about ${high}° above the horizon, to the ${side}, so it needs a clear low horizon.` : high > 80 ? `At its highest its middle is almost overhead.` : `At its highest its middle is about ${high}° up (a fist held out at arm's length is about 10°), to the ${side}.`;
 const dot = (s: PageStar) => `background:rgb(${(s.bv === null ? [236, 231, 220] : tint(s.bv)).join(',')})`;
 const sight = (m: number) => (m <= 1.5 ? 'One of the brightest in the sky' : m <= 3.5 ? 'Easy to see' : m <= 5 ? 'Seen away from bright lights' : m <= 6.5 ? 'Just seen from a dark place' : 'Needs a telescope');
 ---
@@ -48,8 +49,8 @@ const sight = (m: number) => (m <= 1.5 ? 'One of the brightest in the sky' : m <
   <section class="row">
     <div class="hang"><h2>Finding it</h2></div>
     <div class="prose">
-      <p>{wheres} {heights}</p>
-      <p>Its brightest star is <a href={starHref(stars[0])}>{stars[0].name}</a>, {round2(stars[0].distPc * LY_PER_PC)} light years away. This is worked out from the positions of its stars, for London. <a href="/sky">The sky map</a> shows what is up tonight.</p>
+      <p>{wheres} {heights} This is worked out from the positions of its stars, for London, and times are by the Sun: on British Summer Time clocks add an hour.</p>
+      <p>Its brightest star is <a href={starHref(stars[0])}>{stars[0].name}</a>, {round2(stars[0].distPc * LY_PER_PC)} light years away. <a href="/sky">The sky map</a> shows what is up tonight.</p>
     </div>
   </section>
   <section class="row">
