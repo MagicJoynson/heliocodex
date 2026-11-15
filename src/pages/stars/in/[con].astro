@@ -11,6 +11,32 @@ export function getStaticPaths() {
 }
 const { name, stars } = Astro.props as { name: string; stars: PageStar[] };
 const byEye = stars.filter((s) => s.appMag <= 6.5).length, own = stars.filter((s) => s.proper).length;
+// Finding it: worked out from the positions of its naked-eye stars, for London (latitude 51.5° north).
+const LAT = 51.5, MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const seen = stars.filter((s) => s.appMag <= 6.5);
+const pool = seen.length ? seen : stars;
+// a star's direction here is in the ecliptic frame (z to the ecliptic pole): turn it to the equator, tilted by 23.44°
+const EPS = 23.4393 * Math.PI / 180;
+const toEq = ([x, y, z]: [number, number, number]): [number, number, number] => [x, y * Math.cos(EPS) - z * Math.sin(EPS), y * Math.sin(EPS) + z * Math.cos(EPS)];
+const mean = pool.map((s) => toEq(s.dir)).reduce((a, d) => [a[0] + d[0], a[1] + d[1], a[2] + d[2]] as [number, number, number], [0, 0, 0] as [number, number, number]);
+const norm = Math.hypot(...mean);
+const decOf = (z: number) => Math.asin(Math.max(-1, Math.min(1, z))) * 180 / Math.PI;
+const dec = decOf(mean[2] / norm), ra = ((Math.atan2(mean[1], mean[0]) * 12 / Math.PI) + 24) % 24;
+const decs = pool.map((s) => { const d = toEq(s.dir); return decOf(d[2] / Math.hypot(...d)); });
+const sorted = [...decs].sort((a, b) => a - b), median = sorted[Math.floor(sorted.length / 2)];
+const neverSets = sorted[0] > 90 - LAT, neverRises = sorted[sorted.length - 1] < LAT - 90, mostlyUp = median > 90 - LAT;
+const high = Math.round(90 - Math.abs(LAT - dec));
+// at 9 pm the sky's meridian is at the Sun's right ascension plus 9 hours; the Sun is at 0 hours on 21 March and gains about 24 hours a year
+const dayOfYear = new Date(Date.UTC(2001, 2, 21) + ((((ra - 9) % 24) + 24) % 24) / 24 * 365.25 * 864e5);
+const bestMonth = MONTHS[dayOfYear.getUTCMonth()];
+const side = dec < LAT ? 'south' : 'north';
+const topAlt = Math.round(90 - LAT + sorted[sorted.length - 1]);
+const wheres = neverRises ? `${name} never rises above the horizon from London, so it cannot be seen from there.`
+  : neverSets ? `${name} never sets from London. It goes round the Pole Star all night, all year, so it can be seen on any clear night.`
+  : mostlyUp ? `Most of ${name} never sets from London. It goes round the Pole Star, so it can be seen on any clear night, though its lowest stars dip below the horizon. It is highest in the evening, about 9 pm, in ${bestMonth}.`
+  : high <= 0 ? (topAlt < 3 ? `Only a sliver of the northern edge of ${name} climbs above the horizon from London, and only a few degrees, so in practice it cannot be seen from there.` : `Only the northern part of ${name} climbs above the horizon from London, no more than about ${topAlt}° up in the south. It is highest in the evening, about 9 pm, in ${bestMonth}.`)
+  : `${name} rises and sets, so it is in the evening sky only part of the year. It is highest in the evening, about 9 pm, in ${bestMonth}.`;
+const heights = neverRises || high <= 0 ? '' : high < 20 ? `Even at its highest its middle is only about ${high}° above the horizon, to the ${side}, so it needs a clear low horizon.` : high > 80 ? `At its highest its middle is almost overhead.` : `At its highest its middle is about ${high}° up (a fist held out at arm's length is about 10°), to the ${side}.`;
 const dot = (s: PageStar) => `background:rgb(${(s.bv === null ? [236, 231, 220] : tint(s.bv)).join(',')})`;
 const sight = (m: number) => (m <= 1.5 ? 'One of the brightest in the sky' : m <= 3.5 ? 'Easy to see' : m <= 5 ? 'Seen away from bright lights' : m <= 6.5 ? 'Just seen from a dark place' : 'Needs a telescope');
 ---
@@ -20,6 +46,13 @@ const sight = (m: number) => (m <= 1.5 ? 'One of the brightest in the sky' : m <
     <h1>{name}</h1>
     <p class="lead">{byEye} stars in {name} can be seen by eye from a dark place. {own === 0 ? 'None of them has a name of its own.' : own === 1 ? 'One has a name of its own.' : `${own} have names of their own.`} The rest go by a Greek letter, a number, or their place in a catalogue. Here is every one, brightest first.</p>
   </header>
+  <section class="row">
+    <div class="hang"><h2>Finding it</h2></div>
+    <div class="prose">
+      <p>{wheres} {heights} This is worked out from the positions of its stars, for London, and times are by the Sun: on British Summer Time clocks add an hour.</p>
+      <p>Its brightest star is <a href={starHref(stars[0])}>{stars[0].name}</a>, {round2(stars[0].distPc * LY_PER_PC)} light years away. <a href="/sky">The sky map</a> shows what is up tonight.</p>
+    </div>
+  </section>
   <section class="row">
     <div class="hang sticks"><h2>Its stars</h2><p class="note">{stars.length} in all. The dot shows each star's colour.</p></div>
     <ol class="plain-list con-list">
