@@ -1204,7 +1204,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/comet-67p-rosetta-navcam-2014.jpg', width: 1024, height: 1024,
       alt: 'A grey, rough-surfaced, two-lobed rock against black: a smaller lump on the left joined by a narrow neck to a larger lump on the right, with sharp shadows.',
-      caption: '<b>A photograph.</b> The nucleus of comet 67P from about 83 km away on 20 August 2014, taken by the navigation camera of ESA’s Rosetta spacecraft. The whole nucleus is about 4 km across. Credit: ESA/Rosetta/NAVCAM, <a href="https://creativecommons.org/licenses/by-sa/3.0/igo/">CC BY-SA IGO 3.0</a>. Recompressed, otherwise unchanged.',
+      caption: '<b>A photograph.</b> The nucleus of comet 67P from about 83 km away on 20 August 2014, taken by the navigation camera of ESA’s Rosetta spacecraft. The whole nucleus is about 4 km across. Credit: ESA/Rosetta/NAVCAM, <a href="https://creativecommons.org/licenses/by-sa/3.0/igo/">CC BY-SA 3.0 IGO</a>. Recompressed, otherwise unchanged.',
     },
     chapters: [
       { title: 'Its tail and its head', paras: [
@@ -1215,11 +1215,11 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'It goes round the Sun every 6.4 years, between a point just outside the Earth’s orbit and one a little beyond Jupiter’s. It is a Jupiter-family comet: Jupiter’s gravity bent its path into this shape, in 1959, when it came close to the planet.',
       ] },
       { title: 'How it was found', paras: [
-        'Klim Churyumov, in Kyiv, and Svetlana Gerasimenko, in Alma-Ata, found it in 1969 on photographic plates, and the comet carries both their names.',
+        'Svetlana Gerasimenko photographed it at Alma-Ata in September 1969, and Klim Churyumov, studying the plates in Kyiv, found the comet on one of them. It carries both their names.',
       ] },
       { title: 'Spacecraft that have visited', paras: [
         'Rosetta, from the European Space Agency, was launched in March 2004 and reached the comet in August 2014. It was the first spacecraft to go into orbit round a comet. In November 2014 it released a small lander, Philae, which touched down, bounced twice and came to rest in a shadow, where it ran out of power after about two days. Rosetta followed the comet round the Sun for two years and ended its mission by landing on it, on 30 September 2016.',
-        'The measurements it made included the make-up of the water. The comet’s water has about three times as much of a heavy kind of hydrogen as the water of the Earth’s oceans, so a comet like this one cannot have supplied most of the Earth’s water.',
+        'The measurements it made included the make-up of the water. The comet’s water has about three times as much of a heavy kind of hydrogen as the water of the Earth’s oceans, That makes it unlikely that comets like this one supplied most of the Earth’s water, though how much comets did contribute is still argued over.',
       ] },
       { title: 'When to see it', paras: [
         'You cannot see it without a telescope. At its best it is far too faint for the naked eye, and even with a telescope it is not easy.',
@@ -1236,15 +1236,15 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/hygiea-sphere-eso-2019.jpg', width: 1280, height: 824,
       alt: 'A fuzzy, nearly round grey ball with faint lighter and darker patches against black.',
-      caption: '<b>A photograph.</b> Hygiea, taken with the SPHERE instrument on ESO’s Very Large Telescope in Chile, and sharpened by a computer method. It is blurred because Hygiea is far away and small. Credit: ESO/P. Vernazza et al./MISTRAL algorithm (ONERA/CNRS), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.',
+      caption: '<b>A photograph.</b> Hygiea, taken with the SPHERE instrument on ESO’s Very Large Telescope in Chile, and sharpened by a computer method. It is blurred because Hygiea is far away and small. Credit: ESO/P. Vernazza et al./MISTRAL algorithm (ONERA/CNRS), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Reduced in size.',
     },
     chapters: [
       { title: 'What it looks like', paras: [
-        'Hygiea is about 410 km across, which makes it the fourth-largest asteroid, after Ceres, Vesta and Pallas. Until 2019 nobody had seen it clearly, and most people took it for a lump like the other large asteroids. The VLT pictures showed that it is almost round, and a little dark and dull on the surface.',
+        'Hygiea is about 410 km across (ESO’s release says just over 430 km, as the size depends on the measurement), which makes it the fourth-largest asteroid, after Ceres, Vesta and Pallas. Until 2019 nobody had seen it clearly, and most people took it for a lump like the other large asteroids. The VLT pictures showed that it is almost round, and dark on the surface.',
         'It also turned out to have no giant crater. That is odd, because Hygiea has a whole family of smaller asteroids that look like pieces of it, which suggests a huge collision, long ago.',
       ] },
       { title: 'What it is made of', paras: [
-        'Its surface is dark and rich in carbon, like the rock of many outer-belt asteroids, and it holds minerals that contain water. One idea for its roundness is that a collision smashed an older body up, and that the pieces then pulled themselves back together by gravity, perhaps about two billion years ago.',
+        'Its surface is dark and rich in carbon, like the rock of many outer-belt asteroids, . One idea for its roundness is that a collision smashed an older body up, and that the pieces then pulled themselves back together by gravity, perhaps about two billion years ago.',
       ] },
       { title: 'How it was found', paras: [
         'Annibale de Gasparis found it in Naples on 12 April 1849. It is named for Hygieia, the Greek goddess of health.',
