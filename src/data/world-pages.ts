@@ -334,12 +334,12 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     chapters: [
       { title: 'What it looks like', paras: [
         'Until 2015 Pluto was a smudge of a few pixels. Then New Horizons flew past and showed a world with more kinds of country than anyone had guessed. The most striking is a bright plain about 1,000 km across, shaped like a heart and named Sputnik Planitia. It is a sheet of frozen nitrogen with almost no craters, which means it is young, probably less than 10 million years old, and still being renewed. The ice slowly turns over in cells a few tens of kilometres wide, rather like a pan of thick porridge on a very low heat.',
-        'Round the plain are mountains of water ice, some up to about 3.5 km high. At Pluto’s temperature water ice is as hard as rock, and nitrogen ice is soft enough to flow. Other areas are dark red, stained by carbon-rich material that forms when sunlight and cosmic rays break down the methane in the thin air.',
+        'Round the plain are mountains of water ice, some about 3 km high. At Pluto’s temperature water ice is as hard as rock, and nitrogen ice is soft enough to flow. Other areas are dark red, stained by carbon-rich material that forms when sunlight and cosmic rays break down the methane in the thin air.',
         'Pluto does have an atmosphere, mostly nitrogen with a little methane. At the ground it is about a hundred-thousandth as dense as the Earth’s, but it is thick enough to carry layers of blue haze that New Horizons photographed against the Sun.',
       ] },
       { title: 'What it is made of', paras: [
         'Pluto is 2,377 km across, about two-thirds the width of our Moon. Inside it is rock, probably with a core, under a thick mantle of water ice. The surface is a thin coat of more volatile ices: nitrogen, methane and carbon monoxide.',
-        'Its path round the Sun is a long oval, tilted by 17° to the paths of the planets. Pluto takes 248 years to go round once, and from 1979 to 1999 it was nearer the Sun than Neptune was. The two never come close to one another, because they are locked in a pattern that keeps them apart.',
+        'Its path round the Sun is a long oval, tilted by 17° to the paths of the planets. Pluto takes nearly 250 years to go round once, and from 1979 to 1999 it was nearer the Sun than Neptune was. The two never come close to one another, because they are locked in a pattern that keeps them apart.',
       ] },
       { title: 'How it was found and named', paras: [
         'Clyde Tombaugh found it on 18 February 1930 at the Lowell Observatory in Arizona, by comparing photographic plates taken a few nights apart in January and spotting a dot that had moved. Astronomers had been searching for a ninth planet, and for 76 years Pluto was counted as one.',
@@ -373,15 +373,15 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'The most striking thing is the dark red cap at the north pole. The leading explanation is that methane gas escaping from Pluto’s thin air is carried across the gap, freezes on Charon’s cold pole in the long winter, and is turned red by sunlight.',
       ] },
       { title: 'What it is made of', paras: [
-        'Charon is 1,212 km across, a little over half the width of Pluto. Its density, 1.85 times that of water, says it is a mixture of ice and rock, with more rock than the moons of Saturn. It holds about an eighth of Pluto’s mass, a bigger share than any other moon holds of its planet or dwarf planet.',
-        'The two circle a point that lies in empty space between them, 19,600 km from Charon, and each keeps the same face to the other. Charon goes round once in 6.4 days, the same time Pluto takes to turn once, so from one side of Pluto it never rises or sets.',
+        'Charon is 1,212 km across, a little over half the width of Pluto. Its density, 1.7 times that of water, says it is a mixture of about half ice and half rock. It holds about an eighth of Pluto’s mass, a bigger share than any other moon holds of its planet or dwarf planet.',
+        'The two circle a point about 2,000 km from the centre of Pluto, outside it, in the space between them, and each keeps the same face to the other. Charon goes round once in 6.4 days, the same time Pluto takes to turn once, so from one side of Pluto it never rises or sets.',
       ] },
       { title: 'How it was found', paras: [
         'James Christy found Charon in 1978 at the United States Naval Observatory in Flagstaff, Arizona. He noticed that Pluto looked lumpy on his photographic plates, and that the lump moved round it. He named it Charon after the ferryman of the dead in Greek myth, and partly after his wife Charlene, so that it is said “Shar-on”.',
         'Its discovery let astronomers weigh Pluto for the first time. Pluto turned out to be far lighter than the early guesses, and much smaller than a planet.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
-        'Only New Horizons, in July 2015. It passed Charon at about 29,000 km and photographed one hemisphere of it in detail.',
+        'Only New Horizons, in July 2015. It passed Charon at about 27,000 km and photographed one hemisphere of it in detail.',
       ] },
       { title: 'What is still unknown', paras: [
         'The broad cracks round the middle are what would be expected if an ocean inside Charon froze and expanded. Whether it did, and when, is unknown. How the Pluto and Charon pair formed is also unsettled, though a great collision early in the history of the Solar System is the leading idea.',
@@ -394,7 +394,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   ceres: {
-    lead: 'The largest body in the asteroid belt and the only dwarf planet inside the orbit of Neptune, a dark, cratered world with bright patches of salt.',
+    lead: 'The largest body in the asteroid belt and the only dwarf planet in the inner Solar System, a dark, cratered world with bright patches of salt.',
     picture: {
       src: '/img/learn/ceres-dawn.jpg', width: 1100, height: 1100,
       alt: 'A grey, round, heavily cratered world, with a small cluster of brilliant white spots inside one crater near the middle.',
@@ -406,7 +406,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Its surprises are the bright spots. The brightest are in Occator crater, which is about 92 km wide. Dawn found that they are mostly sodium carbonate, a salt related to washing soda, left when salty water from below reached the surface and the water evaporated. Ahuna Mons, a mountain about 4 km high with steep sides, is thought to be a volcano that erupted slush and brine, and not molten rock.',
       ] },
       { title: 'What it is made of', paras: [
-        'Ceres is about 940 km across and round, which is what puts it among the dwarf planets. It holds about a third of all the mass in the asteroid belt. It is a mix of rock and ice, with clay-like minerals that need water to form, and it has ice just under the surface and in craters at the poles that never see the Sun.',
+        'Ceres is about 940 km across and round, which is what puts it among the dwarf planets. It holds about a quarter to a third of all the mass in the asteroid belt. It is a mix of rock and ice, with clay-like minerals that need water to form, and it has ice just under the surface and in craters at the poles that never see the Sun.',
         'It takes 4.6 years to go round the Sun, in a path only slightly stretched, in the middle of the belt.',
       ] },
       { title: 'How it was found and named', paras: [
@@ -478,7 +478,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       ] },
       { title: 'How it was found and named', paras: [
         'The American astronomer Asaph Hall found both moons of Mars at the United States Naval Observatory in Washington, Deimos on 12 August 1877 and Phobos six nights later, on 18 August. Stickney was named for his wife, Angeline Stickney, who had urged him to keep searching.',
-        'The names, Greek for fear and for panic or dread, were suggested by Henry Madan, a schoolmaster at Eton. In Greek myth they were the sons of Ares, the god of war, whom the Romans knew as Mars.',
+        'The names are Greek for fear, which is Phobos, and dread, which is Deimos. They were suggested by Henry Madan, a schoolmaster at Eton. In Greek myth they were the sons of Ares, the god of war, whom the Romans knew as Mars.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'Mariner 9 saw it in 1971 and the Viking orbiters photographed it closely in the 1970s. The European Mars Express has passed near it many times since 2004. Two Soviet probes sent to it in 1988 both failed.',
@@ -501,7 +501,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/deimos-mro-2009.jpg', width: 1100, height: 564,
       alt: 'Two views of the same small, pale, egg-shaped moon on black, with a few craters and a scale bar of 2 kilometres.',
-      caption: '<b>Two photographs, with processed colour.</b> Deimos from the HiRISE camera on NASA’s Mars Reconnaissance Orbiter, in February 2009, shown from two sides, with a scale bar of 2 km. The colours are processed and are not exactly what an eye would see. Credit: NASA/JPL-Caltech/University of Arizona.',
+      caption: '<b>Two photographs, with processed colour.</b> Deimos from the HiRISE camera on NASA’s Mars Reconnaissance Orbiter, in February 2009, in two different lights about five and a half hours apart, with a scale bar of 2 km. The colours are processed and are not exactly what an eye would see. Credit: NASA/JPL-Caltech/University of Arizona.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
@@ -512,7 +512,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'It circles Mars at 23,500 km, taking 30.3 hours for each trip. That is only a little longer than a Martian day, so from the ground Deimos moves very slowly. It takes about two and a half days to cross the sky from rising in the east to setting in the west, and from Mars it looks like a bright star, not a disc.',
       ] },
       { title: 'How it was found', paras: [
-        'Asaph Hall found it on 12 August 1877 at the United States Naval Observatory in Washington. He had been searching for weeks. He found Phobos six nights later. The name is Greek for terror or dread. Henry Madan, a schoolmaster at Eton, suggested the names of both moons.',
+        'Asaph Hall found it on 12 August 1877 at the United States Naval Observatory in Washington. He had been searching for weeks. He found Phobos six nights later. The name is Greek for dread. Henry Madan, a schoolmaster at Eton, suggested the names of both moons.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'The Viking orbiters photographed Deimos closely in 1977, and Mars Express and the Mars Reconnaissance Orbiter have taken pictures since. No spacecraft has landed on it. Japan’s MMX mission, which launched on 20 October 2026 to bring back a sample from Phobos, is also meant to pass close to Deimos.',
@@ -533,7 +533,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/mimas-cassini-2010.jpg', width: 1100, height: 1100,
       alt: 'A grey, round, heavily cratered moon with one very large crater with a central peak on the right-hand side.',
-      caption: '<b>A photograph.</b> Mimas on 13 February 2010, from NASA’s Cassini spacecraft, which flew past at its closest to the moon. The big crater on the right is Herschel. Credit: NASA/JPL-Caltech/Space Science Institute.',
+      caption: '<b>A mosaic of photographs.</b> Mimas in February 2010, put together from six pictures by NASA’s Cassini spacecraft. The big crater on the right is Herschel. Credit: NASA/JPL-Caltech/Space Science Institute.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
@@ -565,7 +565,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/iapetus-cassini-2009.jpg', width: 1100, height: 539,
       alt: 'Two round views of the same moon side by side: the left one almost entirely dark brown, the right one pale cream with scattered dark craters.',
-      caption: '<b>Two photographs, in colour.</b> Iapetus from NASA’s Cassini spacecraft: its dark side on the left and its bright side on the right. The ridge round the equator shows as a small bump on the edge of each. Credit: NASA/JPL/Space Science Institute.',
+      caption: '<b>Two processed photographs.</b> Iapetus from NASA’s Cassini spacecraft: its dark side on the left and its bright side on the right. Credit: NASA/JPL/Space Science Institute.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
