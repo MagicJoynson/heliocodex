@@ -1514,4 +1514,196 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'Yada and others 2022, Nature Astronomy 6, 214', url: 'https://doi.org/10.1038/s41550-021-01550-6' },
     ],
   },
+  gonggong: {
+    lead: 'A reddish, slowly turning world beyond Neptune, about half as wide as Pluto, with one moon.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it, so all that is known comes from telescopes. Gonggong is about 1,230 km across and turns slowly, once in about 22 hours. It is clearly red.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its surface has water ice, and the red colour is probably from methane ice changed by sunlight over a very long time. Gonggong is far enough from the Sun, and big enough, that it may once have held methane that has since leaked away.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Mike Brown, David Rabinowitz and Megan Schwamb found it in pictures taken on 17 July 2007 at the Palomar Observatory in California, and it was announced in 2009. It was known by a code number and a nickname for years. In 2020 it was named for the Chinese god of water, who is said to have caused floods. The International Astronomical Union has not formally named it a dwarf planet, although it is big enough to be one.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'One, Xiangliu, found in 2016 in pictures from the Hubble Space Telescope. It is named for the nine-headed serpent servant of Gonggong in the same legends, and is about 100 km wide.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How much methane it still has, and whether its surface has changed. It takes about 550 years to go round the Sun, on a path tilted about 31 degrees from the plane of the planets, and nothing is on its way there.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, dwarf planets', url: 'https://science.nasa.gov/dwarf-planets/' },
+      { label: 'Minor Planet Center, Gonggong', url: 'https://minorplanetcenter.net/db_search/show_object?object_id=225088' },
+    ],
+  },
+  quaoar: {
+    lead: 'A dark, icy world in the Kuiper belt about a third as wide as our Moon, with a moon and two rings.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it. Quaoar is about 1,110 km across, and in 2004 it was one of the first bodies in the Kuiper belt for which the Hubble Space Telescope could measure a size directly. Its surface is dark and slightly red.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is a mix of rock and ice, and its surface has frozen water in a crystalline form, and probably some methane. Its density is about 1.7 times that of water.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Mike Brown and Chad Trujillo found it in pictures taken on 4 June 2002 at the Palomar Observatory in California. It is named for the creator force in the myths of the Tongva people, who lived in the area around Los Angeles.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'One moon, Weywot, found in 2007 in pictures from the Hubble Space Telescope, named for the son of Quaoar. It is about 80 km wide. Quaoar also has two rings, found in 2023 when it passed in front of stars. They are much further out than the rings of the giant planets would be at this size, which no one expected, and they are not yet explained.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Why its rings have not formed a moon, and what its surface is like. Nothing is on its way there.',
+      ] },
+    ],
+    sources: [
+      { label: 'Morgado and others 2023, Nature 614, 239', url: 'https://doi.org/10.1038/s41586-022-05629-6' },
+      { label: 'NASA, dwarf planets', url: 'https://science.nasa.gov/dwarf-planets/' },
+    ],
+  },
+  orcus: {
+    lead: 'A dwarf-planet-sized world beyond Neptune with a large moon, on a path that mirrors Pluto’s.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it. Orcus is about 910 km across, and it is grey rather than red, unlike many of its neighbours.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its surface has water ice, probably in a crystalline form, and a little of other ices. It is about 1.5 times as dense as water, so is a mix of ice and rock.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Mike Brown, Chad Trujillo and David Rabinowitz found it in pictures taken on 17 February 2004 at the Palomar Observatory in California. It is named for the Roman god of the underworld, who punished those who broke their oaths, a role that matches Pluto’s own naming.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'One large moon, Vanth, found in 2005 in pictures from the Hubble Space Telescope. It is about half as wide as Orcus, and the two always show the same face to each other. Vanth is named for an Etruscan spirit that guides the dead.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Where Orcus came from, and why it is grey. Like Pluto it goes round the Sun twice for every three orbits of Neptune, and always keeps to the opposite side of the Sun from Pluto. It takes about 245 years for one trip round.',
+      ] },
+    ],
+    sources: [
+      { label: 'Brown and others 2010, Astronomical Journal 139, 2700', url: 'https://doi.org/10.1088/0004-6256/139/6/2700' },
+      { label: 'JPL Small-Body Database, Orcus', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=90482' },
+    ],
+  },
+  juno: {
+    lead: 'One of the first asteroids found, a stony body about 250 km across in the main belt.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 250 km across and irregular in shape. No spacecraft has been near it, so it is known from telescopes and radar. It is brighter than most big asteroids.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is stony rock, of the kind called S-type.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Karl Harding found it on 1 September 1804 at Lilienthal in Germany, and it was the third asteroid to be found, after Ceres and Pallas. It is named for the Roman queen of the gods. For some years it was counted as a planet.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'None. The NASA spacecraft called Juno is named for the goddess, and went to Jupiter, not to the asteroid.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It stays in the main belt between Mars and Jupiter, going round the Sun in about 4.4 years, and does not come near the Earth.',
+      ] },
+    ],
+    sources: [
+      { label: 'JPL Small-Body Database, 3 Juno', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=3' },
+      { label: 'NASA, asteroids', url: 'https://science.nasa.gov/solar-system/asteroids/' },
+    ],
+  },
+  psyche: {
+    lead: 'A large asteroid that may be made mostly of metal, and the target of a NASA spacecraft due there in 2029.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 226 km across on average and shaped like a lumpy potato. It is known from telescopes and radar, and no spacecraft has been near it yet.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It reflects radar as if it were rich in metal, and its density is higher than that of most asteroids. It is thought to be made partly or mostly of iron and nickel, and may be the exposed core of a body that broke up. How much metal is not yet known, because the surface may also hold rock.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Annibale de Gasparis found it on 17 March 1852 at Naples, the 16th asteroid to be found. It is named for the Greek goddess of the soul.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Psyche spacecraft was launched on 13 October 2023 and is due to reach it in August 2029. It will go round the asteroid for about two years, taking pictures and measuring its gravity and what it is made of.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It stays in the main belt between Mars and Jupiter, going round the Sun in about five years, and does not come near the Earth.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Psyche mission', url: 'https://science.nasa.gov/mission/psyche/' },
+      { label: 'JPL Small-Body Database, 16 Psyche', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=16' },
+    ],
+  },
+  lutetia: {
+    lead: 'A large, old, battered asteroid that the European spacecraft Rosetta passed in 2010.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is irregular, about 120 km at its longest and 75 km at its thinnest, and is covered in craters and boulders. Some parts are very old, with deep layers of dust that has slid down slopes.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is rocky, and its mix is unusual, something between two common types, and it is denser than most asteroids its size. That might mean that it has a metal-rich interior.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Hermann Goldschmidt found it on 15 November 1852 in Paris, and it is named for Lutetia, the Roman name of Paris.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'Rosetta flew past on 10 July 2010 at about 3,200 km, on its way to comet 67P. It was the largest asteroid a spacecraft had been to until Dawn reached Vesta in 2011.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It stays in the main belt between Mars and Jupiter, going round the Sun in about 3.8 years, and does not come near the Earth.',
+      ] },
+    ],
+    sources: [
+      { label: 'JPL Small-Body Database, 21 Lutetia', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=21' },
+      { label: 'Sierks and others 2011, Science 334, 487', url: 'https://doi.org/10.1126/science.1207325' },
+    ],
+  },
+  hektor: {
+    lead: 'A long, peanut-shaped Jupiter Trojan, one of the biggest of its kind, with a tiny moon.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is very elongated, about twice as long as it is wide, perhaps two lumps joined together, with an average width of about 225 km. It turns once in about seven hours. No spacecraft has been near it.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is very dark and probably made of rock and ice, with a coat of dark material, much like other Trojans. Its density is low, so there is likely to be empty space inside.',
+      ] },
+      { title: 'How it was found', paras: [
+        'August Kopff found it on 10 February 1907 at Heidelberg in Germany. It is named for the Trojan hero Hector, although it lies in the swarm of asteroids that leads Jupiter, which is named for the Greek side. Trojan asteroids share Jupiter’s path round the Sun.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'None has been. NASA’s Lucy spacecraft, launched in 2021, is visiting other Trojans but not this one. Hektor has a moon, Skamandrios, found in 2006 with the Keck telescope in Hawaii, about 12 km across.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It stays on Jupiter’s path, about 5 times as far from the Sun as the Earth is, and does not come near the Earth.',
+      ] },
+    ],
+    sources: [
+      { label: 'JPL Small-Body Database, 624 Hektor', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=624' },
+      { label: 'NASA, Lucy mission', url: 'https://science.nasa.gov/mission/lucy/' },
+    ],
+  },
+  chiron: {
+    lead: 'An icy body between Saturn and Uranus that behaves like an asteroid and a comet, the first of the centaurs.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 170 km across and very dark. At times it grows a coma, a faint cloud of gas and dust, like a comet, and for that reason it also has a comet number, 95P. No spacecraft has been near it.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is a mix of ice and dark rock, and the gas that comes off it is mostly carbon monoxide. Telescopes have shown some evidence of jets or rings round it, but this is not settled.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Charles Kowal found it on 18 October 1977 at the Palomar Observatory in California. It was the first of the centaurs, a group of icy bodies on paths between the giant planets, and it is named for the wise centaur of Greek legend who taught heroes. A coma was seen in 1988.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'None.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It stays between the paths of Saturn and Uranus, going round the Sun in about 50 years, and does not come near the Earth. Its path is not stable, and in some millions of years it is likely to be thrown out of its present path.',
+      ] },
+    ],
+    sources: [
+      { label: 'JPL Small-Body Database, 2060 Chiron', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=2060' },
+      { label: 'NASA, asteroids', url: 'https://science.nasa.gov/solar-system/asteroids/' },
+    ],
+  },
 };
