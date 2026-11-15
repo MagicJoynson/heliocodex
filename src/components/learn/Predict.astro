@@ -1,0 +1,39 @@
+---
+// The question that opens a lesson: the reader guesses, then sees the answer on the same scale as the guess.
+// Everything here is shown without a script except the guessing itself; the guess is never stored or sent anywhere.
+import type { Lesson } from '../../lib/v2/margin/content';
+
+interface Props { data: NonNullable<Lesson['data']['predict']> }
+const { data } = Astro.props;
+---
+<section class="predict" id="predict" aria-labelledby="predict-q" data-predict={JSON.stringify({ options: data.options, answer: data.answer })}>
+  <div class="predict-in">
+    <p class="label">{data.lead}</p>
+    <form class="predict-form" hidden>
+      <fieldset>
+        <legend id="predict-q">{data.question}</legend>
+        <div class="predict-options">
+          {data.options.map((o, i) => (
+            <label class="opt"><input type="radio" name="guess" value={i} /><span class="opt-l">{o.label}</span><span class="opt-d">{o.detail}</span></label>
+          ))}
+        </div>
+      </fieldset>
+      <p class="predict-actions">
+        <button type="submit" class="btn" disabled aria-describedby="predict-hint">Show me</button>
+        <a class="skip" href="#first-look">Just show me</a>
+      </p>
+      <p class="predict-hint" id="predict-hint">Pick one to go on, or skip the guess.</p>
+    </form>
+    <noscript>
+      <p class="predict-q-plain">{data.question}</p>
+      <p class="predict-plain"><b>{data.answer.label}</b>, {data.answer.like}. <a href="#first-look">Read on</a> to see why.</p>
+    </noscript>
+    <div class="predict-result" hidden>
+      <h2 class="verdict" tabindex="-1" data-verdict></h2>
+      <p class="predict-line" data-line></p>
+      <ol class="bars" data-bars aria-label="Your guess and the answer, shortest to longest"></ol>
+      <p class="predict-note">Each step along these bars is ten times the one before. On a straight scale the two shortest bars would be too thin to see.</p>
+      <p class="predict-actions"><a class="btn" href="#first-look">See why</a></p>
+    </div>
+  </div>
+</section>

@@ -1,7 +1,7 @@
 /**
  * Pictures for the lesson "How big is space". One scale runs through all of them, the lesson's own:
  * the Sun as a football 22 cm wide. On it, 1 au is 23.7 m, Neptune is 712 m out and the nearest
- * star, Proxima Centauri at 4.25 light years, is about 6,300 km away.
+ * star, Proxima Centauri at 4.25 light years, is about 6,350 km away.
  */
 import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label, stars, nf } from '../stage';
 import { photoScene, sun, dot, ring, line } from '../kit';
@@ -117,7 +117,7 @@ const emptyScene: Scene = {
 // ---- 4. the next football
 const MARKS: [number, string][] = [[1_000, '1 km'], [10_000, '10 km'], [100_000, '100 km'], [1_000_000, '1,000 km']];
 const nextScene: Scene = {
-  caption: 'Pulling back from Neptune\'s orbit until the nearest star comes into view, on the same scale. Each ring is ten times wider than the one before. Proxima Centauri is 4.25 light years away, which on this scale is about 6,300 km.',
+  caption: 'Pulling back from Neptune\'s orbit until the nearest star comes into view, on the same scale. Each ring is ten times wider than the one before. Proxima Centauri is 4.25 light years away, which on this scale is about 6,350 km.',
   stillAt: 14.5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.35);
@@ -139,7 +139,7 @@ const nextScene: Scene = {
       dot(ctx, px, cy, 2, `rgba(255,170,130,${a})`);
       ctx.globalAlpha = a; label(ctx, 'Proxima Centauri', px, cy - 24, { colour: ACCENT, align: 'right' }); label(ctx, 'the next football', px, cy - 10, { align: 'right' }); ctx.globalAlpha = 1;
     }
-    say(`This picture is ${view < 10_000 ? `${nf(Math.round(view / 100) * 100)} m` : `${nf(Math.round(view / 1000))} km`} across`, k >= 1 ? 'About 6,300 km to the next star: London to Chicago' : 'Nothing but empty space so far');
+    say(`This picture is ${view < 10_000 ? `${nf(Math.round(view / 100) * 100)} m` : `${nf(Math.round(view / 1000))} km`} across`, k >= 1 ? 'About 6,350 km to the next star: London to Chicago' : 'Nothing but empty space so far');
   },
 };
 
@@ -152,4 +152,29 @@ const paleBlueDot = photoScene({
   pointers: [{ at: [0.6, 0.522], to: [0.72, 0.42], text: 'The Earth' }],
 });
 
-export const scenes: Scene[] = [ballScene, planetsScene, emptyScene, nextScene, paleBlueDot];
+// ---- 6. the nearest pair of stars, and what lies further out on the same scale
+const centauri = photoScene({
+  src: '/img/learn/alpha-centauri-a-b-hubble.jpg',
+  caption: 'A real photograph: Alpha Centauri A and B, the pair of stars that Proxima Centauri goes round, from the Hubble Space Telescope. The four spikes on each star are made inside the telescope. Credit: ESA/Hubble and NASA, CC BY 4.0.',
+  say: ['Alpha Centauri A and B', 'A little beyond Proxima: 4.4 light years'],
+  cover: true, zoom: [1, 1.12], focus: [0.5, 0.5],
+});
+const milkyWay = photoScene({
+  src: '/img/learn/milky-way-panorama-eso.jpg',
+  caption: 'A real photograph: the whole Milky Way, pieced together over several months. Credit: ESO/S. Brunier, CC BY 4.0.',
+  say: ['The Milky Way: 100,000 light years across', 'On the football scale, 150 million km'],
+  cover: true, zoom: [1, 1.15], focus: [0.5, 0.5],
+});
+const M31 = 'A real photograph: the Andromeda galaxy, pieced together from more than 600 pictures taken by the Hubble Space Telescope over ten years. The jagged edge is where the separate pictures stop. Credit: NASA, ESA, B. Williams (University of Washington), CC BY 4.0.';
+const andromeda = photoScene({
+  src: '/img/learn/andromeda-hubble-mosaic.jpg', caption: M31,
+  say: ['Andromeda: 2.5 million light years away', 'On the football scale, 3.7 billion km'], cover: true, zoom: [1, 1.12], focus: [0.42, 0.5],
+});
+const oldestLight = photoScene({
+  src: '/img/learn/cmb-wmap-9-year.jpg',
+  caption: 'A real map of the whole sky in microwaves, from nine years of measurements by NASA’s WMAP spacecraft. Microwaves have no colour: red was chosen for slightly warmer patches and blue for slightly cooler, and the glow of our own galaxy has been taken out. Credit: NASA/WMAP Science Team.',
+  say: ['The oldest light we can see', 'Set free about 380,000 years after the Big Bang'], zoom: [0.95, 1.05], focus: [0.5, 0.5], tag: 'Microwave map',
+});
+
+/** One picture for each paragraph of the first look, in order. A picture that carries on over two paragraphs is not restarted between them. */
+export const scenes: Scene[] = [ballScene, planetsScene, emptyScene, planetsScene, emptyScene, nextScene, centauri, paleBlueDot, milkyWay, andromeda, oldestLight, nextScene];
