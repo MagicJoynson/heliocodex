@@ -81,7 +81,7 @@ facts:
 
   # ---- the night sky
   - id: orions-belt-depth
-    text: "The three stars of Orion's Belt look like neighbours, but they are not. Mintaka and Alnitak are about 700 light years away, and Alnilam, the middle one, is given as nearly 2,000. A constellation is a pattern seen from here, not a group in space."
+    text: "The three stars of Orion's Belt look like neighbours, but they are not. Mintaka is about 690 light years away, Alnitak about 740, and Alnilam, the middle one, is given as nearly 2,000. A constellation is a pattern seen from here, not a group in space."
     about: [night-sky]
     basis: worked-out
     source: { label: "HYG star database v4.4, David Nash", url: "https://codeberg.org/astronexus/hyg" }
