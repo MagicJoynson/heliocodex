@@ -22,6 +22,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
         <h1>Look up</h1>
         <p class="sky-line" id="sky-line"></p>
         <p class="sky-note" id="sky-note" hidden></p>
+        <p class="sky-note sky-share-note" id="sky-share-note" role="status"></p>
         <p class="sky-hint" id="sky-hint">Drag to look round. Touch a star.</p>
       </header>
 
@@ -45,6 +46,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
           <button type="button" data-face="180">South</button>
           <button type="button" data-face="270">West</button>
           <button type="button" id="sky-whole">Whole sky</button>
+          <button type="button" id="sky-share">Copy link</button>
         </div>
 
         <div class="bar-more">
@@ -146,6 +148,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   let data: SkyData | null = null, marks: Mark[] = [], picked: Mark | null = null;
   let where = { name: '', lat: 0, lon: 0 }, dayShift = 0, w = 0, h = 0;
   let view: View = { azDeg: 180, altDeg: 30, fovDeg: 100 };
+  let linkView: View | null = null;
   let mom: Moment | null = null, momKey = '';
   let room: Room = { foot: 0, clear: [] };
 
@@ -448,7 +451,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.dataset.open) { const k = bar.dataset.open; openSheet(''); dockBtns.find((b) => b.dataset.sheet === k)?.focus(); } });
   $('sky-controls').addEventListener('submit', (e) => e.preventDefault());
 
-  new ResizeObserver(() => { const first = !w; fit(); if (first) view = facing(180); render(); }).observe(box);
+  new ResizeObserver(() => { const first = !w; fit(); if (first) view = linkView ?? facing(180); render(); }).observe(box);
   setInterval(() => { if (!document.hidden) render(); }, 30000);
   document.fonts?.ready.then(render);
 
@@ -463,11 +466,69 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     setPlace(CITIES[first][0], CITIES[first][1], CITIES[first][2], `Guessed from your device's clock. For your exact sky, choose "Use where I am".`, false);
   }
   // by day the page opens on tonight's sky, since that is what people come for
-  tonight(true);
+  if (!linkTime()) tonight(true);
+
+  // ---- a link to this view: place, moment, direction and the thing picked, all in the address. Nothing is stored.
+  const shareNote = $('sky-share-note');
+  /** The moment named in the link, as a time, or null when it is missing or not a real date. */
+  function linkTime(): number | null {
+    const t = new URLSearchParams(location.search).get('t');
+    if (!t || !/^\d{4}-\d\d-\d\dT\d\d:\d\dZ$/.test(t)) return null;
+    const ms = Date.parse(t);
+    return !Number.isNaN(ms) && new Date(ms).toISOString().slice(0, 16) + 'Z' === t && Math.abs(ms - Date.now()) < 200 * 365.25 * 864e5 ? ms : null;
+  }
+  function shareLink(): string {
+    // a position from the device is cut to about 11 km, so a link does not give away a street
+    const dp = where.name === 'Where you are' ? 1 : 2;
+    const u = new URL('/sky', location.origin);
+    u.searchParams.set('lat', where.lat.toFixed(dp)); u.searchParams.set('lon', where.lon.toFixed(dp));
+    if (where.name !== 'Where you are' && where.name !== 'The place you typed') u.searchParams.set('place', where.name);
+    u.searchParams.set('t', when().toISOString().slice(0, 16) + 'Z');
+    u.searchParams.set('az', String(Math.round(view.azDeg))); u.searchParams.set('alt', String(Math.round(view.altDeg))); u.searchParams.set('fov', String(Math.round(view.fovDeg)));
+    if (picked) u.searchParams.set('pick', picked.id);
+    return u.toString();
+  }
+  $('sky-share').addEventListener('click', async () => {
+    const url = shareLink();
+    const said = where.name === 'Where you are' ? 'Link copied. It holds your position to about 11 km, and the moment you are looking at.' : 'Link copied. It holds the place, the moment and the direction you are looking.';
+    try { await navigator.clipboard.writeText(url); shareNote.textContent = said; }
+    catch { shareNote.textContent = `Copy this link: ${url}`; }
+  });
+  /** Open a shared link: only plain numbers and ids are read, and a place from a link is not kept on this device. */
+  function fromLink(): void {
+    const q = new URLSearchParams(location.search), num = (k: string) => (q.has(k) && /^-?\d{1,3}(\.\d{1,4})?$/.test(q.get(k)!) ? Number(q.get(k)) : NaN);
+    const la = num('lat'), lo = num('lon');
+    if (Math.abs(la) <= 90 && Math.abs(lo) <= 180) {
+      const given = (q.get('place') ?? '').slice(0, 60), i = CITIES.findIndex(([n, a, b]) => n === given && Math.abs(a - la) < 0.06 && Math.abs(b - lo) < 0.06);
+      if (i < 0) place.querySelector<HTMLOptionElement>('option[value="typed"]')!.hidden = false;
+      place.value = i < 0 ? 'typed' : String(i);
+      setPlace(i < 0 ? 'The place in the link' : CITIES[i][0], la, lo, 'The place in the link you opened.', false);
+    }
+    const ms = linkTime();
+    if (ms !== null) {
+      const mins = (ms - Date.now()) / 60000, held = Math.round(Math.max(-720, Math.min(720, mins)) / 5) * 5;
+      shift.value = String(held); dayShift = mins - held; dayNote.textContent = 'This is the moment in the link you opened. Choose Now to see the sky as it is at present.'; dayNote.hidden = false;
+    }
+    const n = (k: string, lo: number, hi: number) => { const v = Number(q.get(k)); return q.has(k) && /^-?\d{1,3}$/.test(q.get(k)!) && v >= lo && v <= hi ? v : NaN; };
+    const az = n('az', 0, 360), alt = n('alt', 4, 90), fov = n('fov', 30, 140);
+    if (!Number.isNaN(az) && !Number.isNaN(alt) && !Number.isNaN(fov)) linkView = { azDeg: az % 360, altDeg: alt, fovDeg: fov };
+  }
+  const linked = ['lat', 'lon', 't', 'az', 'alt', 'fov', 'pick'].some((k) => new URLSearchParams(location.search).has(k));
+  if (linked) fromLink();
 
   const hold = $('sky-hold');
   load().then((d) => {
     data = d; hold.remove(); paint();
+    if (linked) {
+      if (linkView) { view = linkView; paint(); }
+      const pk = new URLSearchParams(location.search).get('pick');
+      if (pk && /^(star:\d+|[a-z]{3,12})$/.test(pk)) {
+        let m = marks.find((k) => k.id === pk);
+        if (!m) { const looking = view; view = wholeSky(w, h, room); paint(); m = marks.find((k) => k.id === pk); view = looking; paint(); }
+        if (m) { if (!linkView) { view = { ...facing(m.azDeg), altDeg: Math.max(20, Math.min(80, m.altDeg)) }; paint(); } const again = marks.find((k) => k.id === pk); if (again) show(again); hint.classList.add('gone'); render(); }
+        else shareNote.textContent = 'The thing in the link is below the horizon at that moment, so it is not on the map.';
+      }
+    }
     // a star page can send its star here to be pointed out
     const asked = new URLSearchParams(location.search).get('star');
     if (asked && /^\d+$/.test(asked)) namesReady.then(() => {
@@ -490,6 +551,8 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   .sky-hold { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: italic 300 1.1rem var(--r-serif); color: var(--ink-faint); pointer-events: none; }
   .sky .label { font: 400 .7rem/1.2 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
 
+  .sky-share-note:empty { margin: 0; }
+  .sky-share-note { pointer-events: auto; overflow-wrap: anywhere; user-select: text; }
   .sky-head { position: absolute; left: var(--gutter); top: clamp(16px, 3vh, 32px); max-width: min(19.5rem, 100% - 2 * var(--gutter)); pointer-events: none; text-shadow: 0 0 18px #06070b, 0 0 6px #06070b; }
   .sky-head h1 { font: 300 clamp(2.2rem, 4.4vw, 3.4rem)/1 var(--r-serif); letter-spacing: -.02em; margin: .5rem 0 .6rem; }
   .sky-line { font: 300 1.06rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0; font-variant-numeric: tabular-nums lining-nums; }
