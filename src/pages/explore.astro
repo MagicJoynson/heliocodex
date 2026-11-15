@@ -357,6 +357,7 @@ import { sections } from '../lib/nav';
       for (const p of pops) p.btn.addEventListener('click', () => {
         const open = p.sheet.hidden;
         shutPops(p.sheet);
+        if (open && matchMedia('(max-width: 600px)').matches) tourStop(); // on a phone the tour card and a sheet would share the same spot
         p.sheet.hidden = !open; p.btn.setAttribute('aria-expanded', String(open));
         if (open) (p.sheet.querySelector('button, input') as HTMLElement | null)?.focus();
       });
@@ -920,6 +921,23 @@ import { sections } from '../lib/nav';
       .pad i { width: 22px; height: 1px; background: rgba(236,231,220,.3); }
       .pad.on { border-color: var(--warm); }
       @media (pointer: coarse) { body.arrived.free .pad { display: flex; } }
+
+      /* ---- phone dock: four big slots along the bottom, in place of the floating pills */
+      @media (max-width: 600px) {
+        :root { --dock: calc(56px + env(safe-area-inset-bottom, 0px)); }
+        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+        .controls .zoom { display: none; }
+        .controls .pop { display: block; min-width: 0; }
+        .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .75rem; letter-spacing: .12em; display: grid; place-items: center; }
+        .controls > #tour-btn { order: 4; }
+        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 3; }
+        .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
+        .sheet { bottom: calc(var(--dock) + 8px); }
+        .hud { padding-bottom: calc(var(--dock) + 10px); }
+        .tour { bottom: calc(var(--dock) + 10px); }
+        .hint { bottom: calc(var(--dock) + 20px); }
+        .pad { bottom: calc(var(--dock) + 40px); }
+      }
 
       /* testing only */
       .tech { display: none; } body.debug .tech { display: block; }
