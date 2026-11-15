@@ -318,7 +318,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Earth’s Moon', url: 'https://science.nasa.gov/moon/' },
-      { label: 'NASA, LCROSS impact data indicates water on the Moon (2009)', url: 'https://www.nasa.gov/news-release/lcross-impact-data-indicates-water-on-moon/' },
+      { label: 'NASA, LCROSS impact data indicates water on the Moon (2009)', url: 'https://nssdc.gsfc.nasa.gov/planetary/text/lcross_pr_20091113.txt' },
       { label: 'Wikipedia, Moon', url: 'https://en.wikipedia.org/wiki/Moon' },
     ],
   },
@@ -356,7 +356,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, Pluto', url: 'https://science.nasa.gov/dwarf-planets/pluto/' },
       { label: 'NASA, New Horizons', url: 'https://science.nasa.gov/mission/new-horizons/' },
-      { label: 'IAU, Definition of a planet (2006)', url: 'https://www.iau.org/news/pressreleases/detail/iau0603/' },
+      { label: 'IAU, Definition of a planet (2006)', url: 'https://iauarchive.eso.org/news/pressreleases/detail/iau0603/' },
     ],
   },
 
@@ -1288,7 +1288,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'ESO, Golf Ball World', url: 'https://www.eso.org/public/images/potw2008a/' },
-      { label: 'NASA, Pallas', url: 'https://science.nasa.gov/solar-system/asteroids/2-pallas/' },
+      { label: 'NASA JPL, Small-Body Database entry for 2 Pallas', url: 'https://ssd.jpl.nasa.gov/tools/sbdb_lookup.html#/?sstr=2%20Pallas' },
     ],
   },
 

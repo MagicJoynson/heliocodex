@@ -3,7 +3,7 @@ sources:
   - { label: "NASA, Dwarf planets", url: "https://science.nasa.gov/dwarf-planets/" }
   - { label: "NASA, Pluto facts", url: "https://science.nasa.gov/dwarf-planets/pluto/facts/" }
   - { label: "NASA, Ceres facts", url: "https://science.nasa.gov/dwarf-planets/ceres/facts/" }
-  - { label: "International Astronomical Union, result of the 2006 General Assembly votes", url: "https://www.iau.org/news/pressreleases/detail/iau0603/" }
+  - { label: "International Astronomical Union, result of the 2006 General Assembly votes", url: "https://iauarchive.eso.org/news/pressreleases/detail/iau0603/" }
 ---
 For 76 years the Solar System had nine planets. The ninth was Pluto, found in 1930. Then in 2006 astronomers took a vote, and there were eight. Pluto had not changed at all. What changed was the meaning of a word.
 

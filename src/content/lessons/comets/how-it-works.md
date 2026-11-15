@@ -5,7 +5,7 @@ sources:
   - { label: "NASA, Oort Cloud", url: "https://science.nasa.gov/solar-system/oort-cloud/" }
   - { label: "NASA, Halley's Comet", url: "https://science.nasa.gov/solar-system/comets/1p-halley/" }
   - { label: "ESA, Rosetta fuels debate on origin of Earth's oceans", url: "https://www.esa.int/Science_Exploration/Space_Science/Rosetta/Rosetta_fuels_debate_on_origin_of_Earth_s_oceans" }
-  - { label: "NASA, SOHO reaches 5,000 comets", url: "https://science.nasa.gov/missions/soho/soho-reaches-5000-comets/" }
+  - { label: "NASA, ESA and NASA solar observatory discovers its 5,000th comet", url: "https://science.nasa.gov/science-research/heliophysics/esa-nasa-solar-observatory-discovers-its-5000th-comet/" }
 lastChecked: 2026-11-10
 ---
 **The parts of a comet.**
