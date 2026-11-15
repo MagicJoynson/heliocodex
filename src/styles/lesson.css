@@ -140,7 +140,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .predict-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.6rem; margin: 1.6rem 0 0; }
 .lesson .btn, .lesson a.btn { display: inline-flex; align-items: center; min-height: 44px; font: 400 .8125rem/1 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: #160f05; background: var(--accent); border: 0; border-radius: 999px; padding: .95rem 1.6rem; text-decoration: none; cursor: pointer; }
 .lesson .btn:hover:not(:disabled) { background: #f3d4a2; }
-.lesson .btn:disabled { opacity: .45; cursor: not-allowed; }
+.lesson .btn:disabled { opacity: .7; cursor: not-allowed; }
 .lesson .btn:focus-visible, .lesson .skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .skip { font: 400 .8125rem/1.2 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); padding: .6rem 0; }
 .predict-hint { font: italic 300 .95rem/1.4 var(--r-serif); color: var(--ink-faint); margin: .8rem 0 0; }
