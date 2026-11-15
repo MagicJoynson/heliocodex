@@ -2081,4 +2081,142 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'NASA, Hydra', url: 'https://science.nasa.gov/dwarf-planets/pluto/moons/hydra/' },
     ],
   },
+  prometheus: {
+    lead: 'A small, potato-shaped moon of Saturn that herds the inner edge of the F ring, found in 1980.',
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'It is about 86 km across and extremely irregular, covered in craters, the biggest about 20 km across. Cassini took its best pictures when it passed close in December 2015.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is probably a porous, icy body. Its density is only about half that of water (0.48 times), which means it is mostly ice with a lot of empty space inside.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It was found in pictures from Voyager 1 in October 1980. It was first called S/1980 S27, and is named for the Titan Prometheus of Greek myth, who stole fire from the gods and gave it to people.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 1 found it. Cassini studied it for years, with its closest pass on 6 December 2015.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How the two moons shape the F ring. Prometheus goes round Saturn in 14.7 hours at about 139,400 km, just inside the F ring. Each time it passes the ring’s inner edge it pulls out a strand of ring material, which leaves streaks and channels that can be seen in Cassini’s pictures.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Prometheus', url: 'https://science.nasa.gov/saturn/moons/prometheus/' },
+    ],
+  },
+  pandora: {
+    lead: 'A small moon of Saturn that goes round just outside the F ring, found in 1980.',
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'A potato-shaped moon with a mean radius of about 41 km.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Ice, coated in a fine, dust-sized icy material. Its density, 0.49 times that of water, is about the same as its neighbour Prometheus, so it is probably porous too.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It was found in Voyager 1 pictures in October 1980 and first called S/1980 S26. It was named in 1985 for Pandora of Greek myth.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 1 found it, and Cassini photographed it many times while it was at Saturn.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How it and Prometheus, only about 2,300 km apart, keep the F ring in shape. Pandora goes round Saturn in 15.1 hours at about 141,700 km, just outside the F ring, and tends to disturb it, while Prometheus, just inside, helps to keep the main ring in place.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Pandora', url: 'https://science.nasa.gov/saturn/moons/pandora/' },
+    ],
+  },
+  puck: {
+    lead: 'The largest of the small inner moons of Uranus, found by Voyager 2 in 1985.',
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'It is about 150 km across, smaller than the five big moons of Uranus, which are each more than 400 km across. Voyager 2 took the only close pictures, in January 1986.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It turned up in December 1985 in pictures sent back by Voyager 2 as it approached Uranus, and was first called S/1985 U1. It is named for a mischievous sprite in Shakespeare’s play A Midsummer Night’s Dream.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 2, which flew past Uranus on 24 January 1986. No spacecraft has been back.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Most of what it is made of, because only Voyager 2 has looked at it. It goes round Uranus in 18.3 hours at about 86,000 km, close to the plane of the planet’s equator.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Puck', url: 'https://science.nasa.gov/uranus/moons/puck/' },
+    ],
+  },
+  hiiaka: {
+    lead: 'The larger and outer of the two moons of the dwarf planet Haumea, found in 2005.',
+    chapters: [
+      { title: 'What it is made of', paras: [
+        'Its surface is mostly water ice, and it is very bright.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Michael Brown’s team found it in January 2005 with the Keck telescope on Mauna Kea in Hawaii, and it was the first moon found going round Haumea. Both Haumea’s moons are named for Hawaiian deities: Hiʻiaka, the patron goddess of the island of Hawaii and of hula dancers, is the daughter of the goddess Haumea.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'None. It has only been seen from the Earth, with large telescopes, and from space telescopes.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Its exact size and shape, and how it formed. It and Namaka are thought to be pieces of ice thrown off when something struck Haumea long ago. It goes round Haumea every 49 days at about 49,400 km.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Haumea', url: 'https://science.nasa.gov/dwarf-planets/haumea/' },
+      { label: 'Wikipedia, Hiʻiaka', url: 'https://en.wikipedia.org/wiki/Hi%CA%BBiaka_(moon)' },
+    ],
+  },
+  namaka: {
+    lead: 'The smaller and inner of the two moons of the dwarf planet Haumea, found in 2005.',
+    chapters: [
+      { title: 'How it was found', paras: [
+        'Michael Brown’s team found it with the Keck telescope in Hawaii in 2005, a few months after Hiʻiaka. It is named for Namaka, a water spirit in Hawaiian myth and a daughter of the goddess Haumea.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'None. It has only been seen from the Earth and from space telescopes.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Almost everything about it, including its size. Its orbit is noticeably stretched: it goes round Haumea every 18 days, at distances that vary between about 20,600 and 30,700 km, and is pulled about by its larger sibling Hiʻiaka. Its position is less certain than most moons here: JPL puts it within about 1,600 km of where it should be in 2025.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Haumea', url: 'https://science.nasa.gov/dwarf-planets/haumea/' },
+    ],
+  },
+  weywot: {
+    lead: 'The only known moon of the dwarf planet Quaoar, found in 2006.',
+    chapters: [
+      { title: 'How it was found', paras: [
+        'Michael Brown and Terry-Ann Suer found it in pictures from the Hubble Space Telescope in February 2006. Brown left the naming to the Tongva people of the Los Angeles area, whose creator god gave Quaoar its name. They chose Weywot, a sky god and the son of Quaoar. The name became official in 2009.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'None. It has been seen only by telescopes.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Its size, which is not well measured: the Planetary Society gave about 100 km in 2009, and other estimates differ. Its orbit is also poorly known. It goes round Quaoar in about 12 days at about 13,500 km, but it was seen only a few times from 2006 to 2011, so the position shown in the 3D view could be off by 15° of its orbit.',
+      ] },
+    ],
+    sources: [
+      { label: 'The Planetary Society, Herse and Weywot', url: 'https://www.planetary.org/articles/2206' },
+    ],
+  },
+  xiangliu: {
+    lead: 'The moon of the dwarf planet Gonggong, found in Hubble pictures from 2009 and 2010 and announced in 2016.',
+    chapters: [
+      { title: 'How it was found', paras: [
+        'Csaba Kiss, Gábor Marton and their colleagues found it in Hubble Space Telescope pictures taken in 2009 and 2010. It is named for Xiangliu, a nine-headed snake that served the water god Gonggong in Chinese myth.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'None. It has been seen only by telescopes.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Its size, which is not well measured, and which way its orbit is tilted. The Hubble pictures fit two mirror-image orbits equally well, so we know the size and shape of the orbit, an average distance of about 24,000 km and about 25 days to go round, but not where along it the moon is. For that reason it is not placed in the 3D view.',
+      ] },
+    ],
+    sources: [
+      { label: 'Kiss and others, Icarus, 2019', url: 'https://doi.org/10.1016/j.icarus.2019.03.013' },
+    ],
+  },
 };
