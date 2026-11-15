@@ -106,6 +106,26 @@ import { sections } from '../lib/nav';
         <button type="button" class="pill" id="goto-btn" aria-expanded="false" aria-controls="goto-list">Go to</button>
         <nav class="sheet goto-list" id="goto-list" aria-label="Go to" hidden></nav>
       </div>
+      <div class="pop" id="time">
+        <button type="button" class="pill" id="time-btn" aria-expanded="false" aria-controls="time-sheet">Time</button>
+        <div class="sheet time-sheet" id="time-sheet" role="group" aria-label="Time" hidden>
+          <p class="time-now" id="time-now"></p>
+          <div class="time-f"><label for="time-date">Go to a date</label><input type="date" id="time-date" min="1800-01-01" max="2199-12-31" /></div>
+          <div class="time-f"><label for="time-slide">Scrub, 1950 to 2050</label><input type="range" id="time-slide" min="0" max="36889" step="1" /></div>
+          <fieldset>
+            <legend>Speed</legend>
+            <label><input type="radio" name="speed" value="0" /> Paused</label>
+            <label><input type="radio" name="speed" value="1" checked /> Normal speed</label>
+            <label><input type="radio" name="speed" value="86400" /> A day a second</label>
+            <label><input type="radio" name="speed" value="604800" /> A week a second</label>
+            <label><input type="radio" name="speed" value="2629800" /> A month a second</label>
+            <label><input type="radio" name="speed" value="31557600" /> A year a second</label>
+            <label class="time-back"><input type="checkbox" id="time-rev" /> Run backwards</label>
+          </fieldset>
+          <button type="button" class="free-btn" id="time-reset">Back to now</button>
+          <p class="time-note">The planets are placed from NASA and JPL orbit fits for 1800 to 2050, and the moons for 2000 to 2040. Outside those years positions are approximate.</p>
+        </div>
+      </div>
       <div class="pop" id="view">
         <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet">View</button>
         <div class="sheet view-sheet" id="view-sheet" role="group" aria-label="View settings" hidden>
@@ -332,7 +352,7 @@ import { sections } from '../lib/nav';
       }
 
       // ---- pop-up sheets: Go to and View. One open at a time; Esc or a click elsewhere shuts them.
-      const pops = ['goto', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : 'view-sheet') }));
+      const pops = ['goto', 'time', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : `${id}-sheet`) }));
       const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
       for (const p of pops) p.btn.addEventListener('click', () => {
         const open = p.sheet.hidden;
@@ -466,6 +486,47 @@ import { sections } from '../lib/nav';
       showMap.checked = prefs.map !== false;
       body.classList.toggle('no-map', !showMap.checked);
       showMap.addEventListener('change', () => { prefs.map = showMap.checked; body.classList.toggle('no-map', !showMap.checked); save(); });
+      // ---- Time: a date, a scrubber and a speed. Nothing is stored, and it is back to now on reload.
+      {
+        const dateIn = $('time-date') as HTMLInputElement, slide = $('time-slide') as HTMLInputElement, nowP = $('time-now');
+        const speedIn = [...document.querySelectorAll<HTMLInputElement>('input[name="speed"]')], rev = $('time-rev') as HTMLInputElement;
+        const DAY = 86_400_000, START = Date.UTC(1950, 0, 1), LO = Date.UTC(1800, 0, 1), HI = Date.UTC(2200, 0, 1);
+        const fmtDate = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+        const isoDay = (ms: number) => new Date(ms).toISOString().slice(0, 10);
+        const refresh = () => {
+          const ms = world.timeMs, live = world.rate === 1 && Math.abs(ms - Date.now()) < 5000;
+          nowP.textContent = `${live ? 'Now: ' : 'Showing '}${fmtDate(ms)}`;
+          if (document.activeElement !== dateIn) dateIn.value = isoDay(ms);
+          if (document.activeElement !== slide) slide.value = String(Math.min(36889, Math.max(0, Math.floor((ms - START) / DAY))));
+          slide.setAttribute('aria-valuetext', fmtDate(ms));
+          // the clock stops at 1800 and 2200, where the orbit data end
+          if ((ms <= LO && world.rate < 0) || (ms >= HI && world.rate > 0)) { world.setRate(0); $('said').textContent = 'The clock stops at the years 1800 and 2200, the limits of the orbit data.'; }
+          // keep the speed choices in step with the clock, which a link or a flight can also set
+          if (!speedIn.some((i) => i === document.activeElement) && document.activeElement !== rev) {
+            const r = world.rate, mag = Math.abs(r);
+            for (const i of speedIn) i.checked = Number(i.value) === (mag || 0) || (mag === 0 && i.value === '0');
+            rev.checked = r < 0;
+          }
+        };
+        const applyRate = () => { const v = speedIn.find((i) => i.checked); world.setRate(Number(v?.value ?? 1) * (rev.checked ? -1 : 1)); };
+        dateIn.addEventListener('change', () => { if (dateIn.value) { world.setTime(`${dateIn.value}T12:00:00Z`); dateIn.value = isoDay(world.timeMs); refresh(); } });
+        let said = 0;
+        slide.addEventListener('input', () => {
+          world.setTime(new Date(START + Number(slide.value) * DAY + DAY / 2).toISOString()); refresh();
+          clearTimeout(said); said = window.setTimeout(() => { $('said').textContent = fmtDate(world.timeMs); }, 500);
+        });
+        for (const i of speedIn) i.addEventListener('change', () => { applyRate(); refresh(); });
+        rev.addEventListener('change', () => { applyRate(); refresh(); });
+        $('time-reset').addEventListener('click', () => { world.setTime(null); world.setRate(1); for (const i of speedIn) i.checked = i.value === '1'; rev.checked = false; refresh(); $('said').textContent = 'Time is back to now.'; });
+        let timer = 0;
+        $('time-btn').addEventListener('click', () => { refresh(); });
+        new MutationObserver(() => {
+          const open = !$('time-sheet').hidden;
+          if (open && !timer) timer = window.setInterval(refresh, 300);
+          if (!open && timer) { clearInterval(timer); timer = 0; }
+        }).observe($('time-sheet'), { attributes: true, attributeFilter: ['hidden'] });
+        refresh();
+      }
       $('free-btn').addEventListener('click', () => { world.setFree(world.mode !== 'free'); shutPops(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
 
       // zoom buttons: a press is one step; holding keeps going
@@ -781,7 +842,7 @@ import { sections } from '../lib/nav';
       body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
 
       /* ---- controls */
-      @media (max-width: 600px) { .readout { max-width: calc(100vw - 270px); } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 8px; } }
+      @media (max-width: 600px) { .readout { max-width: calc(100vw - 270px); } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .75rem; } .zoom button { width: 44px; } }
       .controls { position: fixed; z-index: 31; right: var(--gut); bottom: var(--bot); display: flex; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .controls { opacity: 1; pointer-events: auto; }
       .zoom { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 26px; background: var(--glass); overflow: hidden; }
@@ -790,7 +851,7 @@ import { sections } from '../lib/nav';
       .zoom svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.6; fill: none; stroke-linecap: round; }
       .zoom button:hover, .zoom button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
       .pop { position: relative; }
-      .pill { font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 15px 18px; min-height: 48px; }
+      .pill { white-space: nowrap; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 15px 18px; min-height: 48px; }
       .pill:hover, .pill:focus-visible, .pill[aria-expanded="true"] { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
       .sheet { position: absolute; right: 0; bottom: calc(100% + 10px); width: min(22rem, calc(100vw - 2 * var(--gut))); max-height: min(66vh, 36rem); overflow-y: auto; padding: 16px 18px 8px; background: rgba(9,9,11,.96); border: 1px solid var(--line); }
       .sheet[hidden] { display: none; }
@@ -807,6 +868,19 @@ import { sections } from '../lib/nav';
       .view-sheet label { display: block; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 6px 0 6px 28px; position: relative; cursor: pointer; }
       .view-sheet label small { display: block; font-size: .85rem; color: var(--faint); }
       .view-sheet input { position: absolute; left: 0; top: 9px; accent-color: #f1c98e; width: 16px; height: 16px; margin: 0; }
+      .time-sheet { padding-bottom: 12px; }
+      .time-now { font: 300 1.1rem/1.3 var(--serif); color: var(--ink); margin: 0 0 12px; }
+      .time-f { margin: 0 0 14px; }
+      .time-f label { display: block; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; }
+      .time-f input[type="date"] { width: 100%; padding: 10px 12px; font: 400 1rem/1.2 var(--serif); color: var(--ink); background: rgba(236,231,220,.06); border: 1px solid var(--line); border-radius: 8px; color-scheme: dark; min-height: 44px; }
+      .time-f input[type="range"] { width: 100%; accent-color: #f1c98e; height: 32px; margin: 0; }
+      .time-sheet fieldset { border: 0; margin: 0 0 12px; padding: 0; }
+      .time-sheet legend { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; padding: 0; }
+      .time-sheet fieldset label { display: block; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 6px 0 6px 28px; position: relative; cursor: pointer; }
+      .time-sheet fieldset input { position: absolute; left: 0; top: 9px; accent-color: #f1c98e; width: 16px; height: 16px; margin: 0; }
+      @media (pointer: coarse) { .time-sheet fieldset label { padding-top: 11px; padding-bottom: 11px; } .time-sheet fieldset input { top: 14px; } }
+      .time-back { margin-top: 4px; border-top: 1px solid rgba(236,231,220,.08); }
+      .time-note { font: 300 .85rem/1.4 var(--serif); color: var(--faint); margin: 0; }
       .free-btn { width: 100%; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 13px 16px; margin: 2px 0 14px; }
       .free-btn[aria-pressed="true"] { color: #111; background: var(--warm); border-color: var(--warm); }
       .keys { margin: 0 0 8px; border-top: 1px solid rgba(236,231,220,.1); padding-top: 10px; }

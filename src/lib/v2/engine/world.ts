@@ -696,6 +696,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     onContext(cb) { contextCbs.add(cb); if (lastCtx) cb(lastCtx); return () => contextCbs.delete(cb); },
     setTime(iso) { system.setTime(iso); },
     setRate(r) { system.setRate(r); },
+    get timeMs() { return system.timeMs; },
+    get rate() { return system.rate; },
   };
 
   return {
@@ -721,6 +723,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     setBigger(v: boolean) { bigger = v; },
     setQuality(v: 'auto' | 'smooth' | 'sharp') { qMode = v; ratio = ratioCap(); resize(); },
     get quality() { return qMode; },
+    get timeMs() { return system.timeMs; },
+    get rate() { return system.rate; },
     /** reduced motion: every trip is a jump hidden by a quick fade, and nothing drifts */
     setReduced(v: boolean) { reduced = v; flight.setReduced(v); },
     /** fly yourself (true) or go back to circling what is nearest (false) */
