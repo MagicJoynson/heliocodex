@@ -234,6 +234,8 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const short = colour.split(',')[0].replace(/^an? /, '');
   // where the page's colour overrides the catalogued type, the title claims neither (it would contradict the type row or the lead)
   const what = !short || fromColour ? 'star' : (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short);
-  const title = `${star.name}: ${what}${star.constellation && !star.name.endsWith(star.constellation) ? ` in ${star.constellation}` : ''}`;
+  const where = star.constellation && !star.name.endsWith(star.constellation) ? ` in ${star.constellation}` : '';
+  // the site name is added after this, so leave room for it; where it will not fit, say less about where the star is
+  const title = `${star.name}: ${what}${where}`.length > 60 ? `${star.name}: ${what}` : `${star.name}: ${what}${where}`;
   return { html, title, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
 }
