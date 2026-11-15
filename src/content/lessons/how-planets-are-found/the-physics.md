@@ -1,7 +1,7 @@
 ---
 sources:
   - { label: "NASA Exoplanet Archive, Planetary Systems table (default values), queried 13 November 2026", url: "https://exoplanetarchive.ipac.caltech.edu/" }
-  - { label: "Mayor and Queloz, A Jupiter-mass companion to a solar-type star (Nature, 1995)", url: "https://www.nature.com/articles/378355a0" }
+  - { label: "Mayor and Queloz, A Jupiter-mass companion to a solar-type star (Nature, 1995)", url: "https://doi.org/10.1038/378355a0" }
   - { label: "Cont and others, 51 Peg b revisited with VLT/CRIRES+ (Astronomy and Astrophysics, 2026): i about 50 degrees, 0.61 Jupiter masses", url: "https://arxiv.org/abs/2605.23582" }
   - { label: "Brogi and others, Detection of molecular absorption in the dayside of exoplanet 51 Pegasi b? (Astrophysical Journal Letters, 2013)", url: "https://arxiv.org/abs/1302.6242" }
   - { label: "Birkby and others, Discovery of water at high spectral resolution in the atmosphere of 51 Peg b (Astronomical Journal, 2017): 70 < i < 82.2 degrees", url: "https://arxiv.org/abs/1701.07257" }

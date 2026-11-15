@@ -5,7 +5,7 @@ sources:
   - { label: "NASA, Ceres facts", url: "https://science.nasa.gov/dwarf-planets/ceres/facts/" }
   - { label: "ESO, Faraway Eris is Pluto’s twin (2011): the size of Eris", url: "https://www.eso.org/public/news/eso1142/" }
   - { label: "Ortiz and others 2017, Nature 550, 219: the size, shape, density and ring of Haumea", url: "https://doi.org/10.1038/nature24051" }
-  - { label: "International Astronomical Union, result of the 2006 General Assembly votes", url: "https://www.iau.org/news/pressreleases/detail/iau0603/" }
+  - { label: "International Astronomical Union, result of the 2006 General Assembly votes", url: "https://iauarchive.eso.org/news/pressreleases/detail/iau0603/" }
   - { label: "NASA, The rich colour variations of Pluto (PIA19952)", url: "https://images.nasa.gov/details/PIA19952" }
   - { label: "NASA, High resolution Ceres view (PIA21906)", url: "https://images.nasa.gov/details/PIA21906" }
 lastChecked: 2026-11-11
