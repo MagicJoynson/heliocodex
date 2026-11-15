@@ -1,0 +1,16 @@
+{
+  "proxima-centauri": {
+    "proper": "Proxima Centauri",
+    "pc": 1.302,
+    "by": "the Gaia satellite (Data Release 3, 2022)",
+    "url": "https://www.cosmos.esa.int/web/gaia/dr3",
+    "note": "Proxima Centauri is the nearest star to the Sun, and its distance is known very well. Gaia measured its shift against the background stars as 768 thousandths of an arcsecond, which gives 4.25 light years. The older Hipparcos figure was about 4.23."
+  },
+  "betelgeuse": {
+    "proper": "Betelgeuse",
+    "pc": 168,
+    "by": "Joyce and others (2020)",
+    "url": "https://arxiv.org/abs/2006.09837",
+    "note": "Betelgeuse is hard to place, because the star is so swollen that its disc is wider than the tiny shift in the sky used to measure distance. This figure comes from a 2020 study of the way the star pulses, and could be anywhere from about 500 to 640 light years. The Hipparcos satellite put it at about 500."
+  }
+}

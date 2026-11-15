@@ -474,6 +474,7 @@ import { sections } from '../lib/nav';
       }
       stepInB.addEventListener('click', () => { if (stepIn) goTo(stepIn[0]); });
       stepOutB.addEventListener('click', () => { if (stepOut) goTo(stepOut[0]); });
+      const phone = matchMedia('(max-width: 600px)');
       function drawLadder(c: number, R: number, dpr: number, cam: number[], distAu: number) {
         hits = [{ id: 'sun', x: c / dpr, y: c / dpr }];
         const here = rungR(distAu);
@@ -484,8 +485,11 @@ import { sections } from '../lib/nav';
           mctx.strokeStyle = near ? 'rgba(241,201,142,0.55)' : 'rgba(236,231,220,0.16)';
           mctx.beginPath(); mctx.arc(c, c, r, 0, Math.PI * 2); mctx.stroke();
           mctx.fillStyle = near ? '#f1c98e' : 'rgba(236,231,220,0.5)';
-          mctx.beginPath(); mctx.arc(c, c - r, 2.4 * dpr, 0, Math.PI * 2); mctx.fill();
-          hits.push({ id, x: c / dpr, y: (c - r) / dpr });
+          // on a phone the stops are spread round the map, a golden angle apart, so each has room for a thumb; on a wide screen they stand in a line
+          const i = RUNGS.findIndex((q) => q[0] === id), ang = phone.matches ? -Math.PI / 2 + i * 2.39996 : -Math.PI / 2;
+          const px = c + Math.cos(ang) * r, py = c + Math.sin(ang) * r;
+          mctx.beginPath(); mctx.arc(px, py, (phone.matches ? 3.6 : 2.4) * dpr, 0, Math.PI * 2); mctx.fill();
+          hits.push({ id, x: px / dpr, y: py / dpr });
         }
         mctx.fillStyle = '#ffcf7a'; mctx.beginPath(); mctx.arc(c, c, 3 * dpr, 0, Math.PI * 2); mctx.fill();
         const a = Math.atan2(cam[2], cam[0]), ry = here * R * 0.92 + R * 0.08;
@@ -556,7 +560,7 @@ import { sections } from '../lib/nav';
       map.addEventListener('click', (e) => {
         const r = map.getBoundingClientRect();
         const x = e.clientX - r.left, y = e.clientY - r.top;
-        let best = '', bd = 14;
+        let best = '', bd = phone.matches ? 20 : 14; // a phone's targets are at least 24 px across, and the nearest wins
         for (const h of hits) { const d = Math.hypot(h.x - x, h.y - y); if (d < bd) { bd = d; best = h.id; } }
         if (best) goTo(best);
       });
@@ -691,7 +695,7 @@ import { sections } from '../lib/nav';
       body.no-map .stepper { display: none; }
       .map { display: block; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(16,16,20,.88), rgba(8,8,10,.88)); border: 1px solid var(--line); cursor: pointer; }
       body.no-map .map { display: none; }
-      @media (max-width: 600px) { .where { width: 120px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 120px; height: 120px; } .stepper { width: 120px; } }
+      @media (max-width: 600px) { .where { width: 176px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 176px; height: 176px; } .stepper { width: 176px; } }
 
       /* ---- readout */
       .hud { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; padding: 0 var(--gut) var(--bot); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1s ease .8s; pointer-events: none; }
@@ -758,7 +762,7 @@ import { sections } from '../lib/nav';
       .gen { position: fixed; z-index: 5; top: calc(var(--top) + 58px); left: 214px; right: var(--gut); max-width: 24rem; margin: 0; font: italic 300 .8125rem/1.4 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; pointer-events: none; }
       .gen:empty { display: none; }
       .gen.illus { font: 500 .8125rem/1.4 var(--sans, system-ui, sans-serif); font-style: normal; color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid rgba(241, 201, 142, .55); border-radius: 6px; padding: .45rem .65rem; text-shadow: none; }
-      @media (max-width: 600px) { .gen { left: 148px; } }
+      @media (max-width: 600px) { .gen { left: 204px; } }
       body:not(.in) .gen, body.margin-open .gen { visibility: hidden; }
 
       @media (prefers-reduced-motion: reduce) {

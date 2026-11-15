@@ -1,5 +1,6 @@
 import { sheet, head, type Cell } from '../record';
 import SIZES from '../../data/star-sizes.json';
+import DISTANCES from '../../data/star-distances.json';
 // angular sizes (milliarcseconds) for named stars, by HD number: 'm' measured, from the JMMC Measured Diameters
 // Catalogue (the paper given); 'e' estimated from the star's colours in the JMMC Stellar Diameters Catalogue v2
 const SIZE = SIZES as unknown as Record<string, [number, 'm' | 'e', string]>;
@@ -111,20 +112,12 @@ const ORDINALS = ['', '', 'second', 'third', 'fourth', 'fifth', 'sixth', 'sevent
 export const placing = (rank: number) => (rank === 1 ? 'the brightest' : rank <= 10 ? `the ${ORDINALS[rank]} brightest` : `the ${rank}th brightest`);
 
 /**
- * Stars for which a newer, sourced distance replaces the catalogue's. The star list applies it, and scales
+ * Stars for which a newer, sourced distance replaces the catalogue's: the one list is src/data/star-distances.json, which the
+ * 3D star file build (scripts/data/build-deep.py) reads too. The star list applies it, and scales
  * the star's brightness to match, so every page tells the same story.
  * Betelgeuse: Joyce et al. 2020, ApJ 902, 63: 168 pc, +27 and -15.
  */
-export const MODERN: Record<string, { pc: number; by: string; url: string; note: string }> = {
-  'proxima-centauri': {
-    pc: 1.3020, by: 'the Gaia satellite (Data Release 3, 2022)', url: 'https://www.cosmos.esa.int/web/gaia/dr3',
-    note: 'Proxima Centauri is the nearest star to the Sun, and its distance is known very well. Gaia measured its shift against the background stars as 768 thousandths of an arcsecond, which gives 4.25 light years. The older Hipparcos figure was about 4.23.',
-  },
-  betelgeuse: {
-    pc: 168, by: 'Joyce and others (2020)', url: 'https://arxiv.org/abs/2006.09837',
-    note: 'Betelgeuse is hard to place, because the star is so swollen that its disc is wider than the tiny shift in the sky used to measure distance. This figure comes from a 2020 study of the way the star pulses, and could be anywhere from about 500 to 640 light years. The Hipparcos satellite put it at about 500.',
-  },
-};
+export const MODERN = DISTANCES as unknown as Record<string, { proper: string; pc: number; by: string; url: string; note: string }>;
 
 /** Famous far stars whose distance is argued over, with no figure yet good enough to replace the catalogue's. Deneb: Schiller and Przybilla 2008, A&A 479, 849 (802 pc, give or take 66). */
 export const DISTANCE_NOTES: Record<string, string> = {

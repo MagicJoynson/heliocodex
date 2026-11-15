@@ -65,10 +65,11 @@ def catalogue_name(r):
     return ''
 
 
-# Stars whose distance the star pages take from a newer source (MODERN in src/lib/sky/star.ts), in parsecs.
-# They are drawn here at the same distance, and their absolute magnitude moves with it, so each looks as bright
-# in the sky as the catalogue made it. Keep this list the same as MODERN (npm run test:sky checks the result).
-CORRECTED = {'Betelgeuse': 168.0, 'Proxima Centauri': 1.3020}
+# Stars whose distance the star pages take from a newer source: the one list, src/data/star-distances.json, which
+# src/lib/sky/star.ts reads too. They are drawn here at that distance, and their absolute magnitude moves with it,
+# so each looks as bright in the sky as the catalogue made it (npm run test:sky checks the result).
+import json as _json
+CORRECTED = {v['proper']: v['pc'] for v in _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'src', 'data', 'star-distances.json'))).values()}
 
 rows = []
 names = []
