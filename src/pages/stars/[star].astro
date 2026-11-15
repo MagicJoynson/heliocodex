@@ -13,7 +13,7 @@ export function getStaticPaths() {
 const { star } = Astro.props as { star: PageStar };
 const page = starPage(star);
 ---
-<Base title={star.name} path={`/stars/${star.slug}`} description={page.description}>
+<Base title={page.title} path={`/stars/${star.slug}`} description={page.description}>
   <article class="reading star rec" data-dir={star.dir.join(',')} data-name={star.name} data-rgb={page.rgb} data-lum={star.lumSun} set:html={page.html} />
 </Base>
 

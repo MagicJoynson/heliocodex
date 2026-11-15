@@ -33,6 +33,14 @@ const kindLine = b.kind === 'moon' ? `Moon of ${nameOf(b.parent)}` : kindName(b)
 const parentHref = b.parent && PLANET_PAGES.includes(b.parent) ? `/${b.parent}` : b.parent && b.parent !== 'sun' ? `/worlds/${b.parent}` : null;
 const chart = b.kind === 'moon' && b.parent && (plates as Record<string, unknown>)[b.parent] ? `/atlas/${b.parent}` : b.kind === 'dwarf' && (plates as Record<string, unknown>)[b.id] ? `/atlas/${b.id}` : b.kind === 'asteroid' || b.kind === 'comet' ? '/atlas/small-bodies' : b.kind === 'dwarf' ? '/atlas/solar-system' : null;
 const note = why(b.id);
+// the search snippet uses only measured figures from the record, trimmed to fit
+// the data files call Arrokoth an asteroid; it is a Kuiper belt object, so the search text says so
+const metaKind = b.id === 'arrokoth' ? 'Kuiper belt object' : kindLine;
+const lowerKind = metaKind.replace(/^[A-Z](?!uiper)/, (c) => c.toLowerCase());
+const metaParts = [`${b.name} is ${/^[AEIOU]/.test(metaKind) ? 'an' : 'a'} ${lowerKind}.`, `${outSays.charAt(0).toUpperCase()}${outSays.slice(1)}, once round in ${periodSays}.`, b.meanRadiusKm ? `${fmt(b.meanRadiusKm * 2)} km across.` : '', b.discovered ? `Found in ${b.discovered.year}.` : ''].filter(Boolean);
+let metaDesc = '';
+for (const part of metaParts) if ((metaDesc + ' ' + part).trim().length <= 158) metaDesc = (metaDesc + ' ' + part).trim();
+metaDesc = metaDesc.replace(/the Earth/g, 'Earth');
 const rows: [string, string][] = [
   ['Kind', kindLine],
   ['Distance', outSays],
@@ -98,7 +106,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 const lead = page ? (page.globe ?? page.picture) : null;
 const closeup = page?.globe ? page.picture : null;
 ---
-<Reading title={b.name} path={`/worlds/${b.id}`} description={page ? `${kindLine}: what it looks like, what it is made of, how it was found and what is still unknown.` : `${kindLine}. ${outSays}.`}>
+<Reading title={(b.kind === 'comet' && /comet/i.test(b.name) ? `${b.name}: orbit and facts` : `${b.name}: ${lowerKind}`).replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
   <article class="rec world-record">
     <Fragment set:html={headHtml} />
     <section class:list={['rec-top', { 'no-pic': !lead }]}>
