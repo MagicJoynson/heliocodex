@@ -65,7 +65,7 @@ const cells: Cell[] = [
   ...(page?.temperature ? [{ key: 'temperature', label: 'Temperature', value: page.temperature.value, note: page.temperature.note } as Cell] : []),
   ...(massKg ? [(() => { const ex = Math.floor(Math.log10(massKg)); return { key: 'mass', label: 'Mass', value: `${(massKg / 10 ** ex).toFixed(2)} × 10${sup(ex)}`, unit: 'kg', note: `${ratio(massKg / EARTH_KG, 'the Earth’s')}.` } as Cell; })()] : []),
   { key: 'orbit', label: 'Once round', value: periodSays.split(' ')[0], unit: `${periodSays.split(' ')[1]}, round ${round ? 'the Sun' : parentName}`, note: `Its path is ${pathWords}.` },
-  ...(b.densityGcm3 ? [{ key: 'density', label: 'Density', value: fmt(b.densityGcm3, 2), unit: 'times water', note: b.densityGcm3 < 2.2 ? 'Light enough to be roughly half ice.' : b.densityGcm3 > 3 ? 'Dense enough to be mostly rock and metal.' : undefined } as Cell] : []),
+  ...(b.densityGcm3 ? [{ key: 'density', label: 'Density', value: fmt(b.densityGcm3, 2), unit: 'times water', note: b.densityGcm3 < 0.92 ? 'Less dense than solid ice, so it must be full of empty space.' : b.densityGcm3 < 2.2 ? 'Light enough to be roughly half ice.' : b.densityGcm3 > 3 ? 'Dense enough to be mostly rock and metal.' : undefined } as Cell] : []),
   ...(b.discovered ? [{ key: 'found', label: 'Found', value: String(b.discovered.year), note: `By ${b.discovered.by}.` } as Cell] : []),
 ];
 const crumbs: [string, string][] = [['Solar System', '/worlds'], ...(b.parent && b.parent !== 'sun' ? [[nameOf(b.parent).replace(/^the /, 'The '), parentHref ?? '/worlds'] as [string, string]] : [])];

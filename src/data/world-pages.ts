@@ -592,4 +592,192 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'NASA Photojournal, PIA11690', url: 'https://images.nasa.gov/details/PIA11690' },
     ],
   },
+
+  miranda: {
+    lead: 'The smallest and innermost of the five big moons of Uranus, with a patchwork surface of grooves, ridges and cliffs unlike any other moon.',
+    picture: {
+      src: '/img/learn/miranda-voyager2-1986.jpg', width: 571, height: 574,
+      alt: 'A grey, round moon crossed by a patchwork of ridged and grooved ground, with a V-shaped band of bright stripes at the lower left and craters scattered over the rest.',
+      caption: '<b>A photograph.</b> Miranda on 24 January 1986, from NASA’s Voyager 2 spacecraft. Voyager passed closer to Miranda than to any other moon of Uranus, and this is still the best view of it. Only the south, which was lit by the Sun, was seen. Credit: NASA/JPL-Caltech.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Miranda looks as though it has been broken up and put back together. Old, cratered ground sits beside younger ground cut by ridges and grooves, and three huge oval patches, called coronae, are marked with bands of parallel stripes and a bright V. Cliffs and canyons cut the surface, and one cliff, Verona Rupes, may be as much as 20 km high, taller than any cliff known elsewhere in the Solar System.',
+        'Nothing like this was expected on a moon only 470 km across. A body that small should have frozen solid soon after it formed, and kept its old, cratered face.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Miranda is 472 km across, about a seventh of the width of our Moon. Its density, 1.18 times that of water, means it is mostly water ice with some rock.',
+        'It goes round Uranus in 1.4 days at 129,900 km, in a path that is tilted by 4.4° to the planet’s equator, more than the other big moons. That tilt, and the patchwork surface, may be left over from a time when Miranda was pulled and warmed by a clash of orbits with its neighbours.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The Dutch-American astronomer Gerard Kuiper found it on 16 February 1948 at the McDonald Observatory in Texas, nearly a century after Lassell found Ariel and Umbriel. He named it after the daughter of Prospero in Shakespeare’s play The Tempest, in keeping with the names that John Herschel had given to the earlier moons, from Shakespeare and from Alexander Pope.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only Voyager 2, on 24 January 1986. Because Uranus is tipped over on its side, in 1986 the south pole pointed at the Sun and the north was in darkness, so only Miranda’s southern half was photographed.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How the patchwork formed. One idea is that Miranda was shattered by an impact and pulled itself back together. Another is that the inside was warmed by tides and rose in blobs, forming the coronae. Half the moon has never been seen. A future mission to Uranus, which the most recent American survey of planetary science placed first in its priorities, would give a second look.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Miranda', url: 'https://science.nasa.gov/uranus/moons/miranda/' },
+      { label: 'NASA Photojournal, PIA18185', url: 'https://images.nasa.gov/details/PIA18185' },
+    ],
+  },
+
+  ariel: {
+    lead: 'The brightest of the big moons of Uranus, an icy world scored with long canyons whose smooth floors suggest that ice once flowed across them.',
+    picture: {
+      src: '/img/learn/ariel-voyager2-1986.jpg', width: 845, height: 650,
+      alt: 'The curved edge of a pinkish-grey moon, with bright patches, craters and long straight valleys running across it.',
+      caption: '<b>A photograph, in colour.</b> Part of Ariel on 24 January 1986, from NASA’s Voyager 2 spacecraft. The straight valleys are fault canyons, and the ground between them is cratered. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Ariel has fewer big craters than its neighbours, which means its surface is younger, with older ground resurfaced. Canyons cross it for hundreds of kilometres, in places 10 km deep and with flat floors that look as though soft ice, or a slush of ice and ammonia, has welled up and spread.',
+        'Voyager 2 photographed only the half that faced the Sun in 1986, mostly the south.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Ariel is 1,158 km across, about a third of the width of our Moon. Its density, 1.54 times that of water, is a mixture of ice and rock in roughly equal parts.',
+        'It goes round Uranus in 2.5 days at 190,900 km, in the plane of the planet’s equator.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The English brewer and astronomer William Lassell found it on 24 October 1851, with a telescope he built himself, and found Umbriel the same year. John Herschel named them in 1852 after spirits from the poetry of Alexander Pope. Ariel is also a spirit in Shakespeare’s The Tempest.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only Voyager 2, on 24 January 1986, which passed Ariel at about 127,000 km.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'What the canyon floors are made of, how recently they were resurfaced, and whether any warmth is left inside. The north has not been seen at all.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Ariel', url: 'https://science.nasa.gov/uranus/moons/ariel/' },
+      { label: 'NASA Photojournal, PIA00041', url: 'https://images.nasa.gov/details/PIA00041' },
+    ],
+  },
+
+  umbriel: {
+    lead: 'The darkest of the big moons of Uranus, an old, heavily cratered ball of ice with one mysterious bright ring.',
+    picture: {
+      src: '/img/learn/umbriel-voyager2-1986.jpg', width: 400, height: 400,
+      alt: 'A dark grey, round moon thickly covered in craters, with a small bright patch on the top edge.',
+      caption: '<b>A photograph.</b> Umbriel on 24 January 1986, from NASA’s Voyager 2 spacecraft, the most detailed picture of it. The small bright patch at the top edge is the floor of the crater Wunda. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Umbriel is a dull, dark world that reflects less light than any of the other four big moons of Uranus, and it is thickly covered in old craters. That suggests little has changed on it since the early Solar System.',
+        'The exception is a bright ring on the floor of a crater called Wunda, near the edge of the picture. Nobody knows what the bright material is.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Umbriel is 1,169 km across. Its density, 1.52 times that of water, says it is roughly half ice and half rock. It goes round Uranus in 4.1 days at 266,000 km.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Lassell found it on 24 October 1851 in England, on the same night as Ariel, and John Herschel named it in 1852 after a gloomy sprite in a poem by Alexander Pope.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only Voyager 2, on 24 January 1986, which saw only its southern half.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Why it is so much darker than Ariel, though the two are about the same size, and what the bright ring is made of.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Umbriel', url: 'https://science.nasa.gov/uranus/moons/umbriel/' },
+      { label: 'NASA Photojournal, PIA00040', url: 'https://images.nasa.gov/details/PIA00040' },
+    ],
+  },
+
+  titania: {
+    lead: 'The largest moon of Uranus, a world of ice and rock marked by a canyon system and covered in craters.',
+    picture: {
+      src: '/img/learn/titania-voyager2-1986.jpg', width: 784, height: 560,
+      alt: 'A pale grey, round moon with bright streaks and many circular craters, and a long curved valley near its right edge.',
+      caption: '<b>A photograph.</b> Titania on 24 January 1986, from NASA’s Voyager 2 spacecraft at a distance of about 500,000 km. A long canyon curves near the right-hand edge. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Titania is covered in craters, with a few big ones, and cut by canyons. The longest, Messina Chasmata, runs for about 1,500 km, which shows that the crust has stretched and cracked as the inside changed.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Titania is 1,578 km across, a little under half the width of our Moon, and the eighth largest moon in the Solar System. Its density, 1.65 times that of water, says it is about half ice and half rock.',
+        'It goes round Uranus in 8.7 days at 436,000 km.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Herschel found it on 11 January 1787, along with Oberon, only six years after he had found Uranus itself. It was John Herschel, his son, who named them, in 1852, after the king and queen of the fairies in Shakespeare’s A Midsummer Night’s Dream.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only Voyager 2, on 24 January 1986, from about 365,000 km.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Whether it has kept any warmth, and whether a salty layer lies deep inside. Voyager’s pictures cover only the southern half.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Titania', url: 'https://science.nasa.gov/uranus/moons/titania/' },
+      { label: 'NASA Photojournal, PIA01979', url: 'https://images.nasa.gov/details/PIA01979' },
+    ],
+  },
+
+  oberon: {
+    lead: 'The outermost of the five big moons of Uranus, an old, heavily cratered world whose crater floors are dark and whose bright rays mark fresh impacts.',
+    picture: {
+      src: '/img/learn/oberon-voyager2-1986.jpg', width: 500, height: 500,
+      alt: 'A pale, pinkish-grey, round moon thickly covered in craters, some with bright rays spreading from them and some with dark floors.',
+      caption: '<b>A photograph, in colour.</b> Oberon on 24 January 1986, from NASA’s Voyager 2 spacecraft. Several large craters have bright rays, and some have dark floors. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Oberon is crowded with craters, which marks it as old. Several have bright rays of fresh ice thrown out around them, and some have floors that are dark, as though a dark material had risen from below and filled them.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Oberon is 1,523 km across. Its density, 1.66 times that of water, says it is about half ice and half rock. It is the farthest of the five from Uranus, at 583,500 km, and goes round once in 13.5 days.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Herschel found it on 11 January 1787, on the same night as Titania. John Herschel named it in 1852 after the king of the fairies in A Midsummer Night’s Dream.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only Voyager 2, on 24 January 1986, which photographed it from about 470,000 km.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'What the dark material on the crater floors is, and whether it came from inside Oberon or from outside it. The northern half has never been seen.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Oberon', url: 'https://science.nasa.gov/uranus/moons/oberon/' },
+      { label: 'NASA Photojournal, PIA00034', url: 'https://images.nasa.gov/details/PIA00034' },
+    ],
+  },
+
+  hyperion: {
+    lead: 'A small moon of Saturn shaped like a battered sponge, which tumbles chaotically as it goes round and is full of holes.',
+    picture: {
+      src: '/img/learn/hyperion-cassini-2011.jpg', width: 940, height: 940,
+      alt: 'A grey, lumpy, crescent-shaped moon pitted all over with deep craters, lit from one side against black.',
+      caption: '<b>A photograph.</b> The sunlit southern part of Hyperion, from NASA’s Cassini spacecraft. The moon’s south pole is near the bottom of the lit ground. Credit: NASA/JPL/Space Science Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Hyperion is the most unusual-looking moon of Saturn. It is not round, but lumpy, about 360 km by 270 km by 200 km, and covered in deep, sharp-edged craters that give it the look of a sea sponge. Dark material has collected on the crater floors.',
+        'The reason for the sponge look is the moon’s make-up. It is so loose, and so full of empty space, that a falling rock does not throw out much debris. It punches in and packs the material down, leaving a deep hole.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Hyperion’s density, 0.54 times that of water, is lower than ice. It must therefore be mostly ice with a great deal of empty space inside, perhaps two-fifths of its volume.',
+        'It tumbles. Its axis of spin wobbles chaotically, so that nobody can predict which way it will be pointing years ahead. It was the first moon found to behave like this. It goes round Saturn every 21.3 days at 1.48 million km, in a path stretched enough that its distance changes by about a tenth, locked in step with Titan: it goes round three times for every four of Titan’s trips.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Bond and his son George Bond found it on 16 September 1848 at Harvard College Observatory in Massachusetts, and William Lassell found it independently two days later in England. John Herschel had suggested names from Greek myth for Saturn’s moons, and Hyperion was one of the Titans, a brother of Cronus.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 2 saw it in 1981 and found its tumbling. The Cassini spacecraft flew past it several times, the closest, in September 2005, at about 500 km.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How such a loose, porous body could form and survive. One idea is that Hyperion is a piece of a larger moon that was broken up long ago.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Hyperion', url: 'https://science.nasa.gov/saturn/moons/hyperion/' },
+      { label: 'NASA Photojournal, PIA12748', url: 'https://images.nasa.gov/details/PIA12748' },
+    ],
+  },
 };
