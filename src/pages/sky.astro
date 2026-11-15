@@ -76,6 +76,13 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
             </div>
           </details>
         </div>
+
+        <nav class="sky-dock" aria-label="Sky controls">
+          <button type="button" data-sheet="when" aria-expanded="false">When</button>
+          <button type="button" data-sheet="face" aria-expanded="false">Face</button>
+          <button type="button" data-sheet="where" aria-expanded="false">Where</button>
+          <button type="button" data-sheet="show" aria-expanded="false">Show</button>
+        </nav>
       </form>
     </div>
 
@@ -426,7 +433,19 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   // one small panel open at a time, and a touch anywhere else shuts it
   const pops = [...document.querySelectorAll<HTMLDetailsElement>('.pop')];
   for (const p of pops) p.addEventListener('toggle', () => { if (p.open) for (const other of pops) if (other !== p) other.open = false; });
-  document.addEventListener('pointerdown', (e) => { for (const p of pops) if (p.open && !p.contains(e.target as Node)) p.open = false; });
+  const bar = $('sky-controls'), dockBtns = [...document.querySelectorAll<HTMLButtonElement>('.sky-dock button')];
+  const openSheet = (key: string) => {
+    bar.dataset.open = key;
+    for (const b of dockBtns) b.setAttribute('aria-expanded', String(b.dataset.sheet === key));
+    for (const p of pops) p.open = p.id === `pop-${key}`;
+  };
+  for (const b of dockBtns) b.addEventListener('click', () => openSheet(bar.dataset.open === b.dataset.sheet ? '' : b.dataset.sheet!));
+  document.addEventListener('pointerdown', (e) => {
+    const t = e.target as Node;
+    for (const p of pops) if (p.open && !p.contains(t) && !t.parentElement?.closest('.sky-dock')) p.open = false;
+    if (bar.dataset.open && !bar.contains(t)) openSheet('');
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && bar.dataset.open) { const k = bar.dataset.open; openSheet(''); dockBtns.find((b) => b.dataset.sheet === k)?.focus(); } });
   $('sky-controls').addEventListener('submit', (e) => e.preventDefault());
 
   new ResizeObserver(() => { const first = !w; fit(); if (first) view = facing(180); render(); }).observe(box);
@@ -550,5 +569,22 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   @media (max-width: 420px) {
     .sky :global(button), .pop summary { font-size: .64rem; letter-spacing: .06em; }
     .bar-look, .bar-more { gap: 0 .7rem; }
+  }
+  /* the dock: on a phone the controls are four big slots, each opening a sheet above them */
+  .sky-dock { display: none; }
+  @media (max-width: 600px) and (min-height: 480px) {
+    .sky-bar { display: block; padding: 0 0 env(safe-area-inset-bottom, 0px); background: rgba(6, 7, 11, .94); border-top: 1px solid var(--rule); }
+    .sky-bar .bar-more, .sky-bar .pop { position: static; }
+    .sky-bar .pop summary { display: none; }
+    .sky-bar .bar-when, .sky-bar .bar-look, .sky-bar #pop-where .pop-body, .sky-bar #pop-show .pop-body { position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(100% + 8px); width: auto; max-height: min(60svh, 28rem); overflow-y: auto; background: rgba(9, 10, 14, .97); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1rem 1.1rem 1.1rem; z-index: 3; }
+    .sky-bar .bar-when, .sky-bar .bar-look { display: none; }
+    .sky-bar[data-open='when'] .bar-when { display: grid; gap: .5rem; }
+    .sky-bar[data-open='face'] .bar-look { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .4rem 1rem; }
+    .sky-bar .bar-look button, .sky-bar .bar-row button { min-height: 44px; text-align: left; justify-self: stretch; }
+    .sky-bar .bar-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .2rem 1rem; }
+    .sky-dock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); height: 56px; }
+    .sky .sky-dock button { height: 56px; min-height: 56px; border: 0; border-top: 2px solid transparent; padding: 0 4px; display: grid; place-items: center; font-size: .72rem; letter-spacing: .12em; color: var(--ink); }
+    .sky .sky-dock button[aria-expanded='true'] { color: var(--accent); border-top-color: var(--accent); }
+    .sky-card { bottom: calc(56px + env(safe-area-inset-bottom, 0px) + .8rem); max-height: 40%; }
   }
 </style>
