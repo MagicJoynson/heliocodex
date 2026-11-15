@@ -42,6 +42,8 @@ The photographs on the planet pages are from NASA missions and photographers. Ea
 
 **Pictures from ESA/Hubble, ESA/Webb and ESO.** Pictures from the Hubble and Webb space telescopes that ESA/Hubble or ESA/Webb have released, and pictures from ESO, are shared under the [Creative Commons Attribution 4.0 International licence](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0). Each carries its full credit, in the words its release page gives, and "CC BY 4.0" beside it.
 
+**Pictures from ESA's Rosetta mission.** The picture of comet 67P is from the Rosetta navigation camera and is shared by the European Space Agency under the [Creative Commons Attribution-ShareAlike 3.0 IGO licence](https://creativecommons.org/licenses/by-sa/3.0/igo/) (CC BY-SA 3.0 IGO). It is credited "ESA/Rosetta/NAVCAM". We have only recompressed it. If you adapt it, you must share your version under the same licence and say what you changed. ESA does not endorse Heliocodex.
+
 **Pictures with more than one agency in the credit.** Some NASA pictures also credit a partner, such as the German Aerospace Center (DLR) on some pictures from Dawn and Galileo. We show the credit exactly as NASA gives it.
 
 **People in pictures.** Where people appear in an image, such as the launch photograph, the rights in their likeness aren't covered by the NASA guidelines. Don't use those images commercially without checking.
