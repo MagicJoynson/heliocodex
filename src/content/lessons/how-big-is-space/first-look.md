@@ -27,6 +27,6 @@ Keep the same scale and go on. The Milky Way, the galaxy that holds all the star
 
 The Andromeda galaxy, the nearest large one, is 2.5 million light years away. On this scale that is about 3.7 billion kilometres, twenty-five times further than the Sun is from the Earth. Light from there takes 2.5 million years to arrive.
 
-The oldest light we can see was set free about 380,000 years after the Big Bang. It has been travelling for nearly 13.8 billion years, and space stretched while it travelled, so the matter that sent it is now about 46 billion light years away. On this scale that is about 7,000 light years. The [lesson on the oldest light](/learn/the-oldest-light) says what it is and how it was found.
+The oldest light we can see was set free about 380,000 years after the Big Bang. It has been travelling for nearly 13.8 billion years, and space stretched while it travelled, so where it started is now about 46 billion light years away, measured in today’s stretched-out space. On this scale that is about 7,000 light years. The [lesson on the oldest light](/learn/the-oldest-light) says what it is and how it was found.
 
 That emptiness is what the 3D view on this site is built to show. When you fly from the Earth to the Moon and it takes a moment, then fly on and watch the Sun shrink to a bright star, you are seeing the real spacing. Nothing has been squeezed to fit.
