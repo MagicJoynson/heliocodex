@@ -2,8 +2,10 @@
  * Pictures for the lesson "Double and multiple stars". The shares are from the survey of 454
  * Sun-like stars by Raghavan and others (2010), as the lesson gives them. Sirius A and B have
  * 2.06 and 1.02 times the Sun's mass and take 50.13 years to go round each other. Their paths are
- * drawn as circles to show the idea, though the real orbit is a stretched oval. The eclipse is a
- * drawing of the idea.
+ * drawn as circles to show the idea, though the real orbit is a stretched oval. Alpha Centauri A and B
+ * have 1.13 and 0.97 Suns of mass, about 24 astronomical units apart on average, and take 79.91 years
+ * to go round. Kepler-16b goes round its two stars every 229 days while they circle each other every
+ * 41 days. The scenes follow the paragraphs of the lesson's first look, one to a step.
  */
 import { type Scene, SOFT, ACCENT, FAINT, clamp, ease, label, stars } from '../stage';
 import { TAU, dot, line, ring } from '../kit';
@@ -24,7 +26,8 @@ export const lens: Scene = {
     line(ctx, [ax, ay, bx, by], 'rgba(236,231,220,.25)');
     dot(ctx, cx, cy, 2.4, 'rgba(236,231,220,.8)'); label(ctx, 'Balance point', cx, cy + 14, { align: 'center', colour: FAINT, size: 9 });
     dot(ctx, ax, ay, 8, '#fff6e0'); dot(ctx, bx, by, 5, '#9fc0e6');
-    label(ctx, 'Sirius A, 2.06 Suns', ax, ay - 16, { align: 'center', colour: SOFT, size: 10 }); label(ctx, 'Sirius B, 1.02 Suns', bx, by + 18, { align: 'center', colour: SOFT, size: 10 });
+    const ux = Math.cos(a), uy = Math.sin(a);
+    label(ctx, 'Sirius A, 2.06 Suns', ax + ux * 14, ay + uy * 18, { align: ux > 0 ? 'left' : 'right', colour: SOFT, size: 10 }); label(ctx, 'Sirius B, 1.02 Suns', bx - ux * 14, by - uy * 18, { align: ux > 0 ? 'right' : 'left', colour: SOFT, size: 10 });
     say('Neither star stands still', `They go round a point between them every ${PERIOD} years`);
   },
 };
@@ -32,7 +35,7 @@ export const lens: Scene = {
 // ---- 2. how many stars share a home
 const SHARES: [string, number, string][] = [['One star alone', 56, '#9fc0e6'], ['Two stars', 33, '#e9c48a'], ['Three stars', 8, '#d0584a'], ['Four or more', 3, '#c9a0dc']];
 const share: Scene = {
-  caption: 'How the 454 Sun-like stars in the survey by Raghavan and others (2010) were found to be grouped, as a share of systems. Counted star by star and not system by system, a little over half of the stars are in groups.',
+  caption: 'How the 454 Sun-like stars in the survey by Raghavan and others (2010) were found to be grouped, as a share of systems. Counted star by star and not system by system, about two in three of these stars have a partner: the 44 in 100 systems with company hold at least 102 stars, against 56 alone. That sum is ours, from the survey’s figures.',
   stillAt: 4,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.25);
@@ -45,27 +48,40 @@ const share: Scene = {
       if (k > 0.95) label(ctx, `${v}%`, x0 + len + 8, y, { align: 'left', colour: SOFT, size: 11 });
     });
     label(ctx, 'Share of systems', x0, y0 + step * 4 + 8, { align: 'left', colour: FAINT, size: 9 });
-    say('Most Sun-like stars are on their own', 'But nearly half belong to a pair or more');
+    say('Most Sun-like systems hold a single star', 'But counting stars, about two in three have a partner');
   },
 };
 
-// ---- 3. watching the light dip
-const dip: Scene = {
-  caption: 'A pair whose orbit is edge on to us. When the smaller star passes in front of the larger, some of the light is blocked and the light of the pair dips. A drawing of the idea, not to scale.',
+// ---- 3. Alpha Centauri A and B, against our own planets
+const centauri: Scene = {
+  caption: 'Alpha Centauri A and B going round their balance point, 24 times the Earth’s distance from the Sun apart on average, drawn against the orbits of Uranus and Neptune for scale. Their masses are 1.13 and 0.97 Suns and they take 79.91 years to go round. The real orbit is a stretched oval and the stars are not to scale. Motion speeded up. The third star, Proxima, is about 13,000 times the Earth’s distance from the Sun away, far off the edge of the picture.',
+  stillAt: 4,
+  draw({ ctx, w, h, t, say }) {
+    backdrop(ctx, w, h, 0.3);
+    const cx = w / 2, cy = h * 0.45, s = Math.min(w * 0.44, h * 0.38) / 30.07, MA2 = 1.13, MB2 = 0.97, sep = 24;
+    for (const [name, au] of [['Uranus', 19.19], ['Neptune', 30.07]] as [string, number][]) { ring(ctx, cx, cy, au * s, 'rgba(236,231,220,.2)'); label(ctx, `${name}’s orbit`, cx, cy - au * s - 9, { align: 'center', colour: FAINT, size: 9 }); }
+    const rA = (MB2 / (MA2 + MB2)) * sep * s, rB = (MA2 / (MA2 + MB2)) * sep * s, a = (t / 12) * TAU;
+    dot(ctx, cx + Math.cos(a) * rA, cy + Math.sin(a) * rA, 6, '#fff3d0'); dot(ctx, cx - Math.cos(a) * rB, cy - Math.sin(a) * rB, 5, '#ffcf8a');
+    label(ctx, 'A', cx + Math.cos(a) * rA, cy + Math.sin(a) * rA - 13, { align: 'center', colour: SOFT, size: 10 }); label(ctx, 'B', cx - Math.cos(a) * rB, cy - Math.sin(a) * rB + 15, { align: 'center', colour: SOFT, size: 10 });
+    label(ctx, 'One orbit: 79.91 years', cx, cy + 30.07 * s + 22, { align: 'center', colour: ACCENT, size: 10 });
+    say('Two stars about as far apart as Uranus is from the Sun', 'A third, Proxima, circles them far beyond the picture');
+  },
+};
+
+// ---- 5. a planet with two suns
+const kepler: Scene = {
+  caption: 'A planet going round two stars at once, drawn after the lesson’s figures for Kepler-16b: the two stars circle each other every 41 days and the planet circles both every 229 days, so the pair turns about five and a half times for each lap of the planet. The sizes and distances are not to scale.',
   stillAt: 5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.3);
-    const cx = w / 2, cy = h * 0.28, big = Math.min(w * 0.14, 62), small = big * 0.55, phase = ((t % 8) / 8) * 2 - 1, sx = cx + phase * big * 3.2;
-    dot(ctx, cx, cy, big, '#ffe3b0'); dot(ctx, sx, cy, small, '#c8742e');
-    ctx.strokeStyle = 'rgba(236,231,220,.25)'; ctx.setLineDash([3, 6]); ctx.beginPath(); ctx.moveTo(cx - big * 3.4, cy); ctx.lineTo(cx + big * 3.4, cy); ctx.stroke(); ctx.setLineDash([]);
-    const gx0 = w * 0.12, gx1 = w * 0.88, gy = h * 0.62, gh = h * 0.2, f = (p: number) => 1 - 0.3 * Math.exp(-Math.pow(p / 0.28, 4));
-    line(ctx, [gx0, gy - gh - 6, gx0, gy + 6, gx1, gy + 6], 'rgba(236,231,220,.4)');
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 1.6; ctx.beginPath();
-    for (let i = 0; i <= 120; i++) { const p = (i / 120) * 2 - 1; if (p > phase) break; const x = gx0 + ((p + 1) / 2) * (gx1 - gx0), y = gy - f(p) * gh; if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
-    ctx.stroke();
-    label(ctx, 'Light of the pair', gx0, gy - gh - 18, { colour: SOFT, size: 10 }); label(ctx, 'Time', gx1, gy + 20, { align: 'right', colour: FAINT, size: 9 });
-    say('One star passes in front of the other', 'The light dips, and the dips give the sizes of the stars');
+    const cx = w / 2, cy = h * 0.45, R = Math.min(w * 0.4, h * 0.34), pa = (t / 229) * 24 * TAU * 0.5, sa = (t / 41) * 24 * TAU * 0.5, r1 = R * 0.12, r2 = R * 0.2;
+    ring(ctx, cx, cy, R, 'rgba(159,192,230,.3)', 1, [3, 5]);
+    dot(ctx, cx + Math.cos(sa) * r1, cy + Math.sin(sa) * r1, 6, '#ffd9a0'); dot(ctx, cx - Math.cos(sa) * r2 * 0.5, cy - Math.sin(sa) * r2 * 0.5, 4, '#e88f5a');
+    dot(ctx, cx + Math.cos(pa) * R, cy + Math.sin(pa) * R, 4.5, '#9fc0e6');
+    label(ctx, 'Kepler-16b', cx + Math.cos(pa) * R, cy + Math.sin(pa) * R - 14, { align: 'center', colour: SOFT, size: 10 });
+    label(ctx, 'Stars: 41 days', cx, cy + r2 + 22, { align: 'center', colour: FAINT, size: 9 }); label(ctx, 'Planet: 229 days', cx, cy + R + 22, { align: 'center', colour: ACCENT, size: 10 });
+    say('A planet that has two suns', 'The pair turns about five and a half times for each lap of the planet');
   },
 };
 
-export const scenes: Scene[] = [lens, share, dip];
+export const scenes: Scene[] = [lens, share, centauri, lens, kepler];
