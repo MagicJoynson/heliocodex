@@ -5,7 +5,7 @@
  * below the three stars of Orion's belt for people in the northern half of the world, and a dying star
  * puffs its outer layers away, leaving a small hot core.
  */
-import { type Scene, SOFT, ACCENT, FAINT, clamp, ease, label, stars, rng } from '../stage';
+import { type Scene, SOFT, ACCENT, clamp, ease, label, stars, rng } from '../stage';
 import { TAU, dot, line, ring } from '../kit';
 
 const backdrop = stars(110, 1013);
@@ -72,7 +72,6 @@ const shell: Scene = {
     ctx.lineWidth = 12 + 10 * k; ctx.strokeStyle = `rgba(120,210,200,${0.35 * fade})`; ctx.beginPath(); ctx.arc(cx, cy, r * 0.8, 0, TAU); ctx.stroke();
     ctx.lineWidth = 8; ctx.strokeStyle = `rgba(235,130,110,${0.4 * fade})`; ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.stroke();
     dot(ctx, cx, cy, 3.5, '#f4f7ff'); ring(ctx, cx, cy, 8, 'rgba(244,247,255,.25)');
-    label(ctx, 'The hot core left behind', cx, cy + 20, { align: 'center', colour: FAINT, size: 9 });
     label(ctx, 'Gas thrown back into space', cx, cy + R + 28, { align: 'center', colour: ACCENT, size: 10 });
     say('Some nebulae mark the end of a star', 'It throws its outer layers back into space');
   },
