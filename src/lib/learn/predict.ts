@@ -15,23 +15,32 @@ function times(r: number): string {
 }
 
 export function wirePredict(root: HTMLElement): void {
-  const data = JSON.parse(root.dataset.predict ?? 'null') as Data | null;
-  if (!data) return;
+  const parsed = JSON.parse(root.dataset.predict ?? 'null') as Data | null;
+  if (!parsed) return;
+  const data: Data = parsed;
   const form = root.querySelector<HTMLFormElement>('.predict-form')!, result = root.querySelector<HTMLElement>('.predict-result')!;
   const go = form.querySelector<HTMLButtonElement>('button[type="submit"]')!, hint = form.querySelector<HTMLElement>('.predict-hint')!;
   const verdict = result.querySelector<HTMLElement>('[data-verdict]')!, line = result.querySelector<HTMLElement>('[data-line]')!, bars = result.querySelector<HTMLElement>('[data-bars]')!;
+  const ticks = result.querySelector<HTMLElement>('[data-ticks]')!;
+  // the ruler under the bars: one tick for each step of ten
+  ticks.replaceChildren(...[1, 10, 100, 1000, 10_000].map((km) => {
+    const t = document.createElement('span');
+    t.textContent = km === 1 ? '1 km' : km.toLocaleString('en-GB'); t.style.left = `${pct(km)}%`;
+    return t;
+  }));
+  const enable = () => { const any = !!form.querySelector('input[name="guess"]:checked'); go.disabled = !any; hint.hidden = any; };
   form.hidden = false;
-  form.addEventListener('change', () => { go.disabled = false; hint.hidden = true; });
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const picked = form.querySelector<HTMLInputElement>('input[name="guess"]:checked');
-    if (!picked) return;
-    const guess = data.options[Number(picked.value)], a = data.answer, ratio = a.km / guess.km;
-    verdict.textContent = `Your guess: ${guess.label.toLowerCase()}, ${guess.detail}. The answer: ${a.label.toLowerCase()}.`;
-    line.textContent = ratio >= 1.5 ? `That is ${times(ratio)} as far as your guess. The next football is ${a.like}.`
-      : ratio <= 1 / 1.5 ? `That is ${times(1 / ratio)} nearer than your guess. The next football is ${a.like}.`
-      : `That is very close. The next football is ${a.like}.`;
-    const rows = [...data.options.map((o, i) => ({ text: `${o.label}, ${o.detail}`, km: o.km, guess: i === Number(picked.value), answer: false })),
+  enable(); // going Back to this page can leave a choice ticked
+  addEventListener('pageshow', enable);
+  form.addEventListener('change', enable);
+  function reveal(chosen: number | null): void {
+    const a = data.answer, guess = chosen === null ? null : data.options[chosen], ratio = guess ? a.km / guess.km : 1;
+    verdict.textContent = guess ? `Your guess: ${guess.label.toLowerCase()}, ${guess.detail}. The answer: ${a.label.toLowerCase()}.` : `The answer: ${a.label.toLowerCase()}.`;
+    line.textContent = !guess ? `The nearest star is ${a.like}.`
+      : ratio >= 1.5 ? `The answer is ${times(ratio)} further than your guess. The nearest star is ${a.like}.`
+      : ratio <= 1 / 1.5 ? `The answer is ${times(1 / ratio)} closer than your guess. The nearest star is ${a.like}.`
+      : `That is very close. The nearest star is ${a.like}.`;
+    const rows = [...data.options.map((o, i) => ({ text: `${o.label}, ${o.detail}`, km: o.km, guess: i === chosen, answer: false })),
       { text: `The answer: ${a.label.toLowerCase()}, ${a.like}`, km: a.km, guess: false, answer: true }].sort((x, y) => x.km - y.km);
     bars.replaceChildren(...rows.map((r) => {
       const li = document.createElement('li'), t = document.createElement('span'), track = document.createElement('span'), fill = document.createElement('span');
@@ -45,5 +54,15 @@ export function wirePredict(root: HTMLElement): void {
     // the answer is announced by moving focus to it
     verdict.focus();
     result.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const picked = form.querySelector<HTMLInputElement>('input[name="guess"]:checked');
+    if (picked) reveal(Number(picked.value));
+  });
+  form.querySelector('[data-skip]')!.addEventListener('click', () => reveal(null));
+  result.querySelector('[data-again]')!.addEventListener('click', () => {
+    form.reset(); enable(); result.hidden = true; form.hidden = false;
+    form.querySelector<HTMLInputElement>('input[name="guess"]')!.focus();
   });
 }

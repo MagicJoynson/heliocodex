@@ -126,6 +126,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .predict { border-top: 1px solid var(--rule); padding: clamp(40px, 7vw, 96px) var(--gutter); scroll-margin-top: var(--header-h); }
 .predict-in { max-width: 46rem; margin: 0 auto; }
 .predict .label { margin: 0 0 1.1rem; }
+.predict-form > .label { display: block; }
 .predict fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .predict legend { font: 300 clamp(1.4rem, 1.1rem + 1.2vw, 2rem)/1.35 var(--r-serif); padding: 0; margin: 0 0 1.6rem; color: var(--ink); }
 .predict-options { display: grid; gap: .6rem; }
@@ -155,6 +156,10 @@ body:has(.lesson) { background: #0b0b0c; }
 .bars .is-guess .bar span { background: var(--ink); }
 .bars .is-answer .bar-t { color: var(--accent); }
 .bars .is-answer .bar span { background: var(--accent); }
+.ticks { position: relative; height: 1.5rem; margin: .4rem 0 0; border-top: 1px solid var(--rule); }
+.ticks span { position: absolute; top: .3rem; transform: translateX(-50%); font: 400 .8125rem/1.2 var(--r-serif); color: var(--ink-faint); white-space: nowrap; }
+.ticks span:last-child { transform: translateX(-85%); }
+.skip { background: none; border: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .25em; }
 .predict-note { font: italic 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); margin: 1.4rem 0 0; max-width: 34rem; }
 @media (max-width: 520px) {
   .opt { grid-template-columns: auto minmax(0, 1fr); }

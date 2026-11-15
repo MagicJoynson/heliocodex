@@ -17,11 +17,11 @@ The Moon, on this scale, is a speck half a millimetre across, 6 centimetres from
 
 That is not how the pictures in books show it. Nearly every picture of the Solar System draws the planets as fat balls in a row, close together, because no picture on a page can show both their sizes and their distances truly. The pictures here keep to one scale throughout.
 
-Now the question you were asked. The next football, the nearest star, is Proxima Centauri. On this scale it is about 6,350 kilometres away, as far as London is from Chicago. It is not down the road, or in the next town, or even in the next country. It is across an ocean, and there is not one other football in between. Light, which crosses the gap from the Sun to the Earth in eight minutes, takes four and a quarter years to cross this one.
+Now the question you were asked. The nearest star is Proxima Centauri, a small red star that on this scale is a ball 3 centimetres across. It is about 6,350 kilometres away, as far as London is from Chicago. It is not down the road, or in the next town, or even in the next country. It is across an ocean, and there is nothing else in between.
 
-Alpha Centauri A and B, photographed here by the Hubble Space Telescope, are only a little further off. Proxima, a faint red star, goes round the pair. Between us and them there is a great deal of nothing, and no other star. No spacecraft has ever been sent to any of them.
+Alpha Centauri A and B, photographed here by the Hubble Space Telescope, are only a little further off. Proxima very probably goes round the pair. Between us and them there is a great deal of nothing, and no other star. Light, which crosses the gap from the Sun to the Earth in eight minutes, takes four and a quarter years to cross it. No spacecraft has ever been sent to any of them.
 
-The furthest thing people have made is Voyager 1, launched in 1977. In November 2026 it is 172 times as far from the Sun as the Earth is. On the pitch that is about 4 kilometres out after nearly fifty years of flying, less than a thousandth of the way to the next football. At its speed, 17 kilometres a second, the whole trip would take about 75,000 years. In 1990 it looked back and photographed the Earth from 6 billion kilometres away: the pale speck.
+The furthest thing people have made is Voyager 1, launched in 1977. In November 2026 it is 172 times as far from the Sun as the Earth is. On the pitch that is about 4 kilometres out after nearly fifty years of flying, less than a thousandth of the way to the next football. In 1990 it looked back and photographed the Earth from 6 billion kilometres away: the pale speck.
 
 Keep the same scale and go on. The Milky Way, the galaxy that holds all the stars you can see, is about 100,000 light years across, so light takes 100,000 years to cross it. On the football scale that is about 150 million kilometres, as wide as the real distance from the Sun to the Earth.
 

@@ -8,12 +8,12 @@ terms: [power-of-ten, astronomical-unit, light-year, oort-cloud, heliosphere]
 next: [measuring-distance]
 predict:
   lead: "Before you read on, make a guess. Nothing is saved or sent anywhere."
-  question: "Shrink the Sun to a football and put it on the centre spot of a pitch. The nearest star is the next football. How far away is it?"
+  question: "Shrink the Sun to a football and put it on the centre spot of a pitch. Shrink the nearest star by the same amount and put it down too. How far away does it go?"
   options:
     - { label: "Down the road", detail: "about 1 km", km: 1 }
     - { label: "In the next town", detail: "about 20 km", km: 20 }
     - { label: "In another country", detail: "about 1,000 km", km: 1000 }
-    - { label: "Across an ocean", detail: "about 6,000 km", km: 6000 }
+    - { label: "Across an ocean", detail: "about 4,000 km", km: 4000 }
     - { label: "On the far side of the world", detail: "about 20,000 km", km: 20000 }
   answer:
     km: 6346
@@ -30,12 +30,12 @@ predict:
         text: "Light travels 299,792 km every second, so in a year it covers about 9.46 million million km. Proxima Centauri's light takes four and a quarter years to arrive, which is why astronomers say it is 4.25 light years away, and why we see it as it was four and a quarter years ago."
     working:
       - "The Sun is 1,392,700 km wide. Shrunk to 22 cm, one metre of the model stands for 6.33 million km."
-      - "One astronomical unit, 149.6 million km, becomes 23.6 m. Neptune, 30.07 au out, is about 710 m away."
-      - "Proxima Centauri is 4.2465 light years, or 268,550 au, away. That is 268,550 × 23.6 m, about 6,346 km."
+      - "One astronomical unit, 149.6 million km, becomes 23.63 m. Neptune, 30.07 au out, is about 710 m away."
+      - "Proxima Centauri is 4.2465 light years, or 268,550 au, away. That is 268,550 × 23.63 m, about 6,346 km."
       - "Voyager 1, 172 au from the Sun in November 2026, would be about 4 km from the football."
       - "The Milky Way, about 100,000 light years across, becomes about 149 million km, close to the real distance from the Sun to the Earth."
       - "The Andromeda galaxy, 2.5 million light years away, becomes about 3.7 billion km, 25 times that."
   handoff:
     go: "star:proxima-centauri"
-    label: "Fly out to Proxima Centauri in 3D"
-    line: "The 3D view uses the real spacing, with nothing squeezed to fit. Start at the Sun and see how long the dark lasts."
+    label: "Fly to Proxima Centauri in 3D"
+    line: "The 3D view uses the real spacing, with nothing squeezed to fit. Watch how long the dark lasts on the way."
