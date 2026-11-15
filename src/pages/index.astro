@@ -50,7 +50,7 @@ const far = worlds.map((w) => {
   return { ...w, a, x: au(a), d: Math.round(d), ih: Math.round(ih), iw: Math.round(ih * (w.width / w.height)), light: lightTime(a) };
 });
 ---
-<Base title="Heliocodex" path="/" description="The Sun, its planets and everything beyond, from real photographs and real measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
+<Base title="Heliocodex" path="/" description="The Sun, its planets and everything beyond, from real photographs and measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
   <script is:inline>
     // links made before the 3D view moved (/?go=mars and the like) still land in it
     if (/[?&](go|gl)=?/.test(location.search)) location.replace('/explore' + location.search + location.hash);

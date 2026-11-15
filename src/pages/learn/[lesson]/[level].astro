@@ -25,7 +25,7 @@ const figure = LEVEL_FIGURES[`${lesson.id}/${level}`];
 const lessons = await allLessons();
 const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
 ---
-<Reading title={`${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`} path={href(level)} description={`${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`}>
+<Reading title={`${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`.length > 60 ? `${lesson.data.title.split(': ')[0]}: ${LEVEL_NAMES[level].name.toLowerCase()}` : `${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`} path={href(level)} description={`${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`.length > 160 ? lesson.data.summary : `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`}>
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
   <div class="level">
     <header class="reading-head">

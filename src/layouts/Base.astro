@@ -10,7 +10,8 @@ import ThreeDReturn from '../components/ThreeDReturn.astro';
 interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean }
 const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex } = Astro.props;
 const url = new URL(path, Astro.site).toString();
-const full = title === 'Heliocodex' ? title : `${title} · Heliocodex`;
+// a search result shows about 60 characters of title: keep the site name only where it fits
+const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? title : `${title} · Heliocodex`;
 ---
 <!doctype html>
 <html lang="en-GB">

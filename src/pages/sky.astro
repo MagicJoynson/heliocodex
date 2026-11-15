@@ -11,7 +11,7 @@ import { MODERN, LY_PER_PC } from '../lib/sky/star';
 // stars whose distance here is a newer one than the star file's, so the card and the star's page agree
 const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((s) => [s.index, [s.distPc * LY_PER_PC, s.lumSun]]));
 ---
-<Base title="The sky tonight" path="/sky" description="The sky above you tonight: the stars, the planets, the Moon and the constellations, worked out for where you are. Turn round, look up, and touch anything to find out what it is.">
+<Base title="The sky tonight" path="/sky" description="The sky above you tonight: stars, planets, the Moon and constellations, worked out for where you are. Look up, and touch anything to find out what it is.">
   <article class="sky" data-newer={JSON.stringify(newer)}>
     <div class="sky-view" id="sky-view">
       <canvas id="sky-canvas" role="img" aria-label="The sky as seen from the ground. The list under the picture says what is up."></canvas>
