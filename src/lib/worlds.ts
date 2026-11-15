@@ -5,12 +5,13 @@
  */
 import { allBodies, body, smallBodies } from '../data/bodies/index';
 import type { Body } from './v2/atlas/types';
+import { WORLD_PAGES } from '../data/world-pages';
 
 export const PLANET_PAGES = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
 export const AU_KM = 1.495978707e8;
 
 export const outlineWorlds: Body[] = allBodies.filter((b) =>
-  (b.kind === 'moon' && ((b.meanRadiusKm ?? 0) >= 100 || b.parent === 'mars')) || b.kind === 'dwarf' || b.kind === 'asteroid' || b.kind === 'comet');
+  (b.kind === 'moon' && ((b.meanRadiusKm ?? 0) >= 100 || b.parent === 'mars' || b.id in WORLD_PAGES)) || b.kind === 'dwarf' || b.kind === 'asteroid' || b.kind === 'comet');
 
 export const KIND_NAMES: Record<string, string> = { moon: 'Moon', dwarf: 'Dwarf planet', asteroid: 'Asteroid', comet: 'Comet' };
 /** The five bodies the International Astronomical Union has named dwarf planets. The others are likely dwarf planets it has not ruled on. */
