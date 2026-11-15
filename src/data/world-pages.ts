@@ -2097,7 +2097,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Voyager 1 found it. Cassini studied it for years, with its closest pass on 6 December 2015.',
       ] },
       { title: 'What is still unknown', paras: [
-        'How the F ring and its two moons came to be so close together. Prometheus goes round Saturn in 14.7 hours at about 139,400 km, just inside the F ring. Each time it passes the ring’s inner edge it pulls out a strand of ring material, which leaves streaks and channels that can be seen in Cassini’s pictures.',
+        'How the two moons shape the F ring. Prometheus goes round Saturn in 14.7 hours at about 139,400 km, just inside the F ring. Each time it passes the ring’s inner edge it pulls out a strand of ring material, which leaves streaks and channels that can be seen in Cassini’s pictures.',
       ] },
     ],
     sources: [
@@ -2154,7 +2154,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Its surface is mostly water ice, and it is very bright.',
       ] },
       { title: 'How it was found', paras: [
-        'Michael Brown’s team found it in January 2005 with the Keck telescope on Mauna Kea in Hawaii, and announced it in July. It was the first moon found going round Haumea. Both Haumea’s moons are named for Hawaiian deities: Hiʻiaka, the patron goddess of the island of Hawaii and of hula dancers, is the daughter of the goddess Haumea.',
+        'Michael Brown’s team found it in January 2005 with the Keck telescope on Mauna Kea in Hawaii, and it was the first moon found going round Haumea. Both Haumea’s moons are named for Hawaiian deities: Hiʻiaka, the patron goddess of the island of Hawaii and of hula dancers, is the daughter of the goddess Haumea.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'None. It has only been seen from the Earth, with large telescopes, and from space telescopes.',
@@ -2165,6 +2165,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Haumea', url: 'https://science.nasa.gov/dwarf-planets/haumea/' },
+      { label: 'Wikipedia, Hiʻiaka', url: 'https://en.wikipedia.org/wiki/Hi%CA%BBiaka_(moon)' },
     ],
   },
   namaka: {
@@ -2177,7 +2178,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'None. It has only been seen from the Earth and from space telescopes.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Almost everything about it, including its size. Its orbit is not a neat circle: it goes round Haumea every 18 days, at distances that vary between about 20,600 and 30,700 km, and is pulled about by its larger sibling Hiʻiaka. Its position is less certain than most moons here: JPL puts it within about 1,600 km of where it should be in 2025.',
+        'Almost everything about it, including its size. Its orbit is noticeably stretched: it goes round Haumea every 18 days, at distances that vary between about 20,600 and 30,700 km, and is pulled about by its larger sibling Hiʻiaka. Its position is less certain than most moons here: JPL puts it within about 1,600 km of where it should be in 2025.',
       ] },
     ],
     sources: [
@@ -2194,7 +2195,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'None. It has been seen only by telescopes.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Its size. Estimates have disagreed by more than a factor of two, and a recent measurement made as it passed in front of a star suggests it is bigger than the smaller earlier estimates. Its orbit is also poorly known. It goes round Quaoar in about 12 days at about 13,500 km, but it was seen only a few times from 2006 to 2011, so the position shown in the 3D view could be off by 15° of its orbit.',
+        'Its size, which is not well measured: the Planetary Society gave about 100 km in 2009, and other estimates differ. Its orbit is also poorly known. It goes round Quaoar in about 12 days at about 13,500 km, but it was seen only a few times from 2006 to 2011, so the position shown in the 3D view could be off by 15° of its orbit.',
       ] },
     ],
     sources: [
@@ -2202,7 +2203,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   xiangliu: {
-    lead: 'The moon of the dwarf planet Gonggong, found in Hubble pictures from 2010 and announced in 2016.',
+    lead: 'The moon of the dwarf planet Gonggong, found in Hubble pictures from 2009 and 2010 and announced in 2016.',
     chapters: [
       { title: 'How it was found', paras: [
         'Csaba Kiss, Gábor Marton and their colleagues found it in Hubble Space Telescope pictures taken in 2009 and 2010. It is named for Xiangliu, a nine-headed snake that served the water god Gonggong in Chinese myth.',
@@ -2211,7 +2212,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'None. It has been seen only by telescopes.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Its size, which has been revised since the discovery, and which way its orbit is tilted. The Hubble pictures fit two mirror-image orbits equally well, so we know the size and shape of the orbit, an average distance of about 24,000 km and about 25 days to go round, but not where along it the moon is. For that reason it is not placed in the 3D view.',
+        'Its size, which is not well measured, and which way its orbit is tilted. The Hubble pictures fit two mirror-image orbits equally well, so we know the size and shape of the orbit, an average distance of about 24,000 km and about 25 days to go round, but not where along it the moon is. For that reason it is not placed in the 3D view.',
       ] },
     ],
     sources: [
