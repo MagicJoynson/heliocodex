@@ -322,4 +322,274 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'Wikipedia, Moon', url: 'https://en.wikipedia.org/wiki/Moon' },
     ],
   },
+
+  pluto: {
+    lead: 'The best known of the dwarf planets, a small, cold world at the edge of the Solar System with a heart-shaped plain of nitrogen ice, mountains of water ice and a thin blue haze.',
+    temperature: { value: '−230 °C', note: 'About, on average, at the surface. NASA gives −232 °C.' },
+    picture: {
+      src: '/img/learn/pluto-new-horizons.jpg', width: 1100, height: 1100,
+      alt: 'The globe of Pluto: a large pale, smooth, heart-shaped plain on the right, dark reddish ground at the lower left, and cratered country round the rest.',
+      caption: '<b>A photograph, with the colours stretched.</b> Pluto on 14 July 2015, from NASA’s New Horizons spacecraft, which combined blue, red and infrared pictures. The colours are enhanced so that the differences between one kind of ground and another show up. The pale heart is Sputnik Planitia. Credit: NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Until 2015 Pluto was a smudge of a few pixels. Then New Horizons flew past and showed a world with more kinds of country than anyone had guessed. The most striking is a bright plain about 1,000 km across, shaped like a heart and named Sputnik Planitia. It is a sheet of frozen nitrogen with almost no craters, which means it is young, probably less than 10 million years old, and still being renewed. The ice slowly turns over in cells a few tens of kilometres wide, rather like a pan of thick porridge on a very low heat.',
+        'Round the plain are mountains of water ice, some up to about 3.5 km high. At Pluto’s temperature water ice is as hard as rock, and nitrogen ice is soft enough to flow. Other areas are dark red, stained by carbon-rich material that forms when sunlight and cosmic rays break down the methane in the thin air.',
+        'Pluto does have an atmosphere, mostly nitrogen with a little methane. At the ground it is about a hundred-thousandth as dense as the Earth’s, but it is thick enough to carry layers of blue haze that New Horizons photographed against the Sun.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Pluto is 2,377 km across, about two-thirds the width of our Moon. Inside it is rock, probably with a core, under a thick mantle of water ice. The surface is a thin coat of more volatile ices: nitrogen, methane and carbon monoxide.',
+        'Its path round the Sun is a long oval, tilted by 17° to the paths of the planets. Pluto takes 248 years to go round once, and from 1979 to 1999 it was nearer the Sun than Neptune was. The two never come close to one another, because they are locked in a pattern that keeps them apart.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Clyde Tombaugh found it on 18 February 1930 at the Lowell Observatory in Arizona, by comparing photographic plates taken a few nights apart in January and spotting a dot that had moved. Astronomers had been searching for a ninth planet, and for 76 years Pluto was counted as one.',
+        'The name was suggested in March 1930 by Venetia Burney, an 11-year-old schoolgirl in Oxford, after the Roman god of the underworld. In 2006 the International Astronomical Union put Pluto in a new class, dwarf planets, because it is smaller than the Moon, shares its region with many similar bodies and has not cleared them from its path.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'Pluto has five known moons. Charon, found in 1978, is about half its width, so large that the two circle a point in the space between them and not a point inside Pluto. The others are small and irregular: Styx, Nix, Kerberos and Hydra.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How the heart plain came to be, and why it lies where it does, is still argued. Its position suggests that something heavy lies under it, possibly a layer of liquid water. Whether Pluto has an ocean is not settled.',
+        'New Horizons flew past at about 12,500 km on 14 July 2015, nine and a half years after it launched, and took only a few hours of close pictures. Nobody has been back, and about half of Pluto was photographed only at low resolution.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Pluto', url: 'https://science.nasa.gov/dwarf-planets/pluto/' },
+      { label: 'NASA, New Horizons', url: 'https://science.nasa.gov/mission/new-horizons/' },
+      { label: 'IAU, Definition of a planet (2006)', url: 'https://www.iau.org/news/pressreleases/detail/iau0603/' },
+    ],
+  },
+
+  charon: {
+    lead: 'The largest moon of Pluto, so big beside it that the two are called a double world, with a red cap at its north pole and a canyon that wraps round its middle.',
+    picture: {
+      src: '/img/learn/charon-new-horizons.jpg', width: 1100, height: 1100,
+      alt: 'A grey globe with a rust-red cap at the top, a broad belt of cracked ground across its middle and craters scattered below.',
+      caption: '<b>A photograph, with the colours stretched.</b> Charon just before the closest approach of NASA’s New Horizons spacecraft on 14 July 2015. Blue, red and infrared pictures were combined, and the colours are enhanced to bring out differences in the ground. Credit: NASA/Johns Hopkins University Applied Physics Laboratory/Southwest Research Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Charon is a grey ball of ice, and it was expected to be dull. It is not. Round its middle runs a belt of cliffs and canyons, one of them, Serenity Chasma, several kilometres deep. South of the belt lies a smoother plain with far fewer craters, as if the surface had been renewed.',
+        'The most striking thing is the dark red cap at the north pole. The leading explanation is that methane gas escaping from Pluto’s thin air is carried across the gap, freezes on Charon’s cold pole in the long winter, and is turned red by sunlight.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Charon is 1,212 km across, a little over half the width of Pluto. Its density, 1.85 times that of water, says it is a mixture of ice and rock, with more rock than the moons of Saturn. It holds about an eighth of Pluto’s mass, a bigger share than any other moon holds of its planet or dwarf planet.',
+        'The two circle a point that lies in empty space between them, 19,600 km from Charon, and each keeps the same face to the other. Charon goes round once in 6.4 days, the same time Pluto takes to turn once, so from one side of Pluto it never rises or sets.',
+      ] },
+      { title: 'How it was found', paras: [
+        'James Christy found Charon in 1978 at the United States Naval Observatory in Flagstaff, Arizona. He noticed that Pluto looked lumpy on his photographic plates, and that the lump moved round it. He named it Charon after the ferryman of the dead in Greek myth, and partly after his wife Charlene, so that it is said “Shar-on”.',
+        'Its discovery let astronomers weigh Pluto for the first time. Pluto turned out to be far lighter than the early guesses, and much smaller than a planet.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only New Horizons, in July 2015. It passed Charon at about 29,000 km and photographed one hemisphere of it in detail.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'The broad cracks round the middle are what would be expected if an ocean inside Charon froze and expanded. Whether it did, and when, is unknown. How the Pluto and Charon pair formed is also unsettled, though a great collision early in the history of the Solar System is the leading idea.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Charon', url: 'https://science.nasa.gov/dwarf-planets/pluto/moons/charon/' },
+      { label: 'NASA, New Horizons', url: 'https://science.nasa.gov/mission/new-horizons/' },
+    ],
+  },
+
+  ceres: {
+    lead: 'The largest body in the asteroid belt and the only dwarf planet inside the orbit of Neptune, a dark, cratered world with bright patches of salt.',
+    picture: {
+      src: '/img/learn/ceres-dawn.jpg', width: 1100, height: 1100,
+      alt: 'A grey, round, heavily cratered world, with a small cluster of brilliant white spots inside one crater near the middle.',
+      caption: '<b>A picture made from photographs.</b> Ceres from NASA’s Dawn spacecraft, a view centred on Occator crater, put together from pictures taken from about 385 km up. The bright spots are salt left behind by seeping brine. Credit: NASA/JPL-Caltech/UCLA/MPS/DLR/IDA.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'From a distance Ceres is a dull, dark ball, a little lighter than charcoal. Close up it is covered in craters, though fewer big ones than expected, which suggests that its crust is soft enough to slump and flatten them over time.',
+        'Its surprises are the bright spots. The brightest are in Occator crater, which is about 92 km wide. Dawn found that they are mostly sodium carbonate, a salt related to washing soda, left when salty water from below reached the surface and the water evaporated. Ahuna Mons, a mountain about 4 km high with steep sides, is thought to be a volcano that erupted slush and brine, and not molten rock.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Ceres is about 940 km across and round, which is what puts it among the dwarf planets. It holds about a third of all the mass in the asteroid belt. It is a mix of rock and ice, with clay-like minerals that need water to form, and it has ice just under the surface and in craters at the poles that never see the Sun.',
+        'It takes 4.6 years to go round the Sun, in a path only slightly stretched, in the middle of the belt.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'The Italian astronomer Giuseppe Piazzi found it on 1 January 1801 from Palermo in Sicily. Astronomers had been looking for a missing planet between Mars and Jupiter, and Ceres was in the right place. It was called a planet for about fifty years, until many more bodies were found in the same region and it was reclassed as an asteroid. In 2006 it was given a new label, dwarf planet.',
+        'Piazzi named it after Ceres, the Roman goddess of grain and harvests, who was the patron of Sicily.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'It has none that have been found.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'NASA’s Dawn spacecraft entered orbit round Ceres on 6 March 2015, and its fuel ran out in 2018. It is still there, and will stay in orbit for at least 20 years. How much brine remains below the surface, how far down it lies, and whether it is warm and salty enough to be of interest in the search for life are all still being worked out from Dawn’s measurements.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Ceres', url: 'https://science.nasa.gov/dwarf-planets/ceres/' },
+      { label: 'NASA, Dawn', url: 'https://science.nasa.gov/mission/dawn/' },
+      { label: 'De Sanctis and others, Nature 536 (2016): bright carbonate deposits on Ceres', url: 'https://www.nature.com/articles/nature18290' },
+    ],
+  },
+
+  vesta: {
+    lead: 'The second largest body in the asteroid belt and the brightest, a battered, not quite round rock that is the source of many of the meteorites found on the Earth.',
+    picture: {
+      src: '/img/learn/vesta-dawn-2011.jpg', width: 900, height: 882,
+      alt: 'A grey, battered, not quite round world covered in craters, with long grooves running round its middle.',
+      caption: '<b>A photograph.</b> Vesta on 24 July 2011, from NASA’s Dawn spacecraft at a distance of about 5,200 km. The long grooves run parallel to the equator. Credit: NASA/JPL-Caltech/UCLA/MPS/DLR/IDA.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Vesta is not round. It measures about 573 km by 557 km by 446 km, with a large dent at its south pole, where an impact once removed a great part of it. The dent is a basin named Rheasilvia, about 500 km across, nearly as wide as Vesta itself. A mountain rises from its centre to about 20 km, more than twice the height of Everest above sea level.',
+        'The grooves round the middle are troughs, the longest several hundred kilometres, thought to be cracks formed by the great impacts. Elsewhere Vesta is covered in craters of every size.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Unlike most asteroids, Vesta has a layered inside: a core of iron and nickel, a mantle of rock and a crust of volcanic rock. It was once hot enough to melt, and its crust is old lava that cooled early in the Solar System’s history.',
+        'Its density is about 3.5 times that of water, as rock and metal together would be. It takes 3.6 years to go round the Sun.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The German astronomer Heinrich Olbers found it on 29 March 1807 in Bremen, the fourth asteroid to be found. His friend Carl Friedrich Gauss, who had worked out the orbit, was allowed to name it, and chose Vesta, the Roman goddess of the hearth.',
+        'It is the brightest asteroid in the sky because its surface is pale and it is large. At its best it is just visible to the naked eye under a dark sky.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Dawn spacecraft orbited Vesta from July 2011 to September 2012, then left for Ceres. It mapped the whole surface and measured Vesta’s gravity, which is how the layers inside were worked out.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'Not in any way that can be foreseen. Vesta stays in the main belt, between Mars and Jupiter. But pieces of it have reached us. Chips knocked off by the impacts that made Rheasilvia and the older basin beside it drifted out of the belt, and a whole class of meteorites found on the Earth, the howardites, eucrites and diogenites, match Vesta’s rock so closely that they are thought to be its fragments.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Vesta', url: 'https://science.nasa.gov/solar-system/asteroids/4-vesta/' },
+      { label: 'NASA, Dawn', url: 'https://science.nasa.gov/mission/dawn/' },
+    ],
+  },
+
+  phobos: {
+    lead: 'The larger and nearer of Mars’s two small moons, a lumpy, cratered rock that circles the planet three times a day and is slowly falling towards it.',
+    picture: {
+      src: '/img/learn/phobos-hirise-5800km.jpg', width: 1100, height: 1087,
+      alt: 'A brown, lumpy, heavily cratered moon cut off by the edge of the frame, with a large crater at the lower right and long shallow grooves running across it.',
+      caption: '<b>A photograph, with processed colour.</b> Phobos on 23 March 2008, from the HiRISE camera on NASA’s Mars Reconnaissance Orbiter at a distance of about 5,800 km. The colours come from three bands of light and are not exactly what an eye would see. The big crater is Stickney. Credit: NASA/JPL-Caltech/University of Arizona.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Phobos is shaped like a potato, about 27 km by 22 km by 18 km, and covered in craters. The largest, Stickney, is about 9 km wide, nearly half the moon’s width, and the impact that made it must almost have broken Phobos apart. Across the surface run long shallow grooves, and what made them is still argued: cracks from the force of that impact, or the pull of Mars, or lines of debris thrown up when rocks hit Mars itself.',
+        'Phobos is dark, reflecting only about 7 per cent of the light that falls on it.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its density is 1.87 times that of water, too low for solid rock. It is probably a loose pile of rubble, with a good deal of empty space inside.',
+        'Phobos is only about 6,000 km above Mars’s surface, closer to its planet than any other moon in the Solar System. It goes round in 7 hours and 39 minutes, faster than Mars turns, so from Mars it rises in the west and sets in the east, and does so about three times in a Martian day.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'The American astronomer Asaph Hall found both moons of Mars at the United States Naval Observatory in Washington, Deimos on 12 August 1877 and Phobos six nights later, on 18 August. Stickney was named for his wife, Angeline Stickney, who had urged him to keep searching.',
+        'The names, Greek for fear and for panic or dread, were suggested by Henry Madan, a schoolmaster at Eton. In Greek myth they were the sons of Ares, the god of war, whom the Romans knew as Mars.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Mariner 9 saw it in 1971 and the Viking orbiters photographed it closely in the 1970s. The European Mars Express has passed near it many times since 2004. Two Soviet probes sent to it in 1988 both failed.',
+        'Japan’s Martian Moons eXploration mission, MMX, launched on 20 October 2026. It is meant to land on Phobos, collect at least 10 grams of ground, and return it to the Earth in about 2031.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Where Phobos came from. One idea is that it is an asteroid captured by Mars. Another is that it formed from debris thrown up by a huge impact on Mars. The rock is the test: asteroid rock and Martian rock look different in a laboratory, which is one reason to bring a sample back.',
+        'Mars’s pull is dragging Phobos inwards by about 2 metres a century. In some tens of millions of years it will either crash onto Mars or be torn apart into a ring.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Phobos', url: 'https://science.nasa.gov/mars/moons/phobos/' },
+      { label: 'JAXA, Martian Moons eXploration', url: 'https://www.mmx.jaxa.jp/en/' },
+      { label: 'NASA Photojournal, PIA10369', url: 'https://images.nasa.gov/details/PIA10369' },
+    ],
+  },
+
+  deimos: {
+    lead: 'The smaller and farther of Mars’s two moons, a smooth-looking little rock that hangs in the Martian sky for days at a time.',
+    picture: {
+      src: '/img/learn/deimos-mro-2009.jpg', width: 1100, height: 564,
+      alt: 'Two views of the same small, pale, egg-shaped moon on black, with a few craters and a scale bar of 2 kilometres.',
+      caption: '<b>Two photographs, with processed colour.</b> Deimos from the HiRISE camera on NASA’s Mars Reconnaissance Orbiter, in February 2009, shown from two sides, with a scale bar of 2 km. The colours are processed and are not exactly what an eye would see. Credit: NASA/JPL-Caltech/University of Arizona.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Deimos is about 15 km by 12 km by 10 km, roughly half the size of Phobos, with a smoother look. It has craters, but many are half-buried. A blanket of dust and loose rock, perhaps tens of metres deep, seems to have filled them in.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its density, 1.47 times that of water, is lower than Phobos’s, so it is probably loose rubble held together by weak gravity, with more empty space than rock.',
+        'It circles Mars at 23,500 km, taking 30.3 hours for each trip. That is only a little longer than a Martian day, so from the ground Deimos moves very slowly. It takes about two and a half days to cross the sky from rising in the east to setting in the west, and from Mars it looks like a bright star, not a disc.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Asaph Hall found it on 12 August 1877 at the United States Naval Observatory in Washington. He had been searching for weeks. He found Phobos six nights later. The name is Greek for terror or dread. Henry Madan, a schoolmaster at Eton, suggested the names of both moons.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'The Viking orbiters photographed Deimos closely in 1977, and Mars Express and the Mars Reconnaissance Orbiter have taken pictures since. No spacecraft has landed on it. Japan’s MMX mission, which launched on 20 October 2026 to bring back a sample from Phobos, is also meant to pass close to Deimos.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Where it came from, as with Phobos: a captured asteroid or the leftovers of an impact on Mars. Unlike Phobos, it is not falling in. It is a little beyond the distance at which a moon goes round in exactly one Martian day, so Mars’s tides push it very slowly outwards.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Deimos', url: 'https://science.nasa.gov/mars/moons/deimos/' },
+      { label: 'JAXA, Martian Moons eXploration', url: 'https://www.mmx.jaxa.jp/en/' },
+      { label: 'NASA Photojournal, PIA11826', url: 'https://images.nasa.gov/details/PIA11826' },
+    ],
+  },
+
+  mimas: {
+    lead: 'A small, icy moon of Saturn with one enormous crater, a third of its width across, that makes it one of the most recognisable worlds in the Solar System.',
+    picture: {
+      src: '/img/learn/mimas-cassini-2010.jpg', width: 1100, height: 1100,
+      alt: 'A grey, round, heavily cratered moon with one very large crater with a central peak on the right-hand side.',
+      caption: '<b>A photograph.</b> Mimas on 13 February 2010, from NASA’s Cassini spacecraft, which flew past at its closest to the moon. The big crater on the right is Herschel. Credit: NASA/JPL-Caltech/Space Science Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Mimas is almost wholly covered in craters, but one dominates. Herschel is about 130 km wide, a third of the moon’s width, with steep walls and a central peak that rises about 6 km. It is so large for its host that the impact that made it very nearly broke Mimas apart.',
+        'The rest of the surface is pitted with smaller craters of every age, one on top of another.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Mimas is 396 km across, the smallest round moon of Saturn. Its density, 1.15 times that of water, is barely more than ice, so it is nearly all water ice with only a little rock.',
+        'It circles Saturn at 186,000 km, closer than any of the other big moons, taking 22.6 hours. Its pull keeps the Cassini Division clear. A particle in the inner edge of that gap would go round Saturn twice for each of Mimas’s trips, so it would be tugged at the same point every time, and thrown out of its orbit.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Herschel found it on 17 September 1789 with his great 40-foot telescope, a few weeks after he had found Enceladus. His son John Herschel proposed the names of Saturn’s moons from Greek myth in 1847, including Mimas, one of the giants.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 1 and 2 photographed it in 1980 and 1981. Cassini flew by many times between 2004 and 2017, passing closest, at about 9,500 km, on 13 February 2010.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Mimas wobbles as it orbits, and in 2024 a study of its wobble, using Cassini measurements, concluded that the moon may have an ocean 20 to 30 km under its ice that formed only 5 to 15 million years ago. That would be a surprise, since the surface shows no sign of one, and the idea is still being tested.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Mimas', url: 'https://science.nasa.gov/saturn/moons/mimas/' },
+      { label: 'Lainey and others, Nature 626 (2024): a recently formed ocean inside Saturn’s moon Mimas', url: 'https://www.nature.com/articles/s41586-023-06975-9' },
+    ],
+  },
+
+  iapetus: {
+    lead: 'A moon of Saturn with one side as dark as coal and the other as bright as snow, and a ridge round its equator that makes it look like a walnut.',
+    picture: {
+      src: '/img/learn/iapetus-cassini-2009.jpg', width: 1100, height: 539,
+      alt: 'Two round views of the same moon side by side: the left one almost entirely dark brown, the right one pale cream with scattered dark craters.',
+      caption: '<b>Two photographs, in colour.</b> Iapetus from NASA’s Cassini spacecraft: its dark side on the left and its bright side on the right. The ridge round the equator shows as a small bump on the edge of each. Credit: NASA/JPL/Space Science Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'One side of Iapetus, the side that leads as it goes round Saturn, is dark brown. It is called Cassini Regio. The other side is pale, and the two meet in a ragged line, with the bright side about ten times as reflective as the dark.',
+        'Round the equator runs a ridge, about 1,300 km long and in places up to 20 km high, which gives the moon its walnut shape. Nobody knows for certain how it formed.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Iapetus is 1,469 km across, the third largest of Saturn’s moons. Its density, 1.09 times that of water, shows that it is nearly all water ice.',
+        'The dark colour is probably a coating. Dust from Phoebe, a dark outer moon, spirals inward and falls on the side that leads. The dark dust absorbs sunlight and warms, ice evaporates off the warm patches and freezes again on the bright ground, which darkens the one and brightens the other until the contrast is as sharp as it is.',
+        'Iapetus is a long way out, 3.56 million km from Saturn, and takes 79.3 days to go round, in a path tilted away from the plane of the rings.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Giovanni Domenico Cassini found it on 25 October 1671 at the Paris Observatory. He noticed that he could see it only when it was on the western side of Saturn, and guessed that one side was darker than the other. It was not photographed in detail until the Voyager spacecraft in 1980 and 1981, and then Cassini.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 1 and 2 saw it from afar. The Cassini spacecraft, named after the discoverer, flew close to it on 10 September 2007, its only close approach, and photographed the dark and bright sides and the ridge.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'What made the ridge is not settled. One idea is that Iapetus once spun much faster, and the ridge is a relic of that. Another is that a ring of debris around Iapetus fell to its equator. Neither is generally accepted.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Iapetus', url: 'https://science.nasa.gov/saturn/moons/iapetus/' },
+      { label: 'NASA Photojournal, PIA11690', url: 'https://images.nasa.gov/details/PIA11690' },
+    ],
+  },
 };

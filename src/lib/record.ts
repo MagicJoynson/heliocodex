@@ -29,6 +29,7 @@ export function head(o: { crumbs: [string, string][]; name: string; kind: string
 export const sig = (n: number, s = 3) => Number(n.toPrecision(s)).toLocaleString('en-GB', { maximumFractionDigits: 6 });
 /** A ratio said plainly: "2.3 per cent of the Earth's", "0.40 times the Earth's", "11 times the Earth's". */
 export function ratio(x: number, what: string): string {
+  if (x < 1e-4) return `About 1 in ${Number((1 / x).toPrecision(2)).toLocaleString('en-GB')} of ${what}`;
   if (x < 0.1) return `${sig(x * 100, 2)} per cent of ${what}`;
   if (x < 10) return `${x.toFixed(2)} times ${what}`;
   return `${sig(x, 2)} times ${what}`;
