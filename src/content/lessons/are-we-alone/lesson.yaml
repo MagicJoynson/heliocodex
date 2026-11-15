@@ -2,7 +2,7 @@ title: Are we alone?
 strand: life
 order: 1
 summary: "Life is known on one planet only. Where else might it be, how would we recognise it, and what has the search found so far?"
-scene: "A tour of the places being searched: Mars, the hidden oceans of Europa and Enceladus, Titan, and then the nearby stars with planets."
+scene: "Drawings that follow the first look: worlds with only one known to have life, the oceans against a bathtub, the places with liquid water, and spacecraft on their way."
 view: { target: solar-system }
 terms: [habitable-zone, biosignature, subsurface-ocean, exoplanet, atmosphere, spectrum, radio-waves]
 needs: [ocean-moons, planets-round-other-stars]
