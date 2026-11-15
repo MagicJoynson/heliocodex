@@ -90,7 +90,7 @@ test('Distances in lessons, facts, glossary and 3D captions match the star pages
   for (const file of [...walk('src/content'), ...walk('src/lib/learn')]) {
     for (const m of readFileSync(file, 'utf8').matchAll(re)) {
       const star = stars.find((s) => s.name === m[1])!, said = parseFloat(m[2].replace(/,/g, ''));
-      if (Math.abs(said - star.ly) / star.ly > 0.04 && Math.abs(said - star.ly) > 0.5) bad.push(`${file}: ${m[1]} says ${said}, its page says ${star.ly.toFixed(1)}`);
+      if (Math.abs(said - star.ly) / star.ly > 0.02 && !(said >= 8 && Math.abs(said - star.ly) <= 0.5)) bad.push(`${file}: ${m[1]} says ${said}, its page says ${star.ly.toFixed(1)}`);
     }
   }
   if (bad.length) throw new Error(bad.join('\n'));

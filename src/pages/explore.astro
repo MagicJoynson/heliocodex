@@ -475,12 +475,14 @@ import { sections } from '../lib/nav';
       stepInB.addEventListener('click', () => { if (stepIn) goTo(stepIn[0]); });
       stepOutB.addEventListener('click', () => { if (stepOut) goTo(stepOut[0]); });
       const phone = matchMedia('(max-width: 600px)');
+      // on a phone the innermost ring stands well off the Sun, so that the Sun and the first stops are each a thumb apart
+      const ringRadius = (k: number, R: number) => phone.matches ? R * (0.32 + 0.68 * k) : R * (0.08 + 0.92 * k);
       function drawLadder(c: number, R: number, dpr: number, cam: number[], distAu: number) {
         hits = [{ id: 'sun', x: c / dpr, y: c / dpr }];
         const here = rungR(distAu);
         mctx.lineWidth = 1 * dpr;
         for (const [id, , au] of RUNGS) {
-          const r = ringOf(RUNGS.findIndex((q) => q[0] === id)) * R * 0.92 + R * 0.08;
+          const r = ringRadius(ringOf(RUNGS.findIndex((q) => q[0] === id)), R);
           const near = Math.abs(ringOf(RUNGS.findIndex((q) => q[0] === id)) - here) < 0.05;
           mctx.strokeStyle = near ? 'rgba(241,201,142,0.55)' : 'rgba(236,231,220,0.16)';
           mctx.beginPath(); mctx.arc(c, c, r, 0, Math.PI * 2); mctx.stroke();
@@ -492,7 +494,7 @@ import { sections } from '../lib/nav';
           hits.push({ id, x: px / dpr, y: py / dpr });
         }
         mctx.fillStyle = '#ffcf7a'; mctx.beginPath(); mctx.arc(c, c, 3 * dpr, 0, Math.PI * 2); mctx.fill();
-        const a = Math.atan2(cam[2], cam[0]), ry = here * R * 0.92 + R * 0.08;
+        const a = Math.atan2(cam[2], cam[0]), ry = ringRadius(here, R);
         const x = c + Math.cos(a) * ry, y = c + Math.sin(a) * ry;
         mctx.fillStyle = '#fff'; mctx.strokeStyle = '#000'; mctx.lineWidth = 2 * dpr;
         mctx.beginPath(); mctx.arc(x, y, 3.4 * dpr, 0, Math.PI * 2); mctx.stroke(); mctx.fill();
