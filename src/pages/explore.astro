@@ -115,7 +115,7 @@ import { sections } from '../lib/nav';
           <fieldset>
             <legend>Speed</legend>
             <label><input type="radio" name="speed" value="0" /> Paused</label>
-            <label><input type="radio" name="speed" value="1" checked /> Real time</label>
+            <label><input type="radio" name="speed" value="1" checked /> Normal speed</label>
             <label><input type="radio" name="speed" value="86400" /> A day a second</label>
             <label><input type="radio" name="speed" value="604800" /> A week a second</label>
             <label><input type="radio" name="speed" value="2629800" /> A month a second</label>
@@ -490,19 +490,31 @@ import { sections } from '../lib/nav';
       {
         const dateIn = $('time-date') as HTMLInputElement, slide = $('time-slide') as HTMLInputElement, nowP = $('time-now');
         const speedIn = [...document.querySelectorAll<HTMLInputElement>('input[name="speed"]')], rev = $('time-rev') as HTMLInputElement;
-        const DAY = 86_400_000, START = Date.UTC(1950, 0, 1);
+        const DAY = 86_400_000, START = Date.UTC(1950, 0, 1), LO = Date.UTC(1800, 0, 1), HI = Date.UTC(2200, 0, 1);
         const fmtDate = (ms: number) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
         const isoDay = (ms: number) => new Date(ms).toISOString().slice(0, 10);
         const refresh = () => {
           const ms = world.timeMs, live = world.rate === 1 && Math.abs(ms - Date.now()) < 5000;
           nowP.textContent = `${live ? 'Now: ' : 'Showing '}${fmtDate(ms)}`;
           if (document.activeElement !== dateIn) dateIn.value = isoDay(ms);
-          if (document.activeElement !== slide) slide.value = String(Math.min(36889, Math.max(0, Math.round((ms - START) / DAY))));
+          if (document.activeElement !== slide) slide.value = String(Math.min(36889, Math.max(0, Math.floor((ms - START) / DAY))));
           slide.setAttribute('aria-valuetext', fmtDate(ms));
+          // the clock stops at 1800 and 2200, where the orbit data end
+          if ((ms <= LO && world.rate < 0) || (ms >= HI && world.rate > 0)) { world.setRate(0); $('said').textContent = 'The clock stops at the years 1800 and 2200, the limits of the orbit data.'; }
+          // keep the speed choices in step with the clock, which a link or a flight can also set
+          if (!speedIn.some((i) => i === document.activeElement) && document.activeElement !== rev) {
+            const r = world.rate, mag = Math.abs(r);
+            for (const i of speedIn) i.checked = Number(i.value) === (mag || 0) || (mag === 0 && i.value === '0');
+            rev.checked = r < 0;
+          }
         };
         const applyRate = () => { const v = speedIn.find((i) => i.checked); world.setRate(Number(v?.value ?? 1) * (rev.checked ? -1 : 1)); };
-        dateIn.addEventListener('change', () => { if (dateIn.value) { world.setTime(`${dateIn.value}T12:00:00Z`); refresh(); } });
-        slide.addEventListener('input', () => { world.setTime(new Date(START + Number(slide.value) * DAY + DAY / 2).toISOString()); refresh(); $('said').textContent = fmtDate(world.timeMs); });
+        dateIn.addEventListener('change', () => { if (dateIn.value) { world.setTime(`${dateIn.value}T12:00:00Z`); dateIn.value = isoDay(world.timeMs); refresh(); } });
+        let said = 0;
+        slide.addEventListener('input', () => {
+          world.setTime(new Date(START + Number(slide.value) * DAY + DAY / 2).toISOString()); refresh();
+          clearTimeout(said); said = window.setTimeout(() => { $('said').textContent = fmtDate(world.timeMs); }, 500);
+        });
         for (const i of speedIn) i.addEventListener('change', () => { applyRate(); refresh(); });
         rev.addEventListener('change', () => { applyRate(); refresh(); });
         $('time-reset').addEventListener('click', () => { world.setTime(null); world.setRate(1); for (const i of speedIn) i.checked = i.value === '1'; rev.checked = false; refresh(); $('said').textContent = 'Time is back to now.'; });
@@ -830,7 +842,7 @@ import { sections } from '../lib/nav';
       body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
 
       /* ---- controls */
-      @media (max-width: 600px) { .readout { max-width: calc(100vw - 270px); } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 8px; } }
+      @media (max-width: 600px) { .readout { max-width: calc(100vw - 270px); } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .75rem; } .zoom button { width: 44px; } }
       .controls { position: fixed; z-index: 31; right: var(--gut); bottom: var(--bot); display: flex; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .controls { opacity: 1; pointer-events: auto; }
       .zoom { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 26px; background: var(--glass); overflow: hidden; }
@@ -839,7 +851,7 @@ import { sections } from '../lib/nav';
       .zoom svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.6; fill: none; stroke-linecap: round; }
       .zoom button:hover, .zoom button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
       .pop { position: relative; }
-      .pill { font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 15px 18px; min-height: 48px; }
+      .pill { white-space: nowrap; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 15px 18px; min-height: 48px; }
       .pill:hover, .pill:focus-visible, .pill[aria-expanded="true"] { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
       .sheet { position: absolute; right: 0; bottom: calc(100% + 10px); width: min(22rem, calc(100vw - 2 * var(--gut))); max-height: min(66vh, 36rem); overflow-y: auto; padding: 16px 18px 8px; background: rgba(9,9,11,.96); border: 1px solid var(--line); }
       .sheet[hidden] { display: none; }
@@ -866,6 +878,7 @@ import { sections } from '../lib/nav';
       .time-sheet legend { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; padding: 0; }
       .time-sheet fieldset label { display: block; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 6px 0 6px 28px; position: relative; cursor: pointer; }
       .time-sheet fieldset input { position: absolute; left: 0; top: 9px; accent-color: #f1c98e; width: 16px; height: 16px; margin: 0; }
+      @media (pointer: coarse) { .time-sheet fieldset label { padding-top: 11px; padding-bottom: 11px; } .time-sheet fieldset input { top: 14px; } }
       .time-back { margin-top: 4px; border-top: 1px solid rgba(236,231,220,.08); }
       .time-note { font: 300 .85rem/1.4 var(--serif); color: var(--faint); margin: 0; }
       .free-btn { width: 100%; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 13px 16px; margin: 2px 0 14px; }
