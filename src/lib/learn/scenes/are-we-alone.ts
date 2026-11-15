@@ -35,6 +35,7 @@ const search: Scene = {
     const cx = w / 2, y = h * 0.32, R = Math.min(w * 0.36, h * 0.3), k = ease(clamp(t / 2.5, 0, 1));
     ctx.fillStyle = 'rgba(111,168,230,.28)'; ctx.beginPath(); ctx.arc(cx, y, R * k, 0, TAU); ctx.fill(); ctx.strokeStyle = 'rgba(111,168,230,.6)'; ctx.stroke();
     ctx.fillStyle = 'rgba(255,225,170,.95)'; ctx.fillRect(cx - 3, y - 2, 6, 4);
+    line(ctx, [cx, y + 4, cx + R * 0.0, y + R + 38], 'rgba(255,225,170,.35)');
     label(ctx, 'All the Earth’s oceans: the space we could search', cx, y + R + 26, { align: 'center', colour: SOFT, size: 10 });
     label(ctx, 'A bathtub: what we have searched so far', cx, y + R + 46, { align: 'center', colour: ACCENT, size: 10 });
     say('We have barely started', 'The space to search is like the oceans, and we have searched a bathtub');
@@ -73,5 +74,5 @@ const ships: Scene = {
   },
 };
 
-// one picture to each step of the first look (four steps; two photographs in a row share the step of the paragraph after them)
-export const scenes: Scene[] = [lens, search, places, ships];
+// one picture to each step of the first look (five steps: the opening paragraph, the one-world paragraph, the search, the water, the spacecraft; two photographs in a row share the step of the paragraph after them)
+export const scenes: Scene[] = [lens, lens, search, places, ships];

@@ -4,7 +4,7 @@
  * active, a quasar can give out thousands of times as much light as our whole galaxy, and the Milky Way's
  * giant black hole is quiet at present.
  */
-import { type Scene, SOFT, ACCENT, clamp, label, stars, rng } from '../stage';
+import { type Scene, SOFT, ACCENT, label, stars, rng } from '../stage';
 import { TAU, dot, line } from '../kit';
 
 const backdrop = stars(80, 7301);
@@ -13,7 +13,7 @@ const glow = (ctx: CanvasRenderingContext2D, x: number, y: number, r: number, rg
 const GAS = (() => { const r = rng(4); return Array.from({ length: 150 }, () => ({ a: r() * TAU, d: 0.12 + Math.pow(r(), 0.7) * 0.88, b: r() })); })();
 const DISC = (ctx: CanvasRenderingContext2D, x: number, y: number, R: number, t: number, bright: number, tilt = 0.28) => {
   for (const p of GAS) { const a = p.a + t * 0.6 * Math.pow(p.d, -1.5) * 0.25; dot(ctx, x + Math.cos(a) * p.d * R, y + Math.sin(a) * p.d * R * tilt, 0.8 + p.b * 1.2, `rgba(${255},${190 + 50 * (1 - p.d)},${120 + 100 * (1 - p.d)},${(0.25 + p.b * 0.55) * bright})`); }
-  glow(ctx, x, y, R * 0.3, '255,210,150', 0.5 * bright); dot(ctx, x, y, R * 0.07, '#000'); 
+  glow(ctx, x, y, R * 0.3, '255,210,150', 0.5 * bright); dot(ctx, x, y, R * 0.07, '#000'); ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.beginPath(); ctx.arc(x, y, R * 0.07 + 2.5, 0, TAU); ctx.stroke();
 };
 
 // ---- 1. most galaxies shine with starlight; about one in ten has a bright centre (the hero)
@@ -22,9 +22,9 @@ export const lens: Scene = {
   stillAt: 4,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.2);
-    const rx = room(w), narrow = w < 520, cx0 = rx + (w - rx) * (narrow ? 0.27 : 0.27), cx1 = rx + (w - rx) * (narrow ? 0.73 : 0.73), cy = h * (rx ? 0.4 : 0.24), R = Math.min((w - rx) * 0.2, h * (rx ? 0.18 : 0.12));
+    const rx = room(w), cx0 = rx + (w - rx) * 0.27, cx1 = rx + (w - rx) * 0.73, cy = h * (rx ? 0.4 : 0.24), R = Math.min((w - rx) * 0.2, h * (rx ? 0.18 : 0.12));
     [cx0, cx1].forEach((x, i) => { glow(ctx, x, cy, R, '200,215,255', 0.35); const r = rng(8 + i); for (let k = 0; k < 90; k++) { const a = r() * TAU, d = Math.pow(r(), 0.8); dot(ctx, x + Math.cos(a) * d * R, cy + Math.sin(a) * d * R * 0.6, 0.8 + r(), 'rgba(215,225,255,.8)'); } });
-    const p = 0.7 + 0.3 * Math.sin(t * 3); glow(ctx, cx1, cy, R * 0.5, '255,240,200', 0.8 * p); dot(ctx, cx1, cy, 3.4, '#fffbe8');
+    glow(ctx, cx1, cy, R * 0.2, '255,240,200', 0.9); dot(ctx, cx1, cy, 3.4, '#fffbe8');
     label(ctx, 'Starlight only', cx0, cy + R * 0.7 + 26, { align: 'center', colour: SOFT, size: 10 }); label(ctx, 'Bright centre', cx1, cy + R * 0.7 + 26, { align: 'center', colour: ACCENT, size: 10 });
     say('Most galaxies shine with starlight alone', 'About one in ten has a tiny, very bright centre');
   },
@@ -39,7 +39,7 @@ const disc: Scene = {
     const cx = w / 2, cy = h * 0.32, R = Math.min(w * 0.36, h * 0.34);
     DISC(ctx, cx, cy, R, t, 1);
     label(ctx, 'Gas swirling into a flat disc', cx, cy + R * 0.28 + 30, { align: 'center', colour: ACCENT, size: 10 });
-    label(ctx, 'Giant black hole', cx, cy - 20, { align: 'center', colour: SOFT, size: 9 });
+    label(ctx, 'Giant black hole', cx, cy - R * 0.3 - 14, { align: 'center', colour: SOFT, size: 9 });
     say('The light does not come from stars', 'Gas swirls round a giant black hole in a flat disc');
   },
 };
@@ -55,7 +55,7 @@ const quasar: Scene = {
     line(ctx, [xe + 10, y, xq - 40, y], 'rgba(236,231,220,.2)');
     glow(ctx, xq, y, 30, '255,240,200', 0.7 * p); dot(ctx, xq, y, 3.4, '#fffbe8');
     label(ctx, 'A quasar: very far away', xq, y + 50, { align: 'right', colour: ACCENT, size: 10 });
-    const mx = w * 0.5, my = y - 56; dot(ctx, mx, my, 1.6, '#fffbe8'); label(ctx, 'From Earth it looks like a faint star', mx, my - 16, { align: 'center', colour: SOFT, size: 10 });
+    label(ctx, 'From Earth it looks like a faint star', w / 2, y - 40, { align: 'center', colour: SOFT, size: 10 });
     say('The brightest are called quasars', 'Thousands of times the light of our whole galaxy');
   },
 };
@@ -73,7 +73,8 @@ const jets: Scene = {
       for (let i = 0; i < 5; i++) { const f = ((t * 0.4 + i / 5) % 1); dot(ctx, cx, cy + s * f * L, 2, `rgba(220,235,255,${1 - f})`); }
     }
     DISC(ctx, cx, cy, R, t, 0.9, 0.2);
-    label(ctx, 'Two thin jets of fast particles', cx + R + 20 > w - 150 ? cx : cx + R + 20, cy + L + 22, { align: 'center', colour: ACCENT, size: 10 });
+    ctx.strokeStyle = 'rgba(200,215,255,.2)'; ctx.setLineDash([3, 5]); ctx.beginPath(); ctx.ellipse(cx, cy, R * 1.6, R * 0.45, 0, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
+    label(ctx, 'Two thin jets of fast particles', cx, cy + L + 22, { align: 'center', colour: ACCENT, size: 10 });
     say('Some fire out two thin jets', 'One each way, far beyond the galaxy');
   },
 };
