@@ -120,6 +120,12 @@ import { sections } from '../lib/nav';
             <label><input type="radio" name="motion" value="reduced" /> Reduced motion <small>a quick fade instead of moving</small></label>
           </fieldset>
           <fieldset>
+            <legend>Picture quality</legend>
+            <label><input type="radio" name="quality" value="auto" checked /> Automatic <small>sharp as your device can manage while keeping smooth</small></label>
+            <label><input type="radio" name="quality" value="smooth" /> Smoother <small>a softer picture, for a slow device or a battery</small></label>
+            <label><input type="radio" name="quality" value="sharp" /> Sharper <small>keeps the picture crisp, and may stutter on a slow device</small></label>
+          </fieldset>
+          <fieldset>
             <legend>Map</legend>
             <label><input type="checkbox" id="show-map" checked /> Show the map</label>
           </fieldset>
@@ -178,7 +184,7 @@ import { sections } from '../lib/nav';
 
       // ---- settings, kept in this browser only (see the cookies page)
       const KEY = 'heliocodex-view';
-      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean };
+      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean; quality?: 'auto' | 'smooth' | 'sharp' };
       let prefs: Prefs = {};
       try { prefs = JSON.parse(localStorage.getItem(KEY) ?? '{}') ?? {}; } catch {}
       const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
@@ -304,6 +310,7 @@ import { sections } from '../lib/nav';
         });
         world.setReduced(reducedNow());
         world.setBigger(!!prefs.big);
+        world.setQuality(prefs.quality ?? 'auto');
         $('status').textContent = params.has('debug') ? `Ready · ${world.backend} · ${world.depthMode}` : matchMedia('(pointer: coarse)').matches ? 'Tap the ring to go in' : 'Click the ring, or press Enter';
         // every moon, where it really is; loaded after the engine is running
         import('../lib/v2/layers/moons').then(async ({ createMoonsLayer }) => {
@@ -451,6 +458,10 @@ import { sections } from '../lib/nav';
       for (const i of sizeIn) { i.checked = (i.value === 'big') === !!prefs.big; i.addEventListener('change', () => { prefs.big = i.value === 'big'; world.setBigger(prefs.big); save(); }); }
       for (const i of motionIn) { i.checked = (i.value === 'reduced') === reducedNow(); i.addEventListener('change', () => { prefs.reduced = i.value === 'reduced'; world.setReduced(prefs.reduced); body.classList.toggle('calm', prefs.reduced); save(); }); }
       body.classList.toggle('calm', reducedNow());
+      for (const i of document.querySelectorAll<HTMLInputElement>('input[name="quality"]')) {
+        i.checked = i.value === (prefs.quality ?? 'auto');
+        i.addEventListener('change', () => { prefs.quality = i.value as 'auto' | 'smooth' | 'sharp'; world.setQuality(prefs.quality); save(); $('said').textContent = `Picture quality: ${i.value === 'auto' ? 'automatic' : i.value === 'smooth' ? 'smoother' : 'sharper'}.`; });
+      }
       const showMap = $('show-map') as HTMLInputElement;
       showMap.checked = prefs.map !== false;
       body.classList.toggle('no-map', !showMap.checked);

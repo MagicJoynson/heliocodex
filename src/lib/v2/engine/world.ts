@@ -326,7 +326,11 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const PLANET_NAMES: Record<string, string> = { mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
 
   const maxRatio = Math.min(devicePixelRatio, 2);
-  let ratio = maxRatio * quality.scale;
+  // the picture-quality choice: 'auto' is the governor as it was; 'smooth' caps the sharpness lower for a steadier frame rate on a slow device; 'sharp' stops the governor from dropping far
+  let qMode: 'auto' | 'smooth' | 'sharp' = 'auto';
+  const ratioCap = () => maxRatio * quality.scale * (qMode === 'smooth' ? 0.6 : 1);
+  const ratioFloor = () => maxRatio * (qMode === 'sharp' ? 0.8 : 0.45);
+  let ratio = ratioCap();
   function resize() {
     const w = o.canvas.clientWidth, h = o.canvas.clientHeight;
     // never more pixels than the tier can afford, whatever the screen
@@ -448,10 +452,10 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     if ((sinceAdjust += dt) > 1.5) {
       sinceAdjust = 0;
       const prev = ratio;
-      if (frameAvg > quality.target * 1.25) { ratio = Math.max(maxRatio * 0.45, ratio * 0.9); goodWindows = 0; }
+      if (frameAvg > quality.target * 1.25) { ratio = Math.max(Math.min(ratioFloor(), ratioCap()), ratio * 0.9); goodWindows = 0; }
       // on time for three windows in a row (vsync keeps 60 Hz screens at 16.7 ms, so "on time" is
       // close to the target, not well under it): try a little sharper
-      else if (frameAvg < quality.target * 1.05 && ++goodWindows >= 3) { ratio = Math.min(maxRatio * quality.scale, ratio * 1.06); goodWindows = 0; }
+      else if (frameAvg < quality.target * 1.05 && ++goodWindows >= 3) { ratio = Math.min(ratioCap(), ratio * 1.06); goodWindows = 0; }
       if (ratio !== prev) resize();
     }
 
@@ -715,6 +719,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     zoom(steps: number) { flight.zoom(steps); },
     /** planets drawn bigger than life, so the whole system can be seen and clicked */
     setBigger(v: boolean) { bigger = v; },
+    setQuality(v: 'auto' | 'smooth' | 'sharp') { qMode = v; ratio = ratioCap(); resize(); },
+    get quality() { return qMode; },
     /** reduced motion: every trip is a jump hidden by a quick fade, and nothing drifts */
     setReduced(v: boolean) { reduced = v; flight.setReduced(v); },
     /** fly yourself (true) or go back to circling what is nearest (false) */
