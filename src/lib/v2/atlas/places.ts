@@ -56,11 +56,11 @@ export const places: Place[] = [
     credits: [MCCONNACHIE] },
   { id: 'cosmic-web', chart: '/atlas/galaxies#figure-web', name: 'The cosmic web', model: false,
     what: 'Tens of thousands of galaxies, gathered into clusters, threads and empty voids, in the part of the sky that has been surveyed.',
-    drawn: 'Every point is a real galaxy from the Sloan Digital Sky Survey. Its place on the sky is measured, and its distance is worked out from how fast it is moving away from us. The survey mapped only part of the sky, so the rest is blank here because it was not surveyed, not because it is empty.',
+    drawn: 'Every point is a real galaxy from the Sloan Digital Sky Survey. Its place on the sky is measured. Its distance is approximate: it is worked out from its redshift, how far its light has been stretched, taking the universe to expand by 70 kilometres a second for every megaparsec. The survey mapped only part of the sky, so the rest is blank here because it was not surveyed, not because it is empty.',
     credits: [SDSS] },
   { id: 'cmb', name: 'The edge of what we can see', model: false,
     what: 'The oldest light there is, coming from every direction at once.',
-    drawn: 'The mottled sphere is a real map of the oldest light, made by the WMAP spacecraft. Its colours stand for differences in temperature of less than a thousandth of a degree.',
+    drawn: 'The mottled sphere is a real map of the oldest light, made by the WMAP spacecraft. Its colours stand for differences in temperature of less than a thousandth of a degree. The light was released about 380,000 years after the Big Bang. The sphere’s radius, 46 billion light years, is the comoving distance to where that light started, measured in today’s stretched-out space, which is why it is larger than the 13.8 billion years the universe has existed.',
     credits: [WMAP] },
 ];
 
