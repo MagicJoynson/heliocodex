@@ -1897,11 +1897,11 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'A small, red, lumpy moon of Jupiter that sits so close to the planet that it gives off more heat than it gets from the Sun.',
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'It is shaped like a lopsided potato, about 250 km long and about 128 km across at its narrowest, with a surface that is one of the reddest in the Solar System. Its craters are large for its size, and two of them, Pan and Gaea, are more than half as wide as the moon itself.',
+        'It is shaped like a lopsided potato, about 250 km long and about 128 km across at its narrowest, with a surface that is one of the reddest in the Solar System. Its craters are large for its size, and two of them, Pan and Gaea, are about 100 km and 80 km across.',
       ] },
       { title: 'What it is made of', paras: [
-        'Its density is less than that of water, which means it cannot be solid rock or ice. It is probably a loose pile of rubble held together by its own weak pull, with a lot of empty space inside, and the red colour may come from sulphur thrown out by Io.',
-        'It is about 181,000 km from Jupiter, well inside the orbit of Io, and goes round in 12 hours. It gives off more heat than the Sun supplies, which is thought to come from Jupiter’s radiation belts and magnetic field.',
+        'Its density is about that of water or less, which means it cannot be solid rock. It is probably a loose pile of rubble, perhaps with ice, held together by its own weak pull, with a lot of empty space inside, and the red colour may come from sulphur thrown out by Io.',
+        'It is about 181,000 km from Jupiter, well inside the orbit of Io, and goes round in 12 hours. It gives off slightly more heat than it takes in from the Sun, which is thought to come from Jupiter’s radiation belts and magnetic field.',
       ] },
       { title: 'How it was found', paras: [
         'Edward Barnard found it on 9 September 1892, with the 36-inch telescope at the Lick Observatory in California. It was the fifth moon of Jupiter to be found, and the last to be found by looking through a telescope by eye, since everything since has been found in photographs. The name, from Greek myth, is that of the nymph who nursed the infant Zeus.',
@@ -1926,7 +1926,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       ] },
       { title: 'What it is made of', paras: [
         'It is probably ice and rock, but little is known. It is one of Jupiter’s small inner moons, and it is dark, reflecting less than a tenth of the light that falls on it.',
-        'It goes round Jupiter at about 222,000 km in 16 hours. Dust thrown off by meteorites hitting it, and by Amalthea, forms the Thebe gossamer ring, a faint ring that stretches out as far as Thebe’s own orbit.',
+        'It goes round Jupiter at about 222,000 km in 16 hours. Dust thrown off its surface by meteorite impacts forms the Thebe gossamer ring, a faint ring that stretches out as far as Thebe’s own orbit.',
       ] },
       { title: 'How it was found', paras: [
         'Stephen Synnott found it in pictures taken by Voyager 1 in March 1979, when the spacecraft was approaching Jupiter. It was the 14th moon of Jupiter to be known. It is named for a nymph in Greek myth.',
@@ -1943,7 +1943,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   himalia: {
-    lead: 'The largest of the small outer moons of Jupiter, probably a captured asteroid, and the head of a family of five.',
+    lead: 'The largest of the small outer moons of Jupiter, probably a captured asteroid, and the head of a family of small outer moons.',
     chapters: [
       { title: 'What it looks like up close', paras: [
         'It is about 170 km across, and it has only been seen as a small, dark, slightly elongated blob, in pictures from the Cassini spacecraft in 2000 and from New Horizons in 2007. Nothing of its surface can be seen.',
@@ -1952,7 +1952,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'It is dark and rocky, and is thought to be much like a C-type asteroid. Its density is not well known.',
       ] },
       { title: 'How it was found', paras: [
-        'Charles Perrine found it on 3 December 1904 at the Lick Observatory in California. It was the sixth moon of Jupiter found. It was known only by a number until it was given its name in 1955, from a nymph in Greek myth.',
+        'Charles Perrine found it on 3 December 1904 at the Lick Observatory in California. It was the sixth moon of Jupiter found. It was known only by a number, Jupiter VI, until it was named in 1975, for a nymph in Greek myth.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'Cassini passed on its way to Saturn in 2000, and New Horizons on its way to Pluto in 2007. Both saw it only as a few pixels. No spacecraft has been sent to it.',
@@ -1969,19 +1969,20 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'One of two moons of Saturn that swap orbits every four years or so, so close to each other that they never pass.',
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'It is about 179 km across on average, with a surface that is dull and cratered, and a surface worn smooth by a layer of dust.',
+        'It is about 179 km across on average, with a dull, cratered surface worn smooth by a layer of dust.',
+        'They go round Saturn at almost the same distance, at about 151,500 km, about 50 km apart, taking 16.7 hours. The inner one goes faster, so it catches up with the outer one. When they come within about 10,000 km, they pull on each other and swap orbits, so each moon ends up in the other’s old path. This is repeated every four years.',
       ] },
       { title: 'What it is made of', paras: [
         'Its density is only 0.63 times that of water, much less than the density of ice, so it has to be mostly empty space. It is probably a loose pile of ice and rubble rather than a solid block.',
       ] },
       { title: 'How it was found', paras: [
-        'Audouin Dollfus saw it on 15 December 1966, in pictures taken from the Pic du Midi observatory in France. It was not known that there were two moons so close until 1978, when Stephen Larson and John Fountain worked out that the observations of 1966 and later were of two separate moons, Janus and Epimetheus. The name is that of the Roman god of doorways and beginnings.',
+        'Audouin Dollfus saw it on 15 December 1966, in pictures taken from the Pic du Midi observatory in France. It was not known that there were two moons so close until 1978, when Stephen Larson and John Fountain worked out that the sightings of 1966 and later were of two separate moons, Janus and Epimetheus. Voyager 1 confirmed it in 1980. The name is that of the Roman god of doorways and beginnings.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'Voyager 1 and 2 passed in 1980 and 1981. Cassini flew by several times, and observed the orbit swap.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Where it comes from. Janus and Epimetheus may be two halves of one body that broke up. They go round Saturn at almost the same distance, at about 151,500 km, about 50 km apart, taking 16.7 hours. The inner one goes faster, so it catches up with the outer one. When they come within about 10 km, they pull on each other and swap orbits, and the one that was in the lead drops back. This is repeated every four years.',
+        'Where it comes from. Janus and Epimetheus may be two halves of one body that broke up. The pair are the only moons in the Solar System known to swap orbits like this, and why they ended up so close is not known.',
       ] },
     ],
     sources: [
@@ -1998,7 +1999,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Its density is only 0.64 times that of water, so it must be mostly empty space, a loose pile of ice and rubble. It is the smaller of the two, so it moves further when they swap.',
       ] },
       { title: 'How it was found', paras: [
-        'Stephen Larson and John Fountain found it in 1978, working through pictures from 1966 and 1977, and sorting them into two moons, Epimetheus and Janus. It is named for the brother of Prometheus in Greek myth, whose name means “afterthought”.',
+        'Richard Walker saw it on 18 December 1966, three days after Audouin Dollfus saw Janus. In 1978 Stephen Larson and John Fountain showed that the sightings were of two moons, and Voyager 1 confirmed it in 1980. It is named for the brother of Prometheus in Greek myth, whose name means “afterthought”.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'Voyager 1 and 2 passed in 1980 and 1981. Cassini passed several times, and took the best pictures.',
@@ -2012,7 +2013,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   larissa: {
-    lead: 'The fourth-largest moon of Neptune, a lumpy, cratered world found by a star’s blinking.',
+    lead: 'The fourth-largest moon of Neptune, a lumpy, cratered world found when it briefly dimmed a star.',
     chapters: [
       { title: 'What it looks like up close', paras: [
         'It is about 190 km across and shaped like a potato. Voyager 2 saw it as a dark, cratered body.',
@@ -2044,7 +2045,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Water ice, as far as New Horizons could tell. Its surface is bright.',
       ] },
       { title: 'How it was found', paras: [
-        'Hal Weaver and his team found it with the Hubble Space Telescope on 15 May 2005, together with Hydra. It was named in 2006 for Nyx, the Greek goddess of night, whom some myths make the mother of Charon. The name also begins with N, for the New Horizons mission.',
+        'Hal Weaver and his team found it with the Hubble Space Telescope, together with Hydra, in images taken in May 2005 and announced in October 2005. It was named in 2006 for Nyx, the Greek goddess of night, whom some myths make the mother of Charon. The name also begins with N, for the New Horizons mission.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
         'New Horizons, which flew past Pluto on 14 July 2015 and took the first and only close pictures.',
@@ -2061,16 +2062,16 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'The outermost known moon of Pluto, an irregular, icy body, found in 2005.',
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'It is about 65 km long and 25 km across at its narrowest, shaped like an irregular lump, and is bright, with a few large craters.',
+        'It is about 51 km long and 31 km across at its narrowest, shaped like an irregular lump, and is bright, with a few large craters.',
       ] },
       { title: 'What it is made of', paras: [
-        'Almost entirely water ice, as far as New Horizons could tell. Its surface is bright, as clean ice is.',
+        'Mostly water ice, as far as New Horizons could tell. Its surface is bright, as clean ice is.',
       ] },
       { title: 'How it was found', paras: [
-        'Hal Weaver and his team found it with the Hubble Space Telescope on 15 May 2005, together with Nix. It was named in 2006 for the many-headed water serpent that Heracles killed in Greek myth. The names Nix and Hydra were also chosen because their first letters, N and H, are those of the New Horizons mission.',
+        'Hal Weaver and his team found it with the Hubble Space Telescope, together with Nix, in images taken in May 2005 and announced in October 2005. It was named in 2006 for the many-headed water serpent that Heracles killed in Greek myth. The names Nix and Hydra were also chosen because their first letters, N and H, are those of the New Horizons mission.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
-        'New Horizons, which flew past Pluto on 14 July 2015 and took the first and only close pictures.',
+        'New Horizons, which flew past Pluto on 14 July 2015, is the only spacecraft to have seen it up close.',
       ] },
       { title: 'What is still unknown', paras: [
         'How Pluto’s small moons formed. They are thought to be made from the debris of the collision that made Charon. Hydra goes round Pluto in about 38 days at about 65,000 km, and, like Nix, it tumbles instead of spinning steadily, because of the pull of Pluto and Charon.',
