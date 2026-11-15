@@ -156,7 +156,7 @@ const BAYER = /^(Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda
  * A star's whole page, as the words and marks that go inside its <article>. The pages built ahead
  * of time and the shared page for catalogue stars both use this, so every star is described the same way.
  */
-export function starPage(star: PageStar): { html: string; description: string; rgb: string; byEye: boolean } {
+export function starPage(star: PageStar): { html: string; title: string; description: string; rgb: string; byEye: boolean } {
   const ly = star.distPc * LY_PER_PC;
   // the nearest star is given to the hundredth, the figure the lesson and the 3D view use
   const lyText = star.slug === 'proxima-centauri' ? ly.toFixed(2) : round2(ly);
@@ -226,5 +226,10 @@ export function starPage(star: PageStar): { html: string; description: string; r
     row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${byType ? 'The temperature is read from the spectral type with the table of <a href="https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt" rel="noopener">Pecaut and Mamajek (2013)</a>, and the' : hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.${ang ? ` Its size comes from ${ang[1] === 'm' ? `its angular size as measured in <a href="https://ui.adsabs.harvard.edu/abs/${ang[2]}" rel="noopener">${ang[2].slice(0, 4)}</a>, listed in the <a href="https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=II/345" rel="noopener">JMMC Measured Stellar Diameters Catalogue</a>` : 'its angular size as estimated from its colours in the <a href="https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=II/346" rel="noopener">JMMC Stellar Diameters Catalogue, version 2</a> (Bourgès and others, 2017)'}, combined with the distance above.` : ''}</p>
       <p>To read more: <a href="/learn/colour-and-brightness">Colour and brightness</a>, <a href="/learn/how-stars-live-and-die">How stars live and die</a>, <a href="/learn/measuring-distance">Measuring distance</a>.</p>`, true),
   ].join('\n');
-  return { html, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
+  // the page title says what the star is, from its colour and spectral class, and where it sits
+  const word = /^It is an? (supergiant|bright giant|giant|subgiant)/.exec(stage)?.[1];
+  const short = colour.split(',')[0].replace(/^an? /, '');
+  const what = short ? (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short) : 'star';
+  const title = `${star.name}: ${what}${star.constellation && !star.name.includes(star.constellation) ? ` in ${star.constellation}` : ''}`;
+  return { html, title, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
 }

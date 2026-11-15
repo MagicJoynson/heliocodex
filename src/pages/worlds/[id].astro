@@ -106,7 +106,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 const lead = page ? (page.globe ?? page.picture) : null;
 const closeup = page?.globe ? page.picture : null;
 ---
-<Reading title={`${b.name}: ${lowerKind}`.replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
+<Reading title={(b.kind === 'comet' && /comet/i.test(b.name) ? `${b.name}: orbit and facts` : `${b.name}: ${lowerKind}`).replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
   <article class="rec world-record">
     <Fragment set:html={headHtml} />
     <section class:list={['rec-top', { 'no-pic': !lead }]}>
