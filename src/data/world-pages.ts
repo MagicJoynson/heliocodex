@@ -1140,7 +1140,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/phoebe-cassini-2004.jpg', width: 1100, height: 733,
       alt: 'Two grey, heavily cratered crescents of a moon facing each other against black, with bright streaks running down the wall of a large crater at the top of each.',
-      caption: '<b>Photographs.</b> Phoebe on 11 June 2004, seen by NASA’s Cassini spacecraft on the way in (left) and on the way out (right). The bright streaks are on the walls of craters, where the dark surface has slid away. Credit: NASA/JPL/Space Science Institute.',
+      caption: '<b>Photographs.</b> Phoebe on 11 June 2004, seen by NASA’s Cassini spacecraft on the way in (left) and on the way out (right). The bright streaks are on the walls of craters, where the dark surface has slid away. Credit: NASA/JPL-Caltech/Space Science Institute.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
@@ -1173,7 +1173,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/nereid-voyager2-1989.jpg', width: 200, height: 200,
       alt: 'A small, faint, lumpy grey blob in the middle of a black square.',
-      caption: '<b>A photograph.</b> Nereid from NASA’s Voyager 2 spacecraft on 24 August 1989, at a distance of 4.7 million km. This is the best picture there is. It is shown at its true size. Credit: NASA/JPL.',
+      caption: '<b>A photograph.</b> Nereid from NASA’s Voyager 2 spacecraft on 24 August 1989, at a distance of 4.7 million km. This is the best picture there is, and it is enlarged here from a very small original. Credit: NASA/JPL.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
@@ -1190,7 +1190,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Only Voyager 2, in 1989.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Nearly everything about it: its shape, how it spins, what its surface is like, and whether it formed with Neptune or was caught later.',
+        'Nearly everything about it: its shape, how fast it spins for certain, what its surface is like, and whether it formed with Neptune or was caught later.',
       ] },
     ],
     sources: [
