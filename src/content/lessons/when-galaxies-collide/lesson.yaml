@@ -2,7 +2,7 @@ title: When galaxies collide
 strand: galaxies
 order: 4
 summary: "Galaxies grow by pulling in their neighbours. A collision takes hundreds of millions of years, hardly any stars touch, and both come out a new shape."
-scene: "The Milky Way with its two Magellanic Clouds close by and Andromeda, the nearest large galaxy, across the gap it is closing at 110 km every second."
+scene: "Drawings that follow the first look: two galaxies drawn together, passing through each other, gas clouds making new stars, settling into one bigger galaxy, and a small galaxy passing through a large one."
 view: { target: local-group, highlight: [andromeda] }
 terms: [galaxy-merger, tidal-tail, starburst, spiral-galaxy, elliptical-galaxy, globular-cluster, local-group, milky-way]
 needs: [kinds-of-galaxy, the-milky-way]
