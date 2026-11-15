@@ -15,7 +15,7 @@ export default defineConfig({
   // only exist as tools (search, the catalogue-number page, the v2 test page) are left out.
   integrations: [
     sitemap({
-      filter: (page) => !/^https:\/\/heliocodex\.com\/(search|v2|stars\/catalogue|404)\/?$/.test(page),
+      filter: (page) => !/^https:\/\/heliocodex\.com\/(search|v2|stars\/catalogue|learn\/packs|404)\/?$/.test(page),
     }),
   ],
   markdown: { processor: satteri({ features: { math: true }, mdastPlugins: [equations, charts] }) },
