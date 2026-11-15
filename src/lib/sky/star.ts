@@ -84,6 +84,9 @@ export function reading(spect: string | null, bv: number | null, distPc: number)
   const seen = classOfColour(bv), doubtful = /:|comp|\+/i.test(given), apart = at < 0 ? 0 : at - seen;
   const wrong = apart > 1 || (apart < -2 && distPc < 200);
   if (!doubtful && !wrong && at >= 0) return { ...plain, type, fromColour: false, trusted: true };
+  // an uncertain O or B type (marked only by a colon) on a distant star that looks cooler: dust between us and the
+  // star only ever reddens it, so a colour that is cooler than the type is what dust would do; keep the type's class
+  if (at >= 0 && at <= 1 && seen > at && distPc >= 200 && /:/.test(given) && !/comp|\+/i.test(given)) return { colour: CLASSES[ORDER[at]], stage: '', type, fromColour: false, trusted: true };
   // a blended or guessed type says nothing sure about the star's stage of life either
   const stage = /:|comp/i.test(given) || wrong ? '' : kind(given.split('+')[0]).stage;
   return { colour: CLASSES[ORDER[seen]], stage, type: wrong && !/comp/i.test(given) ? '' : type, fromColour: at >= 0 && at !== seen, trusted: false };
@@ -162,7 +165,7 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const lyText = star.slug === 'proxima-centauri' ? ly.toFixed(2) : round2(ly);
   const hasColour = star.bv !== null && star.bv !== undefined && !Number.isNaN(star.bv);
   const kelvin = hasColour ? Math.round(temperature(star.bv) / 100) * 100 : 0, rgb = (hasColour ? tint(star.bv) : [236, 231, 220]).join(',');
-  const { colour, stage, type: spect, trusted } = reading(star.spect, star.bv, star.distPc), modern = MODERN[star.slug];
+  const { colour, stage, type: spect, trusted, fromColour } = reading(star.spect, star.bv, star.distPc), modern = MODERN[star.slug];
   // For hot stars colour is a poor thermometer, and dust on the way reddens it, so where the catalogue's
   // type can be trusted and is O or B, or is hotter than the colour, the type gives the temperature.
   const given = (star.spect ?? '').trim().replace(/^sd/, ''), at = ORDER.indexOf(given[0]?.toUpperCase() ?? '');
@@ -229,7 +232,8 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   // the page title says what the star is, from its colour and spectral class, and where it sits
   const word = /^It is an? (supergiant|bright giant|giant|subgiant)/.exec(stage)?.[1];
   const short = colour.split(',')[0].replace(/^an? /, '');
-  const what = short ? (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short) : 'star';
+  // where the page's colour overrides the catalogued type, the title claims neither (it would contradict the type row or the lead)
+  const what = !short || fromColour ? 'star' : (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short);
   const title = `${star.name}: ${what}${star.constellation && !star.name.endsWith(star.constellation) ? ` in ${star.constellation}` : ''}`;
   return { html, title, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
 }
