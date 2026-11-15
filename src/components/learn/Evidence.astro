@@ -1,0 +1,43 @@
+---
+// After the story: how anyone knows, the sums behind the scale, and a way into the 3D view at the same place.
+import type { Lesson } from '../../lib/v2/margin/content';
+import { pageStars } from '../../lib/sky/starlist';
+
+interface Props { data: NonNullable<Lesson['data']['predict']> }
+const { data } = Astro.props;
+const { evidence, handoff } = data;
+// a star can be named by its page address, 'star:proxima-centauri'; the 3D view wants its place in the catalogue, which is looked up here so it cannot drift
+let go = handoff?.go ?? '';
+const named = /^star:([a-z][a-z0-9-]*)$/.exec(go);
+if (named) {
+  const star = pageStars().find((x) => x.slug === named[1]);
+  if (!star) throw new Error(`The hand-off names a star with no page: ${go}`);
+  go = `star:${star.index}`;
+}
+---
+<section class="row evidence" id="how-we-know" aria-labelledby="how-we-know-h">
+  <div class="hang"><h2 id="how-we-know-h">{evidence.heading}</h2></div>
+  <div class="prose">
+    {evidence.beats.map((b) => (
+      <div class="beat">
+        <h3>{b.head}</h3>
+        <p>{b.text}</p>
+      </div>
+    ))}
+    {evidence.working.length > 0 && (
+      <details class="working">
+        <summary>Show the sums behind the football scale</summary>
+        <ul>{evidence.working.map((w) => <li>{w}</li>)}</ul>
+      </details>
+    )}
+  </div>
+</section>
+{handoff && (
+  <section class="row handoff" aria-labelledby="handoff-h">
+    <div class="hang"><h2 id="handoff-h">See it for yourself</h2></div>
+    <div>
+      <p class="handoff-line">{handoff.line}</p>
+      <p class="predict-actions"><a class="btn" href={`/explore?go=${go}`}>{handoff.label}</a></p>
+    </div>
+  </section>
+)}

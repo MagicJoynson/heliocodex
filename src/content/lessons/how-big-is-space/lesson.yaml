@@ -6,3 +6,36 @@ scene: "The flight in from deep space replayed with a ruler alongside, naming ea
 view: { target: solar-system }
 terms: [power-of-ten, astronomical-unit, light-year, oort-cloud, heliosphere]
 next: [measuring-distance]
+predict:
+  lead: "Before you read on, make a guess. Nothing is saved or sent anywhere."
+  question: "Shrink the Sun to a football and put it on the centre spot of a pitch. Shrink the nearest star by the same amount and put it down too. How far away does it go?"
+  options:
+    - { label: "Down the road", detail: "about 1 km", km: 1 }
+    - { label: "In the next town", detail: "about 20 km", km: 20 }
+    - { label: "In another country", detail: "about 1,000 km", km: 1000 }
+    - { label: "Across an ocean", detail: "about 4,000 km", km: 4000 }
+    - { label: "On the far side of the world", detail: "about 20,000 km", km: 20000 }
+  answer:
+    km: 6346
+    label: "About 6,350 km"
+    like: "as far as London is from Chicago"
+  evidence:
+    heading: "How anyone knows"
+    beats:
+      - head: "The Earth to the Sun was measured with radio waves."
+        text: "In 1961 radio waves were bounced off Venus for the first time, and the echo gave its distance directly. The timing of the planets already gave the shape of the Solar System, so one true distance fixed all the others. That distance, the astronomical unit, is now defined as exactly 149,597,870.7 km. It is the ruler for the first part of the scale: Neptune is 30 of them out."
+      - head: "The nearest star was measured by parallax."
+        text: "Hold up a finger and look at it with one eye, then the other. It jumps against the background. The Earth does the same thing as it goes round the Sun: six months apart, the nearest stars shift a little against the far ones. For Proxima Centauri the shift is 0.768 seconds of arc, which gives a distance of 1.30 parsecs, or 4.25 light years. The lesson on measuring distance sets out how."
+      - head: "A light year is a distance, not a time."
+        text: "Light travels 299,792 km every second, so in a year it covers about 9.46 million million km. Proxima Centauri's light takes four and a quarter years to arrive, which is why astronomers say it is 4.25 light years away, and why we see it as it was four and a quarter years ago."
+    working:
+      - "The Sun is 1,392,700 km wide. Shrunk to 22 cm, one metre of the model stands for 6.33 million km."
+      - "One astronomical unit, 149.6 million km, becomes 23.63 m. Neptune, 30.07 au out, is about 710 m away."
+      - "Proxima Centauri is 4.2465 light years, or 268,550 au, away. That is 268,550 × 23.63 m, about 6,346 km."
+      - "Voyager 1, 172 au from the Sun in November 2026, would be about 4 km from the football."
+      - "The Milky Way, about 100,000 light years across, becomes about 149 million km, close to the real distance from the Sun to the Earth."
+      - "The Andromeda galaxy, 2.5 million light years away, becomes about 3.7 billion km, 25 times that."
+  handoff:
+    go: "star:proxima-centauri"
+    label: "Fly to Proxima Centauri in 3D"
+    line: "The 3D view uses the real spacing, with nothing squeezed to fit. Watch how long the dark lasts on the way."

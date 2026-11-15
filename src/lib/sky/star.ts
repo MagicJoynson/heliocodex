@@ -116,6 +116,10 @@ export const placing = (rank: number) => (rank === 1 ? 'the brightest' : rank <=
  * Betelgeuse: Joyce et al. 2020, ApJ 902, 63: 168 pc, +27 and -15.
  */
 export const MODERN: Record<string, { pc: number; by: string; url: string; note: string }> = {
+  'proxima-centauri': {
+    pc: 1.3020, by: 'the Gaia satellite (Data Release 3, 2022)', url: 'https://www.cosmos.esa.int/web/gaia/dr3',
+    note: 'Proxima Centauri is the nearest star to the Sun, and its distance is known very well. Gaia measured its shift against the background stars as 768 thousandths of an arcsecond, which gives 4.25 light years. The older Hipparcos figure was about 4.23.',
+  },
   betelgeuse: {
     pc: 168, by: 'Joyce and others (2020)', url: 'https://arxiv.org/abs/2006.09837',
     note: 'Betelgeuse is hard to place, because the star is so swollen that its disc is wider than the tiny shift in the sky used to measure distance. This figure comes from a 2020 study of the way the star pulses, and could be anywhere from about 500 to 640 light years. The Hipparcos satellite put it at about 500.',
@@ -160,7 +164,10 @@ const BAYER = /^(Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda
  * of time and the shared page for catalogue stars both use this, so every star is described the same way.
  */
 export function starPage(star: PageStar): { html: string; description: string; rgb: string; byEye: boolean } {
-  const ly = star.distPc * LY_PER_PC, hasColour = star.bv !== null && star.bv !== undefined && !Number.isNaN(star.bv);
+  const ly = star.distPc * LY_PER_PC;
+  // the nearest star is given to the hundredth, the figure the lesson and the 3D view use
+  const lyText = star.slug === 'proxima-centauri' ? ly.toFixed(2) : round2(ly);
+  const hasColour = star.bv !== null && star.bv !== undefined && !Number.isNaN(star.bv);
   const kelvin = hasColour ? Math.round(temperature(star.bv) / 100) * 100 : 0, rgb = (hasColour ? tint(star.bv) : [236, 231, 220]).join(',');
   const { colour, stage, type: spect, trusted } = reading(star.spect, star.bv, star.distPc), modern = MODERN[star.slug];
   // For hot stars colour is a poor thermometer, and dust on the way reddens it, so where the catalogue's
@@ -203,7 +210,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
   const sizeWord = (x: number) => x >= 100 ? nf(Math.round(x / 10) * 10) : x >= 10 ? nf(Math.round(x)) : x.toFixed(1);
   const sizeCell: Cell | null = ang ? { key: 'size', label: 'Size', value: sizeWord(suns), unit: (suns >= 0.95 && suns < 1.05 ? 'Sun across' : 'Suns across') + (ang[1] === 'e' ? ', roughly' : ''), note: `${ang[1] === 'm' ? 'From its measured' : 'From its estimated'} size in our sky and its distance.${suns >= 100 ? ` Put in place of the Sun, its surface would reach ${reach(suns / 2 * 0.00465)}.` : ''}` } : null;
   const cells: Cell[] = [
-    { key: 'distance', label: 'From the Earth', value: `<span data-ly="${star.distPc < 60 ? ly : ''}">${round2(ly)}</span>`, unit: 'light years', note: `Its light set off <span data-left>about ${round2(ly)} years ago</span>.` },
+    { key: 'distance', label: 'From the Earth', value: `<span data-ly="${star.distPc < 60 ? ly : ''}">${lyText}</span>`, unit: 'light years', note: `Its light set off <span data-left>about ${lyText} years ago</span>.` },
     ...(sizeCell ? [sizeCell] : []),
     ...(tempCell ? [tempCell] : []),
     { key: 'light', label: 'Light given out', value: lum >= 1.5 ? round2(lum) : lum > 0.67 ? 'About 1' : round2(lum), unit: lum > 0.67 && lum < 1.5 ? 'Sun' : lum >= 1.5 ? 'Suns' : 'of a Sun', note: `Visible light, compared with the Sun.${!unnamed && rank <= 20 ? ` From the Earth it is ${placing(rank)} star in the night sky.` : ''}` },
@@ -217,7 +224,7 @@ export function starPage(star: PageStar): { html: string; description: string; r
       <figure class="rec-pic star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure>
       <div>${sheet(cells)}<p class="rec-go"><a href="/explore?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p></div>
     </section>`,
-    row('About these numbers', `<p>${round2(ly)} light years means the light you see from ${it} tonight set off about ${round2(ly)} years ago. Everything we know about it is that much out of date.${doubt ? ` ${doubt}` : ''}</p>
+    row('About these numbers', `<p>${lyText} light years means the light you see from ${it} tonight set off about ${lyText} years ago. Everything we know about it is that much out of date.${doubt ? ` ${doubt}` : ''}</p>
       <p>It gives out ${lumText}. Its brightness in our sky is magnitude ${star.appMag.toFixed(2).replace('-', '−')}: smaller numbers are brighter, and the faintest stars the eye can see are about 6.</p>
       ${byType ? `<p>The temperature is read from its spectral type, ${spect}, with a standard table of how hot stars of each type are. It is a guide and could be out by a tenth or so.${reddened ? ` Its colour alone would suggest only about ${nf(Number(kelvin.toPrecision(2)))} K, because dust between us and the star reddens its light.` : ''}</p>` : hasColour ? `<p>The temperature is worked out from its colour, so it is a guide and not a measurement. ${star.bv < -0.05 ? 'For stars this blue, colour is a poor thermometer, and the true figure can be far higher.' : 'It could be out by a few hundred degrees.'} Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>` : ''}
       ${hasColour ? `<p class="swatches"><span><i style="background:rgb(${rgb})"></i>${unnamed ? 'This star' : n}${reddened ? ', through the dust' : ''}</span><span><i style="background:rgb(255,236,214)"></i>The Sun</span></p>` : ''}`),
@@ -226,5 +233,5 @@ export function starPage(star: PageStar): { html: string; description: string; r
     row('Where this comes from', `<p>${modern ? 'Brightness in our sky, colour and spectral type' : 'Distance, brightness, colour and spectral type'} are from the <a href="https://codeberg.org/astronexus/hyg" rel="noopener">HYG star database, version 4.4</a>, by David Nash, shared under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">Creative Commons Attribution-ShareAlike 4.0</a> licence. ${modern ? `The distance is from <a href="${modern.url}" rel="noopener">${modern.by}</a>, and the light the star gives out is worked out from that distance.` : 'Its distances are those measured by the Hipparcos satellite.'} ${byType ? 'The temperature is read from the spectral type with the table of <a href="https://www.pas.rochester.edu/~emamajek/EEM_dwarf_UBVIJHK_colors_Teff.txt" rel="noopener">Pecaut and Mamajek (2013)</a>, and the' : hasColour ? 'The temperature is worked out here from the colour with the formula of <a href="https://arxiv.org/abs/1201.1809" rel="noopener">Ballesteros (2012)</a>, and the' : 'The'} words are written for this site.${ang ? ` Its size comes from ${ang[1] === 'm' ? `its angular size as measured in <a href="https://ui.adsabs.harvard.edu/abs/${ang[2]}" rel="noopener">${ang[2].slice(0, 4)}</a>, listed in the <a href="https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=II/345" rel="noopener">JMMC Measured Stellar Diameters Catalogue</a>` : 'its angular size as estimated from its colours in the <a href="https://vizier.cds.unistra.fr/viz-bin/VizieR?-source=II/346" rel="noopener">JMMC Stellar Diameters Catalogue, version 2</a> (Bourgès and others, 2017)'}, combined with the distance above.` : ''}</p>
       <p>To read more: <a href="/learn/colour-and-brightness">Colour and brightness</a>, <a href="/learn/how-stars-live-and-die">How stars live and die</a>, <a href="/learn/measuring-distance">Measuring distance</a>.</p>`, true),
   ].join('\n');
-  return { html, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${round2(ly)} light years away.`, rgb, byEye };
+  return { html, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
 }

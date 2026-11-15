@@ -1,10 +1,21 @@
 /**
  * Pictures for the lesson "How big is space". One scale runs through all of them, the lesson's own:
- * the Sun as a football 22 cm wide. On it, 1 au is 23.7 m, Neptune is 712 m out and the nearest
- * star, Proxima Centauri at 4.25 light years, is about 6,300 km away.
+ * the Sun as a football 22 cm wide. On it, 1 au is 23.6 m, Neptune is 710 m out and the nearest
+ * star, Proxima Centauri at 4.25 light years, is about 6,350 km away.
  */
-import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label, stars, nf } from '../stage';
+import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label as stageLabel, stars, nf } from '../stage';
 import { photoScene, sun, dot, ring, line } from '../kit';
+
+/** Phone text floor: nothing is drawn under 13 px on a narrow canvas. */
+const label: typeof stageLabel = (ctx, text, x, y, o = {}) => {
+  const narrow = ctx.canvas.clientWidth > 0 && ctx.canvas.clientWidth < 520, size = narrow ? Math.max(o.size ?? 11, 13) : o.size;
+  if (narrow) {                                                  // keep the whole label on the canvas
+    ctx.font = `400 ${size}px "IBM Plex Mono", monospace`;
+    const tw = ctx.measureText(text.toUpperCase()).width, W = ctx.canvas.clientWidth, a = o.align ?? 'left';
+    x = a === 'center' ? Math.min(Math.max(x, tw / 2 + 6), W - tw / 2 - 6) : a === 'right' ? Math.min(Math.max(x, tw + 6), W - 6) : Math.min(Math.max(x, 6), W - tw - 6);
+  }
+  stageLabel(ctx, text, x, y, { ...o, size });
+};
 
 const backdrop = stars(110, 3);
 const SUN_KM = 1_392_700, AU_KM = 149_597_871, LIGHT_KM_S = 299_792.458;
@@ -69,7 +80,7 @@ const planetsScene: Scene = {
     const view = 70 * Math.pow(1600 / 70, k);                     // metres across the shorter side
     const pxPerM = (s * 0.94) / view;
     pitch(ctx, cx, cy, pxPerM, clamp(1.2 - k * 0.6));
-    const shown: [string, string, string][] = [['Earth', 'a peppercorn', '24 m'], ['Jupiter', 'a large marble', '120 m'], ['Neptune', 'a pea', '700 m']];
+    const shown: [string, string, string][] = [['Earth', 'a peppercorn', '24 m'], ['Jupiter', 'a large marble', '120 m'], ['Neptune', 'a pea', '710 m']];
     shown.forEach(([name, what, far], i) => {
       const au = PLANETS.find((p) => p[0] === name)![1], r = au * M_PER_AU * pxPerM;
       if (r < 10) return;
@@ -83,6 +94,29 @@ const planetsScene: Scene = {
     });
     dot(ctx, cx, cy, Math.max((BALL_M / 2) * pxPerM, 1.2), '#ffd88c');
     say(`This picture is ${nf(Math.round(view / 10) * 10)} m across`, k > 0.95 ? 'The pitch is the small mark in the middle' : 'Pulling back from the pitch');
+  },
+};
+
+// ---- 2b. the Moon, 6 cm from the Earth
+const EARTH_KM = 12_742, MOON_KM = 3_474, MOON_DIST_KM = 384_400;
+const KM_PER_M = SUN_KM / BALL_M;                                 // 6.33 million km to the metre
+const moonScene: Scene = {
+  caption: 'The Earth and the Moon on the football scale, with a ruler in centimetres. The Earth is a grain 2 mm wide and the Moon a speck about half a millimetre wide, 6 cm away. Every place people have visited in person is in the gap between them.',
+  stillAt: 3,
+  draw({ ctx, w, h, t, say }) {
+    backdrop(ctx, w, h, 0.4);
+    const cm = Math.min(w * 0.88, 760) / 8, x0 = (w - cm * 8) / 2, y = h * 0.52;       // pixels to the centimetre, 8 cm across
+    const earthR = (EARTH_KM / KM_PER_M) * 50 * cm, moonR = (MOON_KM / KM_PER_M) * 50 * cm, gap = (MOON_DIST_KM / KM_PER_M) * 100 * cm;
+    const k = ease(t / 1.6);
+    line(ctx, [x0, y + 34, x0 + cm * 8, y + 34], 'rgba(236,231,220,.35)');
+    for (let i = 0; i <= 8; i++) { line(ctx, [x0 + i * cm, y + 34, x0 + i * cm, y + 42], 'rgba(236,231,220,.35)'); label(ctx, `${i}`, x0 + i * cm, y + 56, { align: 'center', colour: FAINT }); }
+    label(ctx, 'Centimetres', x0 + cm * 8, y + 76, { align: 'right', colour: FAINT });
+    const ex = x0 + cm * 0.9, mx = ex + gap * k;
+    dot(ctx, ex, y, Math.max(earthR, 2), '#6ea8ff'); label(ctx, 'The Earth, 2 mm', ex, y - 26, { align: 'center', colour: SOFT });
+    dot(ctx, mx, y, Math.max(moonR, 1.2), INK); label(ctx, 'The Moon, 0.5 mm', mx, y - 26, { align: 'center', colour: SOFT });
+    line(ctx, [ex + 8, y, mx - 6, y], `rgba(233,196,138,${0.5 * k})`, 1, [2, 5]);
+    if (k > 0.95) label(ctx, '6 cm: every place people have visited', (ex + mx) / 2, y + 14, { align: 'center', colour: ACCENT, size: w < 520 ? 10 : 11 });
+    say('The Earth and the Moon', 'Shrunk like the Sun: 6 cm apart');
   },
 };
 
@@ -102,22 +136,27 @@ const emptyScene: Scene = {
     dot(ctx, x0, y0, Math.max(sunPx / 2, 1.5), '#ffd88c');
     label(ctx, 'Sun', x0 + 8, y0 - 9, { colour: ACCENT });
     let last = 'the Sun';
+    const drawn: [number, number, number][] = [];                    // label boxes already placed: left, right, y
     for (const [name, au, km] of PLANETS) {
       const [px, py, seen] = place(au); if (!seen) continue;
       last = name;
       dot(ctx, px, py, Math.max(((km / AU_KM) * pxPerAu) / 2, 0.9), INK);
       const left = px > x0 + rowW - 70;
-      label(ctx, name, px + (left ? -6 : 6), py - 8, { colour: SOFT, align: left ? 'right' : 'left', size: w < 520 ? 9 : 11 });
+      // on a phone the labels are 13 px, so one that would land on another is left out; the dots and the caption still name every planet
+      const lx = px + (left ? -6 : 6), ly = py - 8, tw = name.length * (w < 520 ? 9 : 7), box: [number, number, number] = left ? [lx - tw, lx, ly] : [lx, lx + tw, ly];
+      if (drawn.some(([a, b, y]) => Math.abs(y - ly) < 14 && box[0] < b + 4 && box[1] > a - 4)) continue;
+      drawn.push(box);
+      label(ctx, name, lx, ly, { colour: SOFT, align: left ? 'right' : 'left' });
     }
     const au = (upto / pxPerAu);
     say(`${nf(au * M_PER_AU)} m from the football: ${nf(au * AU_KM / 1e6)} million km`, k >= 1 ? 'All the rest of the line is empty space' : `Last thing passed: ${last}`);
   },
 };
 
-// ---- 4. the next football
+// ---- 4. the nearest star
 const MARKS: [number, string][] = [[1_000, '1 km'], [10_000, '10 km'], [100_000, '100 km'], [1_000_000, '1,000 km']];
 const nextScene: Scene = {
-  caption: 'Pulling back from Neptune\'s orbit until the nearest star comes into view, on the same scale. Each ring is ten times wider than the one before. Proxima Centauri is 4.25 light years away, which on this scale is about 6,300 km.',
+  caption: 'Pulling back from Neptune\'s orbit until the nearest star comes into view, on the same scale. Each ring is ten times wider than the one before. Proxima Centauri is 4.25 light years away, which on this scale is about 6,350 km.',
   stillAt: 14.5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.35);
@@ -129,17 +168,17 @@ const nextScene: Scene = {
       ring(ctx, cx, cy, r, `rgba(236,231,220,${0.16 * a})`, 1, [2, 6]);
       ctx.globalAlpha = a; if (cx + r * 0.94 + 70 < w) label(ctx, name, cx + r * 0.94 + 6, cy - r * 0.34, {}); ctx.globalAlpha = 1;
     }
-    const nep = 712 * pxPerM;
-    if (nep > 3) { ring(ctx, cx, cy, nep, `rgba(236,231,220,${0.4 * clamp(nep / 20)})`); if (nep > 26) label(ctx, 'Neptune\'s orbit, 712 m', cx + nep * 0.72 + 8, cy - nep * 0.72, { colour: SOFT }); }
+    const nep = 710 * pxPerM;
+    if (nep > 3) { ring(ctx, cx, cy, nep, `rgba(236,231,220,${0.4 * clamp(nep / 20)})`); if (nep > 26) label(ctx, 'Neptune\'s orbit, 710 m', cx + nep * 0.72 + 8, cy - nep * 0.72, { colour: SOFT }); }
     dot(ctx, cx, cy, 2, '#ffd88c'); label(ctx, 'The Sun and all its planets', cx - 4, cy + 16, { colour: k > 0.4 ? ACCENT : FAINT });
     const px = cx + PROXIMA_M * pxPerM;
     if (px < w + 20) {
       const a = clamp((w + 20 - px) / 60);
       line(ctx, [cx + 6, cy, px - 6, cy], `rgba(233,196,138,${0.3 * a})`, 1, [1, 5]);
       dot(ctx, px, cy, 2, `rgba(255,170,130,${a})`);
-      ctx.globalAlpha = a; label(ctx, 'Proxima Centauri', px, cy - 24, { colour: ACCENT, align: 'right' }); label(ctx, 'the next football', px, cy - 10, { align: 'right' }); ctx.globalAlpha = 1;
+      ctx.globalAlpha = a; label(ctx, 'Proxima Centauri', px, cy - 24, { colour: ACCENT, align: 'right' }); label(ctx, 'a ball 3 cm across', px, cy - 10, { align: 'right' }); ctx.globalAlpha = 1;
     }
-    say(`This picture is ${view < 10_000 ? `${nf(Math.round(view / 100) * 100)} m` : `${nf(Math.round(view / 1000))} km`} across`, k >= 1 ? 'About 6,300 km to the next star: London to Chicago' : 'Nothing but empty space so far');
+    say(`This picture is ${view < 10_000 ? `${nf(Math.round(view / 100) * 100)} m` : `${nf(Math.round(view / 1000))} km`} across`, k >= 1 ? 'About 6,350 km to the next star: London to Chicago' : 'Nothing but empty space so far');
   },
 };
 
@@ -152,4 +191,29 @@ const paleBlueDot = photoScene({
   pointers: [{ at: [0.6, 0.522], to: [0.72, 0.42], text: 'The Earth' }],
 });
 
-export const scenes: Scene[] = [ballScene, planetsScene, emptyScene, nextScene, paleBlueDot];
+// ---- 6. the nearest pair of stars, and what lies further out on the same scale
+const centauri = photoScene({
+  src: '/img/learn/alpha-centauri-a-b-hubble.jpg',
+  caption: 'A real photograph: Alpha Centauri A and B, the pair of stars that Proxima Centauri very probably goes round, from the Hubble Space Telescope. The four spikes on each star are made inside the telescope. Credit: ESA/Hubble and NASA, CC BY 4.0.',
+  say: ['Alpha Centauri A and B', 'A little beyond Proxima: 4.4 light years'],
+  cover: true, zoom: [1, 1.12], focus: [0.5, 0.5],
+});
+const milkyWay = photoScene({
+  src: '/img/learn/milky-way-panorama-eso.jpg',
+  caption: 'A real photograph: the whole Milky Way, pieced together over several months. Credit: ESO/S. Brunier, CC BY 4.0.',
+  say: ['The Milky Way: 100,000 light years across', 'On the football scale, 150 million km'],
+  cover: true, zoom: [1, 1.15], focus: [0.5, 0.5],
+});
+const M31 = 'A real photograph: the Andromeda galaxy, pieced together from more than 600 pictures taken by the Hubble Space Telescope over ten years. The jagged edge is where the separate pictures stop. Credit: NASA, ESA, B. Williams (University of Washington), CC BY 4.0.';
+const andromeda = photoScene({
+  src: '/img/learn/andromeda-hubble-mosaic.jpg', caption: M31,
+  say: ['Andromeda: 2.5 million light years away', 'On the football scale, 3.7 billion km'], cover: true, zoom: [1, 1.12], focus: [0.42, 0.5],
+});
+const oldestLight = photoScene({
+  src: '/img/learn/cmb-wmap-9-year.jpg',
+  caption: 'A real map of the whole sky in microwaves, from nine years of measurements by NASA’s WMAP spacecraft. Microwaves have no colour: red was chosen for slightly warmer patches and blue for slightly cooler, and the glow of our own galaxy has been taken out. Credit: NASA/WMAP Science Team.',
+  say: ['The oldest light we can see', 'Set free about 380,000 years after the Big Bang'], zoom: [0.95, 1.05], focus: [0.5, 0.5], tag: 'Microwave map',
+});
+
+/** One picture for each paragraph of the first look, in order. A picture that carries on over two paragraphs is not restarted between them. */
+export const scenes: Scene[] = [ballScene, planetsScene, emptyScene, moonScene, emptyScene, nextScene, centauri, paleBlueDot, milkyWay, andromeda, oldestLight, nextScene];

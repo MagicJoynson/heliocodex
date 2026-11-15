@@ -80,17 +80,17 @@ export function photoScene(o: PhotoOptions): Scene {
           const ax = x + pw * q.at[0], ay = y + ph * q.at[1], by = clamp(y + ph * q.to[1], 30, h - 12);
           let bx = clamp(x + pw * q.to[0], 12, w - 12);
           const right = (q.align ?? (bx > ax ? 'left' : 'right')) === 'left';
-          ctx.font = '400 11px "IBM Plex Mono", monospace'; const tw = ctx.measureText(q.text.toUpperCase()).width + 12;
+          ctx.font = `400 ${w < 520 ? 13 : 11}px "IBM Plex Mono", monospace`; const tw = ctx.measureText(q.text.toUpperCase()).width + 12;
           bx = right ? Math.min(bx, w - tw) : Math.max(bx, tw);
           ctx.strokeStyle = 'rgba(236,231,220,.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
           ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 6;
-          label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right' });
+          label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right', size: w < 520 ? 13 : 11 });
           ctx.shadowBlur = 0;
         }
         ctx.globalAlpha = 1;
       }
       o.over?.(f, [x, y, pw, ph]);
-      if (!o.hero) label(ctx, o.tag ?? 'Photograph', 14, 18, { colour: ACCENT });
+      if (!o.hero) label(ctx, o.tag ?? 'Photograph', 14, 18, { colour: ACCENT, size: w < 520 ? 13 : 11 });
       f.say(o.say[0], o.say[1] ?? '');
     },
   };

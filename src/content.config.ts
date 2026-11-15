@@ -16,6 +16,29 @@ const view = z.object({
   highlight: z.array(z.string()).optional(),
 });
 
+/**
+ * A lesson that opens with a question: the reader guesses, sees the answer on the same scale as their guess,
+ * then reads how anyone knows, and can carry on in 3D. Nothing about the guess is stored or sent anywhere.
+ */
+const predict = z.object({
+  /** The line above the question, setting the scene. */
+  lead: z.string(),
+  question: z.string(),
+  /** The choices, smallest first. `km` is the distance each one stands for, drawn on a bar whose steps are each ten times the last. */
+  options: z.array(z.object({ label: z.string(), detail: z.string(), km: z.number().positive() })).min(3).max(6),
+  /** The real answer: its distance, how to say it, and what it is like. */
+  answer: z.object({ km: z.number().positive(), label: z.string(), like: z.string() }),
+  /** After the story: how anyone knows. */
+  evidence: z.object({
+    heading: z.string(),
+    beats: z.array(z.object({ head: z.string(), text: z.string() })).min(2).max(4),
+    /** The sums behind the scale, one line each, so the figures can be checked. */
+    working: z.array(z.string()).default([]),
+  }),
+  /** Carry on in the 3D view, at the same place. `go` is a place or star id the 3D page accepts. */
+  handoff: z.object({ go: z.string(), label: z.string(), line: z.string() }).optional(),
+});
+
 export const STRANDS = [
   'finding-your-way', 'gravity-and-orbits', 'light', 'the-sun', 'planets', 'moons', 'small-bodies',
   'stars', 'stellar-remnants', 'other-worlds', 'the-galaxy', 'galaxies', 'the-universe', 'life', 'exploring-space', 'how-we-found-out', 'what-everything-is-made-of',
@@ -37,6 +60,8 @@ const lessons = defineCollection({
     view: view.optional(),
     /** What the 3D view will show, in words, until it can. */
     scene: z.string().optional(),
+    /** Opens the lesson with a question to guess at. */
+    predict: predict.optional(),
     /** Glossary ids used in the text. */
     terms: z.array(z.string()).min(3).max(8),
     /** Lesson ids worth reading first, and next. */
