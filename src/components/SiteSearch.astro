@@ -3,7 +3,7 @@
 // The index (/search.json) loads the first time the box is used. Without scripts the form goes to /search.
 import '../styles/header.css';
 ---
-<form class="find" role="search" action="/search" method="get">
+<form class="find" role="search" aria-label="Search the site" action="/search" method="get">
   <label class="find-label" for="find-q">Search</label>
   <input id="find-q" class="find-q" name="q" type="search" placeholder="Search planets, moons, stars, words…" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="find-list" aria-haspopup="listbox" aria-autocomplete="list" />
   <ul id="find-list" class="find-list" role="listbox" aria-label="Results" hidden></ul>

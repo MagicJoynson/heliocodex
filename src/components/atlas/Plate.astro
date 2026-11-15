@@ -41,10 +41,10 @@ const summary = Astro.props.summary ?? `${figure.title}. ${parentName} seen from
   </defs>
   <g class="orbits">
     {bodies.map((b) => (
-      <a href={`#${b.id}`} tabindex="-1" data-body={b.id} class:list={['orbit', b.tilt > 90 ? 'back' : 'fwd', b.line ?? lineOf(b.orbit)]}>
+      <g data-body={b.id} class:list={['orbit', b.tilt > 90 ? 'back' : 'fwd', b.line ?? lineOf(b.orbit)]}>
         <use class="hit" href={`#o-${figure.id}-${b.id}`} />
         <use class="line" href={`#o-${figure.id}-${b.id}`} />
-      </a>
+      </g>
     ))}
   </g>
 
