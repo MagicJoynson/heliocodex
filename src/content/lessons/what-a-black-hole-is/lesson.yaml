@@ -7,4 +7,4 @@ view: { target: milky-way }
 terms: [black-hole, escape-velocity, neutron-star, supernova, accretion-disc, gravitational-wave, event-horizon]
 needs: [what-gravity-is, how-stars-live-and-die]
 next: [the-event-horizon]
-asks: ["what is a black hole", "how are black holes made"]
+asks: ["what is a black hole", "how are black holes made", "how do black holes form"]

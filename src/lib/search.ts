@@ -83,9 +83,9 @@ function nearness(tokens: string[], e: Prepared): number {
 }
 
 /** Little words that carry no meaning in a question, so "why is the sky blue" looks for sky and blue. */
-const LITTLE = new Set('why how what when where which who does did can could would should will are was were the and for you your our its it is do to of in on at an a we i me my be been has have had than then that this these those there into from with about happen happens work works form forms make made many much long old know get tell call called exist here'.split(' '));
+const LITTLE = new Set('why how what when where which who does did can could would should will are was were the and for you your our its it is do to of in on at an a we i me my be been has have had than then that this these those there into from with about happen happens work works make made many much long old know get tell call called exist here'.split(' '));
 /** A word with a plural or a verb ending trimmed, so "tides" meets "tide" and "eclipses" meets "eclipse". */
-const stem = (t: string) => (t.length > 4 ? t.replace(/(ing|es|s)$/, '') : t);
+const stem = (t: string) => (t.length > 4 ? t.replace(/(ing|ed|es|s)$/, '') : t);
 
 /** The best matches for a query: whole-name first, then start of name, start of a word, then anywhere; and, when nothing
  *  matches well as typed, names with a slip or two ("jupitor", "betelguese", "proxima centuri"). Catalogue numbers are only matched as typed. */
