@@ -2,7 +2,7 @@ title: The active Sun
 strand: the-sun
 order: 3
 summary: "The Sun has weather: dark spots, sudden flares and vast eruptions that follow an eleven-year rhythm and can reach the Earth."
-scene: "The Sun's face with its spots, then the looping magnetic field above them, then one eruption followed all the way out to the Earth and its auroras."
+scene: "Drawings from the lesson's own figures: a big sunspot group beside the Earth to scale, how much cooler a spot is than its surroundings, the dates of the lesson on one line from 1600, and a race from the Sun to the Earth for a flare's light and two storm clouds."
 view: { target: sun, distanceKm: 4000000, highlight: [sunspots, magnetic-field] }
 terms: [sunspot, solar-cycle, magnetic-field, solar-flare, coronal-mass-ejection, corona, aurora, magnetosphere]
 needs: [what-the-sun-is]

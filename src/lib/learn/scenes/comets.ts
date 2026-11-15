@@ -91,4 +91,5 @@ const tails: Scene = {
   },
 };
 
-export const scenes: Scene[] = [lens, distance, tails];
+// one picture to each step of the first look: its paragraphs and photographs, in order
+export const scenes: Scene[] = [lens, distance, tails, tails, tails, lens, distance, lens, tails, lens, lens];

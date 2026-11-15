@@ -79,4 +79,5 @@ const chart: Scene = {
   },
 };
 
-export const scenes: Scene[] = [lens, lap, chart];
+// one picture to each step of the first look: its paragraphs and photographs, in order
+export const scenes: Scene[] = [lens, lens, lens, lap, chart, chart];
