@@ -19,6 +19,9 @@ const visual = STORY_LESSONS.includes(lesson.id);
 const [lessons, terms, facts] = await Promise.all([allLessons(), allTerms(), allFacts()]);
 const levels = await Promise.all(lesson.levels.map(async (entry) => ({ id: levelOf(entry), entry, ...(await render(entry)) })));
 // The stylesheet for equations is only sent with lessons that have one. The guide in the 3D view picks it up from here too.
+// a two-column table of facts has an empty header row: give each header a name that only a screen reader hears
+let hdr = false;
+const htmlOf = (l: { entry: { rendered?: { html: string } } }) => (l.entry.rendered?.html ?? '').replace(/<th><\/th>/g, () => `<th><span class="vh">${(hdr = !hdr) ? 'Item' : 'Detail'}</span></th>`);
 const hasEquations = levels.some((l) => l.entry.rendered?.html.includes('class="katex'));
 const words = lesson.data.terms.map((id) => terms.find((t) => t.id === id)!);
 const worthKnowing = facts.filter((f) => f.about.includes(lesson.id)).slice(0, 5);
@@ -75,7 +78,7 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
         <h2>{LEVEL_NAMES[l.id].name}</h2>
         <p class="note">{LEVEL_NAMES[l.id].reader}</p>
       </div>
-      <div class="prose"><l.Content /></div>
+      <div class="prose" set:html={htmlOf(l)}></div>
     </section>
   ))}
 

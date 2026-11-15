@@ -16,7 +16,10 @@ export async function getStaticPaths() {
 
 const { lesson, level } = Astro.props as { lesson: Lesson; level: string };
 const entry = lesson.levels.find((e) => levelOf(e) === level)!;
-const { Content } = await render(entry);
+await render(entry);
+// a two-column table of facts has an empty header row: give each header a name that only a screen reader hears
+let hdr = false;
+const lessonHtml = (entry.rendered?.html ?? '').replace(/<th><\/th>/g, () => `<th><span class="vh">${(hdr = !hdr) ? 'Item' : 'Detail'}</span></th>`);
 const hasEquations = entry.rendered?.html.includes('class="katex');
 const have = lesson.levels.map(levelOf);
 const at = have.indexOf(level), before = have[at - 1], after = have[at + 1];
@@ -52,7 +55,7 @@ const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
         <h2>{LEVEL_NAMES[level].name}</h2>
         <p class="note">{LEVEL_NAMES[level].reader}</p>
       </div>
-      <div class="prose"><Content /></div>
+      <div class="prose" set:html={lessonHtml}></div>
     </section>
 
     <section class="row small">

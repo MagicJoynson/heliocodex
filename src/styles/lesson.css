@@ -94,7 +94,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .depths-nav a, .depths-nav span { display: block; padding: .45rem 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink-soft); }
 .depths-nav a:hover { color: var(--accent); border-color: var(--accent); }
 .depths-nav [aria-current] { color: var(--ink); border-color: var(--accent); }
-.depths-nav .absent { color: var(--ink-faint); border-color: transparent; opacity: .6; }
+.depths-nav .absent { color: var(--ink-faint); border-color: transparent; }
 
 /* a picture you can work, set into a deeper page */
 .works { margin: 0; border-top: 1px solid var(--rule); padding: 2.2rem 0 2.6rem; display: grid; grid-template-columns: minmax(0, var(--margin-col)) minmax(0, 1fr); gap: 1.2rem 4rem; }
@@ -179,3 +179,4 @@ body:has(.lesson) { background: #0b0b0c; }
 .working ul { margin: .8rem 0 0; padding-left: 1.2rem; }
 .working li { margin: 0 0 .6rem; }
 .handoff-line { font: 300 1.3rem/1.5 var(--r-serif); margin: 0; max-width: 34rem; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
