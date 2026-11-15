@@ -37,9 +37,13 @@ export const lens: Scene = {
     ring(ctx, cx, cy, reach, `rgba(233,196,138,${0.75 * (1 - age / loop)})`, 1.2);
     sun(ctx, cx, cy, R);
     const a = -0.5, lx = cx + Math.cos(a) * reach, ly = cy + Math.sin(a) * reach;
-    if (lx < w - 150 && ly > 40) {
+    const gone = `${nf(Math.round((age * LIGHT_KM_S) / 100000) * 100000)} km gone. Earth: 8 min 19 s`;
+    if (w < 520) {                                                // on a phone the two lines sit together at the foot, not on the moving light
+      label(ctx, `Light, ${nf(age)} s after leaving`, 16, 26, { colour: ACCENT });
+      label(ctx, gone, 16, 46);
+    } else if (lx < w - 150 && ly > 40) {
       label(ctx, `Light, ${nf(age)} s after leaving`, lx + 8, ly - 8, { colour: ACCENT });
-      label(ctx, `${nf(Math.round((age * LIGHT_KM_S) / 100000) * 100000)} km gone. Earth: 8 min 19 s`, lx + 8, ly + 8);
+      label(ctx, gone, lx + 8, ly + 8);
     }
   },
 };

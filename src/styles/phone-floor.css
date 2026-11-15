@@ -7,13 +7,13 @@
   .label, .scale-track b, .ledger th, .ledger td, .p-count, .i-count, .d-count, .outline-n, .scale-here, .start-btn, .start-link,
   .w-ends span, .w-track b, .later h2 span, .c-first, .c-levels, .a-map, .l-begin, .cap, .plain-list a, .plain-list span,
   /* Worlds, world pages, records */
-  .k-built, .k-out, .lane-h, .wp-au, .wr-name small, .wm-ticks b, .wm-zone span, .wm-v small, .wm-v a, .wm-vl small, .wm-vl a, .vl-moons, .vl-moons a, .w,
+  .lane-h, .wp-au, .wr-name small, .wm-ticks b, .wm-zone span, .wm-v small, .wm-v a, .wm-vl small, .wm-vl a, .vl-moons, .vl-moons a, .w,
   .rec-crumbs a, .rec-crumbs span, .rec-go a, .rc dt, .rec-sheet dt,
   /* planet pages */
   .alt-label, .kicker, .more-btn, .more-link, .more-h3, .ml-strand, .wglance dt, .wg-go a, .profile figcaption, .plates figcaption,
   /* Sky, Atlas, Stars, Discovery */
   .sky-hint, .sky-bar button, .pop summary span, .pop-body button, .go3d, .unit, .val, .ruler .more a, .tag, .src, .print-button, .moons th, .moons .go a, .fit,
-  .age label, .age button, .letter h3, .soon li span, .also, .d-badge span, .m-item small, .p-years, .names dt, .along a.a-map { font-size: .8125rem !important; }
+  .age label, .age button, .letter h3, .soon li span, .also, .m-item small, .p-years, .names dt, .along a.a-map { font-size: .8125rem !important; }
 }
 
 /* Tap floor: small links in dense lists and charts get a hit area of at least 24 px high without moving anything. */

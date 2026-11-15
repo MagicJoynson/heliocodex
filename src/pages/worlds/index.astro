@@ -54,6 +54,8 @@ const vy = (au: number) => VT + f(au) * VH + STRETCH * Math.min(1, Math.max(0, (
 const VEND = VT + VH + STRETCH;
 const LX = 200;
 type VL = { id: string; href: string; name: string; sub?: string; subs?: { id: string; name: string; w?: boolean }[]; y: number; mx: number; my: number; out: boolean };
+// names of close neighbours are pushed apart so they do not run into each other
+const NUDGE: Record<string, string> = { venus: '-80%', mars: '-22%', uranus: '-72%', neptune: '-28%' };
 const vlabels: VL[] = [];
 const vmarks: { kind: string; mx: number; y1: number; y2: number; ya: number; d: number; out: boolean; off?: boolean }[] = [];
 for (const p of P) {
@@ -78,7 +80,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
 <Reading title="The Solar System" path="/worlds" description="Every planet, moon, dwarf planet, asteroid and comet on the site, set out by its distance from the Sun.">
   <header class="w-head">
     <h1>The Solar System, by distance from the Sun</h1>
-    {SHOW_OUTLINES && <p class="w-key"><span class="k-built">Full page</span> <span class="k-out">The measured numbers so far</span></p>}
+    <p class="lead">Every planet, moon, dwarf planet, asteroid and comet on the site, each at its true distance from the Sun. Solid dots have a full page; hollow ones have their measured numbers so far.</p>
   </header>
 
   <figure class="wm" aria-label="A map of every world by its distance from the Sun. Distance runs across on a scale where each step is a multiple; each small body is drawn as a line from the nearest to the farthest point of its path.">
@@ -88,7 +90,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
       <ol class="wm-planets">
         {P.map((p) => (
-          <li style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}`}>
+          <li style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
             <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
             <span class="wp-au">{fmtAu(p.a)} au</span>
             {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li class:list={[{ written: written(m.id) }]}><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
@@ -147,10 +149,6 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .w-head { max-width: 60rem; margin-bottom: clamp(20px, 3vw, 32px); }
   .w-head h1 { font: 300 clamp(1.8rem, 3.2vw, 2.6rem)/1.1 var(--r-serif); margin: 0 0 .9rem; text-wrap: balance; }
   .w-head .lead { font: 300 clamp(1.08rem, 1rem + .3vw, 1.25rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
-  .w-key { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; margin: 1.4rem 0 0; font: 300 1rem/1 var(--r-serif); color: var(--ink-soft); }
-  .k-built, .k-out { font: 400 .64rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; padding: .4rem .55rem; border-radius: 2px; }
-  .k-built { background: var(--accent); color: #0b0b0c; }
-  .k-out { color: var(--accent); border: 1px dashed var(--accent); }
   .wm { margin: 0 0 clamp(32px, 5vw, 56px); }
   .wm a { text-decoration: none; }
   .wm-field { position: relative; margin: 0 7rem 0 2.2rem; padding: 3.6rem 0 1rem; }
@@ -165,7 +163,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wm-planets { list-style: none; margin: 0; padding: 0; position: relative; height: 12.5rem; }
   .wm-planets > li { position: absolute; left: calc(var(--x) * 1%); top: 2.2rem; }
   .wp-dot { position: absolute; left: calc(var(--d) / -2); top: calc(var(--d) / -2); width: var(--d); height: var(--d); border-radius: 50%; background: var(--accent); }
-  .wp-dot span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(-50%); font: 400 1rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
+  .wp-dot span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(var(--sx, -50%)); font: 400 1rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
   .wp-au { position: absolute; top: calc(var(--d) / 2 + .3rem); left: 0; transform: translateX(-50%); font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
   .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: .1rem; padding-top: calc(var(--skip) * 1.06rem); }
   .wp-moons a { display: flex; align-items: center; gap: .35rem; font: 400 .8rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
