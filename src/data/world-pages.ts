@@ -1005,4 +1005,133 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'NASA Photojournal, PIA05571', url: 'https://images.nasa.gov/details/PIA05571' },
     ],
   },
+
+  'tempel-1': {
+    lead: 'The comet that NASA hit on purpose in 2005, to see what a comet is like under its surface.',
+    picture: {
+      src: '/img/learn/tempel-1-deep-impact-2005.jpg', width: 900, height: 900,
+      alt: 'A grey, lumpy, cratered comet nucleus lit from the left, with a huge burst of white light and rays at its lower right edge.',
+      caption: '<b>A photograph.</b> Comet Tempel 1 on 4 July 2005, 67 seconds after NASA’s Deep Impact probe hit it, taken by the camera on the main spacecraft. The flash is sunlight on the cloud thrown up by the hit. Credit: NASA/JPL-Caltech/UMD.',
+    },
+    chapters: [
+      { title: 'Its tail and its head', paras: [
+        'The nucleus of Tempel 1 is about 7.6 km long and 4.9 km wide, shaped like an uneven potato. Its surface is a patchwork: rough, layered ground, a few craters and smooth areas that look as though something once flowed across them.',
+        'The impact showed that the nucleus is made mostly of fine dust, as fine as talcum powder, with ice mixed in. The cloud thrown up held more dust than expected, and the surface seems to be made of loose, fluffy material with little strength. Scientists began to describe comets as icy dirtballs as much as dirty snowballs.',
+      ] },
+      { title: 'Its path round the Sun', paras: [
+        'Tempel 1 goes round the Sun in 5.6 years, from about the orbit of Mars to almost as far out as Jupiter’s, in a path tilted 10° to the planets’.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The German astronomer Wilhelm Tempel found it on 3 April 1867 from Marseille, where he was working at the observatory. Its official name is 9P/Tempel.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Deep Impact spacecraft released a copper-cored impactor of about 370 kg on 3 July 2005, which hit the nucleus the next day at about 10 km a second. The main spacecraft watched from about 500 km away.',
+        'In February 2011 NASA’s Stardust spacecraft, on a second mission, flew past Tempel 1 and photographed the crater, about 150 m wide.',
+      ] },
+      { title: 'When to see it', paras: [
+        'Tempel 1 is faint and needs a telescope, even at its best.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, comet Tempel 1', url: 'https://science.nasa.gov/solar-system/comets/9p-tempel-1/' },
+      { label: 'NASA, Deep Impact', url: 'https://science.nasa.gov/mission/deep-impact-epoxi/' },
+      { label: 'NASA Photojournal, PIA02137', url: 'https://images.nasa.gov/details/PIA02137' },
+    ],
+  },
+
+  borrelly: {
+    lead: 'A comet with a bowling-pin shape, among the darkest objects known in the Solar System, which a spacecraft flew past in 2001.',
+    picture: {
+      src: '/img/learn/borrelly-deep-space-1-2001.jpg', width: 500, height: 500,
+      alt: 'A bright white, elongated, bowling-pin-shaped comet nucleus on black, with faint jets of dust streaming from it to the lower left.',
+      caption: '<b>A photograph, brightened.</b> Comet Borrelly on 22 September 2001, from NASA’s Deep Space 1 spacecraft. The picture is enhanced to show dust streaming off, which is why the nucleus looks so white. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'Its tail and its head', paras: [
+        'The nucleus of Borrelly is about 8 km long and 4 km wide, like a bowling pin. It is far darker than it looks in the picture above. It reflects only about 3 per cent of the light that falls on it, darker than charcoal.',
+        'Deep Space 1 found that the surface is hot and dry for a comet, with no ice showing. Jets of gas and dust come from a few spots, and are seen in the picture as streams, and they are fed from ice below the surface.',
+      ] },
+      { title: 'Its path round the Sun', paras: [
+        'Borrelly goes round the Sun in 6.9 years, from just outside the Earth’s orbit to beyond Jupiter’s, in a path tilted 29° to the planets’.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The French astronomer Alphonse Borrelly found it on 28 December 1904 at the Marseille Observatory. Its official name is 19P/Borrelly.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Deep Space 1 passed Borrelly on 22 September 2001 at about 2,200 km. The spacecraft’s main job was to test new technology, such as a gas-ion engine. Its flyby of Borrelly, at the end of its mission, was a bonus, and returned the sharpest pictures of a comet up to then.',
+      ] },
+      { title: 'When to see it', paras: [
+        'Borrelly is faint, and needs a telescope even at its best.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, comet Borrelly', url: 'https://science.nasa.gov/solar-system/comets/19p-borrelly/' },
+      { label: 'NASA, Deep Space 1', url: 'https://science.nasa.gov/mission/deep-space-1/' },
+      { label: 'NASA Photojournal, PIA03501', url: 'https://images.nasa.gov/details/PIA03501' },
+    ],
+  },
+
+  bennu: {
+    lead: 'A small, dark asteroid shaped like a spinning top, from which NASA brought back a sample in 2023.',
+    picture: {
+      src: '/img/learn/bennu-osiris-rex-regolith.jpg', width: 1100, height: 731,
+      alt: 'A rough grey surface strewn with rocks of every size, with two smaller close-up views at the right, one of rubble and one of a smoother patch.',
+      caption: '<b>Photographs.</b> A part of Bennu’s northern hemisphere, about 180 m wide, from NASA’s OSIRIS-REx spacecraft: a wide view at the left and two close-ups at the right. There are boulders everywhere, and a smooth “pond” of finer material. Credit: NASA/Goddard/University of Arizona.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Bennu is about 490 m across, roughly as tall as the Empire State Building, round at its middle and narrowing to the poles, like a spinning top. It turns once every 4.3 hours. Its surface is very dark and strewn with boulders, some as big as a house, with a few ponds of finer material.',
+        'OSIRIS-REx also saw Bennu throw off small particles in 2019, the first time a spacecraft watched an asteroid do so.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Bennu is a loose pile of rubble, held together by its weak gravity, made of dark, carbon-rich rock. It takes 1.2 years to go round the Sun, in a path that crosses the Earth’s.',
+        'The sample was studied by many laboratories. It contained clays that hold water, carbon-rich compounds, salts left by water that once evaporated, and 14 of the 20 amino acids that living things use. These are ingredients of life; they are not life, and they are made without it.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It was found on 11 September 1999 by the LINEAR survey in New Mexico. It was named in 2013 after a contest, which was won by Michael Puzio, a nine-year-old in North Carolina, who suggested Bennu, an Egyptian bird associated with creation.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s OSIRIS-REx reached Bennu in December 2018, mapped it, touched the surface on 20 October 2020 and collected rock and dust, then left in May 2021. Its capsule landed in the Utah desert on 24 September 2023 with about 121.6 grams. The spacecraft itself went on to a new target, the asteroid Apophis, under a new name, OSIRIS-APEX.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'There is a small chance. After OSIRIS-REx measured its path, NASA worked out that the highest single risk is about 1 in 2,700 on 24 September 2182, and the total risk to the year 2300 is about 1 in 1,750. So the odds are overwhelmingly that it will miss.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, OSIRIS-REx', url: 'https://science.nasa.gov/mission/osiris-rex/' },
+      { label: 'NASA, Bennu', url: 'https://science.nasa.gov/solar-system/asteroids/101955-bennu/' },
+      { label: 'NASA Photojournal, Bennu’s northern hemisphere close up', url: 'https://images.nasa.gov/details/2019-02-25_regolith_image_compilation' },
+    ],
+  },
+
+  'hale-bopp': {
+    lead: 'One of the brightest comets of the last century, visible to the naked eye for about eighteen months around 1997.',
+    picture: {
+      src: '/img/learn/comet-hale-bopp-1997-eso.jpg', width: 1100, height: 773,
+      alt: 'A comet with a bright head and two tails against a field of stars: a straight blue one and a wide, curved, cream-coloured one.',
+      caption: '<b>A photograph.</b> Comet Hale-Bopp on 14 March 1997. It has two tails. The straight blue one is gas, blown directly away from the Sun by the wind. The wide pale one is dust, which lags behind along the comet’s path. Credit: ESO/E. Slawik, CC BY 4.0.',
+    },
+    chapters: [
+      { title: 'Its tail and its head', paras: [
+        'Hale-Bopp’s nucleus is one of the largest comets seen in modern times, possibly 60 km across, several times the size of the nucleus of Halley’s comet. That is why it was so bright, and why it was visible for so long. At its best it had two tails, a long curving tail of dust and a straight, blue tail of gas, and a third, a faint tail of sodium, which had not been seen before in a comet.',
+      ] },
+      { title: 'Its path round the Sun', paras: [
+        'Its path is a very long oval, tilted nearly at right angles to the planets’. Its last visit was about 4,200 years ago, and it will not return for about 2,400 years. Its nearest approach to the Sun was 0.91 au on 1 April 1997, and its nearest to the Earth was 1.3 au on 22 March 1997, about 200 million km.',
+        'A pass near Jupiter in 1996 shortened its period, from about 4,200 years to about 2,500.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Two Americans found it independently, on the same night, 23 July 1995. Alan Hale, near Cloudcroft in New Mexico, saw it by chance while he was observing another comet. Thomas Bopp, in the Arizona desert, found it with a friend’s telescope. The comet was still far out, beyond Jupiter’s orbit, and much brighter than a comet should be at that distance, which showed it would be a great one.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'None. It was watched from the ground and from space telescopes, including Hubble.',
+      ] },
+      { title: 'When to see it', paras: [
+        'Not again for thousands of years. It was easy to see without a telescope for about eighteen months, in 1996 and 1997.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, comet Hale-Bopp', url: 'https://science.nasa.gov/solar-system/comets/c-1995-o1-hale-bopp/' },
+      { label: 'ESO, Comet Hale-Bopp', url: 'https://www.eso.org/public/images/phot-mar14-hbs-2/' },
+    ],
+  },
 };
