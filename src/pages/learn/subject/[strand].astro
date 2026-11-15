@@ -24,7 +24,7 @@ const intro = isIdea
   ? 'One of the ideas that runs through every place the lessons go.'
   : `On the scale of light: ${place!.reach.charAt(0).toLowerCase()}${place!.reach.slice(1)}.`;
 ---
-<Reading title={name} path={`/learn/subject/${strand}`} description={`${mine.length} short lessons on ${name.toLowerCase()}, in the order to read them.`}>
+<Reading title={`${name}: all the lessons`} path={`/learn/subject/${strand}`} description={`${mine.length} short lessons on ${name.toLowerCase()}, in the order to read them.`}>
   <header class="subject-head">
     <p class="label"><a href="/learn">Learn</a> / {isIdea ? 'Ideas that run through all of it' : 'Outward from here'}</p>
     <h1>{name}</h1>
