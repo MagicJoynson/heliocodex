@@ -1263,7 +1263,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
   },
 
   pallas: {
-    lead: 'The third-largest asteroid, a pitted, golf-ball-like world on an orbit tilted so steeply that no spacecraft has visited it.',
+    lead: 'The third-largest asteroid, a pitted, golf-ball-like world on an orbit tilted so steeply that it is hard for a spacecraft to reach, and none has visited.',
     picture: {
       src: '/img/learn/pallas-sphere-eso-2020.jpg', width: 1280, height: 638,
       alt: 'Two views of a grey, roughly round, dimpled ball against black, with a bright spot near the upper left of the right-hand view.',
@@ -1301,13 +1301,13 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like', paras: [
-        'No spacecraft has been near it, so all that is known comes from telescopes. Makemake is about 1,430 km across, measured when it passed in front of a star in 2011. It turns once in about 23 hours. It is very bright and has a reddish-brown colour.',
+        'No spacecraft has been near it, so all that is known comes from telescopes. Makemake is about 1,430 km across, measured when it passed in front of a star in 2011. It probably turns once in about 23 hours. It is very bright and has a reddish-brown colour.',
       ] },
       { title: 'What it is made of', paras: [
         'Its surface is covered in frozen methane, with some ethane and probably other ices. The 2011 observation also showed that it has no thick air like Pluto’s, although a thin one cannot be ruled out. On average it is about 45 times further from the Sun than the Earth is.',
       ] },
       { title: 'How it was found and named', paras: [
-        'Mike Brown, Chad Trujillo and David Rabinowitz found it on 31 March 2005, in pictures taken at the Palomar Observatory in California, and announced it that July. In 2008 the International Astronomical Union named it a dwarf planet. The name is that of the creator god of the Rapa Nui, the people of Easter Island, because it was found soon after Easter.',
+        'Mike Brown, Chad Trujillo and David Rabinowitz found it in pictures taken on 31 March 2005 at the Palomar Observatory in California, and announced it that July. In 2008 the International Astronomical Union named it a dwarf planet. The name is that of the creator god of the Rapa Nui, the people of Easter Island, because it was found soon after Easter.',
       ] },
       { title: 'Its moons, if any', paras: [
         'One, found in Hubble pictures taken in April 2015 and announced in 2016. It is nicknamed MK 2 and is about 160 km wide. It is about 1,300 times fainter than Makemake, and it goes round at roughly 21,000 km, a distance that is still known only roughly.',
