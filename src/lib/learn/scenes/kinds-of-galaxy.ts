@@ -29,8 +29,7 @@ export const lens: Scene = {
   caption: 'A galaxy, drawn as an island of stars with almost nothing around it. A drawing of the idea, not a real galaxy: the stars are placed at random and the arms are only roughly drawn.',
   stillAt: 4,
   draw({ ctx, w, h, t, say }) {
-    backdrop(ctx, w, h, 0.2);
-    const rx = room(w), cx = rx + (w - rx) / 2, cy = h * (rx ? 0.46 : 0.3), R = Math.min((w - rx) * 0.34, h * (rx ? 0.3 : 0.18));
+    const rx = room(w), cx = rx + (w - rx) / 2, cy = h * (rx ? 0.46 : 0.3), R = Math.min((w - rx) * 0.34, h * (rx ? 0.24 : 0.18));
     glow(ctx, cx, cy, R * 0.4, '255,225,170', 0.5);
     draw(ctx, SPIRAL, cx, cy, R, t * 0.04, '200,220,255'); draw(ctx, BULGE, cx, cy, R, 0, '255,230,180');
     label(ctx, 'An island of stars', cx, cy + R + 28, { align: 'center', colour: ACCENT, size: 10 });
@@ -54,14 +53,14 @@ const many: Scene = {
 
 // ---- 3. three main shapes
 const shapes: Scene = {
-  caption: 'The three main shapes, a drawing of the idea: spirals, ellipticals and irregulars. The stars are placed at random.',
+  caption: 'The three main shapes, a drawing of the idea: spirals, ellipticals and irregulars. The stars are placed at random, and the three are not drawn to scale or the same size.',
   stillAt: 4,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.15);
-    const narrow = w < 520, R = Math.min(w * (narrow ? 0.1 : 0.1), h * (narrow ? 0.1 : 0.18)), ys = narrow ? [0.17, 0.33, 0.49].map((f) => h * f) : [h * 0.3, h * 0.3, h * 0.3], xs = narrow ? [w * 0.3, w * 0.3, w * 0.3] : [w * 0.2, w * 0.5, w * 0.8];
+    const narrow = w < 520, R = Math.min(w * (narrow ? 0.1 : 0.1), h * (narrow ? 0.1 : 0.18)), ys = narrow ? [0.15, 0.36, 0.57].map((f) => h * f) : [h * 0.3, h * 0.3, h * 0.3], xs = narrow ? [w * 0.3, w * 0.3, w * 0.3] : [w * 0.2, w * 0.5, w * 0.8];
     draw(ctx, SPIRAL, xs[0], ys[0], R, t * 0.05, '200,220,255'); draw(ctx, BULGE, xs[0], ys[0], R, 0, '255,230,180');
     draw(ctx, ELLIPSE, xs[1], ys[1], R, 0.4, '255,215,160');
-    draw(ctx, SCATTER, xs[2], ys[2], R, 0, '170,200,255');
+    draw(ctx, SCATTER, xs[2], ys[2], R * 0.6, 0, '170,200,255');
     ['Spirals', 'Ellipticals', 'Irregulars'].forEach((n, i) => label(ctx, n, narrow ? xs[i] + R * 1.5 : xs[i], narrow ? ys[i] : ys[i] + R + 24, { align: narrow ? 'left' : 'center', colour: ACCENT, size: 10 }));
     say('Three main shapes', 'Spirals, ellipticals and irregulars');
   },
@@ -100,7 +99,7 @@ const irregulars: Scene = {
   draw({ ctx, w, h, say }) {
     backdrop(ctx, w, h, 0.15);
     const cx = w / 2, cy = h * 0.4, R = Math.min(w * 0.3, h * 0.26);
-    draw(ctx, SCATTER, cx, cy, R, 0, '170,200,255', 1.3);
+    draw(ctx, SCATTER, cx, cy, R * 0.8, 0, '170,200,255', 1.3);
     label(ctx, 'No tidy shape', cx, cy + R * 0.6 + 36, { align: 'center', colour: ACCENT, size: 10 });
     say('Irregulars have no tidy shape', 'Most are small');
   },
