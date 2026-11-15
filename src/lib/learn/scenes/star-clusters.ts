@@ -18,11 +18,11 @@ export const lens: Scene = {
   stillAt: 9,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.25);
-    const rx = room(w), cx = rx + (w - rx) / 2, cy = h * (rx ? 0.46 : 0.3), R = Math.min((w - rx) * 0.32, h * (rx ? 0.3 : 0.18)), u = (t % 16) / 16, cloud = 1 - ease(clamp((u - 0.55) / 0.35, 0, 1));
+    const rx = room(w), cx = rx + (w - rx) / 2, cy = h * (rx ? 0.46 : 0.3), R = Math.min((w - rx) * 0.32, h * (rx ? 0.22 : 0.18)), u = (t % 16) / 16, cloud = 1 - ease(clamp((u - 0.55) / 0.35, 0, 1));
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.5); g.addColorStop(0, `rgba(120,70,60,${0.5 * cloud})`); g.addColorStop(1, 'rgba(120,70,60,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.5, 0, TAU); ctx.fill();
     for (const m of MEMBERS) { const k = clamp((u - 0.1 - m.at * 0.4) / 0.2, 0, 1); if (!k) continue; dot(ctx, cx + Math.cos(m.a) * m.d * R, cy + Math.sin(m.a) * m.d * R, 0.8 + m.b * 1.6, `rgba(190,215,255,${(0.35 + m.b * 0.6) * k * (0.35 + 0.65 * (1 - cloud))})`); }
-    label(ctx, u < 0.55 ? 'Hidden in its cloud' : 'The cloud clears', cx, cy + R * 1.5 + 16, { align: 'center', colour: ACCENT, size: 10 });
+    label(ctx, u < 0.55 ? 'Hidden in its cloud' : 'The cloud clears', cx, cy - R * 1.5 - 12, { align: 'center', colour: ACCENT, size: 10 });
     say('Stars are not born one at a time', 'A cloud of gas makes many together, a cluster');
   },
 };
@@ -51,7 +51,7 @@ const loose: Scene = {
     const cx = w / 2, cy = h * 0.42, R = Math.min(w * 0.4, h * 0.34), k = ease(clamp(((t % 18) - 1) / 14, 0, 1));
     for (const s of LOOSE) dot(ctx, cx + (Math.cos(s.a) * s.d + Math.cos(s.va) * s.v * k) * R, cy + (Math.sin(s.a) * s.d + Math.sin(s.va) * s.v * k) * R * 0.8, 0.9 + s.b * 1.4, `rgba(200,220,255,${0.4 + s.b * 0.5})`);
     label(ctx, k < 0.3 ? 'A loose cluster' : 'Its stars wander off', cx, cy + R + 22, { align: 'center', colour: ACCENT, size: 10 });
-    say('Loose clusters do not last', 'The stars wander off and mix with all the others');
+    say('Loose clusters come apart', 'The stars wander off and mix with all the others');
   },
 };
 
@@ -72,22 +72,22 @@ const ball: Scene = {
 };
 
 // ---- 5. how far
-const DIST: [string, number, string][] = [['The Pleiades', 445, '#9fc0e6'], ['The globular cluster M13', 25000, '#e9c48a'], ['Across the Milky Way’s disc', 100000, '#a89f90']];
+const DIST: [string, number, string][] = [['The Pleiades', 445, '#9fc0e6'], ['The globular cluster M13', 25000, '#e9c48a']];
 const far: Scene = {
   caption: 'How far away the Pleiades and the globular cluster M13 are, in light years, each marked by a dot, on a scale where each step to the right is ten times the one before. The Pleiades distance is about 445 light years, though that figure is not agreed by everyone.',
   stillAt: 5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.2);
     const narrow = w < 520, x0 = w * (narrow ? 0.08 : 0.3), x1 = w * 0.9, y0 = h * 0.3, step = h * 0.17, lo = 2, hi = 5.2, X = (v: number) => x0 + ((Math.log10(v) - lo) / (hi - lo)) * (x1 - x0), k = clamp(t / 3, 0, 1);
-    for (const [v, name] of [[100, '100'], [1000, '1,000'], [10000, '10,000'], [100000, '100,000']] as [number, string][]) { line(ctx, [X(v), y0 - 26, X(v), y0 + step * 2 + 20], 'rgba(236,231,220,.18)'); label(ctx, name, X(v), y0 + step * 2 + 36, { align: 'center', colour: FAINT, size: 9 }); }
+    for (const [v, name] of [[100, '100'], [1000, '1,000'], [10000, '10,000'], [100000, '100,000']] as [number, string][]) { line(ctx, [X(v), y0 - 26, X(v), y0 + step + 20], 'rgba(236,231,220,.18)'); label(ctx, name, X(v), y0 + step + 36, { align: 'center', colour: FAINT, size: 9 }); }
     DIST.forEach(([name, v, col], i) => {
       const y = y0 + i * step, xv = x0 + (X(v) - x0) * k;
       label(ctx, name, x0, y - 22, { align: 'left', colour: SOFT, size: 10 });
       line(ctx, [x0, y, xv, y], 'rgba(236,231,220,.25)'); dot(ctx, xv, y, 6, col);
       if (k > 0.95) label(ctx, v.toLocaleString('en-GB'), Math.min(xv + 12, w - 60), y + (xv > w * 0.7 ? 20 : 0), { align: 'left', colour: SOFT, size: 10 });
     });
-    label(ctx, 'Light years', x1, y0 + step * 2 + 54, { align: 'right', colour: FAINT, size: 9 });
-    say('One is a neighbour, the other far across the galaxy', 'M13 is about fifty-six times as far as the Pleiades');
+    label(ctx, 'Light years', x1, y0 + step + 54, { align: 'right', colour: FAINT, size: 9 });
+    say('One is a neighbour, the other tens of thousands of light years off', 'M13 is more than fifty times as far as the Pleiades');
   },
 };
 

@@ -56,14 +56,14 @@ const orion: Scene = {
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy + sp * 1.9, sp * 1.2, 0, TAU); ctx.fill();
     for (let i = -1; i <= 1; i++) { dot(ctx, cx + i * sp, cy - i * sp * 0.12, 4.5 * tw(i), '#e6eeff'); }
     line(ctx, [cx + sp + 14, cy - sp * 0.12, cx + sp + 40, cy - sp * 0.12], 'rgba(236,231,220,.4)'); label(ctx, 'Orion’s belt', cx + sp + 48, cy - sp * 0.12, { align: 'left', colour: SOFT, size: 10 });
-    line(ctx, [cx + sp * 1.2 + 6, cy + sp * 1.9, cx + sp * 1.2 + 34, cy + sp * 1.9], 'rgba(236,231,220,.4)'); label(ctx, 'The Orion Nebula', cx + sp * 1.2 + 42, cy + sp * 1.9, { align: 'left', colour: ACCENT, size: 10 });
+    label(ctx, 'The Orion Nebula', cx, cy + sp * 1.9 + sp * 1.2 + 14, { align: 'center', colour: ACCENT, size: 10 });
     say('Look below the three stars of the belt', 'A faint fuzzy patch: thousands of young stars inside');
   },
 };
 
 // ---- 4. a dying star puffs its layers away
 const shell: Scene = {
-  caption: 'A star like the Sun at the end of its life, a drawing of the idea: it throws its outer layers back into space as a glowing cloud and leaves a small hot core. Greatly speeded up.',
+  caption: 'A star like the Sun at the end of its life, a drawing of the idea: it throws its outer layers back into space as a glowing cloud and leaves a small hot core, the ember. Greatly speeded up.',
   stillAt: 8,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.25);
