@@ -69,7 +69,7 @@ const planetsScene: Scene = {
     const view = 70 * Math.pow(1600 / 70, k);                     // metres across the shorter side
     const pxPerM = (s * 0.94) / view;
     pitch(ctx, cx, cy, pxPerM, clamp(1.2 - k * 0.6));
-    const shown: [string, string, string][] = [['Earth', 'a peppercorn', '24 m'], ['Jupiter', 'a large marble', '120 m'], ['Neptune', 'a pea', '700 m']];
+    const shown: [string, string, string][] = [['Earth', 'a peppercorn', '24 m'], ['Jupiter', 'a large marble', '120 m'], ['Neptune', 'a pea', '710 m']];
     shown.forEach(([name, what, far], i) => {
       const au = PLANETS.find((p) => p[0] === name)![1], r = au * M_PER_AU * pxPerM;
       if (r < 10) return;

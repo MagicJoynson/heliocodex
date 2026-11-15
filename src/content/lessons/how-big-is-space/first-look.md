@@ -9,7 +9,7 @@ sources:
 ---
 Shrink the Sun to the size of a football, 22 centimetres across, and put it on the centre spot of a football pitch.
 
-On that scale the Earth is a peppercorn, 2 millimetres wide, about 24 metres away: a short walk from the centre spot. Jupiter is a large marble, 120 metres off, out beyond the stands. Neptune is a pea, 700 metres away, somewhere in the streets round the ground.
+On that scale the Earth is a peppercorn, 2 millimetres wide, about 24 metres away: a short walk from the centre spot. Jupiter is a large marble, 120 metres off, out beyond the stands. Neptune is a pea, 710 metres away, somewhere in the streets round the ground.
 
 Everything in between is empty. All eight planets, with every one of their moons, fit inside a circle you could walk across in a quarter of an hour. The football holds almost all of the mass in it.
 
@@ -21,7 +21,7 @@ Now the question you were asked. The nearest star is Proxima Centauri, a small r
 
 Alpha Centauri A and B, photographed here by the Hubble Space Telescope, are only a little further off. Proxima very probably goes round the pair. Between us and them there is a great deal of nothing, and no other star. Light, which crosses the gap from the Sun to the Earth in eight minutes, takes four and a quarter years to cross it. No spacecraft has ever been sent to any of them.
 
-The furthest thing people have made is Voyager 1, launched in 1977. In November 2026 it is 172 times as far from the Sun as the Earth is. On the pitch that is about 4 kilometres out after nearly fifty years of flying, less than a thousandth of the way to the next football. In 1990 it looked back and photographed the Earth from 6 billion kilometres away: the pale speck.
+The furthest thing people have made is Voyager 1, launched in 1977. In November 2026 it is 172 times as far from the Sun as the Earth is. On the pitch that is about 4 kilometres out after nearly fifty years of flying, less than a thousandth of the way to the nearest star. In 1990 it looked back and photographed the Earth from 6 billion kilometres away: the pale speck.
 
 Keep the same scale and go on. The Milky Way, the galaxy that holds all the stars you can see, is about 100,000 light years across, so light takes 100,000 years to cross it. On the football scale that is about 150 million kilometres, as wide as the real distance from the Sun to the Earth.
 

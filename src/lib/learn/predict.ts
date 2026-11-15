@@ -10,6 +10,7 @@ const pct = (km: number) => Math.round(((Math.log10(km) - Math.log10(LOW)) / (Ma
 /** "about 6 times", "about 320 times", "about 6,300 times": two figures, never false precision. */
 function times(r: number): string {
   const digits = Math.max(0, Math.floor(Math.log10(r)) - 1), unit = Math.pow(10, digits);
+  if (r < 2) return `about ${(Math.round(r * 10) / 10).toLocaleString('en-GB')} times`;
   const n = r < 10 ? Math.round(r) : Math.round(r / unit) * unit;
   return `about ${n.toLocaleString('en-GB')} times`;
 }
