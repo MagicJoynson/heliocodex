@@ -7,7 +7,15 @@ import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label as stageLabel,
 import { photoScene, sun, dot, ring, line } from '../kit';
 
 /** Phone text floor: nothing is drawn under 13 px on a narrow canvas. */
-const label: typeof stageLabel = (ctx, text, x, y, o = {}) => stageLabel(ctx, text, x, y, { ...o, size: ctx.canvas.clientWidth && ctx.canvas.clientWidth < 520 ? Math.max(o.size ?? 11, 13) : o.size });
+const label: typeof stageLabel = (ctx, text, x, y, o = {}) => {
+  const narrow = ctx.canvas.clientWidth > 0 && ctx.canvas.clientWidth < 520, size = narrow ? Math.max(o.size ?? 11, 13) : o.size;
+  if (narrow) {                                                  // keep the whole label on the canvas
+    ctx.font = `400 ${size}px "IBM Plex Mono", monospace`;
+    const tw = ctx.measureText(text.toUpperCase()).width, W = ctx.canvas.clientWidth, a = o.align ?? 'left';
+    x = a === 'center' ? Math.min(Math.max(x, tw / 2 + 6), W - tw / 2 - 6) : a === 'right' ? Math.min(Math.max(x, tw + 6), W - 6) : Math.min(Math.max(x, 6), W - tw - 6);
+  }
+  stageLabel(ctx, text, x, y, { ...o, size });
+};
 
 const backdrop = stars(110, 3);
 const SUN_KM = 1_392_700, AU_KM = 149_597_871, LIGHT_KM_S = 299_792.458;

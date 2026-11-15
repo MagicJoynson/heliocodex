@@ -193,7 +193,7 @@ import { sections } from '../lib/nav';
       let starLy: Record<string, number | undefined> = {};
       fetch('/v2/margin.json').then((r) => r.json()).then((j: { stars?: Record<string, [string, string, number?]> }) => { for (const [i, v] of Object.entries(j.stars ?? {})) starLy[`star:${i}`] = v[2]; }).catch(() => {});
       /** metres from the Sun as shown: snapped to the cited figure when beside the star in focus */
-      const shown = (m: number) => { const c = starLy[focusId]; return c !== undefined && Math.abs(m / LY - c) < 0.3 ? c * LY : m; };
+      const shown = (m: number) => { const c = starLy[focusId]; return c !== undefined && Math.abs(m / LY - c) < 0.06 ? c * LY : m; };
       const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
       const params = new URLSearchParams(location.search);
@@ -529,7 +529,7 @@ import { sections } from '../lib/nav';
           drawLadder(c, R, dpr, st.cam, distAu);
           const next = ladderSteps(distAu, st.focus);
           $('where-d').textContent = `${fmt(shown(distAu * AU))} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
-          map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(distAu * AU)} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
+          map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(shown(distAu * AU))} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
           map.classList.add('beyond');
           return;
         }
