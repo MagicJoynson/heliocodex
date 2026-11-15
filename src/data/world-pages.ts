@@ -1805,12 +1805,12 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/tethys-cassini-2017.jpg', width: 1020, height: 1020,
       alt: 'A round, pale grey, heavily cratered moon lit from the left, with one huge crater with a mountainous middle on its left side.',
-      caption: '<b>A photograph.</b> Tethys, from NASA’s Cassini spacecraft, released in 2017. The large crater with the mountainous middle, on the left, is Odysseus. Credit: NASA/JPL-Caltech/Space Science Institute. Reduced in size.',
+      caption: '<b>A photograph.</b> Tethys, from NASA’s Cassini spacecraft, released in 2017. The large crater with the mountainous middle, on the left, is Odysseus. Credit: NASA/JPL-Caltech/Space Science Institute. Saved at its original size.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
         'Tethys is covered in craters, and one is huge. Odysseus is about 400 km across, two-fifths of the moon’s width, and has a ring of mountains, called Scheria Montes, at its centre, where the surface sprang back after the impact.',
-        'A second great feature is Ithaca Chasma, a canyon about 100 km wide and 2,000 km long, which runs about three-quarters of the way round the moon. It may have formed as the inside froze and swelled, or from the impact that made another large basin.',
+        'A second great feature is Ithaca Chasma, a canyon about 100 km wide and 2,000 km long, which runs about three-quarters of the way round the moon. It may have formed as the inside froze and swelled. An older idea ties it to the Odysseus impact, but crater counts suggest the chasma is older.',
       ] },
       { title: 'What it is made of', paras: [
         'It is about 1,062 km across and is lighter than almost any large moon, at 0.98 times the density of water. That means it is nearly all water ice, with hardly any rock. Its surface reflects most of the light that falls on it.',
@@ -1823,7 +1823,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Voyager 1 and 2 photographed it in 1980 and 1981. Cassini flew by many times between 2004 and 2017, and these gave the pictures in which Odysseus and Ithaca Chasma are seen so clearly.',
       ] },
       { title: 'What is still unknown', paras: [
-        'What made Ithaca Chasma, and why the moon is so bright, with a clean surface when it should be darkened by dust from space. Cassini’s measurements point to ice kept fresh by the fine particles that Enceladus throws out, but this is not fully worked out.',
+        'What made Ithaca Chasma, and why the moon is so bright, with a clean surface. Cassini’s measurements point to a coating of fine ice from the ring that Enceladus feeds, but this is not fully worked out.',
       ] },
     ],
     sources: [
@@ -1836,7 +1836,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/dione-cassini-2015.jpg', width: 1020, height: 1020,
       alt: 'A close view of the curved edge of a grey, deeply cratered moon, with long straight cliffs and a large crater with a flat floor near the middle.',
-      caption: '<b>A photograph.</b> Dione, from NASA’s Cassini spacecraft during a close flyby on 16 June 2015, with part of the moon in shadow on the right. Credit: NASA/JPL-Caltech/Space Science Institute. Reduced in size.',
+      caption: '<b>A photograph.</b> Dione, from NASA’s Cassini spacecraft during a close flyby on 16 June 2015, with part of the moon in shadow on the right. Credit: NASA/JPL-Caltech/Space Science Institute. Saved at its original size.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
@@ -1848,13 +1848,13 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'It goes round Saturn every 2.7 days at about 377,000 km, always showing one face to the planet. Two small moons, Helene and Polydeuces, share its orbit.',
       ] },
       { title: 'How it was found', paras: [
-        'Giovanni Cassini found it in March 1684, with a long telescope in Paris, a few days after he had found Tethys. John Herschel proposed the name in 1847, for the Titaness Dione of Greek myth.',
+        'Giovanni Cassini found it in March 1684, with a long telescope in Paris, in the same month as Tethys. John Herschel proposed the name in 1847, for the Titaness Dione of Greek myth.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
-        'Voyager 1 and 2 passed in 1980 and 1981. Cassini made five close flybys between 2004 and 2015, the last on 17 August 2015, which gave the pictures of the cliffs and a measurement of the pull of gravity.',
+        'Voyager 1 and 2 passed in 1980 and 1981. Cassini made five targeted flybys between 2005 and 2015, the last on 17 August 2015, which gave the pictures of the cliffs and a measurement of the pull of gravity.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Whether there is an ocean. In 2016 a study of Cassini’s gravity measurements suggested that Dione may have an ocean of water about 100 km under its crust, which would be warm enough to be liquid because of the squeezing the moon gets from Saturn. This has not been confirmed.',
+        'Whether there is an ocean. In 2016 a study of Cassini’s gravity measurements suggested that Dione may have an ocean of water about 100 km under its crust, under a shell of ice. It comes from a model, not a direct measurement, and has not been confirmed.',
       ] },
     ],
     sources: [
@@ -1863,7 +1863,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   rhea: {
-    lead: 'The second-largest moon of Saturn, a grey ball of ice, covered in craters, with a thin atmosphere of oxygen.',
+    lead: 'The second-largest moon of Saturn, a grey ball of ice, covered in craters, with a very thin atmosphere of oxygen and carbon dioxide.',
     picture: {
       src: '/img/learn/rhea-cassini-2005.jpg', width: 1100, height: 1100,
       alt: 'A large round grey moon, covered in craters of every size, brighter at the bottom than at the top.',
@@ -1871,7 +1871,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'Rhea is covered with craters of all sizes, many overlapping, and has not changed much for billions of years. The largest is the Tirawa basin, a very old impact scar, itself pitted with many smaller craters. A bright ray crater about 40 km wide is one of the youngest marks on the moon.',
+        'Rhea is covered with craters of all sizes, many overlapping, and has not changed much for billions of years. The great Tirawa basin is one of two very old impact scars, each itself pitted with many smaller craters. A bright ray crater about 40 km wide is one of the youngest marks on the moon.',
         'The side that trails as it circles Saturn has pale streaks like those on Dione.',
       ] },
       { title: 'What it is made of', paras: [
@@ -1882,7 +1882,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Giovanni Cassini found it on 23 December 1672, the second of the four moons that he found, after Iapetus. John Herschel proposed the name in 1847, for the Titaness Rhea of Greek myth, the mother of Zeus.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
-        'Voyager 1 and 2 passed in 1980 and 1981. Cassini flew by many times between 2004 and 2017, passing within about 100 km in March 2010. The mosaic above was made from pictures taken in 2005.',
+        'Voyager 1 and 2 passed in 1980 and 1981. Cassini made targeted flybys between 2005 and 2013, passing within about 100 km in March 2010. The mosaic above was made from pictures taken in 2005.',
       ] },
       { title: 'What is still unknown', paras: [
         'Whether it has a ring. In 2008 Cassini’s instruments seemed to show that matter was blocking particles near the moon, which suggested rings, but later pictures taken to look for them showed none. How much of its inside has separated into rock and ice is also not settled.',
