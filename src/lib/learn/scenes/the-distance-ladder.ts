@@ -24,7 +24,7 @@ export const lens: Scene = {
     const gw = Math.min((w - rx) * 0.6, 420), gx = cx - gw / 2, gy = cy + 76, gh = 46;
     line(ctx, [gx, gy + gh, gx + gw, gy + gh], 'rgba(236,231,220,.25)');
     ctx.strokeStyle = 'rgba(233,196,138,.9)'; ctx.lineWidth = 1.5; ctx.beginPath();
-    for (let i = 0; i <= 120; i++) { const u = i / 120 * 3, x = gx + (i / 120) * gw, y = gy + gh - beat(u - t / 4) * gh; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    for (let i = 0; i <= 120; i++) { const u = i / 120 * 3, x = gx + (i / 120) * gw, y = gy + gh - beat(u + t / 4) * gh; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
     ctx.stroke();
     label(ctx, 'Its brightness over time', cx, gy + gh + 22, { align: 'center', colour: ACCENT, size: 10 });
     say('Most stars look the same night after night', 'Some grow brighter, fade and brighten again');
@@ -56,7 +56,7 @@ const lighthouse: Scene = {
     const y = h * 0.3, xe = w * 0.12, xn = w * 0.5, xf = w * 0.88;
     dot(ctx, xe, y, 4, '#9fc0e6'); label(ctx, 'You', xe, y + 24, { align: 'center', colour: SOFT, size: 10 });
     glow(ctx, xn, y, 14, '255,225,170', 0.5); dot(ctx, xn, y, 2.5, '#fff1cf'); label(ctx, 'A weak torch, close', xn, y + 36, { align: 'center', colour: ACCENT, size: 10 });
-    glow(ctx, xf - 6, y, 40, '255,225,170', 0.5); dot(ctx, xf - 6, y, 5, '#fff1cf'); label(ctx, 'A strong lighthouse, far', xf - 6, y + 56, { align: w < 520 ? 'right' : 'center', colour: ACCENT, size: 10 });
+    glow(ctx, xf - 6, y, 14, '255,225,170', 0.5); dot(ctx, xf - 6, y, 2.5, '#fff1cf'); label(ctx, 'A strong lighthouse, far', xf - 6, y + 56, { align: w < 520 ? 'right' : 'center', colour: ACCENT, size: 10 });
     label(ctx, 'Both can look equally faint', w / 2, y - 60, { align: 'center', colour: SOFT, size: 10 });
     say('A light in the dark does not tell you how far away it is', 'Know how bright it really is and its faintness gives the distance');
   },
@@ -89,7 +89,7 @@ const curve: Scene = {
     ctx.strokeStyle = 'rgba(233,196,138,.9)'; ctx.lineWidth = 1.5; ctx.beginPath();
     for (let i = 0; i <= 100 * k; i++) { const x = gx + (i / 100) * gw, y = gy + gh - 4 - beat(i / 100) * (gh - 8); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
     ctx.stroke();
-    if (k > 0.99) [0.85, 0.97, 0.15, 0.27].forEach((u, i) => dot(ctx, gx + u * gw, gy + gh - 4 - beat(u) * (gh - 8), 4.5, '#fff1cf'));
+    if (k > 0.99) [0, 0.07, 0.2, 0.27].forEach((u) => dot(ctx, gx + u * gw, gy + gh - 4 - beat(u) * (gh - 8), 4.5, '#fff1cf'));
     label(ctx, 'One whole beat: 31.4 days', gx + gw / 2, gy + gh + 24, { align: 'center', colour: ACCENT, size: 10 });
     label(ctx, 'Brighter', gx - 4, gy - 8, { align: 'left', colour: FAINT, size: 9 });
     say('Four photographs of one star', 'Faint, faint, bright, bright: one whole beat every 31.4 days');
