@@ -72,4 +72,7 @@ export interface Engine {
    * The clock stays between 1800 and 2200.
    */
   setRate(rate: number): void;
+  /** The engine's clock, milliseconds since 1970 (UTC), and the rate it is running at. */
+  readonly timeMs: number;
+  readonly rate: number;
 }
