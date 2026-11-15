@@ -1900,7 +1900,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'It is shaped like a lopsided potato, about 250 km long and about 128 km across at its narrowest, with a surface that is one of the reddest in the Solar System. Its craters are large for its size, and two of them, Pan and Gaea, are about 100 km and 80 km across.',
       ] },
       { title: 'What it is made of', paras: [
-        'Its density is about that of water or less, which means it cannot be solid rock. It is probably a loose pile of rubble, perhaps with ice, held together by its own weak pull, with a lot of empty space inside, and the red colour may come from sulphur thrown out by Io.',
+        'Its density is about that of water, which means it cannot be solid rock. It is probably a loose pile of rubble, perhaps with ice, held together by its own weak pull, with a lot of empty space inside, and the red colour may come from sulphur thrown out by Io.',
         'It is about 181,000 km from Jupiter, well inside the orbit of Io, and goes round in 12 hours. It gives off slightly more heat than it takes in from the Sun, which is thought to come from Jupiter’s radiation belts and magnetic field.',
       ] },
       { title: 'How it was found', paras: [
