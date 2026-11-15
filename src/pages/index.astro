@@ -216,6 +216,7 @@ const far = worlds.map((w) => {
   .front-more a:hover { color: var(--accent); }
   .front-more a:focus-visible, .front-enter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .front-credit { position: relative; z-index: 3; margin: 0; padding: .7rem var(--gutter) 1rem; background: #000; font: italic 300 .8125rem/1.4 'Spectral', Georgia, serif; color: var(--ink-faint); text-align: left; }
+  @media (min-width: 761px) and (max-width: 1100px) { .front-hero { min-height: 0; } .front-scene { flex: none; height: clamp(420px, 56vw, 560px); max-height: none; } }
   @media (max-width: 760px) {
     .front-hero { min-height: 0; }
     .front-scene { flex: none; height: 350px; min-height: 0; max-height: none; --sw: 230vw; --arc: 110px; }
