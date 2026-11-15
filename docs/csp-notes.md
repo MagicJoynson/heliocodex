@@ -1,20 +1,25 @@
-# Content Security Policy: draft and how to switch it on
+# Content Security Policy: what it does, how it was tested, how to switch it off
 
-`public/_headers` sends the policy as **Report-Only**. Browsers apply nothing yet; they only record what would have been blocked.
+`public/_headers` sends the policy **enforced** (`Content-Security-Policy`). A browser blocks any script, frame, image or connection from a host the policy does not name. Allowed: the site's own files, Cloudflare Web Analytics (`static.cloudflareinsights.com`, `cloudflareinsights.com`), and the click-to-load video player (`www.youtube-nocookie.com`). Also sent: `Permissions-Policy` (location for the site itself, camera, microphone, payment and USB off) and `Cross-Origin-Opener-Policy: same-origin`.
 
-## Tested on 14 November 2026 (draft branch, a local server sending the same header)
-No violations on: `/`, `/sky`, `/explore` (entered, so the terrain workers ran), `/mars`, a lesson, `/atlas`, a star page, `/search?q=mars`, `/glossary`, `/discovery`, `/cookies`, and the click-to-load video on `/learn/the-active-sun` (the player from youtube-nocookie.com loads).
+## Tested on 15 November 2026 (main through #109 plus this file)
+A local server sent the exact header, once as Report-Only and once enforced, and a browser listened for `securitypolicyviolation` and console "Refused to" messages.
+- 26 pages, no violations in either mode: `/`, `/sky`, `/mars`, `/atlas`, `/stars`, a star page, the catalogue, a constellation, `/worlds`, a world, the planet pages, `/learn`, two lessons, `/glossary`, `/sources`, `/discovery`, the legal pages, `/search?q=mars` and the 404 page.
+- `/explore`, entered, on WebGL 2 and on WebGPU (software GPU in both cases): plain, `?go=mars&d=4000` (terrain workers) and `?go=star:betelgeuse`. Canvas drawn, "Now at Mars" announced, no violations.
+- Web Analytics: the beacon loads (`beacon.min.js`) and its report (`/cdn-cgi/rum`) is sent.
+- Video: click-to-load on `/learn/the-active-sun` opens the player from `youtube-nocookie.com` and it runs.
+- Negative check: a script, iframe, image and fetch to a foreign host were each blocked and reported.
+- The preview deploy of the pull request is the test on the real Cloudflare Pages headers.
 
-## Not tested yet
-- The live Cloudflare Pages deployment itself (the preview deploy of this branch is the first real test; open the browser console and look for "Content Security Policy" messages).
-- The 3D page after the 3D rounds land: new scripts, workers or textures may need new sources.
-- The Web Analytics beacon on a visit that is not blocked by Do Not Track.
+## Not tested
+- Real GPUs (WebGPU on a physical card), real mobile browsers, or a visit with Do Not Track on (the site's own count opt-out is separate).
+- Anything added after this date: a new third-party host, font, embed or script needs adding to the policy in the same pull request. Symptoms are a blocked item and a "Content Security Policy" message in the browser console.
 
 ## Known weakness
 `script-src` and `style-src` allow `'unsafe-inline'`, because Astro writes small inline scripts and styles into each page. The policy still stops scripts and frames from any other host, and blocks objects, other form targets and framing. Removing `'unsafe-inline'` means moving to hashes or nonces, which is a larger change.
 
-## To enforce
-After the 3D rounds are in and the preview shows no violations, rename `Content-Security-Policy-Report-Only` to `Content-Security-Policy` in `public/_headers`. Roll back by renaming it back.
+## To switch it off quickly
+Rename `Content-Security-Policy` to `Content-Security-Policy-Report-Only` in `public/_headers` and deploy. The browser then only reports and blocks nothing.
 
 ## Other headers in the file
-`Permissions-Policy` keeps location for the site itself (the sky map's "Use where I am") and turns off camera, microphone, payment and USB. `Cross-Origin-Opener-Policy: same-origin` isolates the page from windows it did not open; if a future feature opens a pop-up sign-in, revisit it.
+`Permissions-Policy` keeps location for the site itself (the sky map's "Use where I am"). `Cross-Origin-Opener-Policy: same-origin` isolates the page from windows it did not open; if a future feature opens a pop-up sign-in, revisit it.
