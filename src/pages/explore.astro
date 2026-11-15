@@ -199,10 +199,13 @@ import { sections } from '../lib/nav';
       const params = new URLSearchParams(location.search);
       // coming back to the 3D view in the same tab, with nowhere asked for: carry on from where you were
       if (!params.has('go')) { try { const at = sessionStorage.getItem('hc-at'); if (at) params.set('go', at); } catch {} }
+      // coming from the lesson on how big space is: show distances again on its scale, the Sun as a football 22 cm across
+      let football = false;
       // the way back to the page you came in from, where you were on it
       try {
         const from = JSON.parse(sessionStorage.getItem('hc-from') ?? 'null');
         if (from?.href && from.href !== '/explore') {
+          football = String(from.href).split('?')[0].replace(/\/$/, '') === '/learn/how-big-is-space';
           const back = $('back-to') as HTMLAnchorElement;
           back.href = from.href;
           $('back-name').textContent = `Back to ${from.name || 'the page'}`;
@@ -226,7 +229,7 @@ import { sections } from '../lib/nav';
               // circling: how far from what you are looking at; flying yourself: how high above the ground
               $('r-k').textContent = r.far ? 'Distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
               $('r-v').textContent = fmt(r.mode === 'free' || r.far ? (r.far ? shown(r.alt) : r.alt) : r.dist);
-              $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : '';
+              $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : football && r.far ? `Sun as a football: ${fmt(shown(r.alt) * (0.22 / 1.3927e9))}` : '';
             }
             $('tech').textContent = r.tech;
             $('gen').textContent = r.note ?? '';

@@ -159,6 +159,9 @@ body:has(.lesson) { background: #0b0b0c; }
 .ticks { position: relative; height: 1.5rem; margin: .4rem 0 0; border-top: 1px solid var(--rule); }
 .ticks span { position: absolute; top: .3rem; transform: translateX(-50%); font: 400 .8125rem/1.2 var(--r-serif); color: var(--ink-faint); white-space: nowrap; }
 .ticks span:last-child { transform: translateX(-85%); }
+/* a short mark above each label, at the true position of its step */
+.ticks span::before { content: ''; position: absolute; left: 50%; top: -.65rem; width: 1px; height: .5rem; background: var(--ink-faint); }
+.ticks span:last-child::before { left: 85%; }
 .skip { background: none; border: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .25em; }
 .predict-note { font: italic 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); margin: 1.4rem 0 0; max-width: 34rem; }
 @media (max-width: 520px) {
