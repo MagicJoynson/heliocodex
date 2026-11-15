@@ -187,6 +187,13 @@ import { sections } from '../lib/nav';
         return `${Math.max(0, Math.round(m)).toLocaleString('en-GB')} m`;
       };
       const fmtSpeed = (v: number) => (v > 3e9 ? `${fmt(v)} a second` : v > 1000 ? `${(v / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km a second` : `${Math.round(v)} m a second`);
+      // a catalogue star the camera has flown to is shown at the distance its page gives (Gaia for Proxima Centauri),
+      // not at where the camera stopped, which is a little short of it
+      let focusId = '';
+      let starLy: Record<string, number | undefined> = {};
+      fetch('/v2/margin.json').then((r) => r.json()).then((j: { stars?: Record<string, [string, string, number?]> }) => { for (const [i, v] of Object.entries(j.stars ?? {})) starLy[`star:${i}`] = v[2]; }).catch(() => {});
+      /** metres from the Sun as shown: snapped to the cited figure when beside the star in focus */
+      const shown = (m: number) => { const c = starLy[focusId]; return c !== undefined && Math.abs(m / LY - c) < 0.3 ? c * LY : m; };
       const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
       const params = new URLSearchParams(location.search);
@@ -218,7 +225,7 @@ import { sections } from '../lib/nav';
               const name = world?.focus.name ?? r.target;
               // circling: how far from what you are looking at; flying yourself: how high above the ground
               $('r-k').textContent = r.far ? 'Distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
-              $('r-v').textContent = fmt(r.mode === 'free' || r.far ? r.alt : r.dist);
+              $('r-v').textContent = fmt(r.mode === 'free' || r.far ? (r.far ? shown(r.alt) : r.alt) : r.dist);
               $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : '';
             }
             $('tech').textContent = r.tech;
@@ -229,6 +236,7 @@ import { sections } from '../lib/nav';
             $('free-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
           },
           onFocus(id, name) {
+            focusId = id;
             $('where-name').textContent = cap(name);
             $('said').textContent = `Now at ${name}.`;
             // remember where you are, in the address (so a reload or a shared link comes back here) and for this tab
@@ -520,7 +528,7 @@ import { sections } from '../lib/nav';
           mctx.clearRect(0, 0, S, S);
           drawLadder(c, R, dpr, st.cam, distAu);
           const next = ladderSteps(distAu, st.focus);
-          $('where-d').textContent = `${fmt(distAu * AU)} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
+          $('where-d').textContent = `${fmt(shown(distAu * AU))} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
           map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(distAu * AU)} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
           map.classList.add('beyond');
           return;

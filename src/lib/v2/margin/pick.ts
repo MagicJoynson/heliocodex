@@ -7,8 +7,8 @@ export interface MFact { id: string; text: string; about: string[]; basis: 'meas
 export interface MTerm { id: string; term: string; short: string; more?: string; lesson?: string }
 export interface MarginData {
   lessons: MLesson[]; facts: MFact[]; terms: MTerm[]; strands: Record<string, string>;
-  /** Stars that have a page of their own, by their index in the star file: name, then the page's slug. */
-  stars?: Record<string, [name: string, slug: string]>;
+  /** Stars that have a page of their own, by their index in the star file: name, the page's slug, then its distance from the Sun in light years as the page gives it. */
+  stars?: Record<string, [name: string, slug: string, ly?: number]>;
 }
 
 export interface Who { id: string; name: string; kind: string; parent: string | null }

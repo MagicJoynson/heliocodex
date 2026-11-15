@@ -3,8 +3,11 @@
  * the Sun as a football 22 cm wide. On it, 1 au is 23.6 m, Neptune is 710 m out and the nearest
  * star, Proxima Centauri at 4.25 light years, is about 6,350 km away.
  */
-import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label, stars, nf } from '../stage';
+import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, label as stageLabel, stars, nf } from '../stage';
 import { photoScene, sun, dot, ring, line } from '../kit';
+
+/** Phone text floor: nothing is drawn under 13 px on a narrow canvas. */
+const label: typeof stageLabel = (ctx, text, x, y, o = {}) => stageLabel(ctx, text, x, y, { ...o, size: ctx.canvas.clientWidth && ctx.canvas.clientWidth < 520 ? Math.max(o.size ?? 11, 13) : o.size });
 
 const backdrop = stars(110, 3);
 const SUN_KM = 1_392_700, AU_KM = 149_597_871, LIGHT_KM_S = 299_792.458;
@@ -125,12 +128,17 @@ const emptyScene: Scene = {
     dot(ctx, x0, y0, Math.max(sunPx / 2, 1.5), '#ffd88c');
     label(ctx, 'Sun', x0 + 8, y0 - 9, { colour: ACCENT });
     let last = 'the Sun';
+    const drawn: [number, number, number][] = [];                    // label boxes already placed: left, right, y
     for (const [name, au, km] of PLANETS) {
       const [px, py, seen] = place(au); if (!seen) continue;
       last = name;
       dot(ctx, px, py, Math.max(((km / AU_KM) * pxPerAu) / 2, 0.9), INK);
       const left = px > x0 + rowW - 70;
-      label(ctx, name, px + (left ? -6 : 6), py - 8, { colour: SOFT, align: left ? 'right' : 'left', size: w < 520 ? 9 : 11 });
+      // on a phone the labels are 13 px, so one that would land on another is left out; the dots and the caption still name every planet
+      const lx = px + (left ? -6 : 6), ly = py - 8, tw = name.length * (w < 520 ? 9 : 7), box: [number, number, number] = left ? [lx - tw, lx, ly] : [lx, lx + tw, ly];
+      if (drawn.some(([a, b, y]) => Math.abs(y - ly) < 14 && box[0] < b + 4 && box[1] > a - 4)) continue;
+      drawn.push(box);
+      label(ctx, name, lx, ly, { colour: SOFT, align: left ? 'right' : 'left' });
     }
     const au = (upto / pxPerAu);
     say(`${nf(au * M_PER_AU)} m from the football: ${nf(au * AU_KM / 1e6)} million km`, k >= 1 ? 'All the rest of the line is empty space' : `Last thing passed: ${last}`);

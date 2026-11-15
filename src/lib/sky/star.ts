@@ -116,6 +116,10 @@ export const placing = (rank: number) => (rank === 1 ? 'the brightest' : rank <=
  * Betelgeuse: Joyce et al. 2020, ApJ 902, 63: 168 pc, +27 and -15.
  */
 export const MODERN: Record<string, { pc: number; by: string; url: string; note: string }> = {
+  'proxima-centauri': {
+    pc: 1.3020, by: 'the Gaia satellite (Data Release 3, 2022)', url: 'https://www.cosmos.esa.int/web/gaia/dr3',
+    note: 'Proxima Centauri is the nearest star to the Sun, and its distance is known very well. Gaia measured its shift against the background stars as 768 thousandths of an arcsecond, which gives 4.25 light years. The older Hipparcos figure was about 4.23.',
+  },
   betelgeuse: {
     pc: 168, by: 'Joyce and others (2020)', url: 'https://arxiv.org/abs/2006.09837',
     note: 'Betelgeuse is hard to place, because the star is so swollen that its disc is wider than the tiny shift in the sky used to measure distance. This figure comes from a 2020 study of the way the star pulses, and could be anywhere from about 500 to 640 light years. The Hipparcos satellite put it at about 500.',

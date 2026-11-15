@@ -48,7 +48,8 @@ function whatIs(b: Body): string {
   return '';
 }
 
-function howFar(c: Context): string {
+function howFar(c: Context, starLy?: number): string {
+  if (starLy !== undefined) return `${starLy.toLocaleString('en-GB')} light years from the Sun`;
   if (c.band === 'surface' || c.band === 'orbit') return `${fmtKm(c.km)} above ${c.near === 'sun' ? 'the surface' : 'the ground'}`;
   const ly = (c.km * 1000) / LIGHT_YEAR_M;
   if (ly <= 0.1) return `${fmtAu(c.km)} from the Sun`;
@@ -109,13 +110,13 @@ export function mountMargin(engine: Engine): void {
     // the catalogue star the view has flown to, and its page if it has one
     const meet = ctx.star === undefined ? undefined : data.stars?.[ctx.star];
     const key = `${got.subject}|${ctx.band}|${ctx.near}|${standIn}|${meet?.[1] ?? ''}`;
-    if (key === shownFor) { const d = p.querySelector('.m-dist'); if (d) d.textContent = howFar(ctx); return; }
+    if (key === shownFor) { const d = p.querySelector('.m-dist'); if (d) d.textContent = howFar(ctx, meet?.[2]); return; }
     shownFor = key;
     const b = who(got.subject), near = who(ctx.near);
     const kids: Kids = [
       el('p', { class: 'm-kicker' }, KICKER[got.subject] ?? BAND[ctx.band]),
       el('h2', null, nameOf(got.subject)),
-      el('p', { class: 'm-dist' }, howFar(ctx)),
+      el('p', { class: 'm-dist' }, howFar(ctx, meet?.[2])),
     ];
     if (standIn) kids.push(el('p', { class: 'm-drawn' }, `The colours are ${theName(got.subject)}'s own, from orbiting cameras. The hills and valleys under you are generated for now, not measured, so they will not match the real map.`));
     if (b) {
@@ -177,7 +178,7 @@ export function mountMargin(engine: Engine): void {
     if (!you || !youLabel || !ctx) return;
     const y = Math.min(TOP, Math.max(0, Math.log10(Math.max(1, ctx.km * 1000))));
     you.style.setProperty('--y', y.toFixed(3));
-    youLabel.textContent = `You are ${howFar(ctx).replace('the ground', theName(ctx.near)).replace('the surface', 'the Sun')}`;
+    youLabel.textContent = `You are ${howFar(ctx, ctx.star === undefined ? undefined : data?.stars?.[ctx.star]?.[2]).replace('the ground', theName(ctx.near)).replace('the surface', 'the Sun')}`;
   }
   function renderAtlas(): void {
     const ruler = el('div', { class: 'm-ruler', role: 'img', 'aria-label': 'A scale in powers of ten from one metre to ten billion light years, with a line showing how far out you are' });
