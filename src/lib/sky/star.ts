@@ -230,6 +230,6 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const word = /^It is an? (supergiant|bright giant|giant|subgiant)/.exec(stage)?.[1];
   const short = colour.split(',')[0].replace(/^an? /, '');
   const what = short ? (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short) : 'star';
-  const title = `${star.name}: ${what}${star.constellation && !star.name.includes(star.constellation) ? ` in ${star.constellation}` : ''}`;
+  const title = `${star.name}: ${what}${star.constellation && !star.name.endsWith(star.constellation) ? ` in ${star.constellation}` : ''}`;
   return { html, title, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
 }
