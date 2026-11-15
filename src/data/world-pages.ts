@@ -1261,4 +1261,65 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'ESO, VLT images suggest that Hygiea may be a dwarf planet', url: 'https://www.eso.org/public/news/eso1918/' },
     ],
   },
+
+  pallas: {
+    lead: 'The third-largest asteroid, a pitted, golf-ball-like world on an orbit tilted so steeply that no spacecraft has visited it.',
+    picture: {
+      src: '/img/learn/pallas-sphere-eso-2020.jpg', width: 1280, height: 638,
+      alt: 'Two views of a grey, roughly round, dimpled ball against black, with a bright spot near the upper left of the right-hand view.',
+      caption: '<b>Photographs.</b> Two views of Pallas, taken with the SPHERE instrument on ESO’s Very Large Telescope in Chile, and sharpened by a computer method. The pictures were released in February 2020. They are blurred because Pallas is far away. The bright spot in the right-hand view is in the southern half. Credit: ESO/M. Marsset et al./MISTRAL algorithm (ONERA/CNRS), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Reduced in size.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Pallas is about 510 km across, roughly round but not quite. The telescope pictures show that it is covered in craters, so that it looks like a golf ball, and that it has two large basins that may be linked to the collision that made its family of smaller asteroids. A bright spot in the south looks like the salt patches seen on Ceres, though nobody has yet worked out what it is.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its surface is dark. Its density, measured in the same study, is about 2.9 times that of water, which fits a body of rock with some carbon in it and not one of ice.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Heinrich Olbers found it on 28 March 1802 in Bremen, in Germany, while he was looking for Ceres. It was the second asteroid found. It is named for Pallas Athena, a name of the Greek goddess Athena.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'None. Ceres and Vesta have each been visited, but Pallas has not. Its orbit is tilted about 35 degrees from the flat plane in which the planets go round, so a spacecraft would need a great deal of fuel to reach it.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It stays in the main belt, between Mars and Jupiter. Its tilted orbit takes it well above and below the planets, and it does not come near the Earth.',
+      ] },
+    ],
+    sources: [
+      { label: 'ESO, Golf Ball World', url: 'https://www.eso.org/public/images/potw2008a/' },
+      { label: 'NASA, Pallas', url: 'https://science.nasa.gov/solar-system/asteroids/2-pallas/' },
+    ],
+  },
+
+  makemake: {
+    lead: 'A dwarf planet of the Kuiper belt, about three-fifths as wide as Pluto, with a faint small moon found in 2015.',
+    picture: {
+      src: '/img/learn/makemake-hubble-2015.jpg', width: 1280, height: 1280,
+      alt: 'A very bright white dot with faint rays across it, and a tiny, much fainter dot just above and to its left.',
+      caption: '<b>A photograph.</b> Makemake and its moon, from the Hubble Space Telescope, April 2015. The moon is the faint dot above the bright glare of Makemake. Credit: NASA, ESA, and A. Parker and M. Buie (Southwest Research Institute), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Reduced in size.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it, so all that is known comes from telescopes. Makemake is about 1,430 km across, measured when it passed in front of a star in 2011. It turns once in about 23 hours. It is very bright and has a reddish-brown colour.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its surface is covered in frozen methane, with some ethane and probably other ices. The 2011 observation also showed that it has no thick air like Pluto’s, although a thin one cannot be ruled out. On average it is about 45 times further from the Sun than the Earth is.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Mike Brown, Chad Trujillo and David Rabinowitz found it on 31 March 2005, in pictures taken at the Palomar Observatory in California, and announced it that July. In 2008 the International Astronomical Union named it a dwarf planet. The name is that of the creator god of the Rapa Nui, the people of Easter Island, because it was found soon after Easter.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'One, found in Hubble pictures taken in April 2015 and announced in 2016. It is nicknamed MK 2 and is about 160 km wide. It is about 1,300 times fainter than Makemake, and it goes round at roughly 21,000 km, a distance that is still known only roughly.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'The moon’s exact orbit, which would give Makemake’s mass and so its density, and what the surface is like. Nothing is on its way there.',
+      ] },
+    ],
+    sources: [
+      { label: 'ESA/Hubble, Makemake and its moon', url: 'https://esahubble.org/images/opo1618b/' },
+      { label: 'NASA, Makemake', url: 'https://science.nasa.gov/dwarf-planets/makemake/' },
+      { label: 'Ortiz and others 2012, Nature 491, 566', url: 'https://doi.org/10.1038/nature11597' },
+    ],
+  },
 };
