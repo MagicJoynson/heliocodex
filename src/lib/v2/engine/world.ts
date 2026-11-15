@@ -29,6 +29,8 @@ export interface Readout {
   tech: string; // renderer, depth mode, tiles
   /** what on screen is generated rather than measured, when anything is */
   note?: string;
+  /** the ground in view is generated, not measured, and close enough to be mistaken for the real thing: say so loudly */
+  illustrative?: boolean;
   /** out beyond the planets, where the distance that matters is from the Sun */
   far?: boolean;
 }
@@ -363,10 +365,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const PLACE_NOTES: Record<string, string> = {
     'solar-system': 'The Kuiper belt is drawn from a model; its bodies are far too small to see from here',
     'oort-cloud': 'The Oort cloud is drawn from a model; nobody has seen it, only comets that come from it',
-    'milky-way': 'Our galaxy’s shape is a model built from measurements; we cannot see it from outside',
+    neighbourhood: 'Real stars at their measured distances. Stars whose distance is not known are left out',
+    'night-sky': 'Real stars at their measured distances, seen from outside the sky. The Pleiades and the Orion Nebula are each placed by one measured distance',
+    'milky-way': 'The galaxy’s shape is reconstructed from measurements made from inside it, because no one has seen it from outside. It is a model',
     'local-group': 'Andromeda, Triangulum and the Magellanic Clouds are models, placed and tilted as measured',
-    'cosmic-web': 'Real SDSS galaxies. Blank sky was not surveyed',
-    cmb: 'You are outside the sphere of all we can see, 46 billion light years in radius. Nothing is really this far away, and the tiny differences in its light are shown far stronger than they are',
+    'cosmic-web': 'Real SDSS galaxies. Distances are approximate, worked out from redshift at 70 km/s per megaparsec. Blank sky was not surveyed',
+    cmb: 'The sphere is 46 billion light years in radius: the comoving distance to where the oldest light started, in today’s stretched-out space, though the universe is only 13.8 billion years old. That light was released about 380,000 years after the Big Bang. Nothing is really this far away, and its tiny differences are shown far stronger than they are',
   };
   function placeAt(fromSun: number, nearId: string): { id: string; band: Context['band'] } | null {
     const pc = fromSun / PC;
@@ -581,13 +585,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const now = performance.now();
     if (now - readoutAt < 120 && f.mode !== 'cruise') return;
     const farNow = placeAt(len(cam), nearId);
+    const illustrative = onTerrain && !terrain.source.resolution && f.alt < terrain.radius * 0.5;
     readoutAt = now;
     o.onReadout?.({
       alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
       target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
-      note: (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
+      illustrative,
+      note: (illustrative ? 'Illustrative terrain. The hills and craters here are generated to make the view feel real; they are not the measured surface of Mars' : undefined) ?? (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 1800 || y > 2050 ? `Planet and moon positions are approximate in ${y}` : y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${fpsShown} fps · ${ratio.toFixed(2)}x`,
     });
   }
@@ -690,14 +696,20 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   return {
     ...engine,
-    enter(secs = 7) {
+    /** the way in. With a place that can be reached now (a link such as ?go=saturn), go straight there; otherwise the way in ends at Mars. Says whether it went to the place */
+    enter(secs = 7, to?: string): boolean {
       if (pendingFly) { pendingFly.reject(abort('replaced by the way in')); pendingFly = null; }
       entered = true;
       loadFar();
+      if (to && to !== bodySlug && engine.canFlyTo(to)) {
+        engine.flyTo({ target: to }, { secs: reduced ? 0 : secs }).catch(() => {});
+        return true;
+      }
       focusKey = bodySlug; focusName = 'Mars';
       flight.startCruise({ to: focusOf(bodySlug), endDist: terrain.radius * 3.2, endDir: enterDir, secs: reduced ? 0 : secs });
       cruising = true;
       if (reduced) o.onJump?.();
+      return false;
     },
     /** + (positive) and − on screen */
     zoom(steps: number) { flight.zoom(steps); },

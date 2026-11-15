@@ -76,10 +76,14 @@ import { sections } from '../lib/nav';
     </section>
 
     <!-- where you are: a map of the Solar System from above, and what you are looking at -->
-    <section class="where" id="where" aria-labelledby="where-h">
+    <section class="where" id="where" aria-labelledby="where-h" inert>
       <h2 class="where-h" id="where-h"><span class="where-k">Looking at</span> <span id="where-name">Mars</span></h2>
       <p class="where-d" id="where-d"></p>
       <canvas class="map" id="map" width="180" height="180" role="img" aria-label="A map of the Solar System seen from above, with you marked"></canvas>
+      <div class="stepper" role="group" aria-label="Step along the map">
+        <button type="button" id="step-in" disabled>In</button>
+        <button type="button" id="step-out" disabled>Out</button>
+      </div>
     </section>
 
     <div class="hud" id="hud">
@@ -219,6 +223,7 @@ import { sections } from '../lib/nav';
             }
             $('tech').textContent = r.tech;
             $('gen').textContent = r.note ?? '';
+            $('gen').classList.toggle('illus', !!r.illustrative);
             body.classList.toggle('far', !!r.far);
             body.classList.toggle('free', r.mode === 'free');
             $('free-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
@@ -238,6 +243,7 @@ import { sections } from '../lib/nav';
           onArrive() {
             body.classList.add('in', 'arrived');
             $('controls').removeAttribute('inert');
+            $('where').removeAttribute('inert');
             $('threshold').setAttribute('inert', '');
             $('skip').hidden = true;
             $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
@@ -251,7 +257,7 @@ import { sections } from '../lib/nav';
             const goWhenReady = () => {
               if (world && go && go.startsWith('star:') && !kicked && !world.canFlyTo(go)) { kicked = true; world.flyTo({ target: go }).catch(() => {}); } // starts the catalogue loading
               if (!world || (go && !world.canFlyTo(go) && go.startsWith('star:') && performance.now() < giveUp)) { setTimeout(goWhenReady, 100); return; }
-              if (go && world.canFlyTo(go)) {
+              if (go && !wentDirect && world.canFlyTo(go)) {
                 const d = Number(params.get('d'));
                 world.flyTo({ target: go, distanceKm: d > 0 ? d : undefined }).catch(() => {});
               }
@@ -267,6 +273,7 @@ import { sections } from '../lib/nav';
             $('status').textContent = 'The graphics stopped. Reload the page to carry on.';
             body.classList.remove('in', 'arrived');
             $('controls').setAttribute('inert', '');
+            $('where').setAttribute('inert', '');
             $('threshold').removeAttribute('inert');
             $('skip').hidden = false;
           },
@@ -416,18 +423,56 @@ import { sections } from '../lib/nav';
       // beyond Neptune the map changes with the scale: rings for each stop out to the oldest light, on a scale where every step is a thousand times further
       const RUNGS: [string, string, number][] = [
         ['solar-system', 'The whole Solar System', EDGE], ['oort-cloud', 'The Oort cloud', 1e5], ['neighbourhood', 'Our neighbour stars', 30 * 63_241],
-        ['night-sky', 'Every star you can see', 1500 * 63_241], ['milky-way', 'The Milky Way', 150_000 * 63_241], ['local-group', 'The Local Group', 3e6 * 63_241],
+        ['pleiades', 'The Pleiades', 444 * 63_241], ['orion-nebula', 'The Orion Nebula', 1266 * 63_241], ['night-sky', 'Every star you can see', 1500 * 63_241], ['milky-way', 'The Milky Way', 150_000 * 63_241], ['local-group', 'The Local Group', 3e6 * 63_241],
         ['cosmic-web', 'The cosmic web', 1e9 * 63_241], ['cmb', 'The oldest light', 46e9 * 63_241],
       ];
-      const LOG0 = Math.log10(EDGE), LOG1 = Math.log10(46e9 * 63_241);
-      const rungR = (au: number) => Math.min(1, Math.max(0, (Math.log10(au) - LOG0) / (LOG1 - LOG0)));
+      // the rings are evenly spaced, one step per stop, so that no two are crowded on a small screen; between two rings you sit by how far along the way you are
+      const rungR = (au: number) => {
+        const n = RUNGS.length - 1;
+        if (au <= RUNGS[0][2]) return 0;
+        for (let i = 0; i < n; i++) {
+          const a = RUNGS[i][2], b = RUNGS[i + 1][2];
+          if (au <= b) return (i + (Math.log10(au) - Math.log10(a)) / (Math.log10(b) - Math.log10(a))) / n;
+        }
+        return 1;
+      };
+      const ringOf = (i: number) => i / (RUNGS.length - 1);
+      // In and Out: the same journey as the map, one stop at a time, for the keyboard, a screen reader and a thumb
+      const PLANET_LABEL: Record<string, string> = { sun: 'The Sun', mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
+      let stepIn: [string, string] | null = null, stepOut: [string, string] | null = null;
+      const stepInB = $('step-in') as HTMLButtonElement, stepOutB = $('step-out') as HTMLButtonElement;
+      function setSteppers(i: [string, string] | null, o: [string, string] | null) {
+        stepIn = i; stepOut = o;
+        for (const [b, t, w] of [[stepInB, i, 'In'], [stepOutB, o, 'Out']] as const) {
+          const was = b.disabled, now = !t;
+          b.disabled = now;
+          b.setAttribute('aria-label', t ? `${w}: go to ${t[1]}` : `${w}: nowhere further`);
+          b.title = t ? t[1] : '';
+          void was;
+        }
+      }
+      function planetSteps(focus: string) {
+        const i = ORDER.indexOf(focus);
+        if (i < 0) return setSteppers(['sun', PLANET_LABEL.sun], ['oort-cloud', RUNGS[1][1]]);
+        setSteppers(i > 0 ? [ORDER[i - 1], PLANET_LABEL[ORDER[i - 1]]] : null, i < ORDER.length - 1 ? [ORDER[i + 1], PLANET_LABEL[ORDER[i + 1]]] : ['oort-cloud', RUNGS[1][1]]);
+      }
+      // from a stop, the next one out and the one before it; between stops (flying yourself), the nearest each side
+      function ladderSteps(distAu: number, focus: string) {
+        const i = RUNGS.findIndex((q) => q[0] === focus);
+        const out = i >= 0 ? RUNGS[i + 1] : RUNGS.find(([, , au]) => au > distAu * 1.1);
+        const ins = i >= 0 ? RUNGS[i - 1] : [...RUNGS].reverse().find(([, , au]) => au < distAu / 1.1);
+        setSteppers(ins && ins[0] !== 'solar-system' ? [ins[0], ins[1]] : ['neptune', PLANET_LABEL.neptune], out ? [out[0], out[1]] : null);
+        return out;
+      }
+      stepInB.addEventListener('click', () => { if (stepIn) goTo(stepIn[0]); });
+      stepOutB.addEventListener('click', () => { if (stepOut) goTo(stepOut[0]); });
       function drawLadder(c: number, R: number, dpr: number, cam: number[], distAu: number) {
         hits = [{ id: 'sun', x: c / dpr, y: c / dpr }];
         const here = rungR(distAu);
         mctx.lineWidth = 1 * dpr;
         for (const [id, , au] of RUNGS) {
-          const r = rungR(au) * R * 0.92 + R * 0.08;
-          const near = Math.abs(rungR(au) - here) < 0.04;
+          const r = ringOf(RUNGS.findIndex((q) => q[0] === id)) * R * 0.92 + R * 0.08;
+          const near = Math.abs(ringOf(RUNGS.findIndex((q) => q[0] === id)) - here) < 0.05;
           mctx.strokeStyle = near ? 'rgba(241,201,142,0.55)' : 'rgba(236,231,220,0.16)';
           mctx.beginPath(); mctx.arc(c, c, r, 0, Math.PI * 2); mctx.stroke();
           mctx.fillStyle = near ? '#f1c98e' : 'rgba(236,231,220,0.5)';
@@ -474,12 +519,13 @@ import { sections } from '../lib/nav';
           const distAu = Math.hypot(st.cam[0], st.cam[1], st.cam[2]) / AU;
           mctx.clearRect(0, 0, S, S);
           drawLadder(c, R, dpr, st.cam, distAu);
-          const next = RUNGS.find(([, , au]) => au > distAu * 3);
+          const next = ladderSteps(distAu, st.focus);
           $('where-d').textContent = `${fmt(distAu * AU)} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
           map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(distAu * AU)} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
           map.classList.add('beyond');
           return;
         }
+        planetSteps(st.focus);
         const hl = Math.hypot(st.heading[0], st.heading[1]);
         mctx.save();
         mctx.translate(yx, yy);
@@ -508,6 +554,7 @@ import { sections } from '../lib/nav';
       });
 
       // ---- going in
+      let wentDirect = false;
       const ap = $('enter');
       function go() {
         if (body.classList.contains('in')) return;
@@ -516,7 +563,8 @@ import { sections } from '../lib/nav';
         ap.style.setProperty('--dx', `${sx - (r.left + r.width / 2)}px`);
         ap.style.setProperty('--dy', `${sy - (r.top + r.height / 2)}px`);
         body.classList.add('in');
-        setTimeout(() => world.enter(5), reducedNow() ? 300 : 700);
+        // a link to somewhere (?go=saturn) goes straight there; the way in past Mars is for visitors who came with no destination
+        setTimeout(() => { const g = params.get('go'); wentDirect = world.enter(5, g && !g.startsWith('star:') && !params.has('d') ? g : undefined); }, reducedNow() ? 300 : 700);
       }
       ap.addEventListener('click', go);
       addEventListener('keydown', (e) => { if (e.key === 'Enter' && !body.classList.contains('in') && !(e.target as HTMLElement)?.closest?.('a, button')) go(); });
@@ -537,7 +585,7 @@ import { sections } from '../lib/nav';
       pad.addEventListener('pointerup', off);
       pad.addEventListener('pointercancel', off);
 
-      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); $('skip').hidden = true; }
+      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('where').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); $('skip').hidden = true; }
     </script>
 
     <style is:global>
@@ -628,9 +676,14 @@ import { sections } from '../lib/nav';
       .where-h { margin: 0; font: 300 1.25rem/1.2 var(--serif); text-shadow: 0 1px 10px #000; }
       .where-k { display: block; font: 400 .8125rem/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
       .where-d { margin: 2px 0 8px; font: 300 .9rem/1.35 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; min-height: 1.2em; }
+      .stepper { display: flex; gap: 6px; margin-top: 8px; width: 160px; }
+      .stepper button { flex: 1; min-height: 44px; font: 400 .875rem/1 var(--sans, system-ui, sans-serif); color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+      .stepper button:disabled { opacity: .35; cursor: default; }
+      .stepper button:focus-visible { outline: 2px solid #f1c98e; outline-offset: 2px; }
+      body.no-map .stepper { display: none; }
       .map { display: block; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(16,16,20,.88), rgba(8,8,10,.88)); border: 1px solid var(--line); cursor: pointer; }
       body.no-map .map { display: none; }
-      @media (max-width: 600px) { .where { width: 120px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 104px; height: 104px; } }
+      @media (max-width: 600px) { .where { width: 120px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 120px; height: 120px; } .stepper { width: 120px; } }
 
       /* ---- readout */
       .hud { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; padding: 0 var(--gut) var(--bot); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1s ease .8s; pointer-events: none; }
@@ -696,6 +749,7 @@ import { sections } from '../lib/nav';
       /* what is drawn from a model, and what was measured, for wherever you are: always shown, beside the map */
       .gen { position: fixed; z-index: 5; top: calc(var(--top) + 58px); left: 214px; right: var(--gut); max-width: 24rem; margin: 0; font: italic 300 .8125rem/1.4 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; pointer-events: none; }
       .gen:empty { display: none; }
+      .gen.illus { font: 500 .8125rem/1.4 var(--sans, system-ui, sans-serif); font-style: normal; color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid rgba(241, 201, 142, .55); border-radius: 6px; padding: .45rem .65rem; text-shadow: none; }
       @media (max-width: 600px) { .gen { left: 148px; } }
       body:not(.in) .gen, body.margin-open .gen { visibility: hidden; }
 
