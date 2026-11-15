@@ -4,9 +4,9 @@
 import { moonPlace } from './moon';
 import { moment, toSky, planetFromEarth, sunFromEarth, moonSky, type Vec } from './place';
 import { centuriesSinceJ2000 } from '../orbit';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { pageStars } from './starlist';
-import { MODERN } from './star';
+import { MODERN, LY_PER_PC } from './star';
 
 const failed: string[] = [];
 function test(name: string, fn: () => void) {
@@ -77,6 +77,23 @@ test('Stars with a corrected distance are drawn in 3D where their page says they
     const r = Math.hypot(bin.readFloatLE(s.index * 20), bin.readFloatLE(s.index * 20 + 4), bin.readFloatLE(s.index * 20 + 8));
     near(r, m.pc, m.pc * 0.002, `${slug} 3D distance in parsecs`);
   }
+});
+
+// Prose that says how far a named star is must agree with the star's own page (to rounding), so a figure cannot drift
+// from one place to another. The first "N light years" within 70 characters after a star's name is the one checked.
+test('Distances in lessons, facts, glossary and 3D captions match the star pages', () => {
+  const walk = (d: string): string[] => readdirSync(d).flatMap((n) => { const p = `${d}/${n}`; return statSync(p).isDirectory() ? walk(p) : /\.(md|yaml|ts)$/.test(p) && !/\.test\./.test(p) ? [p] : []; });
+  const stars = pageStars().filter((s) => s.proper && s.proper.length > 3).map((s) => ({ name: s.proper, ly: s.distPc * LY_PER_PC }));
+  const names = stars.map((s) => s.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const re = new RegExp(`(?<![A-Za-z])(${names})(?![A-Za-z])[^.\\n]{0,70}?(\\d[\\d,]*(?:\\.\\d+)?) light[- ]years`, 'g');
+  const bad: string[] = [];
+  for (const file of [...walk('src/content'), ...walk('src/lib/learn')]) {
+    for (const m of readFileSync(file, 'utf8').matchAll(re)) {
+      const star = stars.find((s) => s.name === m[1])!, said = parseFloat(m[2].replace(/,/g, ''));
+      if (Math.abs(said - star.ly) / star.ly > 0.02 && !(said >= 8 && Math.abs(said - star.ly) <= 0.5)) bad.push(`${file}: ${m[1]} says ${said}, its page says ${star.ly.toFixed(1)}`);
+    }
+  }
+  if (bad.length) throw new Error(bad.join('\n'));
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');
