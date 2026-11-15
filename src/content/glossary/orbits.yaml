@@ -232,3 +232,9 @@ terms:
     more: "Voyager 2 used four in a row to reach Neptune in twelve years."
     see: [transfer-orbit, gravity]
     lesson: leaving-and-arriving
+  - id: general-relativity
+    term: General relativity
+    short: "Einstein's theory that gravity is the bending of space and time by mass and energy."
+    more: "It passes every test so far, from the orbit of Mercury to the bending of starlight and the waves from colliding black holes."
+    see: [gravity, gravitational-lensing, gravitational-wave]
+    lesson: gravity-as-bent-space-and-time

@@ -225,3 +225,9 @@ terms:
     more: "Oxygen and methane together in a planet's air is one example. None has been confirmed anywhere but the Earth."
     see: [exoplanet, habitable-zone, atmosphere]
     lesson: are-we-alone
+  - id: rover-lander
+    term: Lander and rover
+    short: "A lander is a spacecraft that sets down on a world. A rover is one that drives about on it."
+    more: "Perseverance, a rover the size of a car, landed on Mars on 18 February 2021. A radio signal took eleven minutes to reach the Earth, so it had to land itself."
+    see: [light-time, gravity-assist]
+    lesson: robot-explorers

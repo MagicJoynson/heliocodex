@@ -154,3 +154,9 @@ terms:
     more: "The rule was found by Henrietta Leavitt in the Magellanic Clouds. Polaris is the nearest Cepheid."
     see: [variable-star, standard-candle, distance-ladder, luminosity]
     lesson: the-distance-ladder
+  - id: cosmic-ray
+    term: Cosmic ray
+    short: "A fast, electrically charged particle from space, often from an exploded star."
+    more: "The Sun's wind turns many away, so fewer reach the planets when the Sun is active. When one strikes the air it makes showers of other particles."
+    see: [supernova, heliosphere, solar-wind]
+    lesson: the-suns-reach
