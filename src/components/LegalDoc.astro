@@ -10,10 +10,12 @@ const entry = await getEntry('legal', id);
 if (!entry) throw new Error(`No legal page called ${id}`);
 const { headings } = await render(entry);
 // Wide tables scroll sideways on a phone, so each one sits in a region that the keyboard can reach.
-let n = 0;
+let n = 0, h = false;
 const html = (entry.rendered?.html ?? '')
   .replace(/<table>/g, () => `<div class="table-scroll" role="region" aria-label="Table ${++n}, scrolls sideways" tabindex="0"><table>`)
-  .replace(/<\/table>/g, '</table></div>');
+  .replace(/<\/table>/g, '</table></div>')
+  // a two-column table of facts has an empty header row: give each header a name that only a screen reader hears
+  .replace(/<th><\/th>/g, () => `<th><span class="vh">${(h = !h) ? 'Item' : 'Detail'}</span></th>`);
 const contents = headings.filter((h) => h.depth === 2);
 const updated = entry.data.updated.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const others = [
@@ -90,6 +92,7 @@ const others = [
   .count-switch button:hover { color: var(--accent); border-color: var(--accent); }
   .legal .table-scroll table { min-width: 34rem; }
   .legal .table-scroll td, .legal .table-scroll th { min-width: 7rem; }
+  .legal .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .legal .table-scroll:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
   @media (max-width: 760px) { .legal > .hang { display: none; } }
 </style>

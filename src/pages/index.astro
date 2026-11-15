@@ -60,7 +60,7 @@ const far = worlds.map((w) => {
     <div class="front-text">
       <h1 id="home-h">The Sun, its worlds and everything beyond</h1>
       <p class="front-lede">Real images from spacecraft and telescopes, with every number measured and credited.</p>
-      <form class="front-find" role="search" action="/search" method="get">
+      <form class="front-find" role="search" aria-label="Search the whole site" action="/search" method="get">
         <label for="front-q">Search the whole site</label>
         <div class="front-row">
           <input id="front-q" name="q" type="search" placeholder="Try Europa or parallax" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false" aria-controls="front-list" aria-autocomplete="list" aria-haspopup="listbox" />
@@ -79,7 +79,7 @@ const far = worlds.map((w) => {
   </section>
 
   <section class="home-hero" aria-label="The Sun and the eight planets">
-    <figure class="family" tabindex="0" role="group" aria-label="The Sun's eight planets to one scale. On a phone, scroll sideways.">
+    <figure class="family" tabindex="0" aria-label="The Sun's eight planets to one scale. On a phone, scroll sideways.">
       <div class="strip" style={`--sun-h:${sun.h}`}>
         <ol class="worlds">
           {worlds.map((w) => (

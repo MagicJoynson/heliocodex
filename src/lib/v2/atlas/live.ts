@@ -59,6 +59,8 @@ if (holder) {
   const idOf = (t: EventTarget | null) => (t instanceof Element ? t.closest<HTMLElement | SVGElement>('[data-body]')?.dataset.body ?? '' : '');
   document.addEventListener('pointerover', (e) => light(idOf(e.target)));
   document.addEventListener('focusin', (e) => light(idOf(e.target)));
+  // an orbit is a picture, not a link (the rows are the links): a click on one still takes you to its row
+  document.addEventListener('click', (e) => { const el = e.target instanceof Element ? e.target.closest('svg [data-body]') : null; const id = el?.getAttribute('data-body'); if (id) location.hash = id; });
   const fromHash = () => light(decodeURIComponent(location.hash.slice(1)));
   window.addEventListener('hashchange', fromHash);
   if (location.hash) fromHash();
