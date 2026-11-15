@@ -84,6 +84,9 @@ export function reading(spect: string | null, bv: number | null, distPc: number)
   const seen = classOfColour(bv), doubtful = /:|comp|\+/i.test(given), apart = at < 0 ? 0 : at - seen;
   const wrong = apart > 1 || (apart < -2 && distPc < 200);
   if (!doubtful && !wrong && at >= 0) return { ...plain, type, fromColour: false, trusted: true };
+  // an uncertain O or B type (marked only by a colon) on a distant star that looks cooler: dust between us and the
+  // star only ever reddens it, so a colour that is cooler than the type is what dust would do; keep the type's class
+  if (at >= 0 && at <= 1 && seen > at && distPc >= 200 && /:/.test(given) && !/comp|\+/i.test(given)) return { colour: CLASSES[ORDER[at]], stage: '', type, fromColour: false, trusted: true };
   // a blended or guessed type says nothing sure about the star's stage of life either
   const stage = /:|comp/i.test(given) || wrong ? '' : kind(given.split('+')[0]).stage;
   return { colour: CLASSES[ORDER[seen]], stage, type: wrong && !/comp/i.test(given) ? '' : type, fromColour: at >= 0 && at !== seen, trusted: false };
