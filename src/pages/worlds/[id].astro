@@ -47,7 +47,7 @@ const rows: [string, string][] = [
   ['Kind', kindLine],
   ['Distance', outSays],
   ['Once round', periodSays],
-  ['Path', `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'} (eccentricity ${fmt(o.e, 2)}), ${o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`],
+  ['Path', `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'} (eccentricity ${fmt(o.e, 2)}), ${(b as { orientationUnknown?: boolean }).orientationUnknown ? 'tilt not known' : o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`],
   ['Size', sizeSays],
   ...(b.densityGcm3 ? [['Density', `${fmt(b.densityGcm3, 2)} times water`] as [string, string]] : []),
   ...(b.discovered ? [['Found', `${b.discovered.year}, by ${byShort(b.discovered.by)}`] as [string, string]] : []),
@@ -58,7 +58,7 @@ const dKm = b.meanRadiusKm ? b.meanRadiusKm * 2 : null;
 const massKg = b.gmKm3S2 ? b.gmKm3S2 / 6.6743e-20 : null;
 const sup = (n: number) => `<sup>${String(n).replace('-', '−')}</sup>`;
 const parentName = nameOf(b.parent).replace(/^the /, 'the ');
-const pathWords = `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'}, ${o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`;
+const pathWords = `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'}, ${(b as { orientationUnknown?: boolean }).orientationUnknown ? 'tilt not known' : o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`;
 const cells: Cell[] = [
   round
     ? { key: 'distance', label: 'From the Sun', value: fmt(aAu, aAu < 10 ? 2 : 1), unit: 'au on average', note: `From ${fmt(o.aKm * (1 - o.e) / AU_KM, 2)} to ${fmt(o.aKm * (1 + o.e) / AU_KM, 2)} au. One au is the Earth’s distance.` }
