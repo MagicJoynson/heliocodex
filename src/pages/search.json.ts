@@ -22,10 +22,10 @@ export const GET: APIRoute = async () => {
   const cons = new Set<string>();
   for (const s of allStars()) if (s.constellation) cons.add(s.constellation);
   for (const c of [...cons].sort()) out.push([c, 'Constellation', `/stars/in/${slugOf(c)}`]);
-  // The last field is words a question can find, never shown: a glossary meaning, a lesson's summary and the facts that belong to it.
-  for (const t of await allTerms()) out.push([t.term, 'Glossary', `/glossary#${t.id}`, t.also.join(' ') || undefined, `${t.short} ${t.more ?? ''}`.trim()]);
+  // The last field is words a question can find, never shown: first the questions a lesson answers, divided by |, then after || a glossary meaning, or a lesson's summary and its facts.
+  for (const t of await allTerms()) out.push([t.term, 'Glossary', `/glossary#${t.id}`, t.also.join(' ') || undefined, `||${t.short} ${t.more ?? ''}`.trim()]);
   const facts = await allFacts();
-  for (const l of await allLessons()) out.push([l.data.title, 'Lesson', `/learn/${l.id}`, undefined, [l.data.summary, ...l.data.asks, ...facts.filter((f) => f.about.includes(l.id)).map((f) => f.text)].join(' ')]);
+  for (const l of await allLessons()) out.push([l.data.title, 'Lesson', `/learn/${l.id}`, undefined, `${l.data.asks.join('|')}||${[l.data.summary, ...facts.filter((f) => f.about.includes(l.id)).map((f) => f.text)].join(' ')}`]);
   for (const s of sections) out.push([s.label, 'Page', s.href]);
   for (const s of pageStars()) {
     const also = [s.catalogue, s.hip ? `HIP ${s.hip}` : '', s.hd ? `HD ${s.hd}` : ''].filter((x) => x && x !== s.name).join(' ');

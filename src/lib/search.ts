@@ -43,8 +43,17 @@ function fuzzy(q: string, words: string[]): number {
   return best <= max ? best : Infinity;
 }
 
+/** The hidden text of an entry: the questions it answers, then the words of its summary. */
+function splitText(raw?: string): { asks?: string[]; askWords?: string[]; textWords?: string[] } {
+  if (!raw) return {};
+  const cut = raw.indexOf('||');
+  const asks = (cut < 0 ? '' : raw.slice(0, cut)).split('|').map((a) => norm(a).replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const words = (t: string) => [...new Set(norm(t).split(/[^a-z0-9]+/).filter((w) => w.length > 2))];
+  return { asks, askWords: words(asks.join(' ')), textWords: words(cut < 0 ? raw : raw.slice(cut + 2)) };
+}
+
 /** Names split into words once, so each keystroke only compares. */
-type Prepared = { name: string; also: string; nameWords: string[]; alsoWords: string[]; words: string[]; joined: string; textWords?: string[] };
+type Prepared = { name: string; also: string; nameWords: string[]; alsoWords: string[]; words: string[]; joined: string; asks?: string[]; askWords?: string[]; textWords?: string[] };
 const prepared = new WeakMap<Entry[], Prepared[]>();
 function prepare(all: Entry[]): Prepared[] {
   let p = prepared.get(all);
@@ -52,7 +61,7 @@ function prepare(all: Entry[]): Prepared[] {
     p = all.map((e) => {
       const name = norm(e[0]), also = e[3] ? norm(e[3]) : '';
       const nameWords = name.split(/[\s-]+/), alsoWords = also ? also.split(/\s+/) : [];
-      return { name, also, nameWords, alsoWords, words: [...nameWords, ...alsoWords], joined: name.replace(/[\s-]+/g, ''), textWords: e[4] ? [...new Set(norm(e[4]).split(/[^a-z0-9]+/).filter((w) => w.length > 2))] : undefined };
+      return { name, also, nameWords, alsoWords, words: [...nameWords, ...alsoWords], joined: name.replace(/[\s-]+/g, ''), ...splitText(e[4]) };
     });
     prepared.set(all, p);
   }
@@ -74,7 +83,7 @@ function nearness(tokens: string[], e: Prepared): number {
 }
 
 /** Little words that carry no meaning in a question, so "why is the sky blue" looks for sky and blue. */
-const LITTLE = new Set('why how what when where which who does did can could would should will are was were the and for you your our its it is do to of in on at an a we i me my be been has have had than then that this these those there into from with about'.split(' '));
+const LITTLE = new Set('why how what when where which who does did can could would should will are was were the and for you your our its it is do to of in on at an a we i me my be been has have had than then that this these those there into from with about happen happens work works form forms make made many much long old know get tell call called exist here'.split(' '));
 /** A word with a plural or a verb ending trimmed, so "tides" meets "tide" and "eclipses" meets "eclipse". */
 const stem = (t: string) => (t.length > 4 ? t.replace(/(ing|es|s)$/, '') : t);
 
@@ -98,13 +107,16 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
     else if (nameWords.some((w) => w.startsWith(q))) s = 20;
     else if (alsoWords.some((w) => w.startsWith(q))) s = 25;
     else if (q.length > 2 && (name.includes(q) || also.includes(q))) s = 30;
-    // A question: every meaningful word in it begins some word of the name, its other names or its text.
+    // A question. The exact question a lesson answers comes first; then lessons whose questions or title hold every meaningful word; then any text that does.
     if (s < 0 && meaning.length && e[4]) {
-      const pool = list[i].textWords!;
-      if (meaning.every((t) => list[i].words.some((w) => w.startsWith(t)) || pool.some((w) => w.startsWith(t)))) s = 40 + (meaning.every((t) => list[i].words.some((w) => w.startsWith(t))) ? 0 : 6);
+      const L = list[i], inWords = (t: string) => L.words.some((w) => (tokens.length > 1 ? w === t || stem(w) === t : w.startsWith(t))), inAsk = (t: string) => !!L.askWords?.some((w) => w.startsWith(t));
+      if (L.asks?.includes(q.replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim())) s = 5;
+      else if (meaning.every((t) => inWords(t))) s = 32;
+      else if (meaning.every((t) => inWords(t) || inAsk(t))) s = tokens.length > 1 ? 34 : 36;
+      else if (tokens.length > 1 && meaning.every((t) => inWords(t) || inAsk(t) || L.textWords!.some((w) => w.startsWith(t)))) s = 46;
     }
-    // A longer question that names a place ("how far is the moon"): offer the place itself first.
-    if (s < 0 && tokens.length > 1 && meaning.length && nameWords.length === 1 && e[1] !== 'Page' && e[1] !== 'Constellation' && e[1] !== 'Star (catalogue)' && kindRank(e[1]) <= 2 && meaning.some((t) => nameWords[0].startsWith(t))) s = 38;
+    // A longer question that names a place or a star ("how far is the moon"): offer it first. The whole word must match.
+    if (s < 0 && tokens.length > 1 && nameWords.length === 1 && e[1] !== 'Page' && e[1] !== 'Star (catalogue)' && kindRank(e[1]) <= 2 && meaning.some((t) => t.length >= 3 && stem(nameWords[0]) === t)) s = 33;
     if (s >= 0) { scored.push([s + kindRank(e[1]) * 2 + name.length / 100, e]); if (s < bestAsTyped) bestAsTyped = s; }
     else if (tryFuzzy && e[1] !== 'Star (catalogue)') {
       const d = nearness(tokens, list[i]);
@@ -112,11 +124,11 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
     }
   }
   // Nothing has every word of a question: offer what has most of them.
-  if (scored.length === 0 && meaning.length > 1) {
-    const some: [number, Entry][] = [];
+  if (scored.length < 3 && meaning.length > 1) {
+    const some: [number, Entry][] = [], have = new Set(scored.map((x) => x[1]));
     for (let i = 0; i < all.length; i++) {
       const e = all[i];
-      if (!e[4] || e[1] === 'Star (catalogue)') continue;
+      if (!e[4] || have.has(e)) continue;
       const w = [...list[i].words, ...(list[i].textWords ?? [])];
       const hit = meaning.filter((t) => w.some((x) => x.startsWith(t))).length;
       if (hit >= 2) some.push([60 - hit * 6 + kindRank(e[1]), e]);
