@@ -492,7 +492,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, Phobos', url: 'https://science.nasa.gov/mars/moons/phobos/' },
       { label: 'JAXA, Martian Moons eXploration', url: 'https://www.mmx.jaxa.jp/en/' },
-      { label: 'NASA Photojournal, PIA10369', url: 'https://images.nasa.gov/details/PIA10369' },
+      { label: 'NASA Image and Video Library, PIA10369', url: 'https://images.nasa.gov/details/PIA10369' },
     ],
   },
 
@@ -524,7 +524,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, Deimos', url: 'https://science.nasa.gov/mars/moons/deimos/' },
       { label: 'JAXA, Martian Moons eXploration', url: 'https://www.mmx.jaxa.jp/en/' },
-      { label: 'NASA Photojournal, PIA11826', url: 'https://images.nasa.gov/details/PIA11826' },
+      { label: 'NASA Image and Video Library, PIA11826', url: 'https://images.nasa.gov/details/PIA11826' },
     ],
   },
 
@@ -589,7 +589,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Iapetus', url: 'https://science.nasa.gov/saturn/moons/iapetus/' },
-      { label: 'NASA Photojournal, PIA11690', url: 'https://images.nasa.gov/details/PIA11690' },
+      { label: 'NASA Image and Video Library, PIA11690', url: 'https://images.nasa.gov/details/PIA11690' },
     ],
   },
 
@@ -621,7 +621,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Miranda', url: 'https://science.nasa.gov/uranus/moons/miranda/' },
-      { label: 'NASA Photojournal, PIA18185', url: 'https://images.nasa.gov/details/PIA18185' },
+      { label: 'NASA Image and Video Library, PIA18185', url: 'https://images.nasa.gov/details/PIA18185' },
     ],
   },
 
@@ -653,7 +653,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Ariel', url: 'https://science.nasa.gov/uranus/moons/ariel/' },
-      { label: 'NASA Photojournal, PIA00041', url: 'https://images.nasa.gov/details/PIA00041' },
+      { label: 'NASA Image and Video Library, PIA00041', url: 'https://images.nasa.gov/details/PIA00041' },
     ],
   },
 
@@ -684,7 +684,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Umbriel', url: 'https://science.nasa.gov/uranus/moons/umbriel/' },
-      { label: 'NASA Photojournal, PIA00040', url: 'https://images.nasa.gov/details/PIA00040' },
+      { label: 'NASA Image and Video Library, PIA00040', url: 'https://images.nasa.gov/details/PIA00040' },
     ],
   },
 
@@ -715,7 +715,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Titania', url: 'https://science.nasa.gov/uranus/moons/titania/' },
-      { label: 'NASA Photojournal, PIA01979', url: 'https://images.nasa.gov/details/PIA01979' },
+      { label: 'NASA Image and Video Library, PIA01979', url: 'https://images.nasa.gov/details/PIA01979' },
     ],
   },
 
@@ -745,7 +745,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Oberon', url: 'https://science.nasa.gov/uranus/moons/oberon/' },
-      { label: 'NASA Photojournal, PIA00034', url: 'https://images.nasa.gov/details/PIA00034' },
+      { label: 'NASA Image and Video Library, PIA00034', url: 'https://images.nasa.gov/details/PIA00034' },
     ],
   },
 
@@ -777,7 +777,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Hyperion', url: 'https://science.nasa.gov/saturn/moons/hyperion/' },
-      { label: 'NASA Photojournal, PIA12748', url: 'https://images.nasa.gov/details/PIA12748' },
+      { label: 'NASA Image and Video Library, PIA12748', url: 'https://images.nasa.gov/details/PIA12748' },
     ],
   },
 
@@ -811,7 +811,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, 433 Eros', url: 'https://science.nasa.gov/solar-system/asteroids/433-eros/' },
       { label: 'NASA, NEAR Shoemaker', url: 'https://science.nasa.gov/mission/near-shoemaker/' },
-      { label: 'NASA Photojournal, PIA02923', url: 'https://images.nasa.gov/details/PIA02923' },
+      { label: 'NASA Image and Video Library, PIA02923', url: 'https://images.nasa.gov/details/PIA02923' },
     ],
   },
 
@@ -843,7 +843,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, 243 Ida', url: 'https://science.nasa.gov/solar-system/asteroids/243-ida/' },
       { label: 'NASA, Galileo', url: 'https://science.nasa.gov/mission/galileo/' },
-      { label: 'NASA Photojournal, PIA00333', url: 'https://images.nasa.gov/details/PIA00333' },
+      { label: 'NASA Image and Video Library, PIA00333', url: 'https://images.nasa.gov/details/PIA00333' },
     ],
   },
 
@@ -873,7 +873,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, Galileo', url: 'https://science.nasa.gov/mission/galileo/' },
-      { label: 'NASA Photojournal, PIA00118', url: 'https://images.nasa.gov/details/PIA00118' },
+      { label: 'NASA Image and Video Library, PIA00118', url: 'https://images.nasa.gov/details/PIA00118' },
     ],
   },
 
@@ -905,7 +905,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
     sources: [
       { label: 'NASA, 253 Mathilde', url: 'https://science.nasa.gov/solar-system/asteroids/253-mathilde/' },
-      { label: 'NASA Photojournal, PIA02479', url: 'https://images.nasa.gov/details/PIA02479' },
+      { label: 'NASA Image and Video Library, PIA02479', url: 'https://images.nasa.gov/details/PIA02479' },
     ],
   },
 
@@ -1002,7 +1002,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, Stardust', url: 'https://science.nasa.gov/mission/stardust/' },
       { label: 'NASA, comet Wild 2', url: 'https://science.nasa.gov/solar-system/comets/81p-wild/' },
-      { label: 'NASA Photojournal, PIA05571', url: 'https://images.nasa.gov/details/PIA05571' },
+      { label: 'NASA Image and Video Library, PIA05571', url: 'https://images.nasa.gov/details/PIA05571' },
     ],
   },
 
@@ -1015,14 +1015,14 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'Its tail and its head', paras: [
-        'The nucleus of Tempel 1 is about 7.6 km long and 4.9 km wide, shaped like an uneven potato. Its surface is a patchwork: rough, layered ground, a few craters and smooth areas that look as though something once flowed across them.',
+        'The nucleus of Tempel 1 is about 6 km across on average, longer than it is wide, like an uneven potato. Its surface is a patchwork: rough, layered ground, a few craters and smooth areas that look as though something once flowed across them.',
         'The impact showed that the nucleus is made mostly of fine dust, as fine as talcum powder, with ice mixed in. The cloud thrown up held more dust than expected, and the surface seems to be made of loose, fluffy material with little strength. Scientists began to describe comets as icy dirtballs as much as dirty snowballs.',
       ] },
       { title: 'Its path round the Sun', paras: [
         'Tempel 1 goes round the Sun in 5.6 years, from about the orbit of Mars to almost as far out as Jupiter’s, in a path tilted 10° to the planets’.',
       ] },
       { title: 'How it was found', paras: [
-        'The German astronomer Wilhelm Tempel found it on 3 April 1867 from Marseille, where he was working at the observatory. Its official name is 9P/Tempel.',
+        'The German astronomer Wilhelm Tempel found it on 3 April 1867 from Marseille, where he was working at the observatory. Its official name is 9P/Tempel 1.',
       ] },
       { title: 'Spacecraft that have visited', paras: [
         'NASA’s Deep Impact spacecraft released a copper-cored impactor of about 370 kg on 3 July 2005, which hit the nucleus the next day at about 10 km a second. The main spacecraft watched from about 500 km away.',
@@ -1035,12 +1035,12 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, comet Tempel 1', url: 'https://science.nasa.gov/solar-system/comets/9p-tempel-1/' },
       { label: 'NASA, Deep Impact', url: 'https://science.nasa.gov/mission/deep-impact-epoxi/' },
-      { label: 'NASA Photojournal, PIA02137', url: 'https://images.nasa.gov/details/PIA02137' },
+      { label: 'NASA Image and Video Library, PIA02137', url: 'https://images.nasa.gov/details/PIA02137' },
     ],
   },
 
   borrelly: {
-    lead: 'A comet with a bowling-pin shape, among the darkest objects known in the Solar System, which a spacecraft flew past in 2001.',
+    lead: 'A comet with a bowling-pin shape, one of the darkest objects known in the Solar System, which a spacecraft flew past in 2001.',
     picture: {
       src: '/img/learn/borrelly-deep-space-1-2001.jpg', width: 500, height: 500,
       alt: 'A bright white, elongated, bowling-pin-shaped comet nucleus on black, with faint jets of dust streaming from it to the lower left.',
@@ -1049,7 +1049,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     chapters: [
       { title: 'Its tail and its head', paras: [
         'The nucleus of Borrelly is about 8 km long and 4 km wide, like a bowling pin. It is far darker than it looks in the picture above. It reflects only about 3 per cent of the light that falls on it, darker than charcoal.',
-        'Deep Space 1 found that the surface is hot and dry for a comet, with no ice showing. Jets of gas and dust come from a few spots, and are seen in the picture as streams, and they are fed from ice below the surface.',
+        'Deep Space 1 found that the surface is hot and dry for a comet, with no ice showing. Jets of gas and dust come from a few spots on it. They show in the picture as streams, and are fed from ice below the surface.',
       ] },
       { title: 'Its path round the Sun', paras: [
         'Borrelly goes round the Sun in 6.9 years, from just outside the Earth’s orbit to beyond Jupiter’s, in a path tilted 29° to the planets’.',
@@ -1067,7 +1067,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, comet Borrelly', url: 'https://science.nasa.gov/solar-system/comets/19p-borrelly/' },
       { label: 'NASA, Deep Space 1', url: 'https://science.nasa.gov/mission/deep-space-1/' },
-      { label: 'NASA Photojournal, PIA03501', url: 'https://images.nasa.gov/details/PIA03501' },
+      { label: 'NASA Image and Video Library, PIA03501', url: 'https://images.nasa.gov/details/PIA03501' },
     ],
   },
 
@@ -1100,7 +1100,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     sources: [
       { label: 'NASA, OSIRIS-REx', url: 'https://science.nasa.gov/mission/osiris-rex/' },
       { label: 'NASA, Bennu', url: 'https://science.nasa.gov/solar-system/asteroids/101955-bennu/' },
-      { label: 'NASA Photojournal, Bennu’s northern hemisphere close up', url: 'https://images.nasa.gov/details/2019-02-25_regolith_image_compilation' },
+      { label: 'NASA Image and Video Library, Bennu’s northern hemisphere close up', url: 'https://images.nasa.gov/details/2019-02-25_regolith_image_compilation' },
     ],
   },
 
@@ -1116,7 +1116,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Hale-Bopp’s nucleus is one of the largest comets seen in modern times, possibly 60 km across, several times the size of the nucleus of Halley’s comet. That is why it was so bright, and why it was visible for so long. At its best it had two tails, a long curving tail of dust and a straight, blue tail of gas, and a third, a faint tail of sodium, which had not been seen before in a comet.',
       ] },
       { title: 'Its path round the Sun', paras: [
-        'Its path is a very long oval, tilted nearly at right angles to the planets’. Its last visit was about 4,200 years ago, and it will not return for about 2,400 years. Its nearest approach to the Sun was 0.91 au on 1 April 1997, and its nearest to the Earth was 1.3 au on 22 March 1997, about 200 million km.',
+        'Its path is a very long oval, tilted nearly at right angles to the planets’. Its last visit was about 4,200 years ago, and it will not return for about 2,500 years. Its nearest approach to the Sun was 0.91 au on 1 April 1997, and its nearest to the Earth was 1.3 au on 22 March 1997, about 200 million km.',
         'A pass near Jupiter in 1996 shortened its period, from about 4,200 years to about 2,500.',
       ] },
       { title: 'How it was found', paras: [
