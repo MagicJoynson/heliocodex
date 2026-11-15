@@ -65,6 +65,11 @@ def catalogue_name(r):
     return ''
 
 
+# Stars whose distance the star pages take from a newer source (MODERN in src/lib/sky/star.ts), in parsecs.
+# They are drawn here at the same distance, and their absolute magnitude moves with it, so each looks as bright
+# in the sky as the catalogue made it. Keep this list the same as MODERN (npm run test:sky checks the result).
+CORRECTED = {'Betelgeuse': 168.0, 'Proxima Centauri': 1.3020}
+
 rows = []
 names = []
 with gzip.open(os.path.join(src, 'hyg_v44.csv.gz'), 'rt') as f:
@@ -86,6 +91,9 @@ with gzip.open(os.path.join(src, 'hyg_v44.csv.gz'), 'rt') as f:
         x, y, z = eq_to_engine(float(r['x']), float(r['y']), float(r['z']))
         app = absmag + 5 * math.log10(dist / 10)
         name = r['proper'].strip() or (catalogue_name(r) if dist < 7.7 else '')  # within 25 light years
+        if name in CORRECTED:
+            k = CORRECTED[name] / dist
+            x, y, z, absmag = x * k, y * k, z * k, absmag - 5 * math.log10(k)
         rows.append((app, x, y, z, absmag, ci, name))
 rows.sort(key=lambda s: s[0])
 with open(os.path.join(out, 'stars.bin'), 'wb') as f:

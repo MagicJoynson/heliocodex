@@ -8,7 +8,7 @@ sources:
 ---
 Look at the stars for long enough and you start to see shapes: a hunter, a plough, a cross. People everywhere have done this, and different peoples saw different pictures in the same stars. These join-the-dots pictures are constellations.
 
-The stars in a picture are not really together. Take Orion, the hunter. His shoulder, the red star Betelgeuse, is about 500 light years away. His foot, Rigel, is about 860. They only look like parts of one figure because we see them in nearly the same direction.
+The stars in a picture are not really together. Take Orion, the hunter. His shoulder, the red star Betelgeuse, is about 550 light years away. His foot, Rigel, is about 860. They only look like parts of one figure because we see them in nearly the same direction.
 
 <figure class="photo">
   <img src="/img/learn/orion-over-alma-eso.jpg" alt="A sky crowded with stars above three white radio dishes at night. The pattern of Orion is in the middle, with one orange star among blue ones." width="1100" height="736" loading="lazy" />

@@ -15,7 +15,7 @@ The word constellation is used in two ways. To most people it is a figure made b
 | Star | Part of the figure | Distance in light years |
 |---|---|---|
 | Bellatrix | Shoulder | 250 |
-| Betelgeuse | Shoulder | 500 |
+| Betelgeuse | Shoulder | 550 |
 | Saiph | Knee | 650 |
 | Mintaka | Belt | 690 |
 | Alnitak | Belt | 740 |
