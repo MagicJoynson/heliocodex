@@ -171,3 +171,23 @@ terms:
     see: [active-galaxy, quasar, gamma-rays]
     lesson: active-galaxies-and-quasars
 
+  - id: jet
+    term: Jet
+    short: "A thin beam of fast-moving matter fired out from a very small, very energetic place."
+    more: "Some active galaxies fire two jets, one each way, that can reach far beyond the galaxy itself."
+    see: [active-galaxy, quasar, blazar]
+    lesson: active-galaxies-and-quasars
+  - id: andromeda-galaxy
+    term: Andromeda Galaxy
+    also: [Andromeda, M31]
+    short: "The nearest large spiral galaxy to the Milky Way, and, with the Milky Way, one of the two largest in the Local Group."
+    more: "It is about 2.5 million light years away. On a dark night it is the most distant thing most people can see without a telescope. In 1923 Edwin Hubble showed it lay far outside the Milky Way."
+    see: [milky-way, local-group, spiral-galaxy]
+    lesson: the-distance-ladder
+  - id: magellanic-clouds
+    term: Magellanic Clouds
+    also: [Large Magellanic Cloud, Small Magellanic Cloud]
+    short: "Two small galaxies that orbit the Milky Way, seen as faint patches in the southern sky."
+    more: "Henrietta Leavitt found her law of beating stars by studying the Small Cloud. All its stars are at nearly the same distance, so brighter ones really were brighter."
+    see: [milky-way, local-group, cepheid]
+    lesson: the-distance-ladder
