@@ -37,6 +37,8 @@ const note = why(b.id);
 // the data files call Arrokoth an asteroid; it is a Kuiper belt object, so the search text says so
 const metaKind = b.id === 'arrokoth' ? 'Kuiper belt object' : kindLine;
 const lowerKind = metaKind.replace(/^[A-Z](?!uiper)/, (c) => c.toLowerCase());
+// a long list of discoverers (the Pluto moons have nine) would stretch one cell: give the first name and the count
+const byShort = (by: string) => { const n = by.split(', '); return !by.includes('(') && n.length > 3 ? `${n[0]} and ${n.length - 1} others` : by; };
 const metaParts = [`${b.name} is ${/^[AEIOU]/.test(metaKind) ? 'an' : 'a'} ${lowerKind}.`, `${outSays.charAt(0).toUpperCase()}${outSays.slice(1)}, once round in ${periodSays}.`, b.meanRadiusKm ? `${fmt(b.meanRadiusKm * 2)} km across.` : '', b.discovered ? `Found in ${b.discovered.year}.` : ''].filter(Boolean);
 let metaDesc = '';
 for (const part of metaParts) if ((metaDesc + ' ' + part).trim().length <= 158) metaDesc = (metaDesc + ' ' + part).trim();
@@ -48,7 +50,7 @@ const rows: [string, string][] = [
   ['Path', `${o.e < 0.02 ? 'very nearly a circle' : o.e < 0.2 ? 'a slightly stretched circle' : 'a long oval'} (eccentricity ${fmt(o.e, 2)}), ${o.iDeg < 0.1 ? 'with almost no tilt' : `tilted ${fmt(o.iDeg, 2)}°`}`],
   ['Size', sizeSays],
   ...(b.densityGcm3 ? [['Density', `${fmt(b.densityGcm3, 2)} times water`] as [string, string]] : []),
-  ...(b.discovered ? [['Found', `${b.discovered.year}, by ${b.discovered.by}`] as [string, string]] : []),
+  ...(b.discovered ? [['Found', `${b.discovered.year}, by ${byShort(b.discovered.by)}`] as [string, string]] : []),
 ];
 // the data sheet: the same quantities in the same places as every other record
 const EARTH_KM = 12742, EARTH_KG = 5.972e24;
@@ -66,7 +68,7 @@ const cells: Cell[] = [
   ...(massKg ? [(() => { const ex = Math.floor(Math.log10(massKg)); return { key: 'mass', label: 'Mass', value: `${(massKg / 10 ** ex).toFixed(2)} × 10${sup(ex)}`, unit: 'kg', note: `${ratio(massKg / EARTH_KG, 'the Earth’s')}.` } as Cell; })()] : []),
   { key: 'orbit', label: 'Once round', value: periodSays.split(' ')[0], unit: `${periodSays.split(' ')[1]}, round ${round ? 'the Sun' : parentName}`, note: `Its path is ${pathWords}.` },
   ...(b.densityGcm3 ? [{ key: 'density', label: 'Density', value: fmt(b.densityGcm3, 2), unit: 'times water', note: b.densityGcm3 < 0.92 ? 'Less dense than solid ice, so it must be full of empty space.' : b.densityGcm3 < 2.2 ? 'Light enough to be roughly half ice.' : b.densityGcm3 > 3 ? 'Dense enough to be mostly rock and metal.' : undefined } as Cell] : []),
-  ...(b.discovered ? [{ key: 'found', label: 'Found', value: String(b.discovered.year), note: `By ${b.discovered.by}.` } as Cell] : []),
+  ...(b.discovered ? [{ key: 'found', label: 'Found', value: String(b.discovered.year), note: `By ${byShort(b.discovered.by)}.` } as Cell] : []),
 ];
 const crumbs: [string, string][] = [['Solar System', '/worlds'], ...(b.parent && b.parent !== 'sun' ? [[nameOf(b.parent).replace(/^the /, 'The '), parentHref ?? '/worlds'] as [string, string]] : [])];
 const headHtml = head({ crumbs, name: b.name, kind: kindLine, lead: page?.lead ?? note?.why, badge: !page && SHOW_OUTLINES ? 'Outline: the numbers are measured; the rest is being written' : undefined });
