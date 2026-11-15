@@ -1244,7 +1244,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'It also turned out to have no giant crater. That is odd, because Hygiea has a whole family of smaller asteroids that look like pieces of it, which suggests a huge collision, long ago.',
       ] },
       { title: 'What it is made of', paras: [
-        'Its surface is dark and rich in carbon, like the rock of many outer-belt asteroids, . One idea for its roundness is that a collision smashed an older body up, and that the pieces then pulled themselves back together by gravity, perhaps about two billion years ago.',
+        'Its surface is dark and rich in carbon, like the rock of many outer-belt asteroids. One idea for its roundness is that a collision smashed an older body up, and that the pieces then pulled themselves back together by gravity, perhaps about two billion years ago.',
       ] },
       { title: 'How it was found', paras: [
         'Annibale de Gasparis found it in Naples on 12 April 1849. It is named for Hygieia, the Greek goddess of health.',
