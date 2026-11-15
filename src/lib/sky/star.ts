@@ -162,7 +162,7 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const lyText = star.slug === 'proxima-centauri' ? ly.toFixed(2) : round2(ly);
   const hasColour = star.bv !== null && star.bv !== undefined && !Number.isNaN(star.bv);
   const kelvin = hasColour ? Math.round(temperature(star.bv) / 100) * 100 : 0, rgb = (hasColour ? tint(star.bv) : [236, 231, 220]).join(',');
-  const { colour, stage, type: spect, trusted } = reading(star.spect, star.bv, star.distPc), modern = MODERN[star.slug];
+  const { colour, stage, type: spect, trusted, fromColour } = reading(star.spect, star.bv, star.distPc), modern = MODERN[star.slug];
   // For hot stars colour is a poor thermometer, and dust on the way reddens it, so where the catalogue's
   // type can be trusted and is O or B, or is hotter than the colour, the type gives the temperature.
   const given = (star.spect ?? '').trim().replace(/^sd/, ''), at = ORDER.indexOf(given[0]?.toUpperCase() ?? '');
@@ -229,7 +229,8 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   // the page title says what the star is, from its colour and spectral class, and where it sits
   const word = /^It is an? (supergiant|bright giant|giant|subgiant)/.exec(stage)?.[1];
   const short = colour.split(',')[0].replace(/^an? /, '');
-  const what = short ? (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short) : 'star';
+  // where the page's colour overrides the catalogued type, the title claims neither (it would contradict the type row or the lead)
+  const what = !short || fromColour ? 'star' : (word && / star$/.test(short) ? short.replace(/ star$/, ` ${word}`) : short);
   const title = `${star.name}: ${what}${star.constellation && !star.name.endsWith(star.constellation) ? ` in ${star.constellation}` : ''}`;
   return { html, title, description: `${lead.replace(/<[^>]+>/g, '').replace(/&#(\d+);/g, (_, c) => String.fromCharCode(Number(c)))} It is ${lyText} light years away.`, rgb, byEye };
 }
