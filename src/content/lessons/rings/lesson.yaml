@@ -7,3 +7,4 @@ view: { target: saturn, distanceKm: 400000, highlight: [rings] }
 terms: [ring-system, roche-limit, shepherd-moon, resonance, tide, occultation, orbit]
 needs: [what-an-orbit-is, tides]
 next: []
+asks: ["why does saturn have rings", "which planets have rings", "what are saturns rings made of"]

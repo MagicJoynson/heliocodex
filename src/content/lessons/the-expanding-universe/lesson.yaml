@@ -7,3 +7,4 @@ view: { target: cmb }
 terms: [redshift, hubble-constant, big-bang, cosmic-microwave-background, look-back-time, galaxy, light-year]
 needs: [kinds-of-galaxy, reading-starlight]
 next: [the-first-minutes, dark-matter-and-dark-energy]
+asks: ["is the universe expanding", "what is hubble law", "how fast is the universe expanding"]

@@ -6,3 +6,4 @@ scene: "The Earth's two bulges with the planet turning beneath them, then Io fle
 view: { target: io, facing: jupiter, distanceKm: 12000 }
 terms: [tide, tidal-locking, tidal-heating, resonance, roche-limit]
 needs: [what-an-orbit-is]
+asks: ["what causes tides", "why are there two tides a day", "why does the moon face us", "spring tide", "neap tide"]

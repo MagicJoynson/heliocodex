@@ -7,3 +7,4 @@ view: { target: night-sky, highlight: [stars] }
 terms: [blackbody, kelvin, spectral-type, hr-diagram, luminosity, apparent-magnitude, absolute-magnitude, parallax]
 needs: [what-a-star-is, light-the-only-messenger]
 next: [how-stars-live-and-die, the-nearest-stars]
+asks: ["what colour is the sun", "why are stars different colours"]

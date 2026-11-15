@@ -7,3 +7,4 @@ view: { target: night-sky }
 terms: [nebula, molecular-cloud, protostar, nuclear-fusion, protoplanetary-disc, planetary-nebula, supernova, ultraviolet]
 needs: [what-a-star-is]
 next: [star-clusters, how-stars-live-and-die, how-the-planets-formed]
+asks: ["how do stars form", "how are stars made", "what is a nebula", "where are stars born"]

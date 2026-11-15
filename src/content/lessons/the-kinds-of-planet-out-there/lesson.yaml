@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [exoplanet, hot-jupiter, super-earth, gas-giant, ice-giant, terrestrial-planet, tidal-locking, protoplanetary-disc]
 needs: [planets-round-other-stars, three-kinds-of-planet]
 next: [trappist-1, are-we-alone]
+asks: ["what is a super earth", "what is a hot jupiter", "exoplanet types"]

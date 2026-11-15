@@ -7,3 +7,4 @@ view: { target: cosmic-web }
 terms: [gravitational-wave, gravity, black-hole, neutron-star, interferometer, speed-of-light, binary-star, gamma-rays]
 needs: [what-gravity-is, what-a-black-hole-is]
 next: [neutron-stars-and-pulsars, the-cosmic-web]
+asks: ["what are gravitational waves", "ligo"]

@@ -7,3 +7,4 @@ view: { target: sun, highlight: [earth, mars] }
 terms: [retrograde, ellipse, eccentricity, keplers-laws, gravity, parallax, orbit]
 needs: [why-the-sky-turns]
 next: [keplers-laws, what-gravity-is]
+asks: ["galileo", "copernicus", "does the sun go round the earth", "who discovered the earth goes round the sun"]

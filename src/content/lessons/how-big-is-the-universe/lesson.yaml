@@ -7,3 +7,4 @@ view: { target: cmb }
 terms: [light-year, look-back-time, cosmic-microwave-background, big-bang, galaxy, redshift, speed-of-light, hubble-constant]
 needs: [the-expanding-universe, the-oldest-light]
 next: [how-it-all-ends, the-history-of-the-universe]
+asks: ["how big is the universe", "how far can we see", "is the universe infinite", "what is the observable universe"]

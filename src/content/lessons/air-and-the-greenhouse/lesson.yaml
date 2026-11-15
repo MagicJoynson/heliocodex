@@ -7,3 +7,4 @@ view: { target: venus, distanceKm: 40000, highlight: [venus, earth, mars] }
 terms: [atmosphere, greenhouse-effect, albedo, infrared, escape-velocity, magnetic-field, habitable-zone]
 needs: [three-kinds-of-planet]
 next: [rings]
+asks: ["what is the greenhouse effect", "why is venus so hot", "climate change", "why is mars cold"]

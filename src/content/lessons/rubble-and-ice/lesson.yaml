@@ -7,3 +7,4 @@ view: { target: sun, distanceKm: 9000000000, highlight: [asteroids, trojans, kui
 terms: [asteroid, asteroid-belt, trojan, kuiper-belt, trans-neptunian-object, oort-cloud, frost-line, dwarf-planet]
 needs: [three-kinds-of-planet]
 next: [comets, falling-rocks]
+asks: ["asteroid belt", "kuiper belt", "what is an asteroid", "what is a dwarf planet"]

@@ -7,3 +7,4 @@ view: { target: oort-cloud }
 terms: [oort-cloud, comet, kuiper-belt, astronomical-unit, light-year, planetesimal, heliopause, orbit]
 needs: [comets]
 next: [how-big-is-space]
+asks: ["edge of the solar system", "what is beyond neptune", "kuiper belt"]

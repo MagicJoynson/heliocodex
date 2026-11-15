@@ -7,3 +7,4 @@ view: { target: milky-way }
 terms: [nuclear-fusion, hydrogen, helium, big-bang-nucleosynthesis, planetary-nebula, supernova, neutron-star, gravitational-wave]
 needs: [how-stars-live-and-die]
 next: [supernovae, the-first-minutes]
+asks: ["where do atoms come from", "are we made of stardust", "where does gold come from", "where do the elements come from"]

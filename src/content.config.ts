@@ -64,6 +64,8 @@ const lessons = defineCollection({
     predict: predict.optional(),
     /** Glossary ids used in the text. */
     terms: z.array(z.string()).min(3).max(8),
+    /** Questions a visitor might type to find this lesson. Searched, never shown. */
+    asks: z.array(z.string()).default([]),
     /** Lesson ids worth reading first, and next. */
     needs: z.array(z.string()).default([]),
     next: z.array(z.string()).default([]),

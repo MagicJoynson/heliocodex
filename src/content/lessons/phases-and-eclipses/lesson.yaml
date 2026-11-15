@@ -6,3 +6,4 @@ scene: "The Earth, Moon and Sun seen from above the orbit, then the same moment 
 view: { target: moon, facing: earth, distanceKm: 30000 }
 terms: [phase, synodic-period, node, solar-eclipse, lunar-eclipse, umbra, penumbra]
 needs: [seasons]
+asks: ["why does the moon change shape", "what causes an eclipse", "when is the next eclipse", "what is a new moon", "what is a full moon", "solar eclipse", "lunar eclipse"]

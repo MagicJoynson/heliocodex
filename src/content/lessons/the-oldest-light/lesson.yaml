@@ -7,3 +7,4 @@ view: { target: cmb }
 terms: [cosmic-microwave-background, recombination, big-bang, plasma, wavelength, kelvin, dark-matter, dark-energy]
 needs: [the-first-minutes]
 next: [dark-matter-and-dark-energy, the-cosmic-web]
+asks: ["cosmic microwave background", "what is the cmb", "oldest light in the universe"]

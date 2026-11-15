@@ -7,3 +7,4 @@ view: { target: moon }
 terms: [transfer-orbit, light-time, regolith, escape-velocity, solar-wind, orbit]
 needs: [the-first-journeys, living-in-space]
 next: [looking-for-life-in-the-solar-system, robot-explorers]
+asks: ["artemis", "going to mars", "when will we go back to the moon", "mars mission"]

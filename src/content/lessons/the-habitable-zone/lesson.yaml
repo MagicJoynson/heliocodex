@@ -7,3 +7,4 @@ view: { target: sun }
 terms: [habitable-zone, greenhouse-effect, atmosphere, astronomical-unit, red-dwarf, tidal-heating, subsurface-ocean, exoplanet]
 needs: [air-and-the-greenhouse, planets-round-other-stars]
 next: [trappist-1, ocean-moons, are-we-alone]
+asks: ["goldilocks zone", "can life live on other planets", "habitable planets"]

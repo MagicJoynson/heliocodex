@@ -7,3 +7,4 @@ view: { target: milky-way }
 terms: [milky-way, galaxy, spiral-galaxy, light-year, black-hole, parallax, dark-matter]
 needs: [how-big-is-space, what-a-star-is]
 next: [the-centre-of-the-galaxy, kinds-of-galaxy]
+asks: ["what is the milky way", "how big is the milky way", "what galaxy do we live in", "how many stars in the milky way", "how many stars are there"]

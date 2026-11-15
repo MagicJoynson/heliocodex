@@ -7,3 +7,4 @@ view: { target: earth }
 terms: [constellation, apparent-magnitude, milky-way, star-cluster, planet, meteor-shower]
 needs: [why-the-sky-turns]
 next: [constellations, the-stars-you-can-see, phases-and-eclipses]
+asks: ["how to see the milky way", "how to see stars", "how to find planets in the sky", "what can i see tonight", "best time to see stars", "do i need a telescope"]

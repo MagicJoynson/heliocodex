@@ -7,3 +7,4 @@ view: { target: saturn, distanceKm: 40000000, highlight: [moons] }
 terms: [moon, regular-moon, irregular-moon, retrograde, hill-sphere, tidal-locking]
 needs: [what-an-orbit-is]
 next: [ocean-moons, moons-in-step]
+asks: ["how many moons are there", "which planet has the most moons", "what is a moon"]

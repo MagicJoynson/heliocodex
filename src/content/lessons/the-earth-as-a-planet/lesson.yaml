@@ -7,3 +7,4 @@ view: { target: earth }
 terms: [terrestrial-planet, differentiation, atmosphere, magnetic-field, magnetosphere, aurora, greenhouse-effect]
 needs: [three-kinds-of-planet]
 next: [air-and-the-greenhouse, the-moon, seasons]
+asks: ["why is earth special", "how old is the earth", "how big is the earth"]

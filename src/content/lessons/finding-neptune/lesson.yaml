@@ -7,3 +7,4 @@ view: { target: neptune }
 terms: [gravity, orbit, orbital-period, ice-giant]
 needs: [what-gravity-is, keplers-laws]
 next: [the-people-who-changed-the-picture, gravity-as-bent-space-and-time]
+asks: ["who discovered neptune", "how was neptune found"]

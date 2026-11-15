@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [white-dwarf, red-giant, planetary-nebula, density, chandrasekhar-limit, binary-star, supernova, nuclear-fusion]
 needs: [how-stars-live-and-die]
 next: [neutron-stars-and-pulsars, what-a-black-hole-is]
+asks: ["what is a white dwarf", "what will the sun become"]

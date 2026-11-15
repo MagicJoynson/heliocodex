@@ -7,3 +7,4 @@ view: { target: pluto }
 terms: [planet, dwarf-planet, kuiper-belt, trans-neptunian-object, asteroid-belt, asteroid]
 needs: [three-kinds-of-planet]
 next: [rubble-and-ice, the-oort-cloud]
+asks: ["is pluto a planet", "what is a dwarf planet", "why is pluto not a planet", "how many planets are there"]

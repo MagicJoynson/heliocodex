@@ -7,3 +7,4 @@ view: { target: earth, distanceKm: 900000, highlight: [moon, barycentre] }
 terms: [gravity, mass, weight, free-fall, inverse-square-law, barycentre, orbit]
 needs: [what-an-orbit-is]
 next: [tides, leaving-and-arriving]
+asks: ["what is gravity", "why do things fall", "is there gravity in space"]

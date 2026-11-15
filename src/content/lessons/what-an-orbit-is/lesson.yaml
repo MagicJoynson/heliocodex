@@ -6,3 +6,4 @@ scene: "A cannon on a mountain firing faster each time, until the ball comes all
 view: { target: earth, distanceKm: 20000 }
 terms: [orbit, gravity, free-fall, orbital-velocity, escape-velocity]
 next: [keplers-laws]
+asks: ["what is an orbit", "why do planets orbit the sun", "why does the moon not fall"]

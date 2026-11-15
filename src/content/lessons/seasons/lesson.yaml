@@ -6,3 +6,4 @@ scene: "The Earth's tilted axis holding the same direction all the way round its
 view: { target: earth, facing: sun, distanceKm: 60000, timeIso: "2027-06-21T12:00:00Z" }
 terms: [axial-tilt, solstice, equinox, perihelion, aphelion]
 next: [phases-and-eclipses]
+asks: ["why do we have seasons", "why is it hot in summer", "why is it cold in winter", "what is the equinox", "what is the solstice"]

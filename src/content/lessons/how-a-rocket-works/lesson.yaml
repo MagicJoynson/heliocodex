@@ -7,3 +7,4 @@ view: { target: earth }
 terms: [gravity, mass, weight, orbit, orbital-velocity, escape-velocity]
 needs: [what-an-orbit-is]
 next: [leaving-and-arriving, the-first-journeys]
+asks: ["how do rockets work", "how do rockets get to space", "how fast is a rocket"]
