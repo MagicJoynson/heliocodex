@@ -36,7 +36,8 @@ const note = why(b.id);
 // the search snippet uses only measured figures from the record, trimmed to fit
 // the data files call Arrokoth an asteroid; it is a Kuiper belt object, so the search text says so
 const metaKind = b.id === 'arrokoth' ? 'Kuiper belt object' : kindLine;
-const metaParts = [`${b.name} is ${/^[AEIOU]/.test(metaKind) ? 'an' : 'a'} ${metaKind.charAt(0).toLowerCase()}${metaKind.slice(1)}.`, `${outSays.charAt(0).toUpperCase()}${outSays.slice(1)}, once round in ${periodSays}.`, b.meanRadiusKm ? `${fmt(b.meanRadiusKm * 2)} km across.` : '', b.discovered ? `Found in ${b.discovered.year}.` : ''].filter(Boolean);
+const lowerKind = metaKind.replace(/^[A-Z](?!uiper)/, (c) => c.toLowerCase());
+const metaParts = [`${b.name} is ${/^[AEIOU]/.test(metaKind) ? 'an' : 'a'} ${lowerKind}.`, `${outSays.charAt(0).toUpperCase()}${outSays.slice(1)}, once round in ${periodSays}.`, b.meanRadiusKm ? `${fmt(b.meanRadiusKm * 2)} km across.` : '', b.discovered ? `Found in ${b.discovered.year}.` : ''].filter(Boolean);
 let metaDesc = '';
 for (const part of metaParts) if ((metaDesc + ' ' + part).trim().length <= 158) metaDesc = (metaDesc + ' ' + part).trim();
 metaDesc = metaDesc.replace(/the Earth/g, 'Earth');
@@ -105,7 +106,7 @@ const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 const lead = page ? (page.globe ?? page.picture) : null;
 const closeup = page?.globe ? page.picture : null;
 ---
-<Reading title={`${b.name}: ${metaKind.charAt(0).toLowerCase()}${metaKind.slice(1)}`.replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
+<Reading title={`${b.name}: ${lowerKind}`.replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
   <article class="rec world-record">
     <Fragment set:html={headHtml} />
     <section class:list={['rec-top', { 'no-pic': !lead }]}>
