@@ -29,7 +29,7 @@ The further away a star is, the less sure its distance. Figures of a few hundred
 | Arcturus | 37 | -0.1 |
 | Canopus | 310 | -0.6 |
 | Polaris, the Pole Star | 430 | 2.0 |
-| Betelgeuse | 500 | 0.5 |
+| Betelgeuse | 550 | 0.5 |
 | Rigel | 860 | 0.2 |
 | Deneb | At least 1,400, perhaps nearer 2,600 | 1.3 |
 
