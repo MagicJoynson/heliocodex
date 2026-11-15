@@ -1134,4 +1134,68 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'ESO, Comet Hale-Bopp', url: 'https://www.eso.org/public/images/phot-mar14-hbs-2/' },
     ],
   },
+
+  phoebe: {
+    lead: 'A dark, battered moon of Saturn that goes round the wrong way, a long way out. It is probably a wanderer from the outer Solar System that Saturn caught.',
+    picture: {
+      src: '/img/learn/phoebe-cassini-2004.jpg', width: 1100, height: 733,
+      alt: 'Two grey, heavily cratered crescents of a moon facing each other against black, with bright streaks running down the wall of a large crater at the top of each.',
+      caption: '<b>Photographs.</b> Phoebe on 11 June 2004, seen by NASA’s Cassini spacecraft on the way in (left) and on the way out (right). The bright streaks are on the walls of craters, where the dark surface has slid away. Credit: NASA/JPL/Space Science Institute.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Phoebe is nearly round, about 213 km across, and covered in craters of every size, some of them with steep walls. Its surface is very dark. Where a crater wall has slumped, the dark coat has slid away and bright material shows underneath.',
+        'It turns once every nine hours and 16 minutes.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Phoebe’s density is 1.64 times that of water. That is higher than most of Saturn’s icy moons, so it holds more rock. Cassini found water ice under the dark coat, along with carbon dioxide and other compounds.',
+        'It goes round Saturn the wrong way, against the planet’s spin and the paths of the big moons, in a tilted path 12.9 million km out that takes about 550 days. Moons that formed with a planet do not do that, which is why Phoebe is thought to have come from elsewhere.',
+      ] },
+      { title: 'How it was found', paras: [
+        'William Pickering found it in 1898 on photographic plates, the first moon to be found that way and not by looking through an eyepiece. It is named for a Titaness of Greek myth.',
+        'In 2009 the Spitzer Space Telescope found a huge, faint ring of dust that Phoebe feeds, as meteorites strike it. Some of that dust drifts inwards and is thought to have darkened one side of the moon Iapetus.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Voyager 2 saw it from far off in 1981. The Cassini spacecraft made its first close pass of a Saturn moon here, on 11 June 2004, at about 2,000 km, before it went into orbit round Saturn.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Where it came from, and what else is like it. Phoebe may be a sample of the same crowd of icy bodies as the dwarf planets of the Kuiper belt, but nothing yet visited up close can settle that.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Phoebe', url: 'https://science.nasa.gov/saturn/moons/phoebe/' },
+      { label: 'NASA Image and Video Library, PIA18411', url: 'https://images.nasa.gov/details/PIA18411' },
+    ],
+  },
+
+  nereid: {
+    lead: 'A moon of Neptune on one of the most stretched-out orbits of any moon, which swings from near Neptune to far beyond it.',
+    picture: {
+      src: '/img/learn/nereid-voyager2-1989.jpg', width: 200, height: 200,
+      alt: 'A small, faint, lumpy grey blob in the middle of a black square.',
+      caption: '<b>A photograph.</b> Nereid from NASA’s Voyager 2 spacecraft on 24 August 1989, at a distance of 4.7 million km. This is the best picture there is. It is shown at its true size. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'What it looks like up close', paras: [
+        'Nobody has seen Nereid up close. Voyager 2 took its picture from 4.7 million km away, and it shows a blurred, roughly round shape with some lighter and darker patches. It is about 340 km across.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its make-up is not known. It reflects only a small part of the light that falls on it, as a dark, icy body would.',
+        'Its path is the unusual thing. Most moons keep to nearly circular paths round their planet, but Nereid’s is so stretched that it comes much closer to Neptune at one end than the other. One idea is that this was caused when Neptune captured its big moon Triton, which threw the older moons into disorder.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Gerard Kuiper found it in 1949, working with a telescope in Texas. It was the second moon of Neptune known, after Triton. It is named for the Nereids, the sea nymphs of Greek myth.',
+      ] },
+      { title: 'Spacecraft that have seen it', paras: [
+        'Only Voyager 2, in 1989.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Nearly everything about it: its shape, how it spins, what its surface is like, and whether it formed with Neptune or was caught later.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Nereid', url: 'https://science.nasa.gov/neptune/moons/nereid/' },
+      { label: 'NASA Image and Video Library, PIA00054', url: 'https://images.nasa.gov/details/PIA00054' },
+    ],
+  },
 };
