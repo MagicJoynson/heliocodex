@@ -1334,7 +1334,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { title: 'How it was found and named', paras: [
         'Mike Brown, Chad Trujillo and David Rabinowitz found it in pictures taken on 21 October 2003 at the Palomar Observatory in California. It was not noticed until 2005, and the discovery was announced on 29 July that year. The name, given in 2006, is that of the Greek goddess of discord. Eris was found to be about as big as Pluto, which helped lead the International Astronomical Union to define a dwarf planet in 2006.',
       ] },
-      { title: 'Its moons, if any', paras: [
+      { title: 'Its moon', paras: [
         'One, Dysnomia, found in 2005 with the Keck telescope in Hawaii. It is named for the daughter of Eris, the spirit of lawlessness.',
       ] },
       { title: 'What is still unknown', paras: [
@@ -1526,7 +1526,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { title: 'How it was found and named', paras: [
         'Mike Brown, David Rabinowitz and Megan Schwamb found it in pictures taken on 17 July 2007 at the Palomar Observatory in California, and it was announced in 2009. It was known by a code number and a nickname for years. In 2020 it was named for the Chinese god of water, who is said to have caused floods. The International Astronomical Union has not formally named it a dwarf planet, although it is big enough to be one.',
       ] },
-      { title: 'Its moons, if any', paras: [
+      { title: 'Its moon', paras: [
         'One, Xiangliu, found in 2016 in pictures from the Hubble Space Telescope. It is named for the nine-headed serpent servant of Gonggong in the same legends, and is about 100 km wide.',
       ] },
       { title: 'What is still unknown', paras: [
@@ -1550,7 +1550,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { title: 'How it was found and named', paras: [
         'Mike Brown and Chad Trujillo found it in pictures taken on 4 June 2002 at the Palomar Observatory in California. It is named for the creator force in the myths of the Tongva people, who lived in the area around Los Angeles.',
       ] },
-      { title: 'Its moons, if any', paras: [
+      { title: 'Its moon and rings', paras: [
         'One moon, Weywot, found in Hubble pictures taken in 2006 and announced in 2007, named for the son of Quaoar. It is about 80 km wide, although estimates vary. Quaoar also has two rings, announced in 2023 after it passed in front of stars. Both lie further out than the distance inside which a moon cannot hold together, where material would be expected to gather into a moon, and that is not yet explained.',
       ] },
       { title: 'What is still unknown', paras: [
@@ -1574,7 +1574,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { title: 'How it was found and named', paras: [
         'Mike Brown, Chad Trujillo and David Rabinowitz found it in pictures taken on 17 February 2004 at the Palomar Observatory in California. It is named for the Roman god of the underworld, who punished those who broke their oaths, a role that matches Pluto’s own naming.',
       ] },
-      { title: 'Its moons, if any', paras: [
+      { title: 'Its moon', paras: [
         'One large moon, Vanth, found in 2005 in pictures from the Hubble Space Telescope. It is about half as wide as Orcus, and the two probably always show the same face to each other. Vanth is named for an Etruscan spirit that guides the dead.',
       ] },
       { title: 'What is still unknown', paras: [

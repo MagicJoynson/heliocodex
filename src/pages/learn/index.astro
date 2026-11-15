@@ -1,5 +1,5 @@
 ---
-import { PLANNED_LESSONS, plannedCount } from '../../data/plan';
+import { PLANNED_LESSONS } from '../../data/plan';
 import Reading from '../../layouts/Reading.astro';
 import { PACKS, packLessons } from '../../lib/learn/packs';
 import { PLACES, IDEAS, TICKS, along } from '../../lib/learn/map';
@@ -26,7 +26,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
   <header class="reading-head with-pic" style="--pic: url(/img/learn/orion-nebula-hubble.jpg)">
     <p class="label">Learn</p>
     <h1>How it all works</h1>
-    <p class="lead">{lessons.length} short lessons, with {plannedCount} more outlined and being written, each written at more than one depth. The first look needs nothing but curiosity; the next level down has the numbers and the reasons.</p>
+    <p class="lead">{lessons.length} short lessons, each written at more than one depth. The first look needs nothing but curiosity; the next level down has the numbers and the reasons.</p>
   </header>
 
   <section class="start" aria-labelledby="start-h">
