@@ -5,7 +5,7 @@
  */
 export interface StarStory { paras: string[]; sources: [label: string, url: string][] }
 
-const IAU: [string, string] = ['IAU: Naming stars', 'https://www.iau.org/public/themes/naming_stars/'];
+const IAU: [string, string] = ['IAU Working Group on Star Names: official star names', 'https://www.pas.rochester.edu/~emamajek/WGSN/IAU-CSN.txt'];
 
 export const STAR_STORIES: Record<string, StarStory> = {
   sirius: {
@@ -77,5 +77,54 @@ export const STAR_STORIES: Record<string, StarStory> = {
       'Altair spins very fast. It turns once in under ten hours, where the Sun takes a little over 25 days at its equator, and it is squashed into a flattened shape as a result. Its surface was imaged in 2007 by a team that joined the light of several telescopes of the CHARA array in California, observing in the summer of 2006.',
     ],
     sources: [['Monnier and others (2007), Imaging the surface of Altair, Science 317, 342', 'https://arxiv.org/abs/0706.0867'], IAU],
+  },
+  polaris: {
+    paras: [
+      'The name is Latin for the pole star. Polaris sits very close to the point in the sky that the Earth’s axis points at, so as the night turns the other stars wheel around it while it hardly moves. It is not the brightest star, but it is the one that tells you where north is.',
+      'It is a Cepheid, a star that swells and shrinks and so changes a little in brightness. In 2008 astronomers using the Hubble Space Telescope saw its close companion, Polaris Ab, for the first time, and by following it they made the first direct estimate of the mass of a Cepheid, though it is still uncertain. The companion goes round the main star in about 30 years.',
+    ],
+    sources: [['Evans and others (2008), Direct detection of the close companion of Polaris with the Hubble Space Telescope', 'https://arxiv.org/abs/0806.4904'], ['Evans and others (2018), The orbit of the close companion of Polaris', 'https://arxiv.org/abs/1807.06115'], IAU],
+  },
+  antares: {
+    paras: [
+      'The name comes from Greek and means the rival of Ares, the Greek name for Mars, because the star shines with a red colour like the planet’s. Antares is the heart of the Scorpion, Scorpius, and a red supergiant, one of the largest stars the eye can see.',
+      'It has a faint blue-white companion, Antares B, close beside it. The companion is hidden in the glare of the supergiant and is hard to see without a telescope.',
+    ],
+    sources: [['Sky & Telescope: Meet Antares, the star that is not Mars', 'https://skyandtelescope.org/astronomy-news/meet-antares-the-star-that-is-not-mars/'], IAU],
+  },
+  fomalhaut: {
+    paras: [
+      'The name comes from Arabic and means the mouth of the fish. Fomalhaut is the brightest star in the southern fish, Piscis Austrinus, and in Britain a lone bright star on autumn evenings, very low in the south and hard to see from the north.',
+      'It is surrounded by a wide belt of dust and rubble. In 2008 Hubble pictures of the belt showed a point of light that was announced as a planet, Fomalhaut b. It was seen to fade, and in 2020 astronomers concluded that it was not a planet but an expanding cloud of fine dust, thrown out when two icy bodies collided.',
+    ],
+    sources: [['ESA/Hubble: Hubble observes aftermath of massive collision (heic2006)', 'https://esahubble.org/news/heic2006/'], IAU],
+  },
+  spica: {
+    paras: [
+      'The name is Latin and means the ear of grain, for the ear of wheat held by the figure of Virgo, the maiden. Spica is the brightest star in Virgo, and a blue-white star.',
+      'It is really two stars, so close that they circle each other in about four days and cannot be told apart in an ordinary telescope. Their pull stretches each into an egg shape.',
+    ],
+    sources: [['Tkachenko and others (2016), paper on Spica (arXiv 1604.02057)', 'https://arxiv.org/abs/1604.02057'], IAU],
+  },
+  regulus: {
+    paras: [
+      'The name is Latin and means the little king. Regulus is the brightest star in Leo, the lion, and sits at the bottom of the shape called the Sickle.',
+      'It spins very fast, turning once in about 16 hours, so that it is flattened and bulges at its equator. It has a hidden close companion, probably a white dwarf, and a wider faint pair.',
+    ],
+    sources: [['Paper on the rotation of Regulus (arXiv 0806.3473)', 'https://arxiv.org/abs/0806.3473'], ['Paper on the companion of Regulus (arXiv 0904.0395)', 'https://arxiv.org/abs/0904.0395'], IAU],
+  },
+  deneb: {
+    paras: [
+      'The name comes from Arabic and means the tail, the tail of the hen, which is how the Arabs saw the figure we call Cygnus, the swan. Deneb is the brightest star in Cygnus and the third corner of the Summer Triangle.',
+      'It is by far the most distant of the bright stars of the Triangle, and one of the most luminous stars that can be seen by eye. How far away it is has been argued over, as the note about its distance on this page explains.',
+    ],
+    sources: [IAU],
+  },
+  aldebaran: {
+    paras: [
+      'The name comes from Arabic and means the follower, because Aldebaran rises after the Pleiades star cluster and seems to follow it across the sky. It is the brightest star in Taurus, the bull, and an orange giant that marks the bull’s eye.',
+      'It seems to lie within the V-shaped Hyades star cluster, but is only a chance alignment. Aldebaran is much nearer to us than the cluster, and not part of it.',
+    ],
+    sources: [IAU],
   },
 };
