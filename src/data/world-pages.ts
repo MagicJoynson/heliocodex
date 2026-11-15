@@ -1356,7 +1356,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Its surface is mostly water ice, and it is dense, so the inside is probably mostly rock.',
       ] },
       { title: 'How it was found and named', paras: [
-        'It appears in pictures taken in 2003 and 2004, and was announced in July 2005. A team led by Mike Brown in the United States and a team in Spain led by José Luis Ortiz both made claims, and the credit is still discussed. In 2008 the International Astronomical Union named it a dwarf planet, after the Hawaiian goddess of childbirth.',
+        'It was announced in July 2005, and two teams claim to have found it. One was led by Mike Brown in the United States and the other by José Luis Ortiz in Spain, and the credit is still discussed. In 2008 the International Astronomical Union named it a dwarf planet, after the Hawaiian goddess of childbirth.',
       ] },
       { title: 'Its moons, if any', paras: [
         'Two moons, Hi’iaka and Namaka, found in 2005 and named for children of the goddess. It also has a ring, found in 2017 when Haumea passed in front of a star and the star blinked before and after the body itself. It is the first ring found round a dwarf planet. Several icy bodies on similar paths are thought to be pieces knocked off Haumea long ago.',
@@ -1374,7 +1374,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'A small, very red world on a path so long that it takes about 11,400 years to go round the Sun once.',
     chapters: [
       { title: 'What it looks like', paras: [
-        'No spacecraft has been near it, and it is too small and far away to show anything but a dot. Sedna is somewhat under 1,000 km across. It is among the reddest things in the Solar System.',
+        'No spacecraft has been near it, and it is too small and far away to show anything but a dot. Sedna is about 1,000 km across. It is among the reddest things in the Solar System.',
       ] },
       { title: 'What it is made of', paras: [
         'Its surface probably has a coating of dark, reddish material made from ices changed by sunlight over billions of years, but this is not well known.',
@@ -1395,19 +1395,19 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   halley: {
-    lead: 'The best-known comet, which comes back about every 76 years and was last seen in 1986.',
+    lead: 'The best-known comet, which comes back about every 76 years and last passed the Sun in 1986.',
     chapters: [
       { title: 'Its tail and its head', paras: [
         'The solid part is about 15 km long and 8 km across, shaped like a peanut, and it is as dark as coal. When it is near the Sun, jets of gas and dust boil off from patches of its surface and make the head and the tail, which can stretch millions of kilometres.',
       ] },
       { title: 'Its path round the Sun', paras: [
-        'It goes round the Sun about every 76 years, a little less or more each time because of the pull of the giant planets. It moves backwards compared with the planets, and at its furthest it is beyond Neptune. It last passed closest to the Sun on 9 February 1986 and will do so again in July 2061.',
+        'It goes round the Sun about every 76 years, a little less or more each time because of the pull of the giant planets. It goes round the Sun the opposite way to the planets, and at its furthest it is beyond Neptune. It last passed closest to the Sun on 9 February 1986 and will do so again in July 2061.',
       ] },
       { title: 'How it was found', paras: [
         'It has been seen and written down since at least 240 BC, in Chinese records, and appears in the Bayeux Tapestry for the year 1066. In 1705 Edmond Halley worked out that comets seen in 1531, 1607 and 1682 were one comet and said it would return in 1758. It was seen again on Christmas night that year, after his death, and was named for him.',
       ] },
       { title: 'Spacecraft that have visited', paras: [
-        'Five spacecraft went to it in 1986. The European Giotto passed about 596 km from the nucleus and took the closest pictures. The Soviet Vega 1 and Vega 2 went past at several thousand kilometres, and the Japanese Suisei and Sakigake kept further away. No spacecraft has gone back.',
+        'Five spacecraft went to it in 1986. The European Giotto passed about 596 km from the nucleus and took the closest pictures. The Soviet Vega 1 and Vega 2 went past at about 8,000 to 9,000 km, and the Japanese Suisei and Sakigake kept further away. No spacecraft has gone back.',
       ] },
       { title: 'When to see it', paras: [
         'It is nowhere near now. It will be back in 2061, and again in about 2134.',
@@ -1422,7 +1422,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'An asteroid about 340 m wide that will pass closer to the Earth than our weather satellites on 13 April 2029, and will not hit.',
     chapters: [
       { title: 'What it looks like', paras: [
-        'It is about 340 m across, a little wider than the Eiffel Tower is tall. Radar and telescopes show a dark, rocky body, but no spacecraft has been near it yet.',
+        'It is about 340 m across, a little wider than the Eiffel Tower is tall. Radar and telescopes show a stony, fairly bright body, but no spacecraft has been near it yet.',
       ] },
       { title: 'What it is made of', paras: [
         'It is probably a stony rock, of the kind called S-type, but its exact makeup is not well known.',
@@ -1431,10 +1431,10 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Roy Tucker, David Tholen and Fabrizio Bernardi found it in June 2004 at Kitt Peak in Arizona. It is named for the Egyptian serpent of chaos, a figure who fought the sun god each night.',
       ] },
       { title: 'Spacecraft that have visited', paras: [
-        'None yet. The American OSIRIS-APEX spacecraft, which first visited Bennu, is being sent to it to arrive in 2029 and watch how the Earth’s pull changes it.',
+        'None yet. The American OSIRIS-APEX spacecraft, which first visited Bennu, is being sent to it, arriving in June 2029, two months after the flyby, to see what the Earth’s pull did to it.',
       ] },
       { title: 'Could it hit the Earth?', paras: [
-        'No. In December 2004 early figures gave about a 1-in-40 chance of a hit in 2029, which put it at level 4 on the Torino scale, the highest rating any object has had. More observations ruled that out, and in 2021 radar showed it will not hit for at least a hundred years. On 13 April 2029 it will pass about 32,000 km above the Earth, closer than the satellites which hover over one spot, and it will be visible without a telescope from Europe and Africa.',
+        'No. In December 2004 early figures gave about a 3 per cent chance of a hit in 2029, which put it at level 4 on the Torino scale, the highest rating any object has had. More observations ruled that out, and in 2021 radar showed it will not hit for at least a hundred years. On 13 April 2029 it will pass about 32,000 km above the Earth, closer than the satellites which hover over one spot, and it will be visible without a telescope from Europe and Africa.',
       ] },
     ],
     sources: [
