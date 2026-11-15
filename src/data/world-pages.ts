@@ -1712,13 +1712,13 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'The solid part is about 5 km across, and it is dark. Because it comes round so often it has lost much of its ice, and it makes only a faint coma and a short tail. It is rarely easy to see without a telescope.',
       ] },
       { title: 'Its path round the Sun', paras: [
-        'It goes round the Sun in about 3.3 years, the shortest period of any comet that is regularly seen. Its path takes it from about the distance of Mercury to about the middle of the asteroid belt. It last passed closest to the Sun in October 2023, and the next time is in early 2027.',
+        'It goes round the Sun in about 3.3 years, the shortest period of any comet that is regularly seen. Its path takes it from about the distance of Mercury out beyond the asteroid belt, to about four times the Earth’s distance. It last passed closest to the Sun in October 2023, and the next time is in early 2027.',
       ] },
       { title: 'How it was found', paras: [
         'Pierre Méchain first saw it in 1786, and it was seen again in 1795, 1805 and 1818. In 1819 Johann Encke worked out that these were all one comet going round in about 3.3 years, and said when it would return. It came back as he said, and it was named for him. It was the second comet shown to return, after Halley’s.',
       ] },
       { title: 'Spacecraft that have visited', paras: [
-        'None has gone close. The NASA spacecraft MESSENGER, on its way to Mercury, photographed its tail in 2007. A European and American mission called CONTOUR was meant to fly past in 2003 but was lost soon after launch in 2002.',
+        'None has gone close. The NASA spacecraft MESSENGER, then in orbit round Mercury, photographed it and its tail in 2013. A NASA mission called CONTOUR was meant to fly past in 2003 but was lost soon after launch in 2002.',
       ] },
       { title: 'When to see it', paras: [
         'It sheds dust all along its path, and some of that dust meets the Earth each autumn as the Taurid meteors, which are slow and often bright. The best chance to see the comet itself is when it comes near the Earth in a good year, and then a pair of binoculars or small telescope is needed.',
@@ -1730,13 +1730,13 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     ],
   },
   proteus: {
-    lead: 'The second-largest moon of Neptune, a dark, lumpy world found only when Voyager 2 flew past in 1989.',
+    lead: 'The second-largest moon of Neptune, a dark, lumpy world found in pictures taken by Voyager 2 in 1989.',
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'It is about 420 km across and shaped like a rounded block, so large that it is only just too small to have pulled itself into a ball. It is dark and covered in craters.',
+        'It is about 420 km across and lumpy, with flat faces, so large that it is only just too small to have pulled itself into a ball. It is dark and covered in craters.',
       ] },
       { title: 'What it is made of', paras: [
-        'It is probably a mix of ice and dark material, but its surface reflects only about a tenth of the light that falls on it. It is not well known what it is made of.',
+        'Its density is low, and it may be partly ice, but its surface reflects only about a tenth of the light that falls on it. It is not well known what it is made of.',
       ] },
       { title: 'How it was found', paras: [
         'It was not seen from the Earth, because it is dark and close to the glare of Neptune. Stephen Synnott found it in pictures taken by Voyager 2 in 1989. It was named for a Greek sea god who could change shape.',
@@ -1756,10 +1756,10 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'The only known moon of Eris, a dark world several hundred kilometres wide.',
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'It is thought to be roughly 600 to 700 km across, but it has not been seen as anything but a dot. It is dark, much darker than Eris, whose surface is brighter than fresh snow.',
+        'It is thought to be about 600 km across, but it has only been seen as a dot in telescopes. It is dark, much darker than Eris, whose surface is brighter than fresh snow.',
       ] },
       { title: 'What it is made of', paras: [
-        'Not known. Its size and how it moves give a clue, but it is not yet clear whether it is mostly ice or mostly rock.',
+        'Not well known. Its density is poorly measured, and it leans towards being mostly ice.',
       ] },
       { title: 'How it was found', paras: [
         'Mike Brown’s team found it in September 2005, in pictures taken with the Keck telescope in Hawaii, a few weeks after Eris was announced. It was nicknamed Gabrielle, after a television character, and in 2006 was named Dysnomia, the spirit of lawlessness and daughter of Eris.',
@@ -1768,7 +1768,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'None has been near it.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Its exact size and what it is made of. It goes round Eris in about 16 days at about 37,000 km. Watching that path let astronomers weigh Eris, which is how it is known to be a quarter heavier than Pluto.',
+        'Its exact size and what it is made of. It goes round Eris in about 16 days at about 37,000 km. Watching that path let astronomers weigh Eris, which is how it is known to be about 27 per cent heavier than Pluto.',
       ] },
     ],
     sources: [
@@ -1780,7 +1780,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'The moon of Orcus, about half as wide as the dwarf planet it goes round.',
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'It is about 450 km across, so large for a moon that the two are better thought of as a pair, as Pluto and Charon are. It is darker than Orcus, and no spacecraft has shown any more detail than a dot.',
+        'It is about 440 km across, so large for a moon that the two are better thought of as a pair, as Pluto and Charon are. It is darker than Orcus, and has only been seen as a dot in telescopes.',
       ] },
       { title: 'What it is made of', paras: [
         'It is probably ice and rock, but this is not well known. One idea is that it formed from material thrown out when Orcus was hit by something large.',

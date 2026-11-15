@@ -64,7 +64,7 @@ const COLS: Record<string, [number, number]> = { asteroid: [70, 3], comet: [128,
 for (const l of LANES) l.rows.forEach((r, i) => {
   const mx = COLS[l.kind][0] + i * COLS[l.kind][1];
   vmarks.push({ kind: l.kind, mx, y1: vy(r.q), y2: vy(r.Q), ya: vy(r.a), d: Math.max(4, Math.round(r.d * .7)), out: true, off: r.off });
-  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, sub: `${r.likely ? 'likely dwarf planet · ' : ''}${fmtAu(r.q)}–${r.off ? '700+' : fmtAu(r.Q)} au`, subs: r.moons.map((m) => ({ id: m.id, name: m.name })), y: vy(r.a), mx, my: vy(r.a), out: true });
+  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, sub: `${r.likely ? 'likely dwarf planet · ' : ''}${fmtAu(r.q)}–${r.off ? '700+' : fmtAu(r.Q)} au`, subs: r.moons.map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), y: vy(r.a), mx, my: vy(r.a), out: !written(r.id) });
 });
 vlabels.sort((a, b) => a.y - b.y);
 let floor = 0;
