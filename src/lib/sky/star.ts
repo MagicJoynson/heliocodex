@@ -1,6 +1,7 @@
 import { sheet, head, type Cell } from '../record';
 import SIZES from '../../data/star-sizes.json';
 import DISTANCES from '../../data/star-distances.json';
+import { STAR_STORIES } from '../../data/star-stories';
 // angular sizes (milliarcseconds) for named stars, by HD number: 'm' measured, from the JMMC Measured Diameters
 // Catalogue (the paper given); 'e' estimated from the star's colours in the JMMC Stellar Diameters Catalogue v2
 const SIZE = SIZES as unknown as Record<string, [number, 'm' | 'e', string]>;
@@ -181,6 +182,7 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const lead = `${colour ? `${called} is ${colour}` : `${called} is a star`}${star.constellation ? `, in the constellation ${esc(star.constellation)}.` : '.'}`;
   const sight = !byEye ? 'It is too faint to see without a telescope.' : star.appMag <= 1.5 ? 'It is one of the brightest stars in the whole sky, easy to see even from a town.' : star.appMag <= 3.5 ? 'It is easy to see by eye on a clear night.' : star.appMag <= 5 ? 'It can be seen by eye away from bright lights.' : 'It can just be seen by eye from a really dark place.';
   const row = (title: string, body: string, small = false) => `<section class="row${small ? ' small' : ''}"><div class="hang"><h2>${title}</h2></div><div class="prose">${body}</div></section>`;
+  const story = STAR_STORIES[star.slug];
   const names: [string, string][] = [];
   if (star.proper) names.push(['Its own name', esc(star.proper)]);
   if (star.catalogue) names.push([BAYER.test(star.catalogue) ? 'By constellation (Bayer)' : /^\d/.test(star.catalogue) ? 'By constellation (Flamsteed)' : 'By constellation', esc(star.catalogue)]);
@@ -220,6 +222,7 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
       <figure class="rec-pic star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure>
       <div>${sheet(cells)}<p class="rec-go"><a href="/explore?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p></div>
     </section>`,
+    story ? row('Its story', `${story.paras.map((p) => `<p>${esc(p)}</p>`).join('')}<p class="src">Read more: ${story.sources.map(([l, u]) => `<a href="${u}" rel="noopener">${esc(l)}</a>`).join('; ')}.</p>`) : '',
     row('About these numbers', `<p>${lyText} light years means the light you see from ${it} tonight set off about ${lyText} years ago. Everything we know about it is that much out of date.${doubt ? ` ${doubt}` : ''}</p>
       <p>It gives out ${lumText}. Its brightness in our sky is magnitude ${star.appMag.toFixed(2).replace('-', '−')}: smaller numbers are brighter, and the faintest stars the eye can see are about 6.</p>
       ${byType ? `<p>The temperature is read from its spectral type, ${spect}, with a standard table of how hot stars of each type are. It is a guide and could be out by a tenth or so.${reddened ? ` Its colour alone would suggest only about ${nf(Number(kelvin.toPrecision(2)))} K, because dust between us and the star reddens its light.` : ''}</p>` : hasColour ? `<p>The temperature is worked out from its colour, so it is a guide and not a measurement. ${star.bv < -0.05 ? 'For stars this blue, colour is a poor thermometer, and the true figure can be far higher.' : 'It could be out by a few hundred degrees.'} Hotter stars are bluer and cooler stars are redder, the same way a poker in a fire goes from red to white.</p>` : ''}
