@@ -7,3 +7,4 @@ view: { target: cmb }
 terms: [big-bang, redshift, hubble-constant, cosmic-microwave-background, big-bang-nucleosynthesis, helium, hydrogen, look-back-time]
 needs: [the-expanding-universe, the-first-minutes]
 next: [the-oldest-light, dark-matter-and-dark-energy]
+asks: ["what is the big bang", "how did the universe begin", "proof of the big bang"]

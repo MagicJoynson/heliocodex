@@ -7,3 +7,4 @@ view: { target: moon }
 terms: [moon, tidal-locking, impact-crater, regolith, phase, tide]
 needs: [what-a-moon-is]
 next: [phases-and-eclipses, tides]
+asks: ["how far is the moon", "how big is the moon", "how was the moon made", "how old is the moon", "far side of the moon"]

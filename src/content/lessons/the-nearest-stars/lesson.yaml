@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [star, light-year, parallax, parsec, red-dwarf, luminosity, exoplanet, habitable-zone]
 needs: [what-a-star-is, measuring-distance]
 next: [red-dwarfs, the-stars-you-can-see, planets-round-other-stars]
+asks: ["nearest star", "closest star to the sun", "alpha centauri", "proxima centauri", "how far is the nearest star"]

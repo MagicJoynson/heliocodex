@@ -7,3 +7,4 @@ view: { target: earth, facing: sun, distanceKm: 2000000 }
 terms: [astronomical-unit, light-year, parsec, parallax, arcsecond, light-time]
 needs: [how-big-is-space]
 next: [light-the-only-messenger, the-distance-ladder]
+asks: ["what is a light year", "what is a parsec", "what is an astronomical unit", "how far is the sun", "how do we measure distance in space"]

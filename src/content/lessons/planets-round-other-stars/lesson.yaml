@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [exoplanet, transit, doppler-shift, hot-jupiter, super-earth, habitable-zone, light-year]
 needs: [what-an-orbit-is, reading-starlight]
 next: [trappist-1]
+asks: ["how many exoplanets are there", "how are exoplanets found", "planets around other stars"]

@@ -7,3 +7,4 @@ view: { target: mars, facing: sun, highlight: [mars] }
 terms: [keplers-laws, ellipse, eccentricity, semi-major-axis, perihelion, aphelion, orbital-period]
 needs: [what-an-orbit-is]
 next: [what-gravity-is, tides]
+asks: ["kepler", "laws of planetary motion", "why do planets move in ellipses"]

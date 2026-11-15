@@ -7,3 +7,4 @@ view: { target: local-group, highlight: [andromeda] }
 terms: [speed-of-light, look-back-time, electromagnetic-spectrum, wavelength, spectrum, spectral-line]
 needs: [measuring-distance]
 next: [the-whole-spectrum, reading-starlight]
+asks: ["how fast is light", "speed of light", "what is a light year"]

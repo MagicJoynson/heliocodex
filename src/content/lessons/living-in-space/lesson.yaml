@@ -7,3 +7,4 @@ view: { target: earth }
 terms: [free-fall, orbit, gravity, weight, orbital-period]
 needs: [what-an-orbit-is]
 next: [the-first-journeys, the-earth-as-a-planet]
+asks: ["what is the international space station", "how do astronauts live in space"]

@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [red-dwarf, main-sequence, luminosity, nuclear-fusion, habitable-zone, tidal-locking, exoplanet, white-dwarf]
 needs: [what-a-star-is, the-nearest-stars]
 next: [brown-dwarfs, trappist-1, how-stars-live-and-die]
+asks: ["what is a red dwarf", "proxima centauri", "smallest stars"]

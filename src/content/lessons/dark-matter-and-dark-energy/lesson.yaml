@@ -7,3 +7,4 @@ view: { target: cosmic-web }
 terms: [dark-matter, dark-energy, gravitational-lensing, galaxy-cluster, gravity, hubble-constant, supernova, cosmic-microwave-background]
 needs: [the-expanding-universe, what-gravity-is]
 next: []
+asks: ["what is dark matter", "what is dark energy", "what is the universe made of"]

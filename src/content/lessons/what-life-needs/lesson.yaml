@@ -7,3 +7,4 @@ view: { target: earth }
 terms: [habitable-zone, biosignature, subsurface-ocean, atmosphere, kelvin]
 needs: [are-we-alone]
 next: [the-habitable-zone, ocean-moons]
+asks: ["what does life need", "can life live without water", "extremophiles"]

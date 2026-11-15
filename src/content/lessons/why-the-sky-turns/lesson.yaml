@@ -7,3 +7,4 @@ view: { target: earth }
 terms: [celestial-sphere, celestial-pole, zenith, sidereal-day, solar-day, precession]
 needs: [how-big-is-space]
 next: [seasons, constellations]
+asks: ["why do stars move", "pole star", "which way is north", "why does the sun rise", "how to find north"]

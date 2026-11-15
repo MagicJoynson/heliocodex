@@ -7,3 +7,4 @@ view: { target: sun, distanceKm: 3000000 }
 terms: [spectrum, spectral-line, doppler-shift, redshift, wavelength, hydrogen, helium, exoplanet]
 needs: [the-whole-spectrum]
 next: [telescopes, redshift-and-the-doppler-effect]
+asks: ["spectrum", "what is a spectrum", "how do we know what stars are made of"]

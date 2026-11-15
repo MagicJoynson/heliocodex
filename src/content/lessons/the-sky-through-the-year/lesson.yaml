@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [ecliptic, zodiac, constellation, precession, celestial-pole, equinox, sidereal-day]
 needs: [why-the-sky-turns]
 next: [constellations, seasons]
+asks: ["when can i see orion", "winter constellations", "summer constellations", "why are there different stars in winter"]

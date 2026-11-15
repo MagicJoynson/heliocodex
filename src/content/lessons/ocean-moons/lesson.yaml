@@ -7,3 +7,4 @@ view: { target: enceladus, facing: saturn, distanceKm: 1500 }
 terms: [subsurface-ocean, tidal-heating, cryovolcanism, resonance, moon]
 needs: [what-a-moon-is, tides]
 next: [moons-in-step]
+asks: ["europa ocean", "enceladus geysers", "is there water on moons"]

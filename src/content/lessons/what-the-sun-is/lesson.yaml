@@ -6,3 +6,4 @@ scene: "The Sun cut open to show the core, the radiative zone and the convective
 view: { target: sun, distanceKm: 2500000 }
 terms: [star, plasma, nuclear-fusion, solar-core, radiative-zone, convective-zone, photosphere]
 next: [how-the-sun-shines, the-active-sun]
+asks: ["why is the sky blue", "what colour is the sun", "why is the sun yellow", "what is the sun made of", "how hot is the sun"]

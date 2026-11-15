@@ -7,3 +7,4 @@ view: { target: sun, distanceKm: 6000000 }
 terms: [star, nuclear-fusion, plasma, luminosity, brown-dwarf, red-dwarf, main-sequence]
 needs: [what-the-sun-is]
 next: [colour-and-brightness, how-stars-live-and-die]
+asks: ["what is a star", "why do stars shine"]

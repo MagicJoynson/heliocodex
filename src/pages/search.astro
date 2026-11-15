@@ -23,6 +23,6 @@ import '../styles/reading.css';
   document.querySelector('.search-page h1')!.textContent = q ? `Search: ${q}` : 'Search';
   loadIndex().then((all) => {
     const hits = rank(all, q, 60);
-    ol.innerHTML = hits.length ? hits.map((h) => `<li><a href="${h[2]}">${esc(h[0])}<span>${esc(h[1])}</span></a></li>`).join('') : q ? `<li>Nothing found for “${esc(q)}”.</li>` : '';
+    ol.innerHTML = hits.length ? hits.map((h) => `<li><a href="${h[2]}">${esc(h[0])}<span>${esc(h[1])}</span></a></li>`).join('') : q ? `<li>Nothing found for “${esc(q)}”. Try one word, such as a name or a topic, or look through <a href="/learn">the lessons</a>.</li>` : '';
   });
 </script>

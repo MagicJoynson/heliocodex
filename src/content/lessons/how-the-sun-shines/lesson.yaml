@@ -7,3 +7,4 @@ view: { target: sun, distanceKm: 2500000 }
 terms: [nuclear-fusion, solar-core, hydrogen, helium, neutrino, radiative-zone, convective-zone, photosphere]
 needs: [what-the-sun-is]
 next: [the-active-sun]
+asks: ["how does the sun shine", "what is nuclear fusion", "why does the sun burn", "how long will the sun last"]

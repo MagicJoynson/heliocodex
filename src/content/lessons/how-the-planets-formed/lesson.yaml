@@ -7,3 +7,4 @@ view: { target: sun, distanceKm: 9000000000 }
 terms: [protoplanetary-disc, accretion, planetesimal, frost-line, terrestrial-planet, gas-giant, asteroid-belt, exoplanet]
 needs: [three-kinds-of-planet]
 next: [air-and-the-greenhouse]
+asks: ["how did the solar system form", "how old is the solar system", "how were planets made"]

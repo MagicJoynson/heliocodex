@@ -7,3 +7,4 @@ view: { target: night-sky }
 terms: [star, constellation, apparent-magnitude, absolute-magnitude, luminosity, light-year, milky-way]
 needs: [what-a-star-is, the-nearest-stars]
 next: [double-and-multiple-stars, the-milky-way]
+asks: ["how many stars can you see", "what is the brightest star"]

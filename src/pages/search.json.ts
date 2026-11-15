@@ -5,12 +5,12 @@ import { allBodies } from '../data/bodies/index';
 import { outlineWorlds, PLANET_PAGES, KIND_NAMES, kindName, nameOf } from '../lib/worlds';
 import { allStars, pageStars } from '../lib/sky/starlist';
 import { slugOf } from '../lib/sky/star';
-import { allTerms, allLessons } from '../lib/v2/margin/content';
+import { allTerms, allLessons, allFacts } from '../lib/v2/margin/content';
 import { sections } from '../lib/nav';
 import { landmarks } from '../lib/v2/atlas/landmarks';
 
 export const GET: APIRoute = async () => {
-  const out: [string, string, string, string?][] = [];
+  const out: [string, string, string, string?, string?][] = [];
   for (const id of PLANET_PAGES) {
     const b = allBodies.find((x) => x.id === id)!;
     out.push([b.name.replace(/^The /, ''), id === 'sun' ? 'Star' : 'Planet', `/${id}`]);
@@ -22,8 +22,10 @@ export const GET: APIRoute = async () => {
   const cons = new Set<string>();
   for (const s of allStars()) if (s.constellation) cons.add(s.constellation);
   for (const c of [...cons].sort()) out.push([c, 'Constellation', `/stars/in/${slugOf(c)}`]);
-  for (const t of await allTerms()) out.push([t.term, 'Glossary', `/glossary#${t.id}`, t.also.join(' ') || undefined]);
-  for (const l of await allLessons()) out.push([l.data.title, 'Lesson', `/learn/${l.id}`]);
+  // The last field is words a question can find, never shown: a glossary meaning, a lesson's summary and the facts that belong to it.
+  for (const t of await allTerms()) out.push([t.term, 'Glossary', `/glossary#${t.id}`, t.also.join(' ') || undefined, `${t.short} ${t.more ?? ''}`.trim()]);
+  const facts = await allFacts();
+  for (const l of await allLessons()) out.push([l.data.title, 'Lesson', `/learn/${l.id}`, undefined, [l.data.summary, ...l.data.asks, ...facts.filter((f) => f.about.includes(l.id)).map((f) => f.text)].join(' ')]);
   for (const s of sections) out.push([s.label, 'Page', s.href]);
   for (const s of pageStars()) {
     const also = [s.catalogue, s.hip ? `HIP ${s.hip}` : '', s.hd ? `HD ${s.hd}` : ''].filter((x) => x && x !== s.name).join(' ');
@@ -41,5 +43,5 @@ export const GET: APIRoute = async () => {
     if (have.has(title.toLowerCase())) continue;
     out.push([title, 'Atlas landmark', `/atlas#mark-${l.id}`, ALSO[l.id]]);
   }
-  return new Response(JSON.stringify(out.map((e) => (e[3] ? e : e.slice(0, 3)))), { headers: { 'content-type': 'application/json' } });
+  return new Response(JSON.stringify(out.map((e) => (e[4] ? [e[0], e[1], e[2], e[3] ?? '', e[4]] : e[3] ? e.slice(0, 4) : e.slice(0, 3)))), { headers: { 'content-type': 'application/json' } });
 };

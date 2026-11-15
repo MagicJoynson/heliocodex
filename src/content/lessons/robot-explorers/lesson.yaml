@@ -7,3 +7,4 @@ view: { target: saturn }
 terms: [gravity-assist, light-time, heliopause, asteroid, orbit, transfer-orbit]
 needs: [leaving-and-arriving]
 next: [living-in-space, looking-for-life-in-the-solar-system]
+asks: ["voyager", "probes", "space probes", "mars rovers", "which spacecraft have left the solar system"]

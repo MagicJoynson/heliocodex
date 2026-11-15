@@ -7,3 +7,4 @@ view: { target: milky-way }
 terms: [radio-waves, frequency, light-year, globular-cluster, milky-way, speed-of-light, hydrogen]
 needs: [are-we-alone, what-life-needs]
 next: [how-planets-are-found, the-habitable-zone]
+asks: ["seti", "are there aliens", "have we found aliens", "alien signals"]

@@ -7,3 +7,4 @@ view: { target: milky-way }
 terms: [supernova, white-dwarf, chandrasekhar-limit, neutron-star, neutrino, nebula, black-hole]
 needs: [how-stars-live-and-die]
 next: [neutron-stars-and-pulsars, the-distance-ladder]
+asks: ["what is a supernova", "what happens when a star explodes"]

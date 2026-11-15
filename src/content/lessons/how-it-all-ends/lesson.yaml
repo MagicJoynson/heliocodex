@@ -7,3 +7,4 @@ view: { target: cosmic-web }
 terms: [white-dwarf, red-dwarf, planetary-nebula, dark-energy, black-hole, galaxy-merger, power-of-ten, supernova]
 needs: [how-stars-live-and-die, the-expanding-universe, dark-matter-and-dark-energy]
 next: [the-history-of-the-universe]
+asks: ["how will the universe end", "what is the big freeze", "heat death", "will the universe end"]

@@ -7,3 +7,4 @@ view: { target: sun, distanceKm: 300000000 }
 terms: [nebula, protostar, main-sequence, red-giant, white-dwarf, supernova, nuclear-fusion]
 needs: [what-a-star-is, colour-and-brightness, nebulae-and-star-birth]
 next: [neutron-stars-and-pulsars, what-a-black-hole-is, double-and-multiple-stars]
+asks: ["how do stars die", "how are stars born", "how long do stars live", "will the sun explode", "what happens when the sun dies"]

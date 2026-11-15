@@ -7,3 +7,4 @@ view: { target: solar-system }
 terms: [biosignature, subsurface-ocean, habitable-zone, tidal-heating, cryovolcanism, atmosphere, astronomical-unit]
 needs: [what-life-needs, ocean-moons]
 next: [are-we-alone, the-habitable-zone]
+asks: ["life on mars", "life on europa", "life on enceladus", "is there life on titan"]

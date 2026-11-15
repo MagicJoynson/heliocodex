@@ -7,3 +7,4 @@ view: { target: milky-way }
 terms: [neutron-star, supernova, density, magnetic-field, black-hole, white-dwarf, gravitational-wave]
 needs: [how-stars-live-and-die]
 next: [what-a-black-hole-is]
+asks: ["what is a neutron star", "what is a pulsar"]

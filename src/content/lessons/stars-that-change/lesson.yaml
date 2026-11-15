@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [variable-star, cepheid, binary-star, red-giant, apparent-magnitude, luminosity, standard-candle]
 needs: [colour-and-brightness]
 next: [the-distance-ladder, double-and-multiple-stars]
+asks: ["variable stars", "why does betelgeuse dim", "what is a nova"]

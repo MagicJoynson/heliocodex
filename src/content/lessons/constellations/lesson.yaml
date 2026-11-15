@@ -7,3 +7,4 @@ view: { target: neighbourhood }
 terms: [constellation, zodiac, ecliptic, celestial-sphere, star, light-year]
 needs: [how-big-is-space]
 next: [the-stars-you-can-see]
+asks: ["what is a constellation", "how many constellations", "zodiac", "what are the zodiac signs"]

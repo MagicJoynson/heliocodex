@@ -7,3 +7,4 @@ view: { target: solar-system }
 terms: [habitable-zone, biosignature, subsurface-ocean, exoplanet, atmosphere, spectrum, radio-waves]
 needs: [ocean-moons, planets-round-other-stars]
 next: []
+asks: ["is there life on other planets", "are there aliens", "is there life in space"]

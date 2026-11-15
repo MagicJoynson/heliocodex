@@ -1,5 +1,5 @@
 /** The header and home-page search: loads /search.json once, ranks matches, and drives the result list from the keyboard. */
-export type Entry = [string, string, string, string?];
+export type Entry = [string, string, string, string?, string?];
 let index: Promise<Entry[]> | null = null;
 export const loadIndex = () => (index ??= fetch('/search.json').then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<Entry[]>; }).catch((e) => { index = null; throw e; }));
 
@@ -44,7 +44,7 @@ function fuzzy(q: string, words: string[]): number {
 }
 
 /** Names split into words once, so each keystroke only compares. */
-type Prepared = { name: string; also: string; nameWords: string[]; alsoWords: string[]; words: string[]; joined: string };
+type Prepared = { name: string; also: string; nameWords: string[]; alsoWords: string[]; words: string[]; joined: string; textWords?: string[] };
 const prepared = new WeakMap<Entry[], Prepared[]>();
 function prepare(all: Entry[]): Prepared[] {
   let p = prepared.get(all);
@@ -52,7 +52,7 @@ function prepare(all: Entry[]): Prepared[] {
     p = all.map((e) => {
       const name = norm(e[0]), also = e[3] ? norm(e[3]) : '';
       const nameWords = name.split(/[\s-]+/), alsoWords = also ? also.split(/\s+/) : [];
-      return { name, also, nameWords, alsoWords, words: [...nameWords, ...alsoWords], joined: name.replace(/[\s-]+/g, '') };
+      return { name, also, nameWords, alsoWords, words: [...nameWords, ...alsoWords], joined: name.replace(/[\s-]+/g, ''), textWords: e[4] ? [...new Set(norm(e[4]).split(/[^a-z0-9]+/).filter((w) => w.length > 2))] : undefined };
     });
     prepared.set(all, p);
   }
@@ -73,6 +73,11 @@ function nearness(tokens: string[], e: Prepared): number {
   return total;
 }
 
+/** Little words that carry no meaning in a question, so "why is the sky blue" looks for sky and blue. */
+const LITTLE = new Set('why how what when where which who does did can could would should will are was were the and for you your our its it is do to of in on at an a we i me my be been has have had than then that this these those there into from with about'.split(' '));
+/** A word with a plural or a verb ending trimmed, so "tides" meets "tide" and "eclipses" meets "eclipse". */
+const stem = (t: string) => (t.length > 4 ? t.replace(/(ing|es|s)$/, '') : t);
+
 /** The best matches for a query: whole-name first, then start of name, start of a word, then anywhere; and, when nothing
  *  matches well as typed, names with a slip or two ("jupitor", "betelguese", "proxima centuri"). Catalogue numbers are only matched as typed. */
 export function rank(all: Entry[], query: string, max = 8): Entry[] {
@@ -81,6 +86,7 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
   const list = prepare(all);
   const tokens = q.split(' ');
   const tryFuzzy = q.length >= 4 && !/\d/.test(q) && tokens.some((t) => t.length >= 4);
+  const meaning = tokens.filter((t) => t.length > 2 && !LITTLE.has(t)).map(stem);
   const scored: [number, Entry][] = [];
   const near: [number, Entry][] = [];
   let bestAsTyped = Infinity;
@@ -92,11 +98,30 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
     else if (nameWords.some((w) => w.startsWith(q))) s = 20;
     else if (alsoWords.some((w) => w.startsWith(q))) s = 25;
     else if (q.length > 2 && (name.includes(q) || also.includes(q))) s = 30;
+    // A question: every meaningful word in it begins some word of the name, its other names or its text.
+    if (s < 0 && meaning.length && e[4]) {
+      const pool = list[i].textWords!;
+      if (meaning.every((t) => list[i].words.some((w) => w.startsWith(t)) || pool.some((w) => w.startsWith(t)))) s = 40 + (meaning.every((t) => list[i].words.some((w) => w.startsWith(t))) ? 0 : 6);
+    }
+    // A longer question that names a place ("how far is the moon"): offer the place itself first.
+    if (s < 0 && tokens.length > 1 && meaning.length && nameWords.length === 1 && e[1] !== 'Page' && e[1] !== 'Constellation' && e[1] !== 'Star (catalogue)' && kindRank(e[1]) <= 2 && meaning.some((t) => nameWords[0].startsWith(t))) s = 38;
     if (s >= 0) { scored.push([s + kindRank(e[1]) * 2 + name.length / 100, e]); if (s < bestAsTyped) bestAsTyped = s; }
     else if (tryFuzzy && e[1] !== 'Star (catalogue)') {
       const d = nearness(tokens, list[i]);
       if (d < Infinity) near.push([d * 8 + kindRank(e[1]) + name.length / 100, e]);
     }
+  }
+  // Nothing has every word of a question: offer what has most of them.
+  if (scored.length === 0 && meaning.length > 1) {
+    const some: [number, Entry][] = [];
+    for (let i = 0; i < all.length; i++) {
+      const e = all[i];
+      if (!e[4] || e[1] === 'Star (catalogue)') continue;
+      const w = [...list[i].words, ...(list[i].textWords ?? [])];
+      const hit = meaning.filter((t) => w.some((x) => x.startsWith(t))).length;
+      if (hit >= 2) some.push([60 - hit * 6 + kindRank(e[1]), e]);
+    }
+    scored.push(...some);
   }
   const out = scored.sort((a, b) => a[0] - b[0]).map((x) => x[1]);
   // As-typed matches always come first. Near misses are offered only when the query found no name or word it begins.
@@ -120,7 +145,7 @@ export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
     const typed = input.value.trim();
     list.innerHTML = hits.length
       ? hits.map((h, i) => `<li role="option" id="${list.id}-${i}" aria-selected="${i === at}" data-href="${esc(h[2])}"><b>${esc(h[0])}</b><span>${esc(h[1])}</span></li>`).join('')
-      : `<li class="none" role="presentation">Nothing found for “${esc(typed)}”.</li>`;
+      : `<li class="none" role="presentation">Nothing found for “${esc(typed)}”. Try one word, such as a name or a topic.</li>`;
     if (at >= 0) input.setAttribute('aria-activedescendant', `${list.id}-${at}`); else input.removeAttribute('aria-activedescendant');
     status.textContent = typed ? (hits.length ? `${hits.length} suggestion${hits.length > 1 ? 's' : ''}. Use the up and down arrow keys, then Enter.` : `Nothing found for ${typed}.`) : '';
     show(typed.length > 0);
