@@ -597,12 +597,12 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     lead: 'The smallest and innermost of the five big moons of Uranus, with a patchwork surface of grooves, ridges and cliffs unlike any other moon.',
     picture: {
       src: '/img/learn/miranda-voyager2-1986.jpg', width: 571, height: 574,
-      alt: 'A grey, round moon crossed by a patchwork of ridged and grooved ground, with a V-shaped band of bright stripes at the lower left and craters scattered over the rest.',
-      caption: '<b>A photograph.</b> Miranda on 24 January 1986, from NASA’s Voyager 2 spacecraft. Voyager passed closer to Miranda than to any other moon of Uranus, and this is still the best view of it. Only the south, which was lit by the Sun, was seen. Credit: NASA/JPL-Caltech.',
+      alt: 'A grey, round moon crossed by a patchwork of ridged and grooved ground, with a band of grooved, striped ground on the left, a bright chevron at the bottom and craters scattered over the rest.',
+      caption: '<b>A photograph.</b> Miranda on 24 January 1986, from NASA’s Voyager 2 spacecraft. Voyager passed closer to Miranda than to any other moon of Uranus. Only the south, which was lit by the Sun, was seen. Credit: NASA/JPL-Caltech.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'Miranda looks as though it has been broken up and put back together. Old, cratered ground sits beside younger ground cut by ridges and grooves, and three huge oval patches, called coronae, are marked with bands of parallel stripes and a bright V. Cliffs and canyons cut the surface, and one cliff, Verona Rupes, may be as much as 20 km high, taller than any cliff known elsewhere in the Solar System.',
+        'Miranda looks as though it has been broken up and put back together. Old, cratered ground sits beside younger ground cut by ridges and grooves, and three huge oval patches, called coronae, are marked with bands of parallel stripes and a bright chevron. Cliffs and canyons cut the surface, and one cliff, Verona Rupes, may be as much as 20 km high, possibly the tallest cliff known in the Solar System.',
         'Nothing like this was expected on a moon only 470 km across. A body that small should have frozen solid soon after it formed, and kept its old, cratered face.',
       ] },
       { title: 'What it is made of', paras: [
@@ -616,7 +616,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Only Voyager 2, on 24 January 1986. Because Uranus is tipped over on its side, in 1986 the south pole pointed at the Sun and the north was in darkness, so only Miranda’s southern half was photographed.',
       ] },
       { title: 'What is still unknown', paras: [
-        'How the patchwork formed. One idea is that Miranda was shattered by an impact and pulled itself back together. Another is that the inside was warmed by tides and rose in blobs, forming the coronae. Half the moon has never been seen. A future mission to Uranus, which the most recent American survey of planetary science placed first in its priorities, would give a second look.',
+        'How the patchwork formed. One idea is that Miranda was shattered by an impact and pulled itself back together. Another is that the inside was warmed by tides and rose in blobs, forming the coronae. Half the moon has never been seen. A future mission to Uranus, which the most recent American survey of planetary science ranked first among new large missions, would give a second look.',
       ] },
     ],
     sources: [
@@ -634,7 +634,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'Ariel has fewer big craters than its neighbours, which means its surface is younger, with older ground resurfaced. Canyons cross it for hundreds of kilometres, in places 10 km deep and with flat floors that look as though soft ice, or a slush of ice and ammonia, has welled up and spread.',
+        'Ariel has fewer big craters than its neighbours, which means its surface is younger, with older ground resurfaced. Canyons cross it for hundreds of kilometres, several kilometres deep and with flat floors that look as though soft ice, or a slush of ice and ammonia, has welled up and spread.',
         'Voyager 2 photographed only the half that faced the Sun in 1986, mostly the south.',
       ] },
       { title: 'What it is made of', paras: [
@@ -662,12 +662,12 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     picture: {
       src: '/img/learn/umbriel-voyager2-1986.jpg', width: 400, height: 400,
       alt: 'A dark grey, round moon thickly covered in craters, with a small bright patch on the top edge.',
-      caption: '<b>A photograph.</b> Umbriel on 24 January 1986, from NASA’s Voyager 2 spacecraft, the most detailed picture of it. The small bright patch at the top edge is the floor of the crater Wunda. Credit: NASA/JPL.',
+      caption: '<b>A photograph.</b> Umbriel on 24 January 1986, from NASA’s Voyager 2 spacecraft, the most detailed picture of it. The small bright patch at the top edge is the bright ring. Credit: NASA/JPL.',
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
         'Umbriel is a dull, dark world that reflects less light than any of the other four big moons of Uranus, and it is thickly covered in old craters. That suggests little has changed on it since the early Solar System.',
-        'The exception is a bright ring on the floor of a crater called Wunda, near the edge of the picture. Nobody knows what the bright material is.',
+        'The exception is a bright ring about 140 km across, thought to lie on the floor of a crater called Wunda, near the edge of the picture. Nobody knows what the bright material is.',
       ] },
       { title: 'What it is made of', paras: [
         'Umbriel is 1,169 km across. Its density, 1.52 times that of water, says it is roughly half ice and half rock. It goes round Uranus in 4.1 days at 266,000 km.',
@@ -710,7 +710,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'Only Voyager 2, on 24 January 1986, from about 365,000 km.',
       ] },
       { title: 'What is still unknown', paras: [
-        'Whether it has kept any warmth, and whether a salty layer lies deep inside. Voyager’s pictures cover only the southern half.',
+        'Whether it has kept any warmth, and whether a liquid layer lies deep inside. Voyager’s pictures cover only the southern half.',
       ] },
     ],
     sources: [
@@ -758,7 +758,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like up close', paras: [
-        'Hyperion is the most unusual-looking moon of Saturn. It is not round, but lumpy, about 360 km by 270 km by 200 km, and covered in deep, sharp-edged craters that give it the look of a sea sponge. Dark material has collected on the crater floors.',
+        'Hyperion is the most unusual-looking moon of Saturn. It is not round, but lumpy, about 360 km by 260 km by 205 km, and covered in deep, sharp-edged craters that give it the look of a sea sponge. Dark material has collected on the crater floors.',
         'The reason for the sponge look is the moon’s make-up. It is so loose, and so full of empty space, that a falling rock does not throw out much debris. It punches in and packs the material down, leaving a deep hole.',
       ] },
       { title: 'What it is made of', paras: [
@@ -769,7 +769,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'William Bond and his son George Bond found it on 16 September 1848 at Harvard College Observatory in Massachusetts, and William Lassell found it independently two days later in England. John Herschel had suggested names from Greek myth for Saturn’s moons, and Hyperion was one of the Titans, a brother of Cronus.',
       ] },
       { title: 'Spacecraft that have seen it', paras: [
-        'Voyager 2 saw it in 1981 and found its tumbling. The Cassini spacecraft flew past it several times, the closest, in September 2005, at about 500 km.',
+        'Voyager 2 saw it in 1981, and its tumbling was worked out afterwards. The Cassini spacecraft flew past it several times, the closest, in September 2005, at about 500 km.',
       ] },
       { title: 'What is still unknown', paras: [
         'How such a loose, porous body could form and survive. One idea is that Hyperion is a piece of a larger moon that was broken up long ago.',
