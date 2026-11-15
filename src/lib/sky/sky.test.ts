@@ -4,6 +4,9 @@
 import { moonPlace } from './moon';
 import { moment, toSky, planetFromEarth, sunFromEarth, moonSky, type Vec } from './place';
 import { centuriesSinceJ2000 } from '../orbit';
+import { readFileSync } from 'node:fs';
+import { pageStars } from './starlist';
+import { MODERN } from './star';
 
 const failed: string[] = [];
 function test(name: string, fn: () => void) {
@@ -65,6 +68,15 @@ test('The Moon from the ground: within a tenth of a degree of JPL Horizons, and 
   const s = moonSky(HERE);
   near(s.azDeg, 265.43318, 0.1, 'bearing'); near(s.altDeg, -32.415736, 0.1, 'height');
   near(s.lit * 100, 6.23528, 0.5, 'lit per cent');
+});
+
+test('Stars with a corrected distance are drawn in 3D where their page says they are', () => {
+  const bin = readFileSync('public/data/deep/stars.bin');
+  for (const [slug, m] of Object.entries(MODERN)) {
+    const s = pageStars().find((p) => p.slug === slug); if (!s) throw new Error(`${slug}: no star page`);
+    const r = Math.hypot(bin.readFloatLE(s.index * 20), bin.readFloatLE(s.index * 20 + 4), bin.readFloatLE(s.index * 20 + 8));
+    near(r, m.pc, m.pc * 0.002, `${slug} 3D distance in parsecs`);
+  }
 });
 
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');
