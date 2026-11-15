@@ -5,8 +5,8 @@ export interface WorldPage {
   lead: string;
   /** Only where a figure is published for it. */
   temperature?: { value: string; note: string };
-  /** The lead picture. Where it is a close view, `globe` (the whole world) leads and this moves into the first chapter. */
-  picture: { src: string; alt: string; caption: string; width: number; height: number };
+  /** The lead picture, where a photograph can be shown under our licence rule; a page without one leads with its drawings. Where it is a close view, `globe` (the whole world) leads and this moves into the first chapter. */
+  picture?: { src: string; alt: string; caption: string; width: number; height: number };
   globe?: { src: string; alt: string; caption: string; width: number; height: number };
   chapters: { title: string; paras: string[] }[];
   sources: { label: string; url: string }[];
@@ -1320,6 +1320,198 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'ESA/Hubble, Makemake and its moon', url: 'https://esahubble.org/images/opo1618b/' },
       { label: 'NASA, Makemake', url: 'https://science.nasa.gov/dwarf-planets/makemake/' },
       { label: 'Ortiz and others 2012, Nature 491, 566', url: 'https://doi.org/10.1038/nature11597' },
+    ],
+  },
+  eris: {
+    lead: 'The most massive dwarf planet known, a little smaller than Pluto across but about a quarter heavier, with one moon.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it, so all that is known comes from telescopes. Eris is about 2,330 km across, a size measured well when it passed in front of a star in 2010. Its surface is very bright, reflecting nearly all the light that falls on it.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is heavy for its size, so it must be mostly rock with an icy coat. The surface is frozen methane, which may form a thin frost as Eris moves away from the Sun. Its mass is about 27 per cent more than Pluto’s.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Mike Brown, Chad Trujillo and David Rabinowitz found it in pictures taken on 21 October 2003 at the Palomar Observatory in California. It was not noticed until 2005, and the discovery was announced on 29 July that year. The name, given in 2006, is that of the Greek goddess of discord. Eris was found to be about as big as Pluto, which helped lead the International Astronomical Union to define a dwarf planet in 2006.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'One, Dysnomia, found in 2005 with the Keck telescope in Hawaii. It is named for the daughter of Eris, the spirit of lawlessness.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'How the surface can stay so bright, and what lies under it. Eris takes about 559 years to go round the Sun, on a path tilted about 44 degrees from the plane of the planets, and nothing is on its way there.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Eris', url: 'https://science.nasa.gov/dwarf-planets/eris/' },
+      { label: 'Sicardy and others 2011, Nature 478, 493', url: 'https://doi.org/10.1038/nature10550' },
+    ],
+  },
+  haumea: {
+    lead: 'A dwarf planet shaped like a stretched egg, spinning once in under four hours, with a ring and two moons.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it. Haumea is long and narrow, about twice as long as it is thick, and turns once in about 3.9 hours, one of the fastest spins of any large body known. That fast turn stretched it out. It is bright and white.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its surface is mostly water ice, and it is dense, so the inside is probably mostly rock.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'It was announced in July 2005, and two teams claim to have found it. One was led by Mike Brown in the United States and the other by José Luis Ortiz in Spain, and the credit is still discussed. In 2008 the International Astronomical Union named it a dwarf planet, after the Hawaiian goddess of childbirth.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'Two moons, Hi’iaka and Namaka, found in 2005 and named for children of the goddess. It also has a ring, found in 2017 when Haumea passed in front of a star and the star blinked before and after the body itself. It is the first ring found round a dwarf planet. Several icy bodies on similar paths are thought to be pieces knocked off Haumea long ago.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'What caused its spin and its family of fragments, and how thick the ice is.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Haumea', url: 'https://science.nasa.gov/dwarf-planets/haumea/' },
+      { label: 'Ortiz and others 2017, Nature 550, 219', url: 'https://doi.org/10.1038/nature24051' },
+    ],
+  },
+  sedna: {
+    lead: 'A small, very red world on a path so long that it takes about 11,400 years to go round the Sun once.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'No spacecraft has been near it, and it is too small and far away to show anything but a dot. Sedna is about 1,000 km across. It is among the reddest things in the Solar System.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Its surface probably has a coating of dark, reddish material made from ices changed by sunlight over billions of years, but this is not well known.',
+      ] },
+      { title: 'How it was found and named', paras: [
+        'Mike Brown, Chad Trujillo and David Rabinowitz found it in pictures taken on 14 November 2003 at the Palomar Observatory in California, and announced it in March 2004. It is named for the Inuit goddess of the sea, who is said to live in the cold ocean depths.',
+      ] },
+      { title: 'Its moons, if any', paras: [
+        'None has been found.',
+      ] },
+      { title: 'What is still unknown', paras: [
+        'Why it is where it is. Its path takes it from about 76 times the Earth’s distance from the Sun at its closest, a point it will reach in about 2076, to roughly 900 times as far at its furthest. No known planet can have put it there. One idea is that a passing star pulled it out when the Sun was young, and another is that an unseen planet did. The International Astronomical Union has not formally named it a dwarf planet.',
+      ] },
+    ],
+    sources: [
+      { label: 'Brown, Trujillo and Rabinowitz 2004, Astrophysical Journal 617, 645', url: 'https://doi.org/10.1086/422095' },
+      { label: 'NASA, dwarf planets', url: 'https://science.nasa.gov/dwarf-planets/' },
+    ],
+  },
+  halley: {
+    lead: 'The best-known comet, which comes back about every 76 years and last passed the Sun in 1986.',
+    chapters: [
+      { title: 'Its tail and its head', paras: [
+        'The solid part is about 15 km long and 8 km across, shaped like a peanut, and it is as dark as coal. When it is near the Sun, jets of gas and dust boil off from patches of its surface and make the head and the tail, which can stretch millions of kilometres.',
+      ] },
+      { title: 'Its path round the Sun', paras: [
+        'It goes round the Sun about every 76 years, a little less or more each time because of the pull of the giant planets. It goes round the Sun the opposite way to the planets, and at its furthest it is beyond Neptune. It last passed closest to the Sun on 9 February 1986 and will do so again in July 2061.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It has been seen and written down since at least 240 BC, in Chinese records, and appears in the Bayeux Tapestry for the year 1066. In 1705 Edmond Halley worked out that comets seen in 1531, 1607 and 1682 were one comet and said it would return in 1758. It was seen again on Christmas night that year, after his death, and was named for him.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'Five spacecraft went to it in 1986. The European Giotto passed about 596 km from the nucleus and took the closest pictures. The Soviet Vega 1 and Vega 2 went past at about 8,000 to 9,000 km, and the Japanese Suisei and Sakigake kept further away. No spacecraft has gone back.',
+      ] },
+      { title: 'When to see it', paras: [
+        'It is nowhere near now. It will be back in 2061, and again in about 2134.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, 1P/Halley', url: 'https://science.nasa.gov/solar-system/comets/1p-halley/' },
+      { label: 'NASA NSSDC, Giotto', url: 'https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1985-056A' },
+    ],
+  },
+  apophis: {
+    lead: 'An asteroid about 340 m wide that will pass closer to the Earth than our weather satellites on 13 April 2029, and will not hit.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 340 m across, a little wider than the Eiffel Tower is tall. Radar and telescopes show a stony, fairly bright body, but no spacecraft has been near it yet.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is probably a stony rock, of the kind called S-type, but its exact makeup is not well known.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Roy Tucker, David Tholen and Fabrizio Bernardi found it in June 2004 at Kitt Peak in Arizona. It is named for the Egyptian serpent of chaos, a figure who fought the sun god each night.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'None yet. The American OSIRIS-APEX spacecraft, which first visited Bennu, is being sent to it, arriving in June 2029, two months after the flyby, to see what the Earth’s pull did to it.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. In December 2004 early figures gave about a 3 per cent chance of a hit in 2029, which put it at level 4 on the Torino scale, the highest rating any object has had. More observations ruled that out, and in 2021 radar showed it will not hit for at least a hundred years. On 13 April 2029 it will pass about 32,000 km above the Earth, closer than the satellites which hover over one spot, and it will be visible without a telescope from Europe and Africa.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Apophis', url: 'https://science.nasa.gov/solar-system/asteroids/apophis/' },
+      { label: 'NASA, OSIRIS-APEX', url: 'https://science.nasa.gov/mission/osiris-apex/' },
+    ],
+  },
+  arrokoth: {
+    lead: 'A small icy world in the Kuiper belt, shaped like two joined balls, the most distant place a spacecraft has looked at closely.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 36 km long and is made of two lobes joined at a narrow neck, like a snowman or a peanut. The larger lobe is about one and a half times as long as the smaller. It is red, with brighter patches near the neck.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is made of ice and dark material rich in carbon, and the red colour probably comes from methanol ice changed by sunlight. It has barely changed since it formed.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It was found on 26 June 2014 in a search with the Hubble Space Telescope, made to find a target for New Horizons after Pluto. Before it had a name it was nicknamed Ultima Thule. In 2019 it was given the name Arrokoth, which means sky in the Powhatan and Algonquian languages of the Chesapeake Bay region.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'New Horizons flew past on 1 January 2019, at a distance of about 3,500 km, about 6.6 billion km from the Earth. It showed that the two lobes had joined gently, at walking pace, rather than crashing. It is the most distant object visited by any spacecraft.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. It is on a near-circular path, about 44 times the Earth’s distance from the Sun, and stays in the Kuiper belt.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, New Horizons', url: 'https://science.nasa.gov/mission/new-horizons/' },
+      { label: 'McKinnon and others 2020, Science 367', url: 'https://doi.org/10.1126/science.aay6620' },
+    ],
+  },
+  itokawa: {
+    lead: 'A small, peanut-shaped asteroid, the first one from which a spacecraft brought grains of rock back to Earth.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 535 m long and 209 m thick, shaped like a sweet potato or a sea otter, and is covered in boulders. There is a smooth, flat area in one low part, where fine gravel has gathered.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is a rubble pile, a loose heap of rock held together by its own weak pull rather than being one solid piece, with about 40 per cent empty space. The rock is a stony type found in many meteorites.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It was found in September 1998 by the LINEAR survey in New Mexico. It is named for Hideo Itokawa, who started Japan’s rocket programme.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'The Japanese Hayabusa spacecraft reached it in September 2005, and touched down in November. Many things went wrong, but it came back to Earth in June 2010 with more than 1,500 tiny grains of Itokawa, the first ever returned from an asteroid. They showed that stony meteorites do come from asteroids like this.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'It is one of the asteroids that cross the path of the Earth, but it is not on course to hit it, and its path is checked as part of the usual tracking.',
+      ] },
+    ],
+    sources: [
+      { label: 'Fujiwara and others 2006, Science 312, 1330', url: 'https://doi.org/10.1126/science.1125841' },
+      { label: 'Nakamura and others 2011, Science 333, 1113', url: 'https://doi.org/10.1126/science.1207758' },
+    ],
+  },
+  ryugu: {
+    lead: 'A dark, spinning-top-shaped asteroid, about a kilometre wide, from which a spacecraft brought back 5.4 g of rock.',
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'It is about 1 km wide, shaped like a spinning top with a ridge round the middle, and is covered in boulders. It is one of the darkest things in the Solar System, reflecting only a few per cent of the light that falls on it.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'It is a rubble pile of carbon-rich rock, with a lot of empty space inside. Samples brought back contain water locked in minerals, more than 20 kinds of amino acids, and uracil, one of the building blocks of RNA. These are made without life, but they show that the materials needed for it were around.',
+      ] },
+      { title: 'How it was found', paras: [
+        'It was found in May 1999 by the LINEAR survey in New Mexico. It is named for the undersea palace of a Japanese folktale, in which a fisherman visits it and brings back a box.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'The Japanese Hayabusa2 spacecraft arrived in June 2018 and dropped small landers. It touched down in February 2019, then fired a copper bullet to make a crater and touched down again in July to collect rock from beneath the surface. The capsule landed in Australia on 6 December 2020 with about 5.4 g of rock and dust.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'Its path crosses the Earth’s, but it is not on course to hit it, and its path is checked as part of the usual tracking.',
+      ] },
+    ],
+    sources: [
+      { label: 'JAXA, Hayabusa2', url: 'https://global.jaxa.jp/projects/sas/hayabusa2/' },
+      { label: 'Yada and others 2022, Nature Astronomy 6, 214', url: 'https://doi.org/10.1038/s41550-021-01550-6' },
     ],
   },
 };

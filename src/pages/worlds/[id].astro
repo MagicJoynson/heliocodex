@@ -103,8 +103,18 @@ const parCx = parEdge - parR;
 const meR = Math.max(1.2, rMe * sk), meCx = parEdge + 50 + meR;
 const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 // the record leads with the whole world; a close view moves into the first chapter
-const lead = page ? (page.globe ?? page.picture) : null;
-const closeup = page?.globe ? page.picture : null;
+const lead = page ? (page.globe ?? page.picture ?? null) : null;
+const closeup = page?.globe ? (page.picture ?? null) : null;
+// a body that is not a moon is drawn beside our Moon when it is big enough to compare, and beside a named length when it is not
+const sized = !isMoon && rMe > 0;
+const bigOne = sized && rMe >= 100;
+const D2 = rMe * 2;
+const REF = D2 < 1.5 ? { name: 'The Shard, 310 m tall', km: 0.31, up: true } : D2 < 20 ? { name: 'Mount Everest, 8.8 km high', km: 8.8, up: true } : { name: 'Strait of Dover, 34 km', km: 34, up: false };
+const sk2 = bigOne ? 70 / Math.max(rMe, MOON_KM) : 70 / Math.max(rMe, REF.km / 2);
+const r2 = Math.max(1.2, rMe * sk2), c2 = 90;
+const refPx = REF.km * sk2;
+const bx = c2 + r2 + 70; // where the length or the Moon sits
+const moonR2 = MOON_KM * sk2;
 ---
 <Reading title={(b.kind === 'comet' && /comet/i.test(b.name) ? `${b.name}: orbit and facts` : `${b.name}: ${lowerKind}`).replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
   <article class="rec world-record">
@@ -127,7 +137,7 @@ const closeup = page?.globe ? page.picture : null;
     </section>
     <section class="row wide wo-draw">
       <div class="hang"><h2>{isMoon ? 'Its path and size' : 'Its path'}</h2></div>
-      <div class:list={['draw-pair', { one: !isMoon }]}>
+      <div class:list={['draw-pair', { one: !isMoon && !sized }]}>
       <figure class="wo-orbit">
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
           <defs><clipPath id="frame"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
@@ -161,6 +171,24 @@ const closeup = page?.globe ? page.picture : null;
               {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
             </svg>
             <figcaption>{b.name}, {cmp ? 'our Moon and ' : ''}{nameOf(b.parent)}, drawn to one scale from their measured sizes, as plain discs.{parR > 150 && <> At this scale {nameOf(b.parent)} is so large that only a gently curving stretch of its edge fits.</>}</figcaption>
+          </figure>
+        )}
+        {sized && (
+          <figure class="wo-size">
+            <svg viewBox={`0 0 600 ${SH}`} role="img" aria-label={`${b.name} drawn to scale beside ${bigOne ? 'our Moon' : REF.name}`}>
+              <defs><radialGradient id="shade2" cx="35%" cy="35%" r="75%"><stop offset="0" stop-color="#d9d3c6" /><stop offset="1" stop-color="#6d685f" /></radialGradient></defs>
+              <circle cx={c2} cy={scy} r={r2} fill="url(#shade2)" />
+              {bigOne
+                ? <circle cx={bx + moonR2} cy={scy} r={moonR2} class="s-moon" />
+                : REF.up
+                  ? <g class="s-bar"><line x1={bx} y1={scy - refPx / 2} x2={bx} y2={scy + refPx / 2} /><line x1={bx - 7} y1={scy - refPx / 2} x2={bx + 7} y2={scy - refPx / 2} /><line x1={bx - 7} y1={scy + refPx / 2} x2={bx + 7} y2={scy + refPx / 2} /></g>
+                  : <g class="s-bar"><line x1={bx} y1={scy} x2={bx + refPx} y2={scy} /><line x1={bx} y1={scy - 7} x2={bx} y2={scy + 7} /><line x1={bx + refPx} y1={scy - 7} x2={bx + refPx} y2={scy + 7} /></g>}
+              <text x={c2} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
+              {bigOne
+                ? <text x={bx + moonR2} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>
+                : <text x={REF.up ? bx + 16 : bx} y={REF.up ? scy + 7 : scy + 34} text-anchor="start" class="s-t">{REF.name}</text>}
+            </svg>
+            <figcaption>{b.name} and {bigOne ? 'our Moon' : REF.name.replace(/^The /, 'the ').replace(/^Strait/, 'the Strait')}, drawn to one scale. {b.name} is drawn as a plain disc from its mean width, {D2 < 1 ? `${fmt(D2 * 1000)} m` : `${fmt(D2)} km`}{bigOne ? '' : ', although it is not round'}.</figcaption>
           </figure>
         )}
       </div>
@@ -218,6 +246,7 @@ const closeup = page?.globe ? page.picture : null;
   /* the two drawings side by side, in boxes of one height */
   .draw-pair:not(.one) svg { height: clamp(12rem, 20vw, 18rem); }
   .wo-size .s-moon { fill: none; stroke: rgba(236,231,220,.55); stroke-dasharray: 3 4; }
+  .wo-size .s-bar line { stroke: rgba(236,231,220,.7); stroke-width: 1.5; }
   .wo-size .s-t { font: 400 20px var(--r-mono); fill: var(--ink-faint); }
   .wo-size .s-t.me { fill: var(--ink); }
   .wo-size figcaption, .wo-orbit figcaption { font: 300 .9rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
