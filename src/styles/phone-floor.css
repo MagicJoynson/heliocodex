@@ -15,3 +15,11 @@
   .sky-hint, .sky-bar button, .pop summary span, .pop-body button, .go3d, .unit, .val, .ruler .more a, .tag, .src, .print-button, .moons th, .moons .go a, .fit,
   .age label, .age button, .letter h3, .soon li span, .also, .d-badge span, .m-item small, .p-years, .names dt, .along a.a-map { font-size: .8125rem !important; }
 }
+
+/* Tap floor: small links in dense lists and charts get a hit area of at least 24 px high without moving anything. */
+@media (max-width: 700px) {
+  .wm-vl li > a, .wm-v li > a, .vl-moons a, .wp-moons a, .atlas-toc a, .go3d, .moons .go a { position: relative; }
+  .wm-vl li > a::after, .wm-v li > a::after, .vl-moons a::after, .wp-moons a::after, .atlas-toc a::after, .go3d::after, .moons .go a::after {
+    content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 24px; transform: translateY(-50%);
+  }
+}
