@@ -790,7 +790,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like', paras: [
-        'Eros is shaped like a bent loaf, about 34 km long and 11 km wide, and it turns end over end every five hours and 16 minutes. A broad dip called Himeros, the saddle, bends it in the middle. The surface is covered in craters, the largest about 11 km across, and in loose dust and boulders, with a layer of fine dust that has collected in the hollows.',
+        'Eros is shaped like a bent loaf, about 34 km long and 11 km wide, and it turns end over end every five hours and 16 minutes. A broad dip, the saddle, bends it in the middle. The surface is covered in craters, the largest, Himeros, about 11 km across, and in loose boulders and a layer of fine dust.',
         'NEAR Shoemaker also found that the dust is not evenly spread. It has settled in pools in the low places, with flat floors, and the high ground is scoured clean.',
       ] },
       { title: 'What it is made of', paras: [
@@ -856,7 +856,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like', paras: [
-        'Gaspra is about 18 km long and 9 km wide, and angular, with flat faces and a few shallow dents. It has fewer craters than Ida, which means that it is younger, perhaps a few hundred million years old. Grooves and ridges run across it.',
+        'Gaspra is about 18 km long and 9 km wide, and angular, with flat faces and a few shallow dents. It has fewer craters than Ida, which means that it is younger, perhaps tens to a few hundred million years old. Grooves and ridges run across it.',
       ] },
       { title: 'What it is made of', paras: [
         'Gaspra is a stony asteroid and is thought to belong to the Flora family. It goes round the Sun in 3.3 years at 2.2 au, in the inner part of the main belt, in a path that is noticeably stretched.',
@@ -872,7 +872,6 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       ] },
     ],
     sources: [
-      { label: 'NASA, 951 Gaspra', url: 'https://science.nasa.gov/solar-system/asteroids/951-gaspra/' },
       { label: 'NASA, Galileo', url: 'https://science.nasa.gov/mission/galileo/' },
       { label: 'NASA Photojournal, PIA00118', url: 'https://images.nasa.gov/details/PIA00118' },
     ],
@@ -891,7 +890,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
         'NEAR Shoemaker saw only about 60 per cent of the surface, the rest being in darkness during the flyby.',
       ] },
       { title: 'What it is made of', paras: [
-        'Measuring how Mathilde pulled the spacecraft as it passed gave its mass, and so its density: about 1.3 times that of water, which is about half what the dark, carbon-rich rock it seems to be made of would weigh if it were solid. About half of Mathilde must therefore be empty space. It is a rubble pile, held together only by its own gravity.',
+        'Measuring how Mathilde pulled the spacecraft as it passed gave its mass, and so its density: about 1.3 times that of water, which is about half what the dark, carbon-rich rock it seems to be made of would weigh if it were solid. About half of Mathilde must therefore be empty space. It is probably a rubble pile, held together only by its own gravity.',
         'It turns very slowly, once every 17.4 days, one of the slowest-spinning asteroids known. It goes round the Sun in 4.3 years at 2.65 au.',
       ] },
       { title: 'How it was found', paras: [
@@ -919,7 +918,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'What it looks like', paras: [
-        'Didymos is a rounded, spinning-top-shaped rock about 780 m across, which turns once every 2.3 hours. It has a small moon, Dimorphos, about 160 m wide. The surface of Dimorphos, seen by DART, is a heap of boulders with hardly any fine dust, and Didymos is probably much the same.',
+        'Didymos is a rounded, spinning-top-shaped rock about 780 m across, which turns once every 2.3 hours. It has a small moon, Dimorphos, about 160 m wide. The surface of Dimorphos, seen by DART, is a heap of boulders with hardly any fine dust.',
       ] },
       { title: 'What it is made of', paras: [
         'Both are loose piles of rock, held together by their weak gravity. They go round the Sun in 2.1 years, in a path that reaches from about the Earth’s orbit to well beyond Mars’s.',
@@ -929,7 +928,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       ] },
       { title: 'Spacecraft that have visited', paras: [
         'NASA’s DART spacecraft flew into Dimorphos at about 6 km a second on 26 September 2022, to find out whether a hit could change an asteroid’s path. It shortened the moon’s orbit round Didymos by 32 minutes, from about 11 hours 55 minutes to about 11 hours 23 minutes, a bigger change than the mission had set as its goal.',
-        'The European Space Agency’s Hera spacecraft, launched in October 2024, is due at the pair at the end of 2026 to measure the crater and the masses of the two bodies.',
+        'The European Space Agency’s Hera spacecraft, launched in October 2024, is due at the pair in November 2026 to measure the crater and the masses of the two bodies.',
       ] },
       { title: 'Could it hit the Earth?', paras: [
         'Neither Didymos nor Dimorphos is a danger. The test was made on a harmless pair so that the result could be measured, and the orbit of Didymos round the Sun was not changed in any way that matters.',
@@ -951,7 +950,7 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
     },
     chapters: [
       { title: 'Its tail and its head', paras: [
-        'The nucleus of Hartley 2 is about 2 km long, shaped like a peanut, with a narrow waist between two rough lobes. The jets that spray from it were found to be driven by carbon dioxide, which turns to gas at a lower temperature than water. They carry out lumps of ice the size of golf balls and bigger, which could be seen as a cloud round the nucleus.',
+        'The nucleus of Hartley 2 is only about 2 km long, shaped like a peanut, with a narrow waist between two rough lobes. The jets that spray from it were found to be driven by carbon dioxide, which turns to gas at a lower temperature than water. They carry out lumps of ice the size of golf balls and bigger, which could be seen as a cloud round the nucleus.',
         'It spins unusually, tumbling as well as turning, and its rotation changes from one orbit to the next.',
       ] },
       { title: 'Its path round the Sun', paras: [
@@ -969,8 +968,8 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       ] },
     ],
     sources: [
-      { label: 'NASA, comet Hartley 2', url: 'https://science.nasa.gov/solar-system/comets/103p-hartley/' },
-      { label: 'NASA, EPOXI', url: 'https://science.nasa.gov/mission/epoxi/' },
+      { label: 'NASA, comet Hartley 2', url: 'https://science.nasa.gov/solar-system/comets/103p-hartley-hartley-2/' },
+      { label: 'NASA, EPOXI', url: 'https://science.nasa.gov/mission/deep-impact-epoxi/' },
       { label: 'Hartogh and others, Nature 478 (2011): ocean-like water in comet Hartley 2', url: 'https://www.nature.com/articles/nature10519' },
     ],
   },
