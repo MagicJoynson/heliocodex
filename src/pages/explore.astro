@@ -369,9 +369,9 @@ import { sections } from '../lib/nav';
         ['Earth and Mars: moons', [['moon', 'The Moon'], ['phobos', 'Phobos'], ['deimos', 'Deimos']]],
         ['Jupiter’s moons', [['io', 'Io'], ['europa', 'Europa'], ['ganymede', 'Ganymede'], ['callisto', 'Callisto']]],
         ['Saturn’s moons', [['mimas', 'Mimas'], ['enceladus', 'Enceladus'], ['tethys', 'Tethys'], ['dione', 'Dione'], ['rhea', 'Rhea'], ['titan', 'Titan'], ['hyperion', 'Hyperion'], ['iapetus', 'Iapetus'], ['phoebe', 'Phoebe']]],
-        ['Uranus and Neptune: moons', [['miranda', 'Miranda'], ['ariel', 'Ariel'], ['umbriel', 'Umbriel'], ['titania', 'Titania'], ['oberon', 'Oberon'], ['triton', 'Triton'], ['proteus', 'Proteus'], ['nereid', 'Nereid']]],
-        ['Dwarf planets', [['ceres', 'Ceres'], ['pluto', 'Pluto'], ['charon', 'Charon'], ['haumea', 'Haumea'], ['makemake', 'Makemake'], ['eris', 'Eris'], ['sedna', 'Sedna']]],
-        ['Asteroids and comets', [['vesta', 'Vesta'], ['eros', 'Eros'], ['bennu', 'Bennu'], ['halley', 'Halley’s Comet']]],
+        ['Uranus and Neptune: moons', [['miranda', 'Miranda'], ['ariel', 'Ariel'], ['umbriel', 'Umbriel'], ['titania', 'Titania'], ['oberon', 'Oberon'], ['puck', 'Puck'], ['triton', 'Triton'], ['proteus', 'Proteus'], ['nereid', 'Nereid']]],
+        ['Dwarf planets and their moons', [['ceres', 'Ceres'], ['pluto', 'Pluto'], ['charon', 'Charon'], ['haumea', 'Haumea'], ['makemake', 'Makemake'], ['eris', 'Eris'], ['dysnomia', 'Dysnomia'], ['gonggong', 'Gonggong'], ['quaoar', 'Quaoar'], ['orcus', 'Orcus'], ['vanth', 'Vanth'], ['sedna', 'Sedna']]],
+        ['Asteroids and comets', [['vesta', 'Vesta'], ['juno', 'Juno'], ['psyche', 'Psyche'], ['eros', 'Eros'], ['bennu', 'Bennu'], ['hektor', 'Hektor'], ['chiron', 'Chiron'], ['halley', 'Halley’s Comet'], ['encke', 'Encke']]],
         ['Further out', [['solar-system', 'The whole Solar System'], ['oort-cloud', 'The Oort cloud'], ['neighbourhood', 'Our neighbour stars'], ['night-sky', 'Every star you can see'], ['pleiades', 'The Pleiades'], ['orion-nebula', 'The Orion Nebula'], ['milky-way', 'The Milky Way'], ['local-group', 'The Local Group'], ['cosmic-web', 'The cosmic web'], ['cmb', 'The oldest light']]],
       ];
       const list = $('goto-list');
@@ -409,13 +409,14 @@ import { sections } from '../lib/nav';
       };
       $('goto-btn').addEventListener('click', () => { showStars(); });
       find.addEventListener('input', () => {
-        const q = find.value.trim().toLowerCase();
+        const norm = (t: string) => t.toLowerCase().replace(/['‘’]/g, '’');
+        const q = find.value.trim().toLowerCase().replace(/['‘’]/g, '’');
         results.replaceChildren();
         for (const g of groups) g.hidden = !!q;
         list.querySelectorAll<HTMLElement>('.goto-famous, .goto-famous + .goto-row').forEach((e) => { e.hidden = !!q; });
         results.hidden = !q;
         if (!q) return;
-        const hits = all().filter(([, n]) => n.toLowerCase().includes(q)).sort((a, b) => Number(!a[1].toLowerCase().startsWith(q)) - Number(!b[1].toLowerCase().startsWith(q))).slice(0, 12);
+        const hits = all().filter(([, n]) => norm(n).includes(q)).sort((a, b) => Number(!norm(a[1]).startsWith(q)) - Number(!norm(b[1]).startsWith(q))).slice(0, 12);
         for (const [id, n] of hits) { const b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.addEventListener('click', () => { shutPops(); find.value = ''; find.dispatchEvent(new Event('input')); goTo(id); }); results.appendChild(b); }
         $('said').textContent = hits.length ? `${hits.length} ${hits.length === 1 ? 'place' : 'places'} found.` : 'Nothing found.';
         if (!hits.length) { const m = document.createElement('p'); m.className = 'goto-h'; m.textContent = 'Nothing by that name.'; results.appendChild(m); }
