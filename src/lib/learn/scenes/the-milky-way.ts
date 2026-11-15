@@ -1,8 +1,7 @@
 /**
  * Pictures for the lesson "The Milky Way". The sizes and distances are the ones the lesson gives:
- * a disc about 100,000 light years across and 1,000 thick, the Sun about 27,000 light years from
- * the centre going round once in about 230 million years, the Magellanic Clouds about 170,000 and
- * 210,000 light years away and Andromeda about 2.5 million. The shape of the bulge, and the stars
+ * a disc about 100,000 light years across and 1,000 thick, and the Sun about 27,000 light years from
+ * the centre going round once in about 230 million years. The shape of the bulge, and the stars
  * dotted about, are drawings of the idea and not a map.
  */
 import { type Scene, SOFT, ACCENT, FAINT, clamp, label, stars, rng } from '../stage';
@@ -59,24 +58,5 @@ const lap: Scene = {
   },
 };
 
-// ---- 3. how far, on a scale that multiplies
-const NEAR: [string, number, string][] = [['Sun to the centre', 27000, '#ffd98a'], ['Across the disc', 100000, '#e9c48a'], ['Large Magellanic Cloud', 170000, '#9fc0e6'], ['Small Magellanic Cloud', 210000, '#9fc0e6'], ['Andromeda', 2500000, '#d0584a']];
-const chart: Scene = {
-  caption: 'Some distances from the lesson, in light years, each marked by a dot, on a scale where each step to the right is ten times the one before. The lines are only guides, and their lengths are not in proportion. The Large and Small Magellanic Clouds are the two largest of the small galaxies that orbit the Milky Way, and Andromeda is the nearest large galaxy.',
-  stillAt: 5,
-  draw({ ctx, w, h, t, say }) {
-    backdrop(ctx, w, h, 0.25);
-    const narrow = w < 520, x0 = w * (narrow ? 0.44 : 0.34), x1 = w * (narrow ? 0.9 : 0.94), y0 = h * 0.16, step = h * 0.11, lo = Math.log10(10000), hi = Math.log10(10000000), X = (v: number) => x0 + ((Math.log10(v) - lo) / (hi - lo)) * (x1 - x0), k = clamp(t / 3, 0, 1);
-    for (const [v, name] of [[10000, '10,000'], [100000, '100,000'], [1000000, '1 million'], [10000000, '10 million']] as [number, string][]) { line(ctx, [X(v), y0 - 10, X(v), y0 + step * 5], 'rgba(236,231,220,.18)'); label(ctx, name, X(v), y0 + step * 5 + 14, { align: 'center', colour: FAINT, size: 9 }); }
-    NEAR.forEach(([name, v, col], i) => {
-      const y = y0 + i * step + step * 0.3, len = (X(v) - x0) * k;
-      label(ctx, name, x0 - 10, y, { align: 'right', colour: SOFT, size: 10 });
-      line(ctx, [x0, y, x0 + len, y], 'rgba(236,231,220,.25)'); dot(ctx, x0 + len, y, 6, col);
-      if (k > 0.95) label(ctx, v.toLocaleString('en-GB'), x0 + len + 12, y, { align: 'left', colour: SOFT, size: 10 });
-    });
-    label(ctx, 'Light years', x1, y0 + step * 5 + 32, { align: 'right', colour: FAINT, size: 9 });
-    say('Our nearest big neighbour is far outside the disc', 'Andromeda is twenty-five disc widths away');
-  },
-};
-
-export const scenes: Scene[] = [lens, lap, chart];
+// one picture to each step of the first look: its paragraphs and photographs, in order
+export const scenes: Scene[] = [lens, lens, lens, lap, lens, lap];
