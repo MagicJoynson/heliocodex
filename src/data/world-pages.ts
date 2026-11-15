@@ -780,4 +780,229 @@ export const WORLD_PAGES: Record<string, WorldPage> = {
       { label: 'NASA Photojournal, PIA12748', url: 'https://images.nasa.gov/details/PIA12748' },
     ],
   },
+
+  eros: {
+    lead: 'A long, peanut-shaped asteroid that passes inside the orbit of Mars, and the first asteroid that a spacecraft orbited and then landed on.',
+    picture: {
+      src: '/img/learn/eros-near-2000.jpg', width: 760, height: 838,
+      alt: 'A grey, elongated, cratered rock with a saddle-shaped dip in the middle, lit from the right against black.',
+      caption: '<b>A picture made from photographs.</b> The northern half of Eros, put together from pictures taken by NASA’s NEAR Shoemaker spacecraft in 2000. The dip in the middle is the saddle. Credit: NASA/JPL/JHUAPL.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Eros is shaped like a bent loaf, about 34 km long and 11 km wide, and it turns end over end every five hours and 16 minutes. A broad dip, the saddle, bends it in the middle. The surface is covered in craters, the largest, Himeros, about 11 km across, and in loose boulders and a layer of fine dust.',
+        'NEAR Shoemaker also found that the dust is not evenly spread. It has settled in pools in the low places, with flat floors, and the high ground is scoured clean.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Eros is made of rock, a stony asteroid of the kind that is common among the near-Earth asteroids. It is one of the largest of them. It is not a pile of rubble, as some asteroids are: its ridges and grooves run across the whole body, which suggests that it is one solid piece, cracked but not shattered.',
+        'It takes 1.76 years to go round the Sun, at an average of 1.46 au, in a path stretched enough to take it from just outside the Earth’s orbit to a little beyond Mars’s.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Gustav Witt in Berlin and Auguste Charlois in Nice found it independently on the same night, 13 August 1898. It was the first near-Earth asteroid to be found. It was named after the Greek god of love.',
+        'Because it comes close, Eros was one of the best ways to measure the distance to the Sun. Astronomers watched it in 1900 to 1901 and again in 1930 to 1931 and used the shift in its position against the stars to work out the size of the Solar System.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s NEAR Shoemaker spacecraft flew past Eros in December 1998, went into orbit round it on 14 February 2000, and spent a year mapping it. On 12 February 2001 it came down gently on the surface, though it was never designed to land, and went on sending signals for about two weeks. It was the first landing on an asteroid.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'Not in the foreseeable future. Eros’s orbit does not cross the Earth’s, and it never comes closer than about 22 million km, which is about 57 times the distance to the Moon.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, 433 Eros', url: 'https://science.nasa.gov/solar-system/asteroids/433-eros/' },
+      { label: 'NASA, NEAR Shoemaker', url: 'https://science.nasa.gov/mission/near-shoemaker/' },
+      { label: 'NASA Photojournal, PIA02923', url: 'https://images.nasa.gov/details/PIA02923' },
+    ],
+  },
+
+  ida: {
+    lead: 'A long, battered asteroid in the main belt, and the first asteroid found to have a moon of its own.',
+    picture: {
+      src: '/img/learn/ida-dactyl-galileo.jpg', width: 580, height: 400,
+      alt: 'A large, elongated, cratered rock in a tawny colour with a tiny round moon to its right, and a small boxed inset showing the same rock in grey.',
+      caption: '<b>A photograph, with the colours stretched.</b> Ida and its small moon Dactyl, from NASA’s Galileo spacecraft in 1993. The colours are enhanced to show differences in the ground, and the small inset is Ida in more natural light. Credit: NASA/JPL/USGS.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Ida is about 60 km long and 25 km wide, shaped like a lumpy loaf, and thickly covered in craters. Its surface is a layer of loose dust and broken rock, and a few huge boulders lie on it. It spins once every 4.6 hours.',
+        'Its crater count, which grows with age, suggests that its surface is a billion years old or more, older than that of Gaspra.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Ida is a stony asteroid and belongs to the Koronis family, a group of asteroids that are probably the pieces of a larger body broken up by a collision long ago. It goes round the Sun in 4.8 years at 2.86 au, in the main belt.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The Austrian astronomer Johann Palisa found it on 29 September 1884 in Vienna. It is named after Mount Ida in Crete, where, in Greek myth, a nymph named Ida nursed the infant Zeus.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Galileo spacecraft, on its way to Jupiter, passed Ida on 28 August 1993 at about 2,400 km. Months later, Ann Harch, a member of the Galileo imaging team, spotted a small object beside Ida in the pictures. It was Dactyl, a moon about 1.4 km across, the first confirmed moon of an asteroid. It is named after the Dactyls, mythical beings who lived on Mount Ida.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. Ida stays in the main belt, well beyond Mars.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, 243 Ida', url: 'https://science.nasa.gov/solar-system/asteroids/243-ida/' },
+      { label: 'NASA, Galileo', url: 'https://science.nasa.gov/mission/galileo/' },
+      { label: 'NASA Photojournal, PIA00333', url: 'https://images.nasa.gov/details/PIA00333' },
+    ],
+  },
+
+  gaspra: {
+    lead: 'A small, angular asteroid in the main belt, and the first asteroid that a spacecraft photographed close up.',
+    picture: {
+      src: '/img/learn/gaspra-galileo-1991.jpg', width: 1024, height: 1024,
+      alt: 'A grey, angular, lumpy rock with a few craters and flat faces, lit from the left against black.',
+      caption: '<b>A picture made from photographs.</b> Gaspra from NASA’s Galileo spacecraft on 29 October 1991, a mosaic of two pictures taken from 5,300 km about ten minutes before the closest approach. Credit: NASA/JPL.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Gaspra is about 18 km long and 9 km wide, and angular, with flat faces and a few shallow dents. It has fewer craters than Ida, which means that it is younger, perhaps tens to a few hundred million years old. Grooves and ridges run across it.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Gaspra is a stony asteroid and is thought to belong to the Flora family. It goes round the Sun in 3.3 years at 2.2 au, in the inner part of the main belt, in a path that is noticeably stretched.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The Russian astronomer Grigory Neujmin found it on 30 July 1916 at the Simeiz Observatory in Crimea. It is named after the resort town of Gaspra, on the Crimean coast.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Galileo spacecraft, on its way to Jupiter, passed Gaspra on 29 October 1991 at about 1,600 km. It was the first close look at any asteroid. Galileo’s main antenna had failed to open, so the pictures came back slowly over the following year.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. Gaspra stays in the main belt, between Mars and Jupiter.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Galileo', url: 'https://science.nasa.gov/mission/galileo/' },
+      { label: 'NASA Photojournal, PIA00118', url: 'https://images.nasa.gov/details/PIA00118' },
+    ],
+  },
+
+  mathilde: {
+    lead: 'A very dark, very light-weight asteroid, 52 km across, which has been hit by craters nearly as large as itself and has not broken.',
+    picture: {
+      src: '/img/learn/mathilde-near-1997.jpg', width: 640, height: 398,
+      alt: 'Two views of a dark, rounded and craggy rock, the left one partly in shadow and the right one lit from the left.',
+      caption: '<b>Two photographs.</b> Mathilde from NASA’s NEAR Shoemaker spacecraft, on its flyby of 27 June 1997. Only part of the asteroid was lit and seen. Credit: NASA/JPL/JHUAPL.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Mathilde is as black as charcoal, and covered in craters, several nearly as wide as the asteroid’s own radius, the biggest about 33 km across. A hit that large would be expected to smash a solid body to pieces. That Mathilde survived suggests that it is loose and soft inside, so that an impact is absorbed and not passed through.',
+        'NEAR Shoemaker saw only about 60 per cent of the surface, the rest being in darkness during the flyby.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Measuring how Mathilde pulled the spacecraft as it passed gave its mass, and so its density: about 1.3 times that of water, which is about half what the dark, carbon-rich rock it seems to be made of would weigh if it were solid. About half of Mathilde must therefore be empty space. It is probably a rubble pile, held together only by its own gravity.',
+        'It turns very slowly, once every 17.4 days, one of the slowest-spinning asteroids known. It goes round the Sun in 4.3 years at 2.65 au.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Johann Palisa found it on 12 November 1885 in Vienna and named it after Mathilde Loewy, the wife of Moritz Loewy, an astronomer at the Paris Observatory.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s NEAR Shoemaker spacecraft, on its way to Eros, passed Mathilde on 27 June 1997 at about 1,200 km. It was the first visit to a dark, carbon-rich asteroid.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'No. Mathilde stays in the main belt.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, 253 Mathilde', url: 'https://science.nasa.gov/solar-system/asteroids/253-mathilde/' },
+      { label: 'NASA Photojournal, PIA02479', url: 'https://images.nasa.gov/details/PIA02479' },
+    ],
+  },
+
+  didymos: {
+    lead: 'A small double asteroid that passes near the Earth, and the target of the first test in which a spacecraft moved a space rock.',
+    picture: {
+      src: '/img/learn/dimorphos-dart-2-seconds.jpg', width: 1100, height: 1100,
+      alt: 'A grey surface completely covered in sharp-edged boulders and rubble, lit from one side, filling the whole picture.',
+      caption: '<b>A photograph.</b> The surface of Dimorphos, the small moon of Didymos, about two seconds before NASA’s DART spacecraft hit it on 26 September 2022. Credit: NASA/Johns Hopkins APL.',
+    },
+    chapters: [
+      { title: 'What it looks like', paras: [
+        'Didymos is a rounded, spinning-top-shaped rock about 780 m across, which turns once every 2.3 hours. It has a small moon, Dimorphos, about 160 m wide. The surface of Dimorphos, seen by DART, is a heap of boulders with hardly any fine dust.',
+      ] },
+      { title: 'What it is made of', paras: [
+        'Both are loose piles of rock, held together by their weak gravity. They go round the Sun in 2.1 years, in a path that reaches from about the Earth’s orbit to well beyond Mars’s.',
+      ] },
+      { title: 'How it was found', paras: [
+        'Didymos was found in April 1996 by the Spacewatch survey at Kitt Peak in Arizona. Its moon was found in 2003, when astronomers noticed its brightness dipping regularly as the two passed in front of each other. The name is Greek for twin.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s DART spacecraft flew into Dimorphos at about 6 km a second on 26 September 2022, to find out whether a hit could change an asteroid’s path. It shortened the moon’s orbit round Didymos by 32 minutes, from about 11 hours 55 minutes to about 11 hours 23 minutes, a bigger change than the mission had set as its goal.',
+        'The European Space Agency’s Hera spacecraft, launched in October 2024, is due at the pair in November 2026 to measure the crater and the masses of the two bodies.',
+      ] },
+      { title: 'Could it hit the Earth?', paras: [
+        'Neither Didymos nor Dimorphos is a danger. The test was made on a harmless pair so that the result could be measured, and the orbit of Didymos round the Sun was not changed in any way that matters.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, DART', url: 'https://science.nasa.gov/mission/dart/' },
+      { label: 'NASA, DART confirms asteroid moon’s orbit changed (2022)', url: 'https://www.nasa.gov/news-release/nasa-confirms-dart-mission-impact-changed-asteroids-motion-in-space/' },
+      { label: 'ESA, Hera', url: 'https://www.esa.int/Space_Safety/Hera' },
+    ],
+  },
+
+  'hartley-2': {
+    lead: 'A small comet with a peanut-shaped nucleus whose jets are driven by carbon dioxide, and whose water is like the Earth’s.',
+    picture: {
+      src: '/img/learn/comet-hartley-2-epoxi-2010.jpg', width: 509, height: 444,
+      alt: 'A grey, peanut-shaped lump of rock and ice against black, with bright jets spraying from its right-hand end.',
+      caption: '<b>A photograph.</b> The nucleus of comet Hartley 2 from NASA’s EPOXI mission on 4 November 2010, with jets of dust and ice spraying from its ends. Credit: NASA/JPL-Caltech/UMD.',
+    },
+    chapters: [
+      { title: 'Its tail and its head', paras: [
+        'The nucleus of Hartley 2 is only about 2 km long, shaped like a peanut, with a narrow waist between two rough lobes. The jets that spray from it were found to be driven by carbon dioxide, which turns to gas at a lower temperature than water. They carry out lumps of ice the size of golf balls and bigger, which could be seen as a cloud round the nucleus.',
+        'It spins unusually, tumbling as well as turning, and its rotation changes from one orbit to the next.',
+      ] },
+      { title: 'Its path round the Sun', paras: [
+        'Hartley 2 goes round the Sun once every 6.5 years, in a path that carries it from beyond Jupiter’s orbit to just outside the Earth’s. Jupiter’s pull has shaped it, which makes it one of the comets of the Jupiter family.',
+        'Measurements made by the Herschel space telescope in 2011 showed that its water has the same mix of ordinary and heavy hydrogen as the Earth’s oceans. That supports the idea that comets like this one may have brought some of the Earth’s water.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The British-born astronomer Malcolm Hartley found it on 15 March 1986 with the Schmidt telescope at Siding Spring Observatory in New South Wales. Its official name is 103P/Hartley.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s EPOXI mission, the second job of the Deep Impact spacecraft, flew past Hartley 2 on 4 November 2010 at about 700 km and took the pictures shown here.',
+      ] },
+      { title: 'When to see it', paras: [
+        'Hartley 2 is faint. It was easy in binoculars in the autumn of 2010, when it passed close to the Earth, but at most other returns it needs a telescope.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, comet Hartley 2', url: 'https://science.nasa.gov/solar-system/comets/103p-hartley-hartley-2/' },
+      { label: 'NASA, EPOXI', url: 'https://science.nasa.gov/mission/deep-impact-epoxi/' },
+      { label: 'Hartogh and others, Nature 478 (2011): ocean-like water in comet Hartley 2', url: 'https://www.nature.com/articles/nature10519' },
+    ],
+  },
+
+  'wild-2': {
+    lead: 'A comet whose dust was caught by a spacecraft and brought back to the Earth, and whose grains turned out to include minerals made near the young Sun.',
+    picture: {
+      src: '/img/learn/wild-2-stardust-2004.jpg', width: 390, height: 352,
+      alt: 'A pitted, rounded grey lump on a grey background, with steep-sided hollows and rough ground.',
+      caption: '<b>A photograph.</b> The nucleus of comet Wild 2, from the navigation camera of NASA’s Stardust spacecraft on 2 January 2004. Credit: NASA/JPL-Caltech.',
+    },
+    chapters: [
+      { title: 'Its tail and its head', paras: [
+        'The nucleus of Wild 2 is about 4 to 5 km across and, to the surprise of the scientists, rough and full of pits, with steep walls and flat floors, some of them nearly 2 km wide. Fresh comets were expected to be smooth. Jets of dust and gas were seen rising from its surface.',
+      ] },
+      { title: 'Its path round the Sun', paras: [
+        'Wild 2 goes round the Sun in 6.4 years, between about 1.6 au and 5.3 au. Until 1974 it travelled in a much wider path, but a close pass by Jupiter that year bent its orbit inwards, to its present path. That makes it a young visitor to the inner Solar System, so its surface has not yet been worn down by many visits.',
+      ] },
+      { title: 'How it was found', paras: [
+        'The Swiss astronomer Paul Wild found it on 6 January 1978 at Zimmerwald, near Bern, from photographs. It is named for him, and is said “Vilt”. Its official name is 81P/Wild.',
+      ] },
+      { title: 'Spacecraft that have visited', paras: [
+        'NASA’s Stardust spacecraft flew through the cloud of dust round Wild 2 on 2 January 2004, passing about 240 km from the nucleus. It caught grains in a tray of aerogel, a spongelike glass that stops them without destroying them, and sent a capsule back to the Earth. The capsule landed in the Utah desert on 15 January 2006.',
+        'The grains were a surprise. Some were minerals that form only at very high temperatures, so they must have been made close to the young Sun and carried far out to the cold zone where the comet formed. An amino acid, glycine, was also found in the samples.',
+      ] },
+      { title: 'When to see it', paras: [
+        'Wild 2 is always faint, and needs a good telescope even at its brightest.',
+      ] },
+    ],
+    sources: [
+      { label: 'NASA, Stardust', url: 'https://science.nasa.gov/mission/stardust/' },
+      { label: 'NASA, comet Wild 2', url: 'https://science.nasa.gov/solar-system/comets/81p-wild/' },
+      { label: 'NASA Photojournal, PIA05571', url: 'https://images.nasa.gov/details/PIA05571' },
+    ],
+  },
 };
