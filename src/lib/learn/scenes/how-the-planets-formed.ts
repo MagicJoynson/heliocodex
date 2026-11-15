@@ -14,13 +14,14 @@ const room = (w: number) => (w > 760 ? w * 0.34 : 0);
 const DUST = (() => { const r = rng(5); return Array.from({ length: 260 }, () => { const a = r() * TAU, d = 0.12 + Math.pow(r(), 0.8) * 0.88, q = r() * TAU, f = Math.sqrt(r()); return { a, d, cx: Math.cos(q) * f, cy: Math.sin(q) * f, b: r() }; }); })();
 const place = (p: (typeof DUST)[number], k: number, t: number, R: number, cx: number, cy: number) => {
   const a = p.a + t * 0.25 * Math.pow(p.d, -1.5) * 0.12;
-  const x = (1 - k) * p.cx + k * Math.cos(a) * p.d, y = (1 - k) * p.cy + k * Math.sin(a) * p.d * 0.3;
+  const q = t * 0.06, rx = p.cx * Math.cos(q) - p.cy * Math.sin(q), ry = p.cx * Math.sin(q) + p.cy * Math.cos(q);
+  const x = (1 - k) * rx + k * Math.cos(a) * p.d, y = (1 - k) * ry + k * Math.sin(a) * p.d * 0.3;
   return [cx + x * R, cy + y * R] as const;
 };
 
 // ---- 1. one cloud makes the Sun and its planets (the hero): a flat disc with lanes opening
 export const lens: Scene = {
-  caption: 'The Sun and its planets all began as one cloud of gas and dust, about 4.6 billion years ago. A drawing of the idea, not a real picture: a flat disc round the young Sun, with dark lanes where planets gather. The dust is placed at random.',
+  caption: 'The Sun and its planets all began as one cloud of gas and dust, about 4.6 billion years ago. A drawing of the idea, not a real picture: a flat disc round the young Sun, with dark gaps that planets may sweep clear. The dust is placed at random.',
   stillAt: 6,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.25);
@@ -41,7 +42,7 @@ const flatten: Scene = {
     backdrop(ctx, w, h, 0.25);
     const cx = w / 2, cy = h * 0.42, R = Math.min(w * 0.4, h * 0.34), u = (t % 16) / 16, k = ease(clamp((u - 0.1) / 0.6, 0, 1)), fade = 1 - ease(clamp((u - 0.92) / 0.08, 0, 1));
     ctx.globalAlpha = fade;
-    for (const p of DUST) { const [x, y] = place(p, k, t, R, cx, cy); dot(ctx, x, y, 0.8 + p.b * 1.1, `rgba(235,200,160,${0.25 + p.b * 0.5})`); }
+    for (const p of DUST) { const [x, y] = place(p, k, t, R * (1 - 0.2 * k), cx, cy); dot(ctx, x, y, 0.8 + p.b * 1.1, `rgba(235,200,160,${0.25 + p.b * 0.5})`); }
     const s = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 0.16 * (0.4 + 0.6 * k)); s.addColorStop(0, `rgba(255,235,180,${0.2 + 0.8 * k})`); s.addColorStop(1, 'rgba(255,200,100,0)');
     ctx.fillStyle = s; ctx.beginPath(); ctx.arc(cx, cy, R * 0.16, 0, TAU); ctx.fill(); ctx.globalAlpha = 1;
     label(ctx, k < 0.5 ? 'A turning cloud shrinks' : 'It spreads into a flat disc', cx, cy + R + 24, { align: 'center', colour: ACCENT, size: 10 });
@@ -93,9 +94,10 @@ const share: Scene = {
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.2);
     const S = Math.min(w * 0.62, h * 0.4), x0 = (w - S) / 2, y0 = h * 0.14, c = S / 10, k = clamp(t / 3, 0, 1);
-    for (let i = 0; i < 100; i++) { const on = i / 100 < k, last = i === 99; ctx.fillStyle = last ? 'rgba(160,190,230,.9)' : on ? 'rgba(255,214,130,.8)' : 'rgba(236,231,220,.08)'; ctx.fillRect(x0 + (i % 10) * c + 1, y0 + Math.floor(i / 10) * c + 1, c - 2, c - 2); }
+    for (let i = 0; i < 100; i++) { const on = i / 100 < k; ctx.fillStyle = on ? 'rgba(255,214,130,.8)' : 'rgba(236,231,220,.08)'; ctx.fillRect(x0 + (i % 10) * c + 1, y0 + Math.floor(i / 10) * c + 1, c - 2, c - 2); }
+    ctx.fillStyle = 'rgba(160,190,230,.95)'; ctx.fillRect(x0 + S + 8, y0 + S - 4, 4, 4);
     label(ctx, 'More than 99 parts in 100: the Sun', w / 2, y0 + S + 24, { align: 'center', colour: ACCENT, size: 10 });
-    label(ctx, 'The rest: planets, moons, asteroids, comets', w / 2, y0 + S + 44, { align: 'center', colour: SOFT, size: 10 });
+    label(ctx, 'The rest (blue, drawn larger than it is): planets, moons, asteroids, comets', w / 2, y0 + S + 44, { align: 'center', colour: SOFT, size: 10 });
     say('The Sun took nearly everything', 'More than 99 parts in every 100');
   },
 };
@@ -106,11 +108,12 @@ const frost: Scene = {
   stillAt: 5,
   draw({ ctx, w, h, say }) {
     backdrop(ctx, w, h, 0.2);
-    const y = h * 0.34, x0 = w * 0.1, xs = w * 0.4, x1 = w * 0.92, narrow = w < 520;
-    const g = ctx.createRadialGradient(x0 - 20, y, 0, x0 - 20, y, 34); g.addColorStop(0, 'rgba(255,235,180,1)'); g.addColorStop(1, 'rgba(255,200,100,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x0 - 20, y, 34, 0, TAU); ctx.fill();
-    line(ctx, [xs, y - 70, xs, y + 70], 'rgba(236,231,220,.35)');
-    [[0.5, 3], [0.7, 4], [0.85, 4.5]].forEach(([f, r]) => dot(ctx, x0 + (xs - x0) * f, y, r, '#c9a98a'));
+    const y = h * 0.34, x0 = w * 0.14, xs = w * 0.4, x1 = w * 0.92, narrow = w < 600;
+    const g = ctx.createRadialGradient(x0 - 14, y, 0, x0 - 14, y, 28); g.addColorStop(0, 'rgba(255,235,180,1)'); g.addColorStop(1, 'rgba(255,200,100,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x0 - 14, y, 28, 0, TAU); ctx.fill();
+    line(ctx, [xs, y - 90, xs, y + 70], 'rgba(236,231,220,.35)');
+    [[0.3, 3], [0.5, 3.5], [0.7, 4], [0.85, 4.5]].forEach(([f, r]) => dot(ctx, x0 + (xs - x0) * f, y, r, '#c9a98a'));
     [[0.3, 11], [0.6, 14], [0.85, 9]].forEach(([f, r]) => dot(ctx, xs + (x1 - xs) * f, y, r, '#9fc0d8'));
+    label(ctx, 'Frost line', xs, y - 100, { align: 'center', colour: FAINT, size: 9 });
     label(ctx, 'Too hot for ice', (x0 + xs) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
     label(ctx, narrow ? 'Rock and metal: small planets' : 'Rock and metal only: small, rocky planets', (x0 + xs) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
     label(ctx, 'Cold enough for ice too', (xs + x1) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
@@ -121,24 +124,24 @@ const frost: Scene = {
 
 // ---- 7. how anyone knows when: a radioactive clock
 const clock: Scene = {
-  caption: 'A radioactive clock, a drawing of the idea. Radioactive atoms in a meteorite decay at a steady rate, so counting what is left tells how long ago the rock formed. The oldest grains come out at 4,567 million years.',
+  caption: 'A radioactive clock, a drawing of the idea. Radioactive atoms in a meteorite decay at a steady rate, so counting what is left tells how long ago the rock formed. The oldest grains come out at 4,567 million years, when 49 in 100 of the uranium they started with is still there.',
   stillAt: 8,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.2);
-    const cx = w / 2, cy = h * 0.34, R = Math.min(w * 0.22, h * 0.2), k = ease(clamp((t % 14) / 10, 0, 1));
+    const cx = w / 2, cy = h * 0.34, R = Math.min(w * 0.22, h * 0.2), k = 0.51 * ease(clamp((t % 14) / 10, 0, 1));
     ring(ctx, cx, cy, R, 'rgba(236,231,220,.4)', 1.5);
     for (let i = 0; i < 12; i++) { const a = (i / 12) * TAU - Math.PI / 2; line(ctx, [cx + Math.cos(a) * R * 0.88, cy + Math.sin(a) * R * 0.88, cx + Math.cos(a) * R, cy + Math.sin(a) * R], 'rgba(236,231,220,.4)'); }
-    const a = -Math.PI / 2 + k * TAU * 0.9; line(ctx, [cx, cy, cx + Math.cos(a) * R * 0.8, cy + Math.sin(a) * R * 0.8], '#e9c48a', 2);
+    const a = -Math.PI / 2 + k * TAU; line(ctx, [cx, cy, cx + Math.cos(a) * R * 0.8, cy + Math.sin(a) * R * 0.8], '#e9c48a', 2);
     const n = 24; for (let i = 0; i < n; i++) { const left = i / n > k; dot(ctx, cx - R + (i % 8) * (2 * R / 7), cy + R + 26 + Math.floor(i / 8) * 14, 3.2, left ? '#e9c48a' : 'rgba(159,192,216,.7)'); }
-    label(ctx, 'Original atoms left, and what they became', cx, cy + R + 26 + 56, { align: 'center', colour: SOFT, size: 10 });
-    label(ctx, '4,567 million years', cx, cy + R + 26 + 80, { align: 'center', colour: ACCENT, size: 11 });
+    label(ctx, 'Gold: uranium left. Blue: turned into lead', cx, cy + R + 26 + 56, { align: 'center', colour: SOFT, size: 10 });
+    if (k > 0.5) label(ctx, '4,567 million years: 49 in 100 left', cx, cy + R + 26 + 80, { align: 'center', colour: ACCENT, size: 11 });
     say('Radioactive atoms work like a clock', 'The oldest meteorite grains come out at 4,567 million years');
   },
 };
 
 // ---- 8. how long it took
 const time: Scene = {
-  caption: 'How long it took, bars drawn roughly in proportion: the disc of gas lasted only a few million years, and the giant planets had to be finished before it went. The Earth took longer, some tens of millions of years.',
+  caption: 'How long it took, bars drawn very roughly in proportion: the disc of gas lasted only a few million years, and the giant planets had to be finished before it went. The Earth took longer, some tens of millions of years.',
   stillAt: 5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.2);
@@ -149,8 +152,8 @@ const time: Scene = {
   },
 };
 
-// one picture to each step of the first look, in order. The steps are: the cloud; the turning cloud; the dust
-// photograph with sticking grains; the planet photograph with same-way orbits; why the same way; where the
-// cloud came from; why a disc; the Sun took nearly everything; rock and giants; leftovers; how anyone knows
-// when; how long; the common mistakes and their list.
-export const scenes: Scene[] = [lens, flatten, grow, grow, orbits, lens, flatten, share, frost, orbits, clock, time, orbits, orbits];
+// one picture to each step of the first look, in order (thirteen steps; a photograph shares the step of the
+// paragraph after it): the cloud; the turning cloud; the dust photograph with sticking grains; the planet
+// photograph with why the planets go the same way; where the cloud came from; why a disc; the Sun took nearly
+// everything; rock and giants; the leftovers; how anyone knows when; how long; the common mistakes and their list.
+export const scenes: Scene[] = [lens, flatten, grow, orbits, lens, flatten, share, frost, orbits, clock, time, orbits, orbits];
