@@ -35,7 +35,7 @@ export const lens: Scene = {
     const s = Math.min((roomW * 0.92) / (30.07 + Q_FAR), ((roomX ? 0.4 : 0.2) * h) / 30.07), sx = roomX + roomW * 0.04 + 30.07 * s, sy = h * (roomX ? 0.47 : 0.27);
     for (const [name, au] of PLANETS) {
       ring(ctx, sx, sy, au * s, 'rgba(236,231,220,.22)');
-      if (au > 4) label(ctx, name, sx, sy - au * s - 8, { align: 'center', colour: FAINT, size: 10 });
+      if (au > 4 && (roomW > 500 || name === 'Jupiter' || name === 'Neptune')) label(ctx, name, sx, sy - au * s - 8, { align: 'center', colour: FAINT, size: 10 });
     }
     ctx.strokeStyle = 'rgba(233,196,138,.55)'; ctx.lineWidth = 1.2; ctx.beginPath();
     for (let i = 0; i <= 240; i++) { const p = place(i / 240); const x = sx + p.x * s, y = sy + p.y * s; if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
@@ -44,7 +44,7 @@ export const lens: Scene = {
     const years = (t * 5) % PERIOD, p = place(years / PERIOD);
     dot(ctx, sx + p.x * s, sy + p.y * s, 3.2, '#f4efe4');
     label(ctx, `${Math.floor(years)} years after 1986`, roomX + roomW / 2, h * (roomX ? 0.13 : 0.1), { align: 'center', colour: ACCENT });
-    label(ctx, 'Farthest: 35 AU', sx + Q_FAR * s, sy + 18, { align: 'right', colour: SOFT, size: 10 });
+    label(ctx, 'Farthest: 35 AU', sx + Q_FAR * s, sy - 16, { align: 'right', colour: SOFT, size: 10 });
     say('A path from inside Venus’s orbit to beyond Neptune’s', 'It takes about 76 years to go round once');
   },
 };
