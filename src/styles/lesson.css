@@ -14,7 +14,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .l-hero { position: relative; height: calc(100svh - var(--header-h)); min-height: 540px; overflow: hidden; display: grid; align-items: end; }
 .l-hero canvas { position: absolute; inset: 0; }
 .l-hero::after { content: ''; position: absolute; inset: 45% 0 0; background: linear-gradient(rgba(11, 11, 12, 0), rgba(11, 11, 12, .82) 70%, #0b0b0c); pointer-events: none; }
-.l-hero-words { position: relative; z-index: 1; padding: 0 var(--gutter) clamp(56px, 9vh, 104px); max-width: 60rem; pointer-events: none; }
+.l-hero-words { position: relative; z-index: 1; padding: 0 var(--gutter) clamp(56px, 9vh, 104px); max-width: 60rem; margin-left: max(0px, calc((100% - 1180px) / 2)); pointer-events: none; }
 .l-hero-words a { pointer-events: auto; }
 .l-hero .label { margin-bottom: 1.3rem; }
 .l-hero h1 { font: 300 clamp(3rem, 9.5vw, 8rem)/.94 var(--r-serif); letter-spacing: -.03em; margin: 0 0 1.6rem; text-wrap: balance; }

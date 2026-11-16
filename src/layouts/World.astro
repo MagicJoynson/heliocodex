@@ -250,11 +250,9 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       #shade { position: fixed; inset: 0; z-index: 2; pointer-events: none; background: var(--shade); }
       #topfade { position: fixed; z-index: 9; left: 0; right: 0; top: 0; height: 96px; pointer-events: none; background: linear-gradient(to bottom, var(--night-a), transparent); }
       #arrive { position: fixed; inset: 0; z-index: 50; background: #000; opacity: 0; pointer-events: none; transition: opacity 1.4s ease; }
-      .top { position: fixed; z-index: 10; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 var(--pad); }
-      .top .nav-top { text-shadow: 0 1px 10px rgba(0,0,0,.7); }
-      .top .find-q { background-color: rgba(0,0,0,.35); border-color: rgba(255,255,255,.22); }
-      .top .find { --hd-h: 60px; }
-      .top a { color: var(--ink); text-decoration: none; text-shadow: 0 1px 10px rgba(0,0,0,.55); }
+      .top { position: fixed; z-index: 10; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 max(clamp(16px, 4vw, 48px), calc((100% - 1180px) / 2 + clamp(16px, 4vw, 48px))); background: rgba(7,8,13,.9); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(236,231,220,.14); }
+            .top .find { --hd-h: 56px; }
+      .top a { color: var(--ink); text-decoration: none; }
       .wnav { display: flex; gap: clamp(12px, 1.6vw, 22px); }
       .wnav a { color: var(--ink-soft); }
       /* the opening words sit over the brightest view of the planet: a soft shade behind them keeps them readable */
@@ -269,12 +267,12 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .wmenu-h { font: 400 .64rem/1 var(--mono); letter-spacing: .14em; color: var(--ink-faint, #a8a296); margin: 12px 16px 2px; }
       .wnav a[aria-current] { color: var(--ink); }
       .wmenu-btn { display: none; font: 400 .74rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 9px 14px; cursor: pointer; }
-      .wmenu { position: fixed; z-index: 11; top: 58px; right: var(--pad); display: grid; min-width: 15rem; background: rgba(8,8,10,.96); border: 1px solid rgba(255,255,255,.16); padding: 6px 0; font: 400 1.02rem/1 var(--serif, 'Spectral', Georgia, serif); }
+      .wmenu { position: fixed; z-index: 11; top: 54px; right: clamp(16px, 4vw, 48px); display: grid; width: min(22rem, calc(100vw - 32px)); background: rgba(8,8,10,.96); border: 1px solid rgba(255,255,255,.16); padding: 6px 0; font: 400 1.02rem/1 var(--serif, 'Spectral', Georgia, serif); }
       .wmenu-h { text-transform: uppercase; }
       .wmenu[hidden] { display: none; }
-      .top .mark img { display: block; height: 22px; width: auto; filter: drop-shadow(0 1px 8px rgba(0,0,0,.6)); }
+      .top .mark img { display: block; height: 28px; width: auto; }
       .more { position: relative; z-index: 5; background: #0b0b0c; color: #ece7dc; font-family: 'Spectral', Georgia, serif; border-top: 1px solid rgba(236,231,220,.12); }
-      .more-in { max-width: 80rem; margin: 0 auto; padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 64px); }
+      .more-in { max-width: 1180px; margin: 0 auto; padding: clamp(48px, 7vw, 88px) clamp(16px, 4vw, 48px); }
       .more h2::before, .more h2::after { display: none !important; }
       .more h2 { font: 300 clamp(1.8rem, 3vw, 2.6rem)/1.1 'Spectral', Georgia, serif; letter-spacing: -.015em; margin: 0 0 1.4rem; color: #ece7dc; }
       .more-go { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; font: 400 .76rem/1 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }

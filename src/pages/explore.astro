@@ -6,6 +6,7 @@ import '@fontsource/spectral/300-italic.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import Margin from '../components/v2/Margin.astro';
 import SiteNav from '../components/SiteNav.astro';
+import SiteSearch from '../components/SiteSearch.astro';
 const site = Astro.site!;
 const title = 'Explore in 3D · Heliocodex';
 const description = 'Fly through the Solar System at its true size, from beyond Neptune to the ground of Mars, then out past the stars to the oldest light.';
@@ -44,6 +45,7 @@ import { sections } from '../lib/nav';
       <a class="mark" href="/" aria-label="Heliocodex, home"><img src="/brand/heliocodex-lockup.svg" alt="" width="660" height="133" /></a>
       <a class="back-to" id="back-to" href="/" hidden><span aria-hidden="true">←</span> <span id="back-name">Back</span></a>
       <SiteNav path="/explore" />
+      <SiteSearch />
       <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
     </header>
     <nav class="menu" id="menu" aria-label="Main, small screens" hidden>
@@ -769,18 +771,18 @@ import { sections } from '../lib/nav';
       @keyframes lift { from { opacity: 1; } to { opacity: 0; } }
 
       /* ---- the header: the way to every other part of the site, always there */
-      .top { position: fixed; z-index: 40; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 20px; padding: var(--top) var(--gut) 28px; background: linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,0)); pointer-events: none; }
+      .top { position: fixed; z-index: 40; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 max(clamp(16px, 4vw, 48px), calc((100% - 1180px) / 2 + clamp(16px, 4vw, 48px))); background: rgba(7,8,13,.88); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(236,231,220,.14); pointer-events: none; }
       .top > * { pointer-events: auto; }
       .mark { display: block; flex: none; }
-      .mark img { display: block; height: 24px; width: auto; }
+      .mark img { display: block; height: 28px; width: auto; }
       body:not(.in) .mark { opacity: 0; pointer-events: none; }
       .mark { transition: opacity 1s ease .6s; }
       main:focus { outline: none; }
-      .top .site-nav { height: 44px; }
+      .top .site-nav { height: 100%; }
       .top .nav-item:nth-child(n+2) .nav-panel { left: auto; right: 0; }
       .top .nav-panel { transition: none; }
       .menu { max-height: calc(100dvh - var(--top) - 70px); overflow-y: auto; overscroll-behavior: contain; }
-      .top .nav-top { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+      .top { --hd-h: 56px; }
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
       .pages a, .menu-btn { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
       .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
@@ -788,7 +790,7 @@ import { sections } from '../lib/nav';
       .back-to:hover, .back-to:focus-visible { color: var(--warm); border-color: var(--warm); outline: none; }
       .back-to[hidden] { display: none; }
       .menu-btn { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; background: var(--glass); }
-      .menu { position: fixed; z-index: 41; top: calc(var(--top) + 52px); right: var(--gut); width: min(22rem, calc(100vw - 2 * var(--gut))); background: rgba(9,9,11,.96); border: 1px solid var(--line); padding: 6px 0; }
+      .menu { position: fixed; z-index: 41; top: 54px; right: clamp(16px, 4vw, 48px); width: min(22rem, calc(100vw - 2 * 16px)); background: rgba(9,9,11,.96); border: 1px solid var(--line); padding: 6px 0; }
       .menu[hidden] { display: none; }
       .menu a { display: grid; gap: 3px; padding: 12px 18px; text-decoration: none; color: var(--ink); border-bottom: 1px solid rgba(236,231,220,.07); }
       .menu a:last-child { border-bottom: 0; }
