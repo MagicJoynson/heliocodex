@@ -2,7 +2,7 @@
 title: "Licences and credits"
 description: "Who owns what on Heliocodex, the licences behind every picture, map, catalogue, font and tool we use, and how to reuse our work or tell us about a problem."
 lead: "Heliocodex stands on other people's work, most of it given freely to the public by NASA and by astronomers who put their catalogues online. This page says whose each part is, on what terms it is shared and what you may do with it."
-updated: 2026-11-14
+updated: 2026-11-16
 ---
 
 <div class="short-version">
@@ -53,6 +53,8 @@ The photographs on the planet pages are from NASA missions and photographers. Ea
 ## 3. Maps and textures
 
 The maps wrapped round each world in the 3D view are from [Solar System Scope](https://www.solarsystemscope.com/textures/), under the [Creative Commons Attribution 4.0 International licence](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0). Solar System Scope builds them from NASA mission imagery. We changed them: we resized them, converted them to smaller formats and, for Mercury and the Earth's clouds, turned them to greyscale. Under the licence you may share and adapt them, including commercially, if you credit Solar System Scope, link to the licence and say what has been changed. If you take them from us, please do the same, and better still get them from the source.
+
+The maps of the moons Io, Europa, Ganymede, Callisto and Titan are global mosaics made by the [USGS Astrogeology Science Center](https://astrogeology.usgs.gov/) from NASA pictures: Galileo and Voyager for the Jovian moons, and Cassini for Titan (the 2015 Map of Titan, PIA 19658, from the Cassini imaging team). They are works of the United States government and carry no use restrictions, except that Titan's asks for its authors to be cited: the Cassini imaging team (NASA/JPL-Caltech/Space Science Institute). We shrank them to about 1,000 pixels across, filled the gaps near the poles with the average colour of the map, and shifted Io's so that longitude 0 sits at its edge. They are loaded only when someone flies to that moon. The Moon uses the Solar System Scope map above.
 
 The Earth-by-night map is built from NASA's Black Marble, and the Earth-by-day map from NASA's Blue Marble, as the [sources](/sources) page explains.
 
