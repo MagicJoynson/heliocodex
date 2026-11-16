@@ -81,7 +81,7 @@ import { sections } from '../lib/nav';
     <section class="where" id="where" aria-labelledby="where-h" inert>
       <h2 class="where-h" id="where-h"><span class="where-k" id="where-k">Looking at</span> <span id="where-name">Mars</span></h2>
       <p class="where-d" id="where-d"></p>
-      <canvas class="map" id="map" width="180" height="180" role="img" aria-label="A map of the Solar System seen from above, with you marked"></canvas>
+      <canvas class="map" id="map" width="180" height="180" tabindex="0" role="group" aria-label="A map of the Solar System seen from above, with you marked. Left and right arrow keys choose a place, Enter flies there."></canvas>
       <div class="stepper" role="group" aria-label="Step along the map">
         <button type="button" id="step-in" disabled>In</button>
         <button type="button" id="step-out" disabled>Out</button>
@@ -707,9 +707,22 @@ import { sections } from '../lib/nav';
         const far = yau > EDGE;
         $('where-d').textContent = far ? `You are ${fmt(Math.hypot(...st.cam))} from the Sun, off this map` : `${fmt(Math.hypot(...st.cam))} from the Sun`;
         map.classList.toggle('beyond', far);
-        map.setAttribute('aria-label', 'A map of the Solar System seen from above, with you marked');
+        if (document.activeElement === map && hits.length) {
+          const h = hits[((kb % hits.length) + hits.length) % hits.length];
+          mctx.strokeStyle = '#f1c98e'; mctx.lineWidth = 2 * dpr; mctx.beginPath(); mctx.arc(h.x * dpr, h.y * dpr, 8 * dpr, 0, Math.PI * 2); mctx.stroke();
+        }
       }
       setInterval(() => { if (!document.hidden) drawMap(); }, 120);
+      // keyboard: the arrow keys walk along the places on the map, Enter flies to the one ringed
+      let kb = 0;
+      const kbName = () => { const h = hits[((kb % hits.length) + hits.length) % hits.length]; return h ? (h.id === 'sun' ? 'The Sun' : h.id.replace(/-/g, ' ').replace(/^./, (m) => m.toUpperCase())) : ''; };
+      map.addEventListener('keydown', (e) => {
+        if (!hits.length) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { kb++; e.preventDefault(); e.stopPropagation(); $('said').textContent = kbName(); drawMap(); }
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { kb--; e.preventDefault(); e.stopPropagation(); $('said').textContent = kbName(); drawMap(); }
+        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); const h = hits[((kb % hits.length) + hits.length) % hits.length]; if (h) goTo(h.id); }
+      });
+      map.addEventListener('focus', () => { $('said').textContent = `Map. ${kbName()}.`; });
       map.addEventListener('click', (e) => {
         const r = map.getBoundingClientRect();
         const x = e.clientX - r.left, y = e.clientY - r.top;
@@ -846,6 +859,7 @@ import { sections } from '../lib/nav';
       .stepper button:disabled { opacity: .35; cursor: default; }
       .stepper button:focus-visible { outline: 2px solid #f1c98e; outline-offset: 2px; }
       body.no-map .stepper { display: none; }
+      .map:focus-visible { outline: 2px solid #f1c98e; outline-offset: 3px; }
       .map { display: block; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(16,16,20,.88), rgba(8,8,10,.88)); border: 1px solid var(--line); cursor: pointer; }
       body.no-map .map { display: none; }
       @media (max-width: 600px) { .where { width: 176px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 176px; height: 176px; } .stepper { width: 176px; } }
