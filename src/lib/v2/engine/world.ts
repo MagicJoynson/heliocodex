@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { uniform, positionLocal, texture, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
+import { uniform, positionLocal, texture, uv, min, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
 import { createSky, GLINT, FAR as SKY_FAR } from './sky';
 import { createDeep, PC, radecToEngine, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
 import { createTerrain } from './terrain';
@@ -326,6 +326,31 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     orbits.visible = false;
     local.add(orbits);
   }
+  // ---- the Orion Nebula: a real Hubble photograph laid flat at its measured distance (388 parsecs), as wide as the
+  // 30 arcminutes the mosaic covers there (about 11 light years). Loaded only when you come within 600 light years.
+  const ORION = add(sunPos, scale(radecToEngine(83.82, -5.39), 388 * PC));
+  const orionW = 388 * PC * Math.tan(THREE.MathUtils.degToRad(0.5));
+  let orion: THREE.Mesh | null = null, orionMat: THREE.MeshBasicNodeMaterial | null = null, orionLoading = false;
+  const orionPhoto = (d: number, cam: V3) => {
+    const LY9 = 9.4607e15;
+    const a = (1 - smooth(150 * LY9, 600 * LY9, d)) * smooth(2 * LY9, 8 * LY9, d);
+    if (a <= 0.001) { if (orion) orion.visible = false; return; }
+    if (!orionLoading) {
+      orionLoading = true;
+      new THREE.TextureLoader().load('/textures/orion-nebula.webp', (t) => {
+        t.colorSpace = THREE.SRGBColorSpace;
+        orionMat = new THREE.MeshBasicNodeMaterial({ transparent: true, opacity: 0, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending });
+        { const q = uv(), edge = smoothstep(float(0), float(0.14), min(min(q.x, float(1).sub(q.x)), min(q.y, float(1).sub(q.y)))); orionMat.colorNode = texture(t, q).mul(edge); }
+        orion = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), orionMat);
+        orion.scale.set(orionW, orionW, 1); orion.frustumCulled = false; orion.renderOrder = -2; local.add(orion);
+      });
+    }
+    if (!orion || !orionMat) return;
+    orion.visible = true; orionMat.opacity = a * 0.95;
+    // drawn on a sheet 10,000 km away, scaled to look exactly as big as it should from here, which keeps the numbers small for the graphics card
+    const r = sub(ORION, cam), dd = len(r), k = 1e7 / dd;
+    orion.position.set(r[0] * k, r[1] * k, r[2] * k); orion.scale.set(orionW * k, orionW * k, 1); orion.quaternion.copy(camera.quaternion);
+  };
   const PLANET_NAMES: Record<string, string> = { mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
 
   const maxRatio = Math.min(devicePixelRatio, 2);
@@ -511,6 +536,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const biggestPx = Math.max(...PLANETS.map((q) => { const d = len(sub(planetPos[q], cam)); return (radOf(q) * sizeBoost(q, d) / d) * pxPerRad0; }));
     orbitMat.opacity = 0.22 * wide * (1 - smooth(50, 160, biggestPx));
     orbits.visible = orbitMat.opacity > 0.001;
+    orionPhoto(len(sub(ORION, cam)), cam);
     if (orbits.visible) orbits.position.set(-cam[0], -cam[1], -cam[2]);
     // names: in the wide views, and for any planet that is no more than a dot from here, so there is always something to click
     const named = (p: string) => {
@@ -646,7 +672,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     },
     // two famous places inside the Milky Way. Each is one measured distance (see the sources page); the stars are the catalogue's own
     pleiades: { centre: () => add(sunPos, scale(radecToEngine(56.75, 24.12), 136.2 * PC)), dist: ly(60), dir: () => norm(add(scale(radecToEngine(56.75, 24.12), -1), [0, 0.15, 0])) },
-    'orion-nebula': { centre: () => add(sunPos, scale(radecToEngine(83.82, -5.39), 388 * PC)), dist: ly(60), dir: () => norm(add(scale(radecToEngine(83.82, -5.39), -1), [0, 0.15, 0])) },
+    'orion-nebula': { centre: () => add(sunPos, scale(radecToEngine(83.82, -5.39), 388 * PC)), dist: ly(30), dir: () => norm(add(scale(radecToEngine(83.82, -5.39), -1), [0, 0.15, 0])) },
     'cosmic-web': { centre: () => sunPos, dist: ly(500e6), dir: () => SUPERGAL_POLE },
     // far enough out to see the whole sphere the oldest light comes from, 46 billion light years in radius
     cmb: { centre: () => sunPos, dist: ly(110e9), dir: () => norm(add(SUPERGAL_POLE, [0, 0.4, 0])) },

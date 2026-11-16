@@ -445,7 +445,7 @@ import { sections } from '../lib/nav';
         ['oort-cloud', 'The Oort cloud', 'About 100,000 times the Earth’s distance from the Sun. Light takes about a year and a half to get here. Comets are thought to wait in a huge shell out at this distance. Nobody has seen it.'],
         ['neighbourhood', 'Our neighbouring stars', 'Now the stars, each at its measured distance. The nearest, Proxima Centauri, is 4.2 light years from the Sun, so its light is over four years old.'],
         ['pleiades', 'The Pleiades', 'A young cluster of stars, about 440 light years away, born together and still travelling together. The distance shown is to the Sun, from a point about 60 light years short of the cluster.'],
-        ['orion-nebula', 'The Orion Nebula', 'A cloud of gas where new stars are forming now. It is the middle of the sword, below the three stars of Orion’s belt.'],
+        ['orion-nebula', 'The Orion Nebula', 'A cloud of gas where new stars are forming now. It is the middle of the sword, below the three stars of Orion’s belt. The cloud is a Hubble photograph, laid flat here at the nebula’s measured distance, so it has no depth. The stars around it are the catalogue’s.'],
         ['milky-way', 'The Milky Way', 'Our galaxy: roughly a hundred thousand light years across, with between 100 and 400 billion stars. The Sun is one of them.'],
         ['local-group', 'The Local Group', 'The galaxy’s neighbours. The great spiral Andromeda is about 2.5 million light years away, and is the furthest thing most people can see without a telescope.'],
         ['cosmic-web', 'The cosmic web', 'On the largest scales galaxies lie along threads and sheets round great empty voids.'],
@@ -954,7 +954,7 @@ import { sections } from '../lib/nav';
       .tech { display: none; } body.debug .tech { display: block; }
       .tech { position: fixed; z-index: 5; right: var(--gut); top: calc(var(--top) + 48px); margin: 0; max-width: 60vw; text-align: right; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .06em; color: rgba(236,231,220,.38); pointer-events: none; }
       /* what is drawn from a model, and what was measured, for wherever you are: always shown, beside the map */
-      .gen { position: fixed; z-index: 5; top: calc(var(--top) + 58px); left: 214px; right: var(--gut); max-width: 24rem; margin: 0; font: italic 300 .8125rem/1.4 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; pointer-events: none; }
+      .gen { position: fixed; z-index: 5; top: calc(var(--top) + 58px); left: 214px; right: var(--gut); max-width: 26rem; margin: 0; font: 400 .9375rem/1.45 var(--serif); font-style: normal; color: var(--ink); background: rgba(8, 8, 10, .62); border-left: 2px solid rgba(241, 201, 142, .6); padding: .4rem .7rem; text-shadow: 0 1px 8px #000; pointer-events: none; }
       .gen:empty { display: none; }
       .gen.illus { font: 500 .8125rem/1.4 var(--sans, system-ui, sans-serif); font-style: normal; color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid rgba(241, 201, 142, .55); border-radius: 6px; padding: .45rem .65rem; text-shadow: none; }
       @media (max-width: 600px) { .gen { left: 204px; } }

@@ -113,7 +113,6 @@ const rows: [string, string][] = [
   .copy p { text-wrap: balance; }
   h1 { font-size: clamp(4.6rem, 18vw, 13rem); letter-spacing: .06em; line-height: .95; margin-bottom: .2em; position: relative; }
   h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); letter-spacing: .04em; position: relative; display: inline-block; padding: .1em .4em; }
-  h2::before { content: ''; position: absolute; left: -12%; right: -12%; top: 38%; height: 44%; border: 1px solid rgba(233,207,149,.55); border-radius: 50%; transform: rotate(-4deg); pointer-events: none; }
   .lead { font-size: 1.22em; line-height: 1.5; max-width: 24em; margin-inline: auto; }
   .kicker { text-align: center; }
   .plate { margin: 0; max-width: 52rem; }
@@ -123,6 +122,6 @@ const rows: [string, string][] = [
   .onward { margin-inline: auto; }
   .aside { max-width: 30em; margin-inline: auto !important; }
   .sky .copy p, .sky h2 { text-shadow: 0 1px 2px rgba(20,14,6,.65), 0 2px 26px rgba(20,14,6,.75); }
-  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(10,9,12,.2) 0%, rgba(10,9,12,.55) 55%, rgba(10,9,12,.75) 100%); } h2::before { left: -4%; right: -4%; } }
+  @media (max-width: 760px) { :root { --shade: linear-gradient(180deg, rgba(10,9,12,.2) 0%, rgba(10,9,12,.55) 55%, rgba(10,9,12,.75) 100%); } }
   :global(.wglance) { margin-left: auto !important; margin-right: auto !important; }
 </style>
