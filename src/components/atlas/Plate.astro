@@ -72,7 +72,7 @@ const summary = Astro.props.summary ?? `${figure.title}. ${parentName} seen from
   <g class="names">
     {named.map((b) => (
       <>
-        <path id={`nm-${figure.id}-${b.id}`} class="namepath" d={labelArc(p, b.orbit, jd, figure.names[b.id], b.name.length * 30 + 70)} />
+        <path id={`nm-${figure.id}-${b.id}`} class="namepath" d={labelArc(p, b.orbit, jd, figure.names[b.id], b.name.length * 26 + 60)} />
         <text class="name" dy="-7" data-body={b.id}><textPath href={`#nm-${figure.id}-${b.id}`} startOffset="50%" text-anchor="middle">{b.name}</textPath></text>
       </>
     ))}
