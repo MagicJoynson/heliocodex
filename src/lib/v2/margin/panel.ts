@@ -50,7 +50,7 @@ function whatIs(b: Body): string {
 
 function howFar(c: Context, starLy?: number): string {
   if (starLy !== undefined) return `${starLy.toLocaleString('en-GB')} light years from the Sun`;
-  if (c.band === 'surface' || c.band === 'orbit') return `${fmtKm(c.km)} above ${c.near === 'sun' ? 'the surface' : 'the ground'}`;
+  if (c.band === 'surface' || c.band === 'orbit') return `${fmtKm(c.km)} above ${c.near === 'sun' ? 'the surface' : ['jupiter', 'saturn', 'uranus', 'neptune'].includes(c.near) ? 'the cloud tops' : 'the ground'}`;
   const ly = (c.km * 1000) / LIGHT_YEAR_M;
   if (ly <= 0.1) return `${fmtAu(c.km)} from the Sun`;
   const big = ly >= 1e9 ? [1e9, ' billion'] as const : ly >= 1e6 ? [1e6, ' million'] as const : [1, ''] as const;
@@ -178,7 +178,7 @@ export function mountMargin(engine: Engine): void {
     if (!you || !youLabel || !ctx) return;
     const y = Math.min(TOP, Math.max(0, Math.log10(Math.max(1, ctx.km * 1000))));
     you.style.setProperty('--y', y.toFixed(3));
-    youLabel.textContent = `You are ${howFar(ctx, ctx.star === undefined ? undefined : data?.stars?.[ctx.star]?.[2]).replace('the ground', theName(ctx.near)).replace('the surface', 'the Sun')}`;
+    youLabel.textContent = `You are ${howFar(ctx, ctx.star === undefined ? undefined : data?.stars?.[ctx.star]?.[2]).replace('the ground', theName(ctx.near)).replace('the cloud tops', `the cloud tops of ${theName(ctx.near)}`).replace('the surface', 'the Sun')}`;
   }
   function renderAtlas(): void {
     const ruler = el('div', { class: 'm-ruler', role: 'img', 'aria-label': 'A scale in powers of ten from one metre to ten billion light years, with a line showing how far out you are' });

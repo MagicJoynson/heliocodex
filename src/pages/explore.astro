@@ -57,7 +57,7 @@ import { sections } from '../lib/nav';
 
     <section class="threshold" id="threshold">
       <p class="name">Heliocodex</p>
-      <p class="line">The Sun and its worlds at their true size and distance. Go in to Mars, click any planet to visit it, then keep going, past the stars, out to the oldest light there is.</p>
+      <p class="line">The Sun and its worlds at their true size and distance. Start from the whole Solar System, click any planet or moon to visit it, then keep going, past the stars, out to the oldest light there is.</p>
       <button class="aperture" id="enter" type="button" aria-label="Enter">
         <svg viewBox="0 0 200 200" aria-hidden="true">
           <circle class="ring outer" cx="100" cy="100" r="96" />
@@ -77,7 +77,7 @@ import { sections } from '../lib/nav';
 
     <!-- where you are: a map of the Solar System from above, and what you are looking at -->
     <section class="where" id="where" aria-labelledby="where-h" inert>
-      <h2 class="where-h" id="where-h"><span class="where-k">Looking at</span> <span id="where-name">Mars</span></h2>
+      <h2 class="where-h" id="where-h"><span class="where-k" id="where-k">Looking at</span> <span id="where-name">Mars</span></h2>
       <p class="where-d" id="where-d"></p>
       <canvas class="map" id="map" width="180" height="180" role="img" aria-label="A map of the Solar System seen from above, with you marked"></canvas>
       <div class="stepper" role="group" aria-label="Step along the map">
@@ -257,14 +257,16 @@ import { sections } from '../lib/nav';
           canvas: $('space') as HTMLCanvasElement,
           forceWebGL: params.has('gl') || (() => { try { return sessionStorage.getItem('hc-gl') === '1'; } catch { return false; } })(),
           onReadout(r) {
+            $('where-k').textContent = r.mode === 'cruise' ? 'Flying to' : 'Looking at';
             if (r.mode === 'cruise') {
+              if (world?.focus.name) $('where-name').textContent = cap(world.focus.name);
               $('r-k').textContent = `On the way to ${world?.focus.name ?? r.target}`;
               $('r-v').textContent = fmt(r.dist);
               $('r-k2').textContent = '';
             } else {
               const name = world?.focus.name ?? r.target;
               // circling: how far from what you are looking at; flying yourself: how high above the ground
-              $('r-k').textContent = r.far ? 'Distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
+              $('r-k').textContent = r.far ? 'Your distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
               $('r-v').textContent = fmt(r.mode === 'free' || r.far ? (r.far ? shown(r.alt) : r.alt) : r.dist);
               $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : football && r.far ? `Sun as a football: ${fmt(shown(r.alt) * (0.22 / 1.3927e9))}` : '';
             }
@@ -601,6 +603,9 @@ import { sections } from '../lib/nav';
       }
       function planetSteps(focus: string) {
         const i = ORDER.indexOf(focus);
+        // a moon: out is the planet it goes round, so no scale is skipped
+        const parent = i < 0 ? world.parentOf(focus) : undefined;
+        if (parent) return setSteppers(null, [parent, PLANET_LABEL[parent] ?? cap(parent)]);
         if (i < 0) return setSteppers(['sun', PLANET_LABEL.sun], ['oort-cloud', RUNGS[1][1]]);
         setSteppers(i > 0 ? [ORDER[i - 1], PLANET_LABEL[ORDER[i - 1]]] : null, i < ORDER.length - 1 ? [ORDER[i + 1], PLANET_LABEL[ORDER[i + 1]]] : ['oort-cloud', RUNGS[1][1]]);
       }
@@ -674,7 +679,11 @@ import { sections } from '../lib/nav';
           mctx.clearRect(0, 0, S, S);
           drawLadder(c, R, dpr, st.cam, distAu);
           const next = ladderSteps(distAu, st.focus);
-          $('where-d').textContent = `${fmt(shown(distAu * AU))} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
+          // the place itself is at its measured distance; where the camera stands to look at it is a different number
+          const here = RUNGS.find((q) => q[0] === st.focus && q[0] !== 'solar-system');
+          $('where-d').textContent = here
+            ? `${here[1]}: about ${fmt(here[2] * AU)} out from the Sun. Your viewpoint: ${fmt(shown(distAu * AU))} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`
+            : `Your viewpoint: ${fmt(shown(distAu * AU))} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
           map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(shown(distAu * AU))} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
           map.classList.add('beyond');
           return;

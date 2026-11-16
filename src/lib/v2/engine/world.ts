@@ -49,6 +49,9 @@ export function pickQuality(): Quality {
   return { tier: 3, scale: 1, split: 2.5, maxTiles: 680, antialias: devicePixelRatio <= 1.25, target: 17, maxPx: 5e6 };
 }
 
+/** metres above Mars below which the generated ground is drawn; above it the smooth globe stands in */
+const GENERATED_FROM = 1.5e6;
+
 export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; onJump?: () => void; onFocus?: (id: string, name: string) => void; forceWebGL?: boolean; quality?: Quality }) {
   const quality = o.quality ?? pickQuality();
   // Reversed-z only gains precision with a float depth buffer, which three.js gives us on WebGPU.
@@ -503,17 +506,31 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     // the orbits and the planets' names, for the views from well above the Sun
     const fromSunAU = len(cam) / AU;
     const wide = smooth(3, 15, fromSunAU) * (1 - smooth(800, 3000, fromSunAU));
-    orbitMat.opacity = 0.22 * wide;
-    orbits.visible = wide > 0.005;
+    const pxPerRad0 = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
+    // the lines of the planets' paths are not drawn across a planet that fills the view: they would seem to run over its face
+    const biggestPx = Math.max(...PLANETS.map((q) => { const d = len(sub(planetPos[q], cam)); return (radOf(q) * sizeBoost(q, d) / d) * pxPerRad0; }));
+    orbitMat.opacity = 0.22 * wide * (1 - smooth(50, 160, biggestPx));
+    orbits.visible = orbitMat.opacity > 0.001;
     if (orbits.visible) orbits.position.set(-cam[0], -cam[1], -cam[2]);
     // names: in the wide views, and for any planet that is no more than a dot from here, so there is always something to click
-    const pxPerRad0 = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
     const named = (p: string) => {
       const d = len(sub(planetPos[p], cam));
       const px = (radOf(p) * sizeBoost(p, d) / d) * pxPerRad0;
       return p === focusKey && d < radOf(p) * 400 ? 0 : (1 - smooth(14, 40, px)) * (1 - smooth(800, 3000, fromSunAU));
     };
-    const extra = PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), alpha: Math.max(wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1), named(p) * 0.9) })).filter((x) => x.alpha > 0.01);
+    // a name is not shown on a planet's own disc, nor over a nearer planet that hides it
+    const discAt = (q: string) => { const d = len(sub(planetPos[q], cam)); return { d, ang: Math.asin(Math.min(1, (radOf(q) * sizeBoost(q, d)) / d)), dir: norm(sub(planetPos[q], cam)) }; };
+    const discs = PLANETS.map((q) => [q, discAt(q)] as const);
+    const covered = (p: string) => {
+      const me = discAt(p);
+      return discs.some(([q, c]) => {
+        if (q === p) return c.ang * pxPerRad0 > 40; // its own name, once its disc is wide enough to carry the picture
+        if (c.d >= me.d) return false;
+        const dot = c.dir[0] * me.dir[0] + c.dir[1] * me.dir[1] + c.dir[2] * me.dir[2];
+        return Math.acos(Math.min(1, dot)) < c.ang * 1.05;
+      });
+    };
+    const extra = PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), alpha: covered(p) ? 0 : Math.max(wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1), named(p) * 0.9) })).filter((x) => x.alpha > 0.01);
     deep.update({ cam, quaternion: camera.quaternion, fovDeg: camera.fov, heightPx: o.canvas.clientHeight, widthPx: o.canvas.clientWidth, starGain: sky.starGain.value, extra });
 
     // light: from the Sun's direction (only the direction matters)
@@ -533,7 +550,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       g.scale.setScalar(k);
       g.visible = (radOf(p) * k / d) * pxPerRad > 1.5;
       // Mars has walkable ground of its own: its plain globe only stands in while it is drawn bigger than life
-      if (p === bodySlug) { marsBoosted = k > 1.02; g.visible &&= marsBoosted; }
+      // beyond 1,500 km the generated heights would only bend its outline out of round, so the smooth globe is shown until you come down
+      if (p === bodySlug) { marsBoosted = k > 1.02 || dBody - terrain.radius > GENERATED_FROM; g.visible = marsBoosted && (radOf(p) * k / d) * pxPerRad > 1.5; }
       if (g.visible) g.position.set(r[0], r[1], r[2]);
     }
     const jd = system.jd();
@@ -597,7 +615,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
       illustrative,
-      note: (illustrative ? 'Illustrative terrain. The hills and craters here are generated to make the view feel real; they are not the measured surface of Mars' : undefined) ?? (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 1800 || y > 2050 ? `Planet and moon positions are approximate in ${y}` : y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution ? 'This ground is generated, not measured' : undefined),
+      note: (illustrative ? 'Illustrative terrain. The hills and craters here are generated to make the view feel real; they are not the measured surface of Mars' : undefined) ?? (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 1800 || y > 2050 ? `Planet and moon positions are approximate in ${y}` : y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution && dBody - terrain.radius <= GENERATED_FROM ? 'This ground is generated, not measured' : undefined),
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${fpsShown} fps · ${ratio.toFixed(2)}x`,
     });
   }
@@ -734,6 +752,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     },
     get mode() { return flight.mode; },
     get focus() { return { id: focusKey, name: focusName }; },
+    /** the planet a moon goes round, or undefined for anything else */
+    parentOf(id: string): string | undefined { const b = system.body(id); return b?.kind === 'moon' ? b.parent ?? undefined : undefined; },
     /** for the minimap: the planets and you, seen from above the Sun, in metres in the engine frame */
     mapState() {
       const f = fwdOf();
