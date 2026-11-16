@@ -3,6 +3,7 @@ sources:
   - { label: "NASA, types of galaxies: active galaxies, Seyferts, quasars and blazars", url: "https://science.nasa.gov/universe/galaxies/types/" }
   - { label: "NASA Imagine the Universe, active galaxies", url: "https://imagine.gsfc.nasa.gov/science/objects/active_galaxies1.html" }
   - { label: "NASA 2024, Hubble takes the closest-ever look at a quasar", url: "https://science.nasa.gov/missions/hubble/nasas-hubble-takes-the-closest-ever-look-at-a-quasar/" }
+  - { label: "ESA/Hubble, Best image of bright quasar 3C 273 (2013)", url: "https://esahubble.org/images/potw1346a/" }
 lastChecked: 2026-11-10
 ---
 Most galaxies shine with the light of their stars and nothing else. About one in ten is different. Right at its centre is a tiny point that gives out more light than all the rest of the galaxy. These are called active galaxies.
@@ -18,7 +19,7 @@ The brightest active galaxies are called quasars. A quasar can give out thousand
 
 <figure class="photo">
   <img src="/img/learn/quasar-3c-273-hubble.jpg" alt="A brilliant point of light with four spikes, and a faint streak to one side" width="1280" height="1264" loading="lazy" />
-  <figcaption><b>A photograph.</b> The quasar 3C 273, by the Hubble Space Telescope. It looks like a star, but it is the centre of a galaxy 2.5 billion light years away. The four spikes are made inside the telescope. The faint streak at the upper left is one of its jets, about 200,000 light years long. Credit: ESA/Hubble and NASA, CC BY 4.0.</figcaption>
+  <figcaption><b>A photograph.</b> The quasar 3C 273, by the Hubble Space Telescope. It looks like a star, but it is the centre of a galaxy 2.5 billion light years away. The four spikes are made inside the telescope. The faint streak at the upper left is one of its jets. This picture shows about 200,000 light years of it. A 2024 Hubble study gives the whole jet as about 300,000. Credit: ESA/Hubble and NASA, CC BY 4.0.</figcaption>
 </figure>
 
 Some active galaxies also fire out two thin jets of fast particles, one each way, reaching far beyond the galaxy itself.
