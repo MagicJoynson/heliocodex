@@ -572,6 +572,9 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   const invQ = new THREE.Quaternion();
   let shown = 0;
   const placed: [number, number, number][] = [];
+  // the places on screen where text of the page's own sits, so a name is never drawn under it
+  let avoid: { left: number; right: number; top: number; bottom: number }[] = [];
+  let avoidAt = 0;
   function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '') {
     if (alpha <= 0.02 || shown >= 28) return;
     v.set(dir[0], dir[1], dir[2]).applyQuaternion(invQ);
@@ -584,6 +587,8 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     const w = text.length * (kind === 'constellation' ? 7.6 : 6.4) + 14;
     if (kind === 'constellation') x -= w / 2;
     for (const r of placed) if (x < r[0] + r[2] && x + w > r[0] && Math.abs(y - r[1]) < 13) return;
+    // and keep clear of the panels and captions drawn over the view
+    for (const r of avoid) if (x < r.right && x + w > r.left && y + 8 > r.top && y - 8 < r.bottom) return;
     placed.push([x, y, w]);
     let el = pool[shown];
     if (!el) { el = document.createElement('span'); el.style.cssText = tagStyle; labels.appendChild(el); pool.push(el); }
@@ -637,12 +642,16 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       cmbMat.side = dS > CMB_PC ? THREE.FrontSide : THREE.BackSide;
     }
     if (stars) stars.visible = dS < 2e5;
-    // the figures from beyond the planets, fading as they come apart and gone once the stars around you are a cloud
-    figGain.value = smooth(150 * AUpc, 2000 * AUpc, dS) * (0.04 + 0.13 * (1 - smooth(1, 12, dS))) * (1 - smooth(60, 250, dS));
+    // the figures from beyond the planets, fading from the Oort cloud outwards (0.5 parsec) and gone by 5 parsecs, before they turn into a tangle
+    figGain.value = smooth(150 * AUpc, 2000 * AUpc, dS) * (0.04 + 0.13 * (1 - smooth(1, 12, dS))) * (1 - smooth(0.5, 5, dS));
     if (figures) figures.visible = figGain.value > 0.002;
     for (const x of gated) x.s.visible = x.g.value > 0.002;
 
     // ---- names
+    if (performance.now() - avoidAt > 400) {
+      avoidAt = performance.now();
+      avoid = ['.gen', '.where', '.readout'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
+    }
     shown = 0;
     placed.length = 0;
     invQ.copy(view.quaternion).invert();
