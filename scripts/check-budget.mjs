@@ -1,19 +1,22 @@
 // Page-weight budget. Run after the build (`npm run build` does it). It only warns: it always exits 0.
-// Sizes are as stored in dist, before the host compresses text, so real downloads of text are smaller.
+// Text (HTML, JavaScript, CSS) is measured after Brotli compression, as the host sends it. Pictures and textures are measured as stored.
 import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { brotliCompressSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 const KB = 1024;
 const BUDGET = {
-  html: 200 * KB, // any one page of HTML
-  script: 700 * KB, // any one JavaScript file
-  styles: 300 * KB, // all CSS together
-  image: 400 * KB, // any one picture on a page (3D textures are fetched only inside the 3D view and are exempt)
+  html: 100 * KB, // any one page of HTML
+  script: 200 * KB, // any one JavaScript file
+  styles: 80 * KB, // all CSS together
+  image: 500 * KB, // any one picture on a page (3D textures are fetched only inside the 3D view and are exempt)
   texture: 8 * 1024 * KB, // any one 3D texture
   firstView: 500 * KB, // pictures a page loads straight away, that is every <img> not marked lazy
 };
+// pages that hold a long list on purpose, with their own ceiling
+const HTML_EXCEPTIONS = { 'atlas/saturn.html': 130 * KB }; // every one of Saturn's moons, drawn and listed
 const KEY_PAGES = ['index.html', 'stars/sirius.html', 'learn/the-milky-way/index.html', 'sky.html', 'explore.html'];
 
 const warnings = [];
@@ -30,8 +33,9 @@ try {
   if (!existsSync(root)) throw new Error('no dist folder: build first');
   let css = 0;
   for (const p of walk(root)) {
-    const size = statSync(p).size, rel = p.slice(root.length + 1).replaceAll('\\', '/');
-    if (p.endsWith('.html') && size > BUDGET.html) warn('HTML page', size, BUDGET.html, rel);
+    const text = /\.(html|js|css)$/.test(p);
+    const size = text ? brotliCompressSync(readFileSync(p)).length : statSync(p).size, rel = p.slice(root.length + 1).replaceAll('\\', '/');
+    if (p.endsWith('.html') && size > (HTML_EXCEPTIONS[rel] ?? BUDGET.html)) warn('HTML page', size, HTML_EXCEPTIONS[rel] ?? BUDGET.html, rel);
     else if (p.endsWith('.js') && size > BUDGET.script) warn('Script', size, BUDGET.script, rel);
     else if (p.endsWith('.css')) css += size;
     else if (rel.startsWith('textures/') && size > BUDGET.texture) warn('3D texture', size, BUDGET.texture, rel);
