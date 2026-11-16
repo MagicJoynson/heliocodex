@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, max, uniform, normalWorld } from 'three/tsl';
+import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, max, uniform, normalWorld, texture } from 'three/tsl';
 import type { Body, Layer } from '../engine/index';
 import type { KeplerOrbit } from '../atlas/types';
 import { keplerPath, keplerPosition, eclToEngine } from '../atlas/kepler';
@@ -25,6 +25,16 @@ const KM = 1000;
 const AU = 149_597_870_700;
 const SEGMENTS = 320;
 const ASSUMED_RADIUS_KM = 1; // 2 km across, for moons known only as a point of light
+/**
+ * Global maps for the moons that have one, fetched only when you first come near that moon. Each is a
+ * public-domain NASA and USGS mosaic of real spacecraft pictures (credited on the sources page), with
+ * longitude 0 in the middle of the sub-Jupiter or sub-planet side. All of these moons keep one face to
+ * their planet, so the map is turned to face it.
+ */
+const MAPS: Record<string, string> = {
+  moon: '/textures/moons/moon.webp', io: '/textures/moons/io.webp', europa: '/textures/moons/europa.webp',
+  ganymede: '/textures/moons/ganymede.webp', callisto: '/textures/moons/callisto.webp', titan: '/textures/moons/titan.webp',
+};
 const ALBEDO = 0.2; // a middling grey; individual albedos come with each moon's own surface
 
 type V3 = [number, number, number];
@@ -100,9 +110,22 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
   bmat.colorNode = vec3(0.56, 0.55, 0.53).mul(lit.mul(0.97).add(0.012));
   const ballGeo = new THREE.IcosahedronGeometry(1, 20);
   const balls = new Map<string, THREE.Mesh>();
+  // a map is fetched the first time its moon shows as a disc; until it arrives the ball is plain
+  const mapped = new Map<string, { mat: THREE.MeshBasicNodeMaterial; state: 'idle' | 'loading' | 'done'; tex?: THREE.Texture }>();
+  function wantMap(id: string) {
+    const e = mapped.get(id);
+    if (!e || e.state !== 'idle') return;
+    e.state = 'loading';
+    new THREE.TextureLoader().load(MAPS[id], (t) => {
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.wrapS = THREE.RepeatWrapping;
+      e.tex = t; e.mat.colorNode = texture(t, uv()).rgb.mul(lit.mul(0.97).add(0.012)); e.mat.needsUpdate = true; e.state = 'done';
+    }, undefined, () => { e.state = 'done'; });
+  }
   for (const m of moons) {
     if (!m.measured) continue;
-    const mesh = new THREE.Mesh(ballGeo, bmat);
+    let material: THREE.MeshBasicNodeMaterial = bmat;
+    if (MAPS[m.body.id]) { material = new THREE.MeshBasicNodeMaterial(); material.colorNode = bmat.colorNode; mapped.set(m.body.id, { mat: material, state: 'idle' }); }
+    const mesh = new THREE.Mesh(ballGeo, material);
     mesh.scale.setScalar(m.radiusM);
     mesh.visible = false;
     mesh.frustumCulled = false;
@@ -164,7 +187,8 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
     }
   }
 
-  const ecl: V3 = [0, 0, 0], off: V3 = [0, 0, 0];
+  const ecl: V3 = [0, 0, 0], off: V3 = [0, 0, 0], ecl2: V3 = [0, 0, 0], vel: V3 = [0, 0, 0];
+  const bx = new THREE.Vector3(), by = new THREE.Vector3(), bz = new THREE.Vector3(), rot = new THREE.Matrix4();
 
   function update(rel: (id: string) => V3 | null, timeJd: number): boolean {
     const sun = rel('sun');
@@ -234,7 +258,21 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
       look[q + 3] = (Math.min(8, Math.max(1.6, 1.6 + Math.sqrt(b) * 2.6)) * 2.2) / px;
       if (ball) {
         ball.visible = asBall > 0;
-        if (ball.visible) ball.position.set(x, y, z);
+        if (ball.visible) {
+          ball.position.set(x, y, z);
+          if (mapped.has(m.body.id)) {
+            wantMap(m.body.id);
+            // longitude 0 faces the planet, north is the orbit's pole
+            keplerPosition(m.orbit, m.parent, timeJd + 0.02, ecl2);
+            eclToEngine(ecl2[0] - ecl[0], ecl2[1] - ecl[1], ecl2[2] - ecl[2], vel);
+            const ox = off[0], oy = off[1], oz = off[2], ol = Math.hypot(ox, oy, oz) || 1;
+            bx.set(-ox / ol, -oy / ol, -oz / ol);
+            by.set(oy * vel[2] - oz * vel[1], oz * vel[0] - ox * vel[2], ox * vel[1] - oy * vel[0]).normalize();
+            by.addScaledVector(bx, -by.dot(bx)).normalize();
+            bz.crossVectors(bx, by);
+            ball.quaternion.setFromRotationMatrix(rot.makeBasis(bx, by, bz));
+          }
+        }
       }
     }
     posAttr.needsUpdate = true;
@@ -250,6 +288,7 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
     detach() {
       group.removeFromParent();
       dropLines();
+      for (const e of mapped.values()) { e.tex?.dispose(); e.mat.dispose(); }
       ballGeo.dispose(); pmat.dispose(); bmat.dispose(); strongLine.dispose(); faintLine.dispose();
     },
     setMarkers(on) { markers = on; },
