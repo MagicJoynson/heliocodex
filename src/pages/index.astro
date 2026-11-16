@@ -19,7 +19,7 @@ const lessons = await allLessons();
 const brightStars = properStars().sort((a, b) => a.appMag - b.appMag).slice(0, 12);
 const CONS = ['Orion', 'Ursa Major', 'Cassiopeia', 'Cygnus', 'Scorpius', 'Leo', 'Taurus', 'Crux', 'Lyra', 'Andromeda'];
 const strands = STRAND_ORDER.map((strand) => ({ strand, name: STRAND_NAMES[strand], lessons: lessons.filter((l) => l.data.strand === strand).sort((a, b) => a.data.order - b.data.order).slice(0, 3) })).filter((g) => g.lessons.length);
-const moonCards = Object.entries(WORLD_PAGES).filter(([, pg]) => !!(pg.globe ?? pg.picture)).sort(([a], [b]) => (a === 'moon' ? -1 : b === 'moon' ? 1 : 0)).map(([id, pg]) => ({ id, name: body(id)!.name.replace(/^The /, 'The '), src: ['deimos', 'iapetus', 'ida'].includes(id) ? `/img/thumbs/${id}.jpg` : (pg.globe ?? pg.picture)!.src }));
+const moonCards = Object.entries(WORLD_PAGES).filter(([, pg]) => !!(pg.globe ?? pg.picture)).sort(([a], [b]) => (a === 'moon' ? -1 : b === 'moon' ? 1 : 0)).map(([id, pg]) => ({ id, name: body(id)!.name.replace(/^The /, 'The '), src: ['deimos', 'iapetus', 'ida', 'bennu', 'pallas'].includes(id) ? `/img/thumbs/${id}.jpg` : (pg.globe ?? pg.picture)!.src }));
 const KIND_LABEL: [string, string][] = [['dwarf', 'Dwarf planets, named by the IAU'], ['likely', 'Likely dwarf planets'], ['asteroid', 'Asteroids'], ['comet', 'Comets']];
 const smallKinds = KIND_LABEL.map(([kind, label]) => ({ label, items: outlineWorlds.filter((b) => (kind === 'dwarf' ? b.kind === 'dwarf' && IAU_DWARFS.has(b.id) : kind === 'likely' ? b.kind === 'dwarf' && !IAU_DWARFS.has(b.id) : b.kind === kind)).slice(0, 10) }));
 const terms = await allTerms();
