@@ -65,6 +65,7 @@ const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
           {entry.data.sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}
         </ul>
         <p class="aside small-note">The words are written for this site. Sums in the text are worked from the figures in these sources.</p>
+        <p class="aside small-note">Think something here is wrong? <a href={`mailto:hello@fallinghippo.com?subject=${encodeURIComponent(`Correction: ${lesson.data.title}`)}&body=${encodeURIComponent(`Page: https://heliocodex.com${Astro.url.pathname.replace(/\.html$/, '')}\n\nWhat looks wrong, and where the right figure is published:\n`)}`}>Email us the page and what you found</a>.</p>
       </div>
     </section>
 
