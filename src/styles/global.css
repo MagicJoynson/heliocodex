@@ -44,7 +44,7 @@ p { margin: 0 0 1em; max-width: 66ch; }
   position: sticky; top: 0; z-index: 20;
   height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 var(--gutter);
+  padding: 0 max(clamp(16px, 4vw, 48px), calc((100% - 1180px) / 2 + clamp(16px, 4vw, 48px)));
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
