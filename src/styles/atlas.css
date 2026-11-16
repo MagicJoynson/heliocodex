@@ -10,7 +10,7 @@ svg.plate { display: block; width: 100%; height: auto; font-family: var(--r-seri
 .plate .ring { fill: none; stroke: var(--ink-soft); opacity: .32; }
 .plate .ring.faint { opacity: .1; }
 .plate .inset-mark rect { fill: none; stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 5 4; }
-.plate .inset-mark text, .plate .numeral, .plate .bar text, .plate .when, .plate .sunward text { font: 400 15px var(--r-mono); letter-spacing: .08em; fill: var(--ink-faint); }
+.plate .inset-mark text, .plate .numeral, .plate .bar text, .plate .when, .plate .sunward text { font: 400 15px var(--r-mono); letter-spacing: .08em; fill: var(--ink-soft); }
 .plate .numeral { fill: var(--ink-soft); }
 .plate .title { font: italic 300 25px var(--r-serif); fill: var(--ink); }
 .plate .bar path, .plate .sunward path { fill: none; stroke: var(--ink-faint); stroke-width: 1.4; }
