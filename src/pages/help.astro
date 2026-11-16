@@ -1,0 +1,47 @@
+---
+import Reading from '../layouts/Reading.astro';
+
+// Plain answers to what people ask. Every answer points at the page that holds the detail,
+// so this page cannot drift far from the facts: change those pages and check this one.
+const questions: { q: string; a: string }[] = [
+  { q: 'Is Heliocodex free, and does it show adverts?', a: 'It is free to read and to use. There are no adverts and no accounts. It sets no cookies; the few small things it keeps in your browser are listed on the <a href="/cookies">cookies and storage page</a>.' },
+  { q: 'Where do the numbers and pictures come from?', a: 'Every number, map and photograph is traced on the <a href="/sources">sources page</a>, and every picture is credited with its licence on the <a href="/licences">licences and credits page</a>. Where something is drawn or modelled rather than photographed, the page says so beside it.' },
+  { q: 'Is that a photograph or a drawing?', a: 'Captions say. “A photograph” means a real picture taken by a camera. Anything else is a drawing, a chart or a model built from measurements, and it is labelled that way. Where a world has no photograph of its surface, the 3D view shows a plain grey ball rather than invent one.' },
+  { q: 'The 3D view is slow, blank or will not start. What can I do?', a: 'The 3D view needs a browser that can draw 3D graphics (WebGPU or WebGL 2). It chooses how much detail to draw from your device, and you can turn the picture quality down in its View menu. If the graphics stop working soon after it starts, the page restarts on the more widely supported method by itself. Reloading the page, or updating your browser, often helps. If it still fails, tell us which device and browser you use.' },
+  { q: 'Why are some moons plain grey in the 3D view?', a: 'Only moons that a spacecraft has mapped well enough get a real surface picture, and not every such moon has been added yet. The rest are drawn as plain grey balls so that nothing is invented.' },
+  { q: 'Do you track me?', a: 'Visits are counted with Cloudflare Web Analytics, which does not use cookies. The count is switched off if your browser sends a Do Not Track or Global Privacy Control signal, or if you use the switch on the <a href="/cookies">cookies and storage page</a>. Nothing is sold or passed to advertisers. The <a href="/privacy">privacy policy</a> has the detail.' },
+  { q: 'Does the sky map need to know where I am?', a: 'It needs a place to work out what is above you. You can pick a city, type a position, or let your device give its position, which is rounded to about 11 km before it is used. The place stays in your browser only, and “Forget my place” clears it.' },
+  { q: 'Can I use the site with a keyboard or a screen reader?', a: 'Yes, and we keep improving it. The map in the 3D view takes the left and right arrow keys to choose a place and Enter to fly there, and the atlas drawings can be scrolled with the arrow keys on a narrow screen. The <a href="/accessibility">accessibility statement</a> says what we have tested and what we have not.' },
+  { q: 'May I use your pictures or text?', a: 'Each picture has its own licence, and some are free to reuse with credit while others are not ours to give. Look it up on the <a href="/licences">licences and credits page</a> before you reuse anything.' },
+  { q: 'I think something is wrong. How do I tell you?', a: 'Please do. Email <a href="mailto:hello@fallinghippo.com">hello@fallinghippo.com</a> with the page address and what you think is wrong. If you can, say where the right figure is published, because every figure here has to trace to a named source.' },
+];
+---
+<Reading title="Questions and answers" path="/help" description="Short answers to what people ask about Heliocodex: where the facts come from, what is a photograph, why the 3D view may be slow, what it keeps in your browser, and how to report a mistake.">
+  <header class="reading-head">
+    <p class="label">Help</p>
+    <h1>Questions and answers</h1>
+    <p class="lead">Short answers to what people ask. If yours is not here, email us and we will add it.</p>
+  </header>
+  <section class="row">
+    <div class="hang"><h2>Common questions</h2></div>
+    <div class="prose faq">
+      {questions.map((x) => (
+        <details>
+          <summary>{x.q}</summary>
+          <p set:html={x.a} />
+        </details>
+      ))}
+    </div>
+  </section>
+</Reading>
+
+<style>
+  .faq details { border-top: 1px solid var(--rule); padding: .2rem 0; }
+  .faq details:last-child { border-bottom: 1px solid var(--rule); }
+  .faq summary { cursor: pointer; font: 400 1.2rem/1.4 var(--r-serif); color: var(--ink); padding: .85rem 0; list-style: none; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::before { content: '+'; display: inline-block; width: 1.4rem; font: 400 1rem var(--r-mono); color: var(--ink-faint); }
+  .faq details[open] summary::before { content: '–'; }
+  .faq summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .faq details p { margin: 0 0 1rem 1.4rem; max-width: 40rem; }
+</style>

@@ -38,7 +38,9 @@ function field(halfKpc: number, nameIf: (g: (typeof groupGalaxies)[number]) => b
     if (chosen.some((c) => Math.hypot(c.x - d.x, c.y - d.y) < c.r + 22)) continue;
     chosen.push({ x: d.x, y: d.y, r: d.r, text: nice(d.g.name) });
   }
-  return { ringList, inside, names: placeLabels(chosen, 18, ringList.map((g) => ringLabelBox(g.r, g.label))), home };
+  // a name must also keep clear of the dots of galaxies that are not named, not only of the named ones
+  const bare = inside.filter((d) => !chosen.some((c) => Math.hypot(c.x - d.x, c.y - d.y) < 0.5)).map((d): [number, number, number, number] => [d.x - d.r - 2, d.y - d.r - 2, d.x + d.r + 2, d.y + d.r + 2]);
+  return { ringList, inside, names: placeLabels(chosen, 18, [...ringList.map((g) => ringLabelBox(g.r, g.label)), ...bare]), home };
 }
 const sats = field(300, (g) => (g.absMag ?? 0) <= -8.5, [250e3, 500e3, 750e3]);
 const group = field(1500, (g) => g.name === 'Andromeda' || (g.absMag ?? 0) <= -13, [1e6, 2e6, 3e6, 4e6]);

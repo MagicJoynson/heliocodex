@@ -143,11 +143,12 @@ You have the right to object to any use based on legitimate interests (see secti
 
 Cookies are small files a website saves on your device. Similar technologies include local storage, pixels and device fingerprinting. The Privacy and Electronic Communications Regulations 2003 (PECR) say a website must ask for your consent before storing or reading anything on your device, unless it's strictly necessary for a service you asked for or falls within another exception listed in the regulations. Since 5 February 2026 those exceptions include one for adapting how a website looks or works to your preferences, as long as you are told and can easily object.
 
-Heliocodex sets no cookies. It keeps up to four small things in your browser, all described in full on the [cookies and storage page](/cookies):
+Heliocodex sets no cookies. It keeps up to six small things in your browser, all described in full on the [cookies and storage page](/cookies):
 
 - the place you chose on the sky map, in local storage, so that the sky map and star pages can show your sky;
 - your choices in the 3D view's View menu (planet sizes, motion, picture quality and the map), in local storage, but only once you change one;
-- a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method; and
+- a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method;
+- two notes in session storage, also kept only until you close the tab: the page you were reading when you stepped into the 3D view, with how far down it you were, so the 3D view can offer a way back, and the place you were last looking at in the 3D view, so that going back in the same tab carries on from there; and
 - a note in local storage that says you have chosen not to be counted, which exists only if you use the switch on the cookies page.
 
 None of them is used for advertising or tracking, and none is sent to us. You can remove the first with **Forget my place** or by clearing this site's data in your browser.

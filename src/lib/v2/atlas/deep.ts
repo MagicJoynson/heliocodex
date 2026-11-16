@@ -111,7 +111,7 @@ export function placeLabels(points: { x: number; y: number; r: number; text: str
   const placed: Label[] = [], dropped: string[] = [];
   for (const p of points) {
     const w = p.text.length * size * 0.5 + 6, h = size, g = p.r + 7;
-    const tries: [Label['anchor'], number, number][] = [['start', p.x + g, p.y + h * 0.32], ['end', p.x - g, p.y + h * 0.32], ['middle', p.x, p.y - g - 2], ['middle', p.x, p.y + g + h * 0.8]];
+    const tries: [Label['anchor'], number, number][] = [['start', p.x + g, p.y + h * 0.32], ['end', p.x - g, p.y + h * 0.32], ['middle', p.x, p.y - g - 2], ['middle', p.x, p.y - g - 2 - h * 1.1], ['middle', p.x, p.y + g + h * 0.8], ['end', p.x - g, p.y - h * 0.9], ['end', p.x - g, p.y + h * 1.4], ['start', p.x + g, p.y - h * 0.9], ['start', p.x + g, p.y + h * 1.4]];
     let done = false;
     for (const [anchor, tx, ty] of tries) {
       const x0 = anchor === 'start' ? tx : anchor === 'end' ? tx - w : tx - w / 2;
