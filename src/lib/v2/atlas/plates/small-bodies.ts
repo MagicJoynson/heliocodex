@@ -35,7 +35,7 @@ const figures: Figure[] = [
     id: 'belt', numeral: 'II', title: 'The asteroid belt',
     caption: 'Nine asteroids of the main belt and Hektor, the largest Trojan, with Mars and Jupiter for scale. The faint band is where most of the belt lies. The belt is mostly empty space: spacecraft cross it without steering round anything.',
     families: [], spanKm: 5.75 * AU_KM, view: 'ecliptic', unit: 'au', marks: 'near',
-    names: { mars: 200, jupiter: 20, gaspra: 100, vesta: 310, lutetia: 240, mathilde: 265, juno: 215, pallas: 60, ida: 135, psyche: 280, hygiea: 85, hektor: 160 },
+    names: { mars: 200, jupiter: 20, gaspra: 100, vesta: 310, lutetia: 240, mathilde: 255, juno: 215, pallas: 60, ida: 135, psyche: 292, hygiea: 85, hektor: 160 },
   },
   {
     id: 'comets', numeral: 'III', title: 'Comets that stay close',
