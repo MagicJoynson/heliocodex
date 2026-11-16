@@ -34,6 +34,7 @@ const ASSUMED_RADIUS_KM = 1; // 2 km across, for moons known only as a point of 
 const MAPS: Record<string, string> = {
   moon: '/textures/moons/moon.webp', io: '/textures/moons/io.webp', europa: '/textures/moons/europa.webp',
   ganymede: '/textures/moons/ganymede.webp', callisto: '/textures/moons/callisto.webp', titan: '/textures/moons/titan.webp',
+  mimas: '/textures/moons/mimas.webp', enceladus: '/textures/moons/enceladus.webp', tethys: '/textures/moons/tethys.webp', dione: '/textures/moons/dione.webp', rhea: '/textures/moons/rhea.webp',
 };
 const ALBEDO = 0.2; // a middling grey; individual albedos come with each moon's own surface
 
