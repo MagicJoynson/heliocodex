@@ -29,11 +29,15 @@
     const frame = svg.closest<HTMLElement>('.plate-holder');
     if (!frame || frame.dataset.framed) continue;
     frame.dataset.framed = '1';
-    frame.tabIndex = 0;
     frame.setAttribute('role', 'group');
     frame.setAttribute('aria-label', `${svg.querySelector('.title')?.textContent ?? 'Drawing'}. This drawing scrolls sideways on a narrow screen.`);
-    const centre = () => { if (frame.scrollWidth > frame.clientWidth) frame.scrollLeft = (frame.scrollWidth - frame.clientWidth) / 2; };
-    centre();
-    addEventListener('load', centre, { once: true });
+    // only a frame that really scrolls is a stop for the keyboard
+    const sync = () => {
+      const scrolls = frame.scrollWidth > frame.clientWidth + 1;
+      if (scrolls) { frame.tabIndex = 0; if (!frame.dataset.centred) { frame.dataset.centred = '1'; frame.scrollLeft = (frame.scrollWidth - frame.clientWidth) / 2; } }
+      else frame.removeAttribute('tabindex');
+    };
+    sync();
+    new ResizeObserver(sync).observe(frame);
   }
 </script>
