@@ -3,6 +3,14 @@
 
 .figure-row { grid-template-columns: minmax(0, var(--margin-col)) minmax(0, 46rem); }
 .plate-holder { margin: 0; }
+/* On a phone a 1000-unit drawing shrunk to the screen leaves its words under 6px. Keep it at a width where
+   they read (about 11px at the smallest) and let the frame scroll sideways. */
+@media (max-width: 760px) {
+  .plate-holder { overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+  .plate-holder:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .plate-holder svg.plate { width: 780px; max-width: none; }
+  .plate-holder::after { content: 'Drag sideways to see the whole drawing.'; display: block; position: sticky; left: 0; width: calc(100vw - 2rem); max-width: 100%; margin-top: .5rem; font: 400 .68rem/1.4 var(--r-mono); letter-spacing: .06em; color: var(--ink-faint); }
+}
 svg.plate { display: block; width: 100%; height: auto; font-family: var(--r-serif); }
 .plate .frame { fill: none; stroke: var(--ink-faint); stroke-width: 2.4; }
 .plate .frame.thin { stroke-width: .8; }
@@ -110,10 +118,6 @@ table.moons { width: 100%; border-collapse: collapse; font: 300 1rem/1.4 var(--r
   .ruler.narrow .rule .plain { display: block; }
   .ruler.narrow .mark, .ruler.narrow .more { left: 2rem; right: 0; width: auto; text-align: left; }
   .figure-row, .family-row { grid-template-columns: minmax(0, 1fr); }
-  .plate .name { font-size: 34px; stroke-width: 12px; }
-  .plate .when { transform: translateY(-44px); paint-order: stroke; stroke: var(--paper); stroke-width: 10px; }
-  .plate .title { font-size: 40px; }
-  .plate .inset-mark text, .plate .numeral, .plate .bar text, .plate .when, .plate .sunward text { font-size: 26px; }
   table.moons, .moons tbody, .moons tr, .moons td, .moons tbody th { display: block; }
   .moons thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .moons tbody tr { padding: .8rem 0 .9rem; border-bottom: 1px solid var(--rule); }
@@ -184,10 +188,3 @@ table.moons { width: 100%; border-collapse: collapse; font: 300 1rem/1.4 var(--r
 .deep .arm.bar-line { opacity: .5; }
 .deep .disc.strong { opacity: .3; }
 .deep .here .eye { fill: none; stroke: var(--accent); stroke-width: 1.4; }
-@media (max-width: 760px) {
-  /* a phone has no room for the foot lines: the words beside each drawing say the same */
-  .deep .when, .deep .sunward { display: none; }
-  .deep .rings text, .deep .stamp { font-size: 22px; }
-  .deep .stamp { transform: translateY(40px); }
-  .deep .name.small { font-size: 25px; stroke-width: 9px; }
-}

@@ -12,6 +12,7 @@
     "test:content": "python3 -I scripts/check-content.py",
     "check:links": "node scripts/check-links.mjs",
     "check:budget": "node scripts/check-budget.mjs",
+    "check:atlas-labels": "node scripts/check-atlas-labels.mjs",
     "test:sky": "rolldown src/lib/sky/sky.test.ts --file node_modules/.cache/sky-test.mjs --platform node --log-level warn && node node_modules/.cache/sky-test.mjs",
     "test:search": "rolldown src/lib/search.test.ts --file node_modules/.cache/search-test.mjs --platform node --log-level warn && node node_modules/.cache/search-test.mjs",
     "test:atlas": "rolldown src/lib/v2/atlas/chart.test.ts --file node_modules/.cache/atlas-test.mjs --platform node --log-level warn && node node_modules/.cache/atlas-test.mjs"

@@ -21,4 +21,19 @@
   let pending = 0;
   const ro = new ResizeObserver(() => { cancelAnimationFrame(pending); pending = requestAnimationFrame(fit); });
   for (const svg of document.querySelectorAll('svg.chart')) ro.observe(svg);
+
+  // Atlas plates are drawn on a 1000-unit sheet, so on a phone their words would come out under 6px.
+  // The stylesheet keeps each plate at a readable width inside a frame that scrolls sideways; here the
+  // frame is made reachable from the keyboard and starts with the middle of the drawing in view.
+  for (const svg of document.querySelectorAll<SVGSVGElement>('svg.plate')) {
+    const frame = svg.closest<HTMLElement>('.plate-holder');
+    if (!frame || frame.dataset.framed) continue;
+    frame.dataset.framed = '1';
+    frame.tabIndex = 0;
+    frame.setAttribute('role', 'group');
+    frame.setAttribute('aria-label', `${svg.querySelector('.title')?.textContent ?? 'Drawing'}. This drawing scrolls sideways on a narrow screen.`);
+    const centre = () => { if (frame.scrollWidth > frame.clientWidth) frame.scrollLeft = (frame.scrollWidth - frame.clientWidth) / 2; };
+    centre();
+    addEventListener('load', centre, { once: true });
+  }
 </script>
