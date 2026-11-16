@@ -100,10 +100,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // Mars wears its real colours (Viking and MGS mosaics); its shape here is still generated. The frame is filled in below.
   const bodyFrame = new THREE.Matrix3();
   let bodyMap: THREE.Texture | undefined;
+  let marsMapLoader: (() => void) | null = null;
   if (!demOk) {
-    bodyMap = new THREE.TextureLoader().load('/textures/4k_mars.webp');
+    bodyMap = new THREE.Texture();
     bodyMap.colorSpace = THREE.SRGBColorSpace;
     bodyMap.anisotropy = 8;
+    const mars4k = bodyMap;
+    marsMapLoader = () => { new THREE.TextureLoader().loadAsync('/textures/4k_mars.webp').then((t) => { mars4k.image = t.image; mars4k.needsUpdate = true; }).catch((e) => console.error('the map of Mars did not load', e)); };
   }
   const terrain = createTerrain({ spec, split: quality.split, maxTiles: quality.maxTiles, map: bodyMap, toBody: bodyFrame });
   await terrain.ready;
@@ -185,16 +188,16 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   }
   // the globes' maps are about 3 MB between them and only matter once you are on your way, so they are
   // fetched when you go in (after the first view has its bandwidth), not before
-  const lazyMaps: (() => void)[] = [];
+  const lazyMaps = new Map<string, () => void>();
   for (const p of PLANETS) {
     const map = new THREE.Texture();
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
-    lazyMaps.push(() => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; }).catch((e) => console.error(`the map of ${p} did not load`, e)); });
+    lazyMaps.set(p, () => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; }).catch((e) => console.error(`the map of ${p} did not load`, e)); });
     makeGlobe(p, RADII[p], map);
   }
   let farLoaded = false;
-  const loadFar = () => { if (farLoaded) return; farLoaded = true; deep.load(); for (const f of lazyMaps) f(); };
+  const loadFar = () => { if (farLoaded) return; farLoaded = true; deep.load(); };
   let saturnShadows: { holder: THREE.Group; ball: THREE.Mesh; sunH: { value: THREE.Vector3 }; sunL: { value: THREE.Vector3 } } | null = null;
   // Saturn's rings, from the inner C ring to the F ring, mapped by distance from the centre
   {
@@ -575,6 +578,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const k = sizeBoost(p, d);
       g.scale.setScalar(k);
       g.visible = (radOf(p) * k / d) * pxPerRad > 1.5;
+      // a planet's picture is fetched when it is big enough on screen to show one (about 12 pixels across), not before
+      if (p === 'mars' && (radOf(p) * k / d) * pxPerRad > 6 && marsMapLoader) { marsMapLoader(); marsMapLoader = null; }
+      if ((radOf(p) * k / d) * pxPerRad > 6) { const want = lazyMaps.get(p); if (want) { lazyMaps.delete(p); want(); } }
       // Mars has walkable ground of its own: its plain globe only stands in while it is drawn bigger than life
       // beyond 1,500 km the generated heights would only bend its outline out of round, so the smooth globe is shown until you come down
       if (p === bodySlug) { marsBoosted = k > 1.02 || dBody - terrain.radius > GENERATED_FROM; g.visible = marsBoosted && (radOf(p) * k / d) * pxPerRad > 1.5; }
@@ -708,6 +714,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         const measured = id === 'sun' || id === bodySlug || radiusOf(id) > 0;
         const r = radOf(id);
         focusId = PLANETS.includes(id) || id === 'sun' ? '' : id;
+        // the world you are flying to gets its picture as the flight starts, so it is there on arrival
+        { const want = lazyMaps.get(id); if (want) { lazyMaps.delete(id); want(); } if (id === 'mars' && marsMapLoader) { marsMapLoader(); marsMapLoader = null; } }
         // a body with no measured size: stand off 200 km, since nobody knows how big it is
         const endDist = view.distanceKm ? view.distanceKm * 1000 : measured ? r * (id === 'sun' ? 8 : 3) : 200_000;
         focusHold = endDist * 4;
