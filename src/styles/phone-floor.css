@@ -18,8 +18,10 @@
 
 /* Tap floor: small links in dense lists and charts get a hit area of at least 24 px high without moving anything. */
 @media (max-width: 700px) {
-  .wm-vl li > a, .wm-v li > a, .vl-moons a, .wp-moons a, .atlas-toc a, .go3d, .moons .go a { position: relative; }
-  .wm-vl li > a::after, .wm-v li > a::after, .vl-moons a::after, .wp-moons a::after, .atlas-toc a::after, .go3d::after, .moons .go a::after {
+  .wm-vl li > a, .wm-v li > a, .vl-moons a, .wp-moons a, .atlas-toc a, .go3d, .moons .go a,
+  .more-link, .onward a, .start-link, .family figcaption a, .ledger th a, .ledger-go a, .moon-charts li a, .reach-list li a, .ruler .more a, .landmarks dd a { position: relative; }
+  .wm-vl li > a::after, .wm-v li > a::after, .vl-moons a::after, .wp-moons a::after, .atlas-toc a::after, .go3d::after, .moons .go a::after,
+  .more-link::after, .onward a::after, .start-link::after, .family figcaption a::after, .ledger th a::after, .ledger-go a::after, .moon-charts li a::after, .reach-list li a::after, .ruler .more a::after, .landmarks dd a::after {
     content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 24px; transform: translateY(-50%);
   }
 }
