@@ -79,7 +79,7 @@ const far = worlds.map((w) => {
           {worlds.map((w) => (
             <li class={`w-${w.slug}`} style={`--h:${w.h.toFixed(4)};--w:${w.w.toFixed(4)}`}>
               <a href={`/${w.slug}`}>
-                <img src={w.src} alt={w.alt} width={w.width} height={w.height} loading="eager" />
+                <img src={w.src} alt={w.alt} width={w.width} height={w.height} loading="lazy" decoding="async" />
                 <span>{w.name.replace('The ', '')}</span>
               </a>
             </li>
