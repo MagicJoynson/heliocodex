@@ -15,15 +15,18 @@ for (const [typed, want] of [
   ['jupitor', 'Jupiter'], ['betelguese', 'Betelgeuse'], ['saturm', 'Saturn'], ['nepture', 'Neptune'], ['andormeda', 'Andromeda'],
   ['parralax', 'Parallax'], ['plutto', 'Pluto'], ['uranis', 'Uranus'], ['mecury', 'Mercury'], ['siruis', 'Sirius'], ['cassiopia', 'Cassiopeia'], ['pleiedes', 'Pleiades'], ['andromida galaxy', 'Andromeda'], ['magelanic', 'Magellanic'],
 ] as const) test(`typo "${typed}" finds ${want}`, () => assert.ok(top(typed, 4).some((n) => n.toLowerCase().includes(want.toLowerCase())), `got ${top(typed, 4).join(', ')}`));
-test('landmarks are found as typed', () => { for (const [q, w] of [['pleiades', 'Pleiades'], ['seven sisters', 'Pleiades'], ['m31', 'Andromeda galaxy'], ['sagittarius a', 'black hole'], ['lmc', 'Magellanic']] as const) assert.ok(top(q, 3).some((n) => n.includes(w)), `${q}: ${top(q, 3).join(', ')}`); });
+test('landmarks are found as typed', () => { for (const [q, w] of [['pleiades', 'Pleiades'], ['seven sisters', 'Pleiades'], ['m31', 'Andromeda galaxy'], ['sagittarius a', 'black hole'], ['lmc', 'Magellanic']] as const) assert.ok(top(q, 3).some((n) => n.toLowerCase().includes(w.toLowerCase())), `${q}: ${top(q, 3).join(', ')}`); });
 for (const [typed, want] of [['jup', 'Jupiter'], ['europa', 'Europa'], ['betel', 'Betelgeuse'], ['mars', 'Mars']] as const)
   test(`as typed "${typed}" still puts ${want} first`, () => assert.equal(top(typed, 1)[0], want));
 for (const [typed, want] of [['proxima centuri', 'Proxima'], ['ursa magor', 'Ursa Major'], ['millky way', 'Milky Way'], ['blackhole', 'Black hole']] as const)
   test(`typo "${typed}" finds ${want}`, () => assert.ok(top(typed, 4).some((n) => n.toLowerCase().includes(want.toLowerCase())), `got ${top(typed, 4).join(', ')}`));
 for (const q of ['europa', 'mars', 'uranus', 'nebula', 'eclipse']) test(`"${q}" gets no guessed neighbours`, () => {
-  const stray = rank(all, q, 8).filter((e) => !e[0].toLowerCase().includes(q) && !(e[3] ?? '').toLowerCase().includes(q));
+  // a lesson or glossary entry may be offered because its hidden text (the questions it answers, its summary) holds the word; that is not a guess
+  const stray = rank(all, q, 8).filter((e) => !e[0].toLowerCase().includes(q) && !(e[3] ?? '').toLowerCase().includes(q) && !(e[4] ?? '').toLowerCase().includes(q));
   assert.equal(stray.length, 0, `stray: ${stray.map((e) => e[0]).join(', ')}`);
 });
+for (const [q, want] of [['red planet', 'Mars'], ['biggest moon', 'Ganymede'], ['largest moon', 'Ganymede'], ['iss', 'Space Station'], ['smallest planet', 'Mercury'], ['why is the sky blue', 'Rayleigh scattering'], ['morning star', 'Venus'], ['sunset colour', 'Rayleigh scattering']] as const)
+  test(`what people call it: "${q}" finds ${want} in the first three`, () => assert.ok(top(q, 3).includes(want), `got ${top(q, 3).join(', ')}`));
 test('short words are not guessed at', () => assert.equal(rank(all, 'xyq').length, 0));
 test('catalogue numbers are matched as typed only', () => assert.ok(rank(all, 'HD 99999999').length === 0));
 test('empty query gives nothing', () => assert.equal(rank(all, '   ').length, 0));

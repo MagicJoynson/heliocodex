@@ -9,15 +9,22 @@ import { allTerms, allLessons, allFacts } from '../lib/v2/margin/content';
 import { sections } from '../lib/nav';
 import { landmarks } from '../lib/v2/atlas/landmarks';
 
+// What people call a world instead of its name. Each is plain description that is true of that world.
+const NICKNAME: Record<string, string> = {
+  mars: 'red planet', venus: 'morning star evening star', mercury: 'smallest planet', jupiter: 'largest planet gas giant', saturn: 'ringed planet gas giant',
+  uranus: 'ice giant tilted sideways', neptune: 'ice giant', earth: 'home planet blue planet our world', sun: 'our star',
+  ganymede: 'biggest moon largest moon', titan: 'second largest moon', io: 'volcanic moon', europa: 'ocean moon icy moon', enceladus: 'geysers icy moon', pluto: 'former planet',
+};
+
 export const GET: APIRoute = async () => {
   const out: [string, string, string, string?, string?][] = [];
   for (const id of PLANET_PAGES) {
     const b = allBodies.find((x) => x.id === id)!;
-    out.push([b.name.replace(/^The /, ''), id === 'sun' ? 'Star' : 'Planet', `/${id}`]);
+    out.push([b.name.replace(/^The /, ''), id === 'sun' ? 'Star' : 'Planet', `/${id}`, NICKNAME[id]]);
   }
   for (const b of outlineWorlds) {
     const kind = b.kind === 'moon' ? `Moon of ${nameOf(b.parent).replace(/^the /, '')}` : kindName(b);
-    out.push([b.name.replace(/^The /, ''), kind, `/worlds/${b.id}`, b.id === 'moon' ? 'Luna' : undefined]);
+    out.push([b.name.replace(/^The /, ''), kind, `/worlds/${b.id}`, b.id === 'moon' ? 'Luna' : NICKNAME[b.id]]);
   }
   const cons = new Set<string>();
   for (const s of allStars()) if (s.constellation) cons.add(s.constellation);
