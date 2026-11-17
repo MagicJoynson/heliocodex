@@ -7,6 +7,7 @@ sources:
   - { label: "Wikipedia, Homestake experiment", url: "https://en.wikipedia.org/wiki/Homestake_experiment" }
   - { label: "Wikipedia, Helioseismology", url: "https://en.wikipedia.org/wiki/Helioseismology" }
   - { label: "NASA NSSDC Earth fact sheet", url: "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html" }
+  - { label: "NASA Space Place, Why is the sky blue?", url: "https://spaceplace.nasa.gov/blue-sky/en/" }
 ---
 By mass the Sun is about 73% hydrogen and 25% helium, with every other element making up under 2%. All of it is plasma: gas hot enough for its atoms to have lost electrons, so that it carries electric current and is pushed about by magnetism.
 
@@ -43,7 +44,7 @@ That sounds like a rate nothing could keep up. But the Sun is very large. Over i
 
 **A common mistake: the Sun is on fire.** Burning is chemistry, and it needs oxygen. Fusion joins the cores of atoms and needs neither air nor flame. The difference matters because of how long each could last. If the Sun were a lump of coal burning in oxygen, giving out light at the rate it does, it would be used up in about 5,000 years (a sum that takes a kilogram of coal to give 30 million joules). In the 1800s this was a real puzzle. Geologists could see that the Earth was far older than any fuel then known could keep the Sun alight. Fusion, worked out in the 1930s, was the answer. Weight for weight it gives millions of times more energy than burning.
 
-**Another: the Sun is yellow.** Seen from space it is white. Sunlight is a mix of every colour, strongest in the green, and the eye reads that mix as white. From the ground the air scatters some of the blue out of the direct beam, which is why the sky is blue and why the Sun looks yellowish, and red when it is low.
+**Another: the Sun is yellow.** Seen from space it is white. Sunlight is a mix of every colour, strongest in the green, and the eye reads that mix as white. From the ground the air scatters some of the blue out of the direct beam, which is why the sky is blue and why the Sun looks yellowish, and red when it is low. Short waves are scattered far more than long ones, about six times more strongly for blue than for red, and the effect is called Rayleigh scattering. Low in the sky the light crosses much more air, so even more of the blue is scattered away and what reaches you is orange and red.
 
 **Not a dense ball.** The Sun as a whole is only 1.4 times as dense as water, about a quarter of the Earth's density. The centre is far denser than lead, and the layer that looks like a surface is thinner than the air in this room by thousands of times. A spacecraft that could stand the heat would fall in without hitting anything.
 
