@@ -22,7 +22,7 @@ terms:
     term: Rayleigh scattering
     also: [blue sky, sky colour, sunset]
     short: "Why the daytime sky is blue: the air scatters short wavelengths of sunlight, such as blue, far more than long ones, such as red."
-    more: "Blue light is scattered about six times more strongly than red, so scattered blue reaches your eyes from every part of the sky. Violet is scattered even more, but the Sun gives out less of it and the eye is less sensitive to it. At sunset the light crosses far more air, most of the blue is scattered out of the beam, and what is left is orange and red."
+    more: "Blue light is scattered much more strongly than red, so scattered blue reaches your eyes from every part of the sky. Violet is scattered even more, but the Sun gives out less of it and the eye is less sensitive to it. At sunset the light crosses far more air, most of the blue is scattered out of the beam, and what is left is orange and red."
     see: [wavelength, photon, atmosphere]
   - id: wavelength
     term: Wavelength
