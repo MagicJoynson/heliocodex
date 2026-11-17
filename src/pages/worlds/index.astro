@@ -23,6 +23,8 @@ const P = planets.map((b) => {
 });
 // a moon list that would run into its neighbour's starts below it instead
 P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && p.x - q.x < 7) p.skip = q.skip + q.moons.length; });
+// each moon row is 1.5rem (24px) tall so that every link meets the 24px target size; the band is as tall as the longest list
+const bandRem = Math.max(12.5, ...P.map((p) => 2.2 + p.d / 32 + 1.3 + (p.skip + p.moons.length) * 1.5 + 1));
 const LANES = [
   { kind: 'asteroid', name: 'Asteroids', about: 'rocky and metal worlds' },
   { kind: 'comet', name: 'Comets', about: 'icy, on stretched paths' },
@@ -88,7 +90,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       {ZONES.map((z, i) => <div class:list={['wm-zone', { alt: i % 2 }]} style={`--a:${x(z.from)};--b:${x(z.to)}`}><span>{z.name}</span></div>)}
       <div class="wm-ticks" aria-hidden="true">{ticks.map((t) => <i style={`--x:${x(t)}`}><b>{t} au</b></i>)}</div>
       <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
-      <ol class="wm-planets">
+      <ol class="wm-planets" style={`height:${bandRem.toFixed(1)}rem`}>
         {P.map((p) => (
           <li style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
             <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
@@ -165,8 +167,8 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wp-dot { position: absolute; left: calc(var(--d) / -2); top: calc(var(--d) / -2); width: var(--d); height: var(--d); border-radius: 50%; background: var(--accent); }
   .wp-dot span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(var(--sx, -50%)); font: 400 1rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
   .wp-au { position: absolute; top: calc(var(--d) / 2 + .3rem); left: 0; transform: translateX(-50%); font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
-  .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: .1rem; padding-top: calc(var(--skip) * 1.06rem); }
-  .wp-moons a { display: flex; align-items: center; gap: .35rem; font: 400 .8rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
+  .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: 0; padding-top: calc(var(--skip) * 1.5rem); }
+  .wp-moons a { display: flex; align-items: center; gap: .35rem; min-height: 1.5rem; font: 400 .8rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
   .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
   .wp-moons li.written a { color: var(--ink); }
   .wp-moons li.written a::before { background: var(--accent); }
@@ -210,7 +212,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
     .vlead { fill: none; stroke: rgba(236,231,220,.16); stroke-width: .8; }
     .wm-vl { list-style: none; margin: 0; padding: 0; position: absolute; left: 200px; right: 0; top: 0; }
     .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/17px var(--r-serif); }
-    .wm-vl li > a { color: var(--ink); }
+    .wm-vl li > a { color: var(--ink); display: inline-block; padding: 4px 0; margin: -4px 0; }
     .wm-vl li.out > a { text-decoration: underline dashed rgba(233,196,138,.5); text-underline-offset: 3px; text-decoration-thickness: 1px; }
     .wm-vl small { margin-left: .4rem; font: 400 .58rem/14px var(--r-mono); color: var(--ink-faint); }
     .wm-vl .vl-moons { display: block; font: 300 .8rem/14px var(--r-serif); color: var(--ink-faint); }
