@@ -105,7 +105,7 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
     if (name === q) s = 0;
     else if (name.startsWith(q)) s = 10;
     else if (nameWords.some((w) => w.startsWith(q))) s = 20;
-    else if (alsoWords.includes(q)) s = 15;
+    else if (alsoWords[0] === q) s = 15; // a code or abbreviation comes first in the other names ("ISS International"), and an exact one beats a match inside another name
     else if (alsoWords.some((w) => w.startsWith(q))) s = 25;
     else if (q.length > 2 && (name.includes(q) || also.includes(q))) s = 30;
     // A question. The exact question a lesson answers comes first; then lessons whose questions or title hold every meaningful word; then any text that does.
