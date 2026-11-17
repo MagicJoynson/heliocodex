@@ -13,7 +13,7 @@ import { landmarks } from '../lib/v2/atlas/landmarks';
 const NICKNAME: Record<string, string> = {
   mars: 'red planet', venus: 'morning star evening star', mercury: 'smallest planet', jupiter: 'largest planet gas giant', saturn: 'ringed planet gas giant',
   uranus: 'ice giant tilted sideways', neptune: 'ice giant', earth: 'home planet blue planet our world', sun: 'our star',
-  ganymede: 'biggest moon largest moon', titan: 'second largest moon', io: 'volcanic moon', europa: 'ocean moon icy moon', enceladus: 'geysers icy moon', pluto: 'former planet',
+  ganymede: 'biggest moon largest moon', titan: 'hazy moon thick atmosphere', io: 'volcanic moon', europa: 'ocean moon icy moon', enceladus: 'geysers icy moon', pluto: 'former planet',
 };
 
 export const GET: APIRoute = async () => {
