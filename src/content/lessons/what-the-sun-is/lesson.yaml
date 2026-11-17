@@ -4,6 +4,6 @@ order: 1
 summary: "The Sun is a star seen close up: a ball of glowing gas, layered like an onion, with a furnace in the middle."
 scene: "The Sun cut open to show the core, the radiative zone and the convective zone under the surface."
 view: { target: sun, distanceKm: 2500000 }
-terms: [star, plasma, nuclear-fusion, solar-core, radiative-zone, convective-zone, photosphere]
+terms: [star, plasma, nuclear-fusion, solar-core, radiative-zone, convective-zone, photosphere, rayleigh-scattering]
 next: [how-the-sun-shines, the-active-sun]
 asks: ["why is the sky blue", "what colour is the sun", "why is the sun yellow", "what is the sun made of", "how hot is the sun"]
