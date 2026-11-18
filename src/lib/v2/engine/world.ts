@@ -189,12 +189,20 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // the globes' maps are about 3 MB between them and only matter once you are on your way, so they are
   // fetched when you go in (after the first view has its bandwidth), not before
   const lazyMaps = new Map<string, () => void>();
+  const MAP_DIM = 0.54;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mapFades: { mat: THREE.MeshStandardNodeMaterial; t0: number }[] = [];
+  const fadeSetters = new Map<THREE.Material, (v: number) => void>();
+  const setDim = (m: THREE.MeshStandardNodeMaterial, v: number) => { m.color.setScalar(v); fadeSetters.get(m)?.(v); };
   for (const p of PLANETS) {
     const map = new THREE.Texture();
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
-    lazyMaps.set(p, () => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; }).catch((e) => console.error(`the map of ${p} did not load`, e)); });
-    makeGlobe(p, RADII[p], map);
+    const globe = makeGlobe(p, RADII[p], map);
+    // until its map arrives the ball is plain grey; when it does, the colour comes up over about a second instead of popping in
+    const mat = (globe.children[0] as THREE.Mesh).material as THREE.MeshStandardNodeMaterial;
+    mat.color.setScalar(MAP_DIM);
+    lazyMaps.set(p, () => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; if (reducedMotion) setDim(mat, 1); else mapFades.push({ mat, t0: performance.now() }); }).catch((e) => { setDim(mat, 1); console.error(`the map of ${p} did not load`, e); }); });
   }
   let farLoaded = false;
   const loadFar = () => { if (farLoaded) return; farLoaded = true; deep.load(); };
@@ -240,7 +248,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const opacity = (texture(tex, vec2(u.clamp(0, 1), 0.5)) as any).a;
       const litG = select(inRing, float(1).sub(opacity.mul(0.85)), float(1));
       const gm = ball.material as THREE.MeshStandardNodeMaterial;
-      if (gm.map) gm.colorNode = (texture(gm.map) as any).mul(vec4(vec3(litG), 1));
+      if (gm.map) {
+        // this material's own colour node ignores material.color, so its fade goes through a uniform instead
+        const dim = uniform(gm.color.r) as any;
+        gm.colorNode = (texture(gm.map) as any).mul(vec4(vec3(litG.mul(dim)), 1));
+        fadeSetters.set(gm, (v) => { dim.value = v; });
+      }
     }
   }
 
@@ -595,6 +608,11 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const b = saturnShadows.ball;
       const l = saturnShadows.sunH.value.clone().applyEuler(new THREE.Euler(0, -b.rotation.y, 0));
       saturnShadows.sunL.value.set(l.x / b.scale.x, l.y / b.scale.y, l.z / b.scale.z);
+    }
+    for (let i = mapFades.length - 1; i >= 0; i--) {
+      const f = mapFades[i], k = Math.min(1, (performance.now() - f.t0) / 900);
+      setDim(f.mat, MAP_DIM + (1 - MAP_DIM) * k * k * (3 - 2 * k));
+      if (k >= 1) mapFades.splice(i, 1);
     }
     for (const { id, mesh } of spinning) {
       const [w0, rate] = SPIN[id];
