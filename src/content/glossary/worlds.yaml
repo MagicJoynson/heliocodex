@@ -231,3 +231,15 @@ terms:
     more: "Perseverance, a rover the size of a car, landed on Mars on 18 February 2021. A radio signal took eleven minutes to reach the Earth, so it had to land itself."
     see: [light-time, gravity-assist]
     lesson: robot-explorers
+  - id: great-red-spot
+    term: Great Red Spot
+    also: [jupiter storm, red spot]
+    short: "A storm on Jupiter wider than the Earth that has been watched for well over a century."
+    more: "It is an enormous whirl of cloud in the atmosphere of Jupiter, a gas giant with no solid surface to land on."
+    see: [gas-giant, atmosphere]
+  - id: olympus-mons
+    term: Olympus Mons
+    also: [mars volcano, biggest volcano, tallest mountain]
+    short: "The largest volcano known on any planet, on Mars. Its summit is about 21 km above the average level of the surface."
+    more: "That is nearly two and a half times the height of Everest above the sea. Mars's crust is not broken into moving plates, so a volcano stays over its source of lava and can keep growing."
+    see: [terrestrial-planet, atmosphere]
