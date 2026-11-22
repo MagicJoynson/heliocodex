@@ -4,7 +4,7 @@
  * tonnes, and the Crab pulsar turning 30 times a second.
  */
 import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, mix, label, stars, rng, nf } from '../stage';
-import { TAU, photoScene, sun, dot, ring, line } from '../kit';
+import { TAU, photoScene, pairScene, sun, dot, ring, line } from '../kit';
 
 const backdrop = stars(150, 97);
 
@@ -104,12 +104,10 @@ const lighthouseScene: Scene = {
 };
 
 // ---- 4. the Crab
-const crabHeart = photoScene({
-  src: '/img/learn/crab-pulsar-hubble.jpg',
-  caption: 'A real photograph: the heart of the Crab Nebula by the Hubble Space Telescope. The neutron star is the right-hand one of the two bright stars near the middle. The rings round it are waves driven out by its spin. Credit: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall), CC BY 4.0. The mark was added here.',
-  say: ['What is left of the star that exploded in 1054', 'It turns 30 times every second'],
-  cover: true, zoom: [1, 1.22], focus: [0.6, 0.5],
-  pointers: [{ at: [0.637, 0.48], to: [0.78, 0.3], text: 'The pulsar' }],
+const crabHeart = pairScene({
+  a: '/img/learn/crab-nebula-hubble.jpg', b: '/img/learn/crab-pulsar-hubble.jpg',
+  caption: 'Two real photographs by the Hubble Space Telescope. On the left, the whole Crab Nebula, the cloud of gas thrown out by the explosion seen in 1054. On the right, its heart: the neutron star is the right-hand one of the two bright stars near the middle, with rings round it that are waves driven out by its spin. Credit, left: NASA, ESA and A. Loll and J. Hester (Arizona State University), with thanks to D. De Martin (ESA/Hubble). Credit, right: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall). Both CC BY 4.0.',
+  say: ['What is left of the star that exploded in 1054', 'It turns 30 times every second'], tags: ['The Crab Nebula', 'Its heart'],
 });
 
 // ---- 5. heavier still

@@ -4,6 +4,7 @@ sources:
   - { label: "NASA, How we find and characterize exoplanets", url: "https://science.nasa.gov/exoplanets/how-we-find-and-characterize/" }
   - { label: "NASA Exoplanet Catalog, 51 Pegasi b", url: "https://science.nasa.gov/exoplanet-catalog/51-pegasi-b/" }
   - { label: "ESO, The brown dwarf 2M1207 and its planetary companion (2005)", url: "https://www.eso.org/public/images/eso0515a/" }
+  - { label: "ESO, Exoplanet caught on the move (Beta Pictoris b, 2010)", url: "https://www.eso.org/public/images/eso1024a/" }
   - { label: "NASA, Roman Space Telescope: microlensing", url: "https://science.nasa.gov/mission/roman-space-telescope/microlensing/" }
 ---
 On 11 November 2026 NASA's Exoplanet Archive listed 6,464 planets round other stars. Hardly any of them has ever been seen. Nearly all were found by watching a star very closely and catching it doing something that only a planet could cause. Four methods account for all but a handful.
@@ -12,7 +13,7 @@ The wobble came first for stars like the Sun. A planet does not simply circle it
 
 The second has found the most by far. If a planet's path happens to cross the face of its star as seen from here, the star dims a tiny bit each time it passes. One space telescope, Kepler, stared at 150,000 stars for four years, waiting for dips that came back on time. Dips like that have given 4,797 of the planets on the list.
 
-The third is the obvious one, and the hardest: take a picture. This is a real one. The planet in it was first photographed in 2004. The red dot is a planet about five times the mass of Jupiter. It can be seen only because it is young and still glowing with heat, and because the thing it circles is a dim brown dwarf, not a bright star. Only 98 planets have been found this way.
+The third is the obvious one, and the hardest: take a picture. These are real ones. The planet in the first was photographed in 2004. The red dot is a planet about five times the mass of Jupiter. It can be seen only because it is young and still glowing with heat, and because the thing it circles is a dim brown dwarf, not a bright star. The second is Beta Pictoris b, which was caught on both sides of its star, six years apart, so its orbit could be followed. Only 98 planets have been found this way.
 
 The fourth uses gravity as a lens. When one star drifts exactly in front of another, far more distant one, its gravity bends the far star's light and makes it brighten for a while. If the nearer star has a planet, the planet adds a short flicker of its own. This has found 292 planets, and it is best at the ones far out from their stars.
 
