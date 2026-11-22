@@ -1,4 +1,5 @@
-@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/fraunces/wght.css';
+@import '@fontsource-variable/fraunces/wght-italic.css';
 @import '@fontsource-variable/inter';
 @import '@fontsource/spectral/300.css';
 @import '@fontsource/spectral/400.css';
@@ -18,6 +19,9 @@
   --gutter: clamp(16px, 4vw, 48px);
   --header-h: 56px;
 }
+
+/* Headings follow the wordmark: Fraunces. Body text stays Spectral. The world pages (World layout) keep their own display faces. */
+h1, h2, h3 { font-family: 'Fraunces Variable', Georgia, serif !important; }
 
 * { box-sizing: border-box; }
 html { color-scheme: dark; }
