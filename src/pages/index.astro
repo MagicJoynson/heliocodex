@@ -6,7 +6,7 @@ import { portraits } from '../lib/portraits';
 import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
 import facts from '../data/facts.json';
 import { bodies } from '../data/bodies';
-import { planetCells } from '../lib/planet-sheet';
+import { planetCells, TEMPS } from '../lib/planet-sheet';
 import { properStars } from '../lib/sky/starlist';
 import { slugOf } from '../lib/sky/star';
 import { allTerms, STRAND_ORDER } from '../lib/v2/margin/content';
@@ -31,7 +31,7 @@ const plain = (h: string) => h.replace(/<[^>]+>/g, '');
 const ledger = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].map((slug) => {
   const c = planetCells(slug);
   const get = (k: string) => { const x = c.find((y) => y.key === k)!; return plain(`${x.value}${x.unit ? ` ${x.unit.replace(' on average', '').replace(' across', '')}` : ''}`); };
-  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: get('temperature') };
+  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: `${get('temperature')} (${TEMPS[slug].kind})` };
 });
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
 const jupiterKm = portraits.find((p) => p.slug === 'jupiter')!.km;

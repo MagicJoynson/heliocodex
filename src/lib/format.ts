@@ -55,7 +55,7 @@ export function orbitRows(slug: string): Row[] {
     { label: '', value: `${fmt(p.semimajor_1e6km)} million km` },
     { label: 'Closest (perihelion)', value: `${fmt(p.perihelion_1e6km)} million km` },
     { label: 'Farthest (aphelion)', value: `${fmt(p.aphelion_1e6km)} million km` },
-    { label: 'Orbital period (year)', value: daysToYear(p.orbit_period_days), vs: ratio('orbit_period_days', p.orbit_period_days) },
+    { label: 'Orbital period (sidereal year)', value: daysToYear(p.orbit_period_days), vs: ratio('orbit_period_days', p.orbit_period_days) },
     { label: 'Mean orbital speed', value: `${p.orbit_velocity_kms} km/s`, vs: ratio('orbit_velocity_kms', p.orbit_velocity_kms) },
     { label: 'Eccentricity', value: `${p.eccentricity}` },
     { label: 'Inclination to ecliptic', value: `${p.inclination_deg}°` },
