@@ -186,7 +186,7 @@ import { sections } from '../lib/nav';
     </section>
     <p class="sr" id="said" role="status" aria-live="polite"></p>
 
-    <div class="pad" id="pad" aria-hidden="true"><span>Fly</span><i></i><span>Back</span></div>
+    <div class="pad" id="pad" aria-hidden="true"><span>Ahead</span><i></i><span>Astern</span></div>
     <p class="tech" id="tech"></p>
     <p class="gen" id="gen"></p>
     <Margin />
@@ -618,7 +618,7 @@ import { sections } from '../lib/nav';
       const flyHint = () => {
         const h = $('hint');
         h.querySelector('.fine-only')!.textContent = 'W A S D to move · mouse drag to look · E and Q up and down · . and , change speed · Esc to stop';
-        h.querySelector('.coarse-only')!.textContent = 'Drag to look · hold Fly for forward, Back for back · + and − change speed';
+        h.querySelector('.coarse-only')!.textContent = 'Drag to look · press the pad for ahead or astern · + and − change speed';
         h.classList.add('show'); clearTimeout(flyHintT); flyHintT = window.setTimeout(() => h.classList.remove('show'), 8000);
       };
       let flyHintT = 0;

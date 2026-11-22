@@ -238,8 +238,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const along = dot(P, sq);
       const miss = length(P.sub(sq.mul(along)));
       // lit unless the ray to the Sun passes through the planet, with a soft edge for the penumbra
-      const litR = select(along.lessThan(0), smoothstep(A * 0.985, A * 1.015, miss), float(1));
-      ringMat.colorNode = (texture(tex) as any).mul(vec4(vec3(litR.mul(0.94).add(0.06)), 1));
+      const litR = select(along.lessThan(0), smoothstep(A * 0.93, A * 1.07, miss), float(1));
+      ringMat.colorNode = (texture(tex) as any).mul(vec4(vec3(litR.mul(0.9).add(0.1)), 1));
       // a point of the globe (unit sphere, before its scale), followed towards the Sun to the ring plane
       const gp = positionLocal as any;
       const t = gp.y.negate().div(select((sunL as any).y.abs().lessThan(1e-6), float(1e-6), (sunL as any).y));
