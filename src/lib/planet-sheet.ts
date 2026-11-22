@@ -13,10 +13,10 @@ export const TEMPS: Record<string, { value: string; note: string; short: string;
   venus: { value: '464 °C', short: '464 °C', note: 'At the ground, day and night: hotter than Mercury, under its thick air.', kind: 'ground' },
   earth: { value: '15 °C', short: '15 °C', note: 'Averaged over the whole surface and the whole year.', kind: 'mean surface' },
   mars: { value: '−59 °C', short: '−59 °C', note: 'Averaged over the surface. A summer afternoon at the equator can pass 20 °C.', kind: 'mean surface' },
-  jupiter: { value: '−108 °C', short: '−108 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'cloud tops, 1 bar' },
-  saturn: { value: '−139 °C', short: '−139 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'cloud tops, 1 bar' },
-  uranus: { value: '−197 °C', short: '−197 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'cloud tops, 1 bar' },
-  neptune: { value: '−201 °C', short: '−201 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'cloud tops, 1 bar' },
+  jupiter: { value: '−108 °C', short: '−108 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
+  saturn: { value: '−139 °C', short: '−139 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
+  uranus: { value: '−197 °C', short: '−197 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
+  neptune: { value: '−201 °C', short: '−201 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
 };
 
 const EARTH = facts.planets.earth.physical as unknown as Record<string, number>;
