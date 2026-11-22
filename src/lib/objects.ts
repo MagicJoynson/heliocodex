@@ -22,6 +22,16 @@ const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const count = (re: RegExp, t: string) => (t.match(re) ?? []).length;
 
 /**
+ * The lesson that teaches each world best, picked by an editor and shown first whatever the scoring says. A world is left out
+ * where no lesson truly covers it (Mercury, Titan, Triton): showing none is better than a wrong one.
+ */
+export const LEAD_LESSON: Record<string, string> = {
+  sun: 'what-the-sun-is', venus: 'air-and-the-greenhouse', earth: 'the-earth-as-a-planet', mars: 'air-and-the-greenhouse',
+  jupiter: 'three-kinds-of-planet', saturn: 'rings', uranus: 'three-kinds-of-planet', neptune: 'finding-neptune',
+  moon: 'the-moon', io: 'moons-in-step', europa: 'ocean-moons', ganymede: 'moons-in-step', callisto: 'moons-in-step', enceladus: 'ocean-moons',
+};
+
+/**
  * Lessons about a world, best first, ranked by how much they are about it: the name in the title or summary counts most,
  * then facts filed under it, then how often the lesson's own text names it. A weak match is left out: no lesson is better than a wrong one.
  * Where the 3D camera points does not count.
@@ -37,5 +47,8 @@ export function lessonsAbout(all: L[], id: string, title: string, max = 3, facts
     const score = inTitle * 12 + inSummary * 6 + (isFiled ? 2 : 0) + (l.data.title.replace(/^The /, '') === title ? 20 : 0) + Math.min(inText, 12);
     return { l, score, about };
   }).filter((x) => x.about);
-  return scored.sort((a, b) => b.score - a.score).slice(0, max).map((x) => x.l);
+  const ranked = scored.sort((a, b) => b.score - a.score).map((x) => x.l);
+  const lead = LEAD_LESSON[id] ? all.find((l) => l.id === LEAD_LESSON[id]) : undefined;
+  if (LEAD_LESSON[id] && !lead) throw new Error(`The lead lesson "${LEAD_LESSON[id]}" for ${id} does not exist`);
+  return (lead ? [lead, ...ranked.filter((l) => l !== lead)] : ranked).slice(0, max);
 }
