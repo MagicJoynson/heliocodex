@@ -114,10 +114,20 @@ const frost: Scene = {
     [[0.3, 3], [0.5, 3.5], [0.7, 4], [0.85, 4.5]].forEach(([f, r]) => dot(ctx, x0 + (xs - x0) * f, y, r, '#c9a98a'));
     [[0.3, 11], [0.6, 14], [0.85, 9]].forEach(([f, r]) => dot(ctx, xs + (x1 - xs) * f, y, r, '#9fc0d8'));
     label(ctx, 'Frost line', xs, y - 100, { align: 'center', colour: FAINT, size: 9 });
-    label(ctx, 'Too hot for ice', (x0 + xs) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
-    label(ctx, narrow ? 'Rock and metal: small planets' : 'Rock and metal only: small, rocky planets', (x0 + xs) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
-    label(ctx, 'Cold enough for ice too', (xs + x1) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
-    label(ctx, narrow ? 'More to build from: giants' : 'Far more to build from: giant planets', (xs + x1) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
+    if (narrow) {
+      // on a phone the two sides are too narrow to centre long labels in, so each hugs the frost line from its own side, on two lines
+      label(ctx, 'Too hot for ice', xs - 6, y - 84, { align: 'right', colour: SOFT, size: 10 });
+      label(ctx, 'Cold enough for ice too', xs + 6, y - 84, { align: 'left', colour: SOFT, size: 10 });
+      label(ctx, 'Rock and metal:', xs - 6, y + 90, { align: 'right', colour: ACCENT, size: 10 });
+      label(ctx, 'small planets', xs - 6, y + 104, { align: 'right', colour: ACCENT, size: 10 });
+      label(ctx, 'More to build', xs + 6, y + 90, { align: 'left', colour: ACCENT, size: 10 });
+      label(ctx, 'from: giants', xs + 6, y + 104, { align: 'left', colour: ACCENT, size: 10 });
+    } else {
+      label(ctx, 'Too hot for ice', (x0 + xs) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
+      label(ctx, 'Rock and metal only: small, rocky planets', (x0 + xs) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
+      label(ctx, 'Cold enough for ice too', (xs + x1) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
+      label(ctx, 'Far more to build from: giant planets', (xs + x1) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
+    }
     say('Rock near the Sun, giants far out', 'Ice could stay solid only where it was cold');
   },
 };

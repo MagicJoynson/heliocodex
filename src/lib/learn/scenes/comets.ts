@@ -44,7 +44,7 @@ export const lens: Scene = {
     const years = (t * 5) % PERIOD, p = place(years / PERIOD);
     dot(ctx, sx + p.x * s, sy + p.y * s, 3.2, '#f4efe4');
     label(ctx, `${Math.floor(years)} years after 1986`, roomX + roomW / 2, h * (roomX ? 0.13 : 0.1), { align: 'center', colour: ACCENT });
-    label(ctx, 'Farthest: 35 AU', sx + Q_FAR * s, sy - 16, { align: 'right', colour: SOFT, size: 10 });
+    label(ctx, 'Farthest: 35 AU', sx + Q_FAR * s, sy + 16, { align: 'right', colour: SOFT, size: 10 });
     say('A path from inside Venus’s orbit to beyond Neptune’s', 'It takes about 76 years to go round once');
   },
 };

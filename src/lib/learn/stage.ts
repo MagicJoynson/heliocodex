@@ -47,7 +47,7 @@ export function rng(seed: number): () => number {
 }
 
 /** The room a scene has to draw in; set by `mount` before each frame so labels can keep inside it. */
-const room = new WeakMap<CanvasRenderingContext2D, { w: number; h: number }>();
+const room = new WeakMap<CanvasRenderingContext2D, { w: number; h: number; boxes: { x0: number; x1: number; y0: number; y1: number }[] }>();
 
 export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { align?: CanvasTextAlign; colour?: string; size?: number } = {}): void {
   const size = opts.size ?? 11, align = opts.align ?? 'left', up = text.toUpperCase();
@@ -69,14 +69,32 @@ export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y:
     }
     lines = [words.slice(0, best).join(' '), words.slice(best).join(' ')];
   }
-  const lh = size + 3, half = size / 2 + 1;
-  const y0 = Math.min(Math.max(y - (lines.length - 1) * lh / 2, half + 2), r.h - half - (lines.length - 1) * lh - 2);
-  lines.forEach((line, i) => {
-    const tw = ctx.measureText(line).width;
-    const left = align === 'right' ? x - tw : align === 'center' ? x - tw / 2 : x;
-    const nl = Math.min(Math.max(left, margin), Math.max(margin, r.w - margin - tw));
-    ctx.textAlign = 'left';
-    ctx.fillText(line, nl, y0 + i * lh);
+  const lh = size + 3, half = size / 2 + 1, GAP = 3;
+  const widths = lines.map((line) => ctx.measureText(line).width);
+  const placed = (dy: number) => lines.map((_, i) => {
+    const left = align === 'right' ? x - widths[i] : align === 'center' ? x - widths[i] / 2 : x;
+    const nl = Math.min(Math.max(left, margin), Math.max(margin, r.w - margin - widths[i]));
+    return { x: nl, y: 0, i, dy, box: { x0: nl, x1: nl + widths[i], y0: 0, y1: 0 } };
+  });
+  const top = half + 2, bottom = r.h - half - (lines.length - 1) * lh - 2;
+  const base = Math.min(Math.max(y - (lines.length - 1) * lh / 2, top), bottom);
+  // a label that would touch one already drawn is moved up or down, a line at a time, to the nearest free place
+  let chosen = base, found = false;
+  for (const dy of [0, lh, -lh, 2 * lh, -2 * lh, 3 * lh, -3 * lh, 4 * lh, -4 * lh]) {
+    const yy = base + dy;
+    if (dy && (yy < top || yy > bottom)) continue;
+    const clash = placed(0).some((q) => {
+      const b = { x0: q.box.x0 - GAP, x1: q.box.x1 + GAP, y0: yy + q.i * lh - half + 1 - GAP, y1: yy + q.i * lh + half - 1 + GAP };
+      return r.boxes.some((o) => b.x1 > o.x0 && o.x1 > b.x0 && b.y1 > o.y0 && o.y1 > b.y0);
+    });
+    if (!clash) { chosen = yy; found = true; break; }
+  }
+  if (!found) chosen = base;
+  ctx.textAlign = 'left';
+  placed(0).forEach((q) => {
+    const yy = chosen + q.i * lh;
+    r.boxes.push({ x0: q.box.x0, x1: q.box.x1, y0: yy - half + 1, y1: yy + half - 1 });
+    ctx.fillText(lines[q.i], q.x, yy);
   });
 }
 
@@ -136,7 +154,7 @@ export function mount(host: HTMLElement, first: Scene): Mounted {
     if (!w || !h) return;
     const still = calm.matches;
     ctx.clearRect(0, 0, w, h);
-    room.set(ctx, { w, h });
+    room.set(ctx, { w, h, boxes: [] });
     const t = still ? scene.stillAt ?? 0 : (performance.now() - started) / 1000;
     // a drawing of an idea says so on the picture itself, where it cannot be scrolled away from the caption;
     // the mark gets its own strip above the drawing so it never covers a label
@@ -144,7 +162,7 @@ export function mount(host: HTMLElement, first: Scene): Mounted {
       ctx.save(); ctx.translate(0, STRIP);
       // anything a scene draws above its own top edge is cut off here, as it was at the top of the canvas, never into the strip
       ctx.beginPath(); ctx.rect(0, 0, w, h - STRIP); ctx.clip();
-      room.set(ctx, { w, h: h - STRIP });
+      room.set(ctx, { w, h: h - STRIP, boxes: [] });
       scene.draw({ ctx, w, h: h - STRIP, still, pointer: pointer && { x: pointer.x, y: pointer.y - STRIP }, say, t });
       ctx.restore(); tag(ctx, w);
     } else scene.draw({ ctx, w, h, still, pointer, say, t });
