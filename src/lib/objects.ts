@@ -17,10 +17,21 @@ export function goFor(b: Body): string | null {
 
 export const goStar = (index: number) => `star:${index}`;
 
-/** Lessons about a world, best first: those whose 3D camera looks at it, then those that name it in their title or summary. */
-export function lessonsAbout(all: L[], id: string, title: string, max = 3): L[] {
-  const named = id === 'sun' ? /\bSun\b/ : id === 'earth' ? /\bEarth\b/ : new RegExp(`\\b${title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
-  const aimed = all.filter((l) => l.data.view?.target === id);
-  const text = (l: L) => `${l.data.title} ${l.data.summary} ${l.data.scene ?? ''}`;
-  return [...aimed, ...all.filter((l) => !aimed.includes(l) && named.test(text(l)))].slice(0, max);
+type F = { about: string[] };
+const esc = (t: string) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const count = (re: RegExp, t: string) => (t.match(re) ?? []).length;
+
+/**
+ * Lessons about a world, best first, ranked by how much they are about it: the name in the title or summary counts most,
+ * then facts filed under it, then how often the lesson's own text names it. Where the 3D camera points does not count.
+ */
+export function lessonsAbout(all: L[], id: string, title: string, max = 3, facts: F[] = []): L[] {
+  const re = new RegExp(`\\b${id === 'sun' ? 'Sun' : id === 'earth' ? 'Earth' : esc(title)}\\b`, 'g');
+  const filed = new Set(facts.filter((f) => f.about.includes(id)).flatMap((f) => f.about));
+  const scored = all.map((l) => {
+    const body = l.levels.filter((x) => /(first-look|how-it-works)$/.test(x.id)).map((x) => x.body ?? '').join(' ');
+    const score = count(re, l.data.title) * 12 + count(re, l.data.summary) * 6 + (filed.has(l.id) ? 2 : 0) + (l.data.title.replace(/^The /, '') === title ? 20 : 0) + Math.min(count(re, body), 12);
+    return { l, score };
+  }).filter((x) => x.score >= 6);
+  return scored.sort((a, b) => b.score - a.score).slice(0, max).map((x) => x.l);
 }

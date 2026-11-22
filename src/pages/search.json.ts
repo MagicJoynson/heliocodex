@@ -22,7 +22,8 @@ export const GET: APIRoute = async () => {
   type E = [string, string, string, string?, string?, string?, string?];
   const out: E[] = [];
   const lessonList = await allLessons();
-  const about = (id: string, name: string) => lessonsAbout(lessonList, id, name, 3).map((l) => l.id).join(' ') || undefined;
+  const factList = await allFacts();
+  const about = (id: string, name: string) => lessonsAbout(lessonList, id, name, 3, factList).map((l) => l.id).join(' ') || undefined;
   for (const id of PLANET_PAGES) {
     const b = allBodies.find((x) => x.id === id)!;
     out.push([b.name.replace(/^The /, ''), id === 'sun' ? 'Star' : 'Planet', `/${id}`, NICKNAME[id], undefined, goFor(b) ?? undefined, about(id, b.name.replace(/^The /, ''))]);
@@ -36,7 +37,7 @@ export const GET: APIRoute = async () => {
   for (const c of [...cons].sort()) out.push([c, 'Constellation', `/stars/in/${slugOf(c)}`]);
   // The last field is words a question can find, never shown: first the questions a lesson answers, divided by |, then after || a glossary meaning, or a lesson's summary and its facts.
   for (const t of await allTerms()) out.push([t.term, 'Glossary', `/glossary#${t.id}`, t.also.join(' ') || undefined, `||${t.short} ${t.more ?? ''}`.trim()]);
-  const facts = await allFacts();
+  const facts = factList;
   for (const l of lessonList) out.push([l.data.title, 'Lesson', `/learn/${l.id}`, undefined, `${l.data.asks.join('|')}||${[l.data.summary, ...facts.filter((f) => f.about.includes(l.id)).map((f) => f.text)].join(' ')}`]);
   for (const s of sections) out.push([s.label, 'Page', s.href]);
   for (const s of pageStars()) {
