@@ -23,7 +23,8 @@ for (const [w, h] of [[390, 844], [1440, 900]]) {
       const m = this.getTransform(), tw = this.measureText(text), a = this.textAlign;
       const asc = tw.actualBoundingBoxAscent, desc = tw.actualBoundingBoxDescent;
       const left = a === 'right' || a === 'end' ? x - tw.width : a === 'center' ? x - tw.width / 2 : x;
-      const b = { text, x0: m.e + left * m.a, x1: m.e + (left + tw.width) * m.a, y0: m.f + (y - asc) * m.d, y1: m.f + (y + desc) * m.d }, c = this.canvas.__clip;
+      const raw = { x0: m.e + left * m.a, x1: m.e + (left + tw.width) * m.a, y0: m.f + (y - asc) * m.d, y1: m.f + (y + desc) * m.d };
+      const b = { text, raw, x0: m.e + left * m.a, x1: m.e + (left + tw.width) * m.a, y0: m.f + (y - asc) * m.d, y1: m.f + (y + desc) * m.d }, c = this.canvas.__clip;
       // text cut off by a clip never shows, so it cannot overlap anything
       if (c) { b.x0 = Math.max(b.x0, c.x0); b.x1 = Math.min(b.x1, c.x1); b.y0 = Math.max(b.y0, c.y0); b.y1 = Math.min(b.y1, c.y1); }
       if (!c || (b.x1 > b.x0 && b.y1 > b.y0)) (this.canvas.__t ||= []).push(b);
@@ -39,9 +40,16 @@ for (const [w, h] of [[390, 844], [1440, 900]]) {
       steps++;
       const r = await p.evaluate(() => {
         const cap = document.querySelector('.story-stage [data-caption]')?.textContent || '';
-        const t = document.querySelector('.story-stage canvas')?.__t || [];
-        return { cap, t };
+        const cv = document.querySelector('.story-stage canvas'), t = cv?.__t || [];
+        return { cap, t, W: cv?.getBoundingClientRect().width, H: cv?.getBoundingClientRect().height };
       });
+      // every scene: no text may run past the edge of the drawing (below the mark's strip when there is one)
+      const top = CAP.test(r.cap) ? 30 : 0;
+      for (const q of r.t) {
+        if (q.text === 'NOT TO SCALE') continue;
+        const a = q.raw;
+        if (a.x0 < -0.5 || a.x1 > r.W + 0.5 || a.y0 < top - 0.5 || a.y1 > r.H + 0.5) problems.push(`${id} step ${i + 1} @${w}: "${q.text}" crosses the edge`);
+      }
       if (!CAP.test(r.cap)) continue;
       const tag = r.t.find((q) => q.text === 'NOT TO SCALE');
       const where = `${id} step ${i + 1} @${w}`;
