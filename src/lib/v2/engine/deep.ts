@@ -260,7 +260,7 @@ export interface DeepView {
   /** star field brightness, as the sky's (dims in daylight) */
   starGain: number;
   /** other names to show, such as the planets: direction from the camera (any length) and how strongly */
-  extra?: { text: string; dir: V3; alpha: number }[];
+  extra?: { text: string; dir: V3; alpha: number; hot?: boolean }[];
 }
 
 export function createDeep(o: { scene: THREE.Scene; far: number; particles: number; labelsAfter: HTMLElement; pxRatio: number; onPick?: (id: string) => void }) {
@@ -579,7 +579,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   // the places on screen where text of the page's own sits, so a name is never drawn under it
   let avoid: { left: number; right: number; top: number; bottom: number }[] = [];
   let avoidAt = 0;
-  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '') {
+  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '', hot = false) {
     if (alpha <= 0.02 || shown >= 28) return;
     v.set(dir[0], dir[1], dir[2]).applyQuaternion(invQ);
     if (v.z >= -1e-6) return; // behind the camera
@@ -613,6 +613,9 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       el.style.textTransform = fig ? 'uppercase' : 'none';
       el.style.paddingLeft = fig ? '0' : '12px';
     }
+    // the one being flown to is amber, the single accent
+    if (hot) { el.style.color = '#f1c98e'; el.dataset.hot = '1'; }
+    else if (el.dataset.hot) { el.style.color = el.dataset.kind === 'constellation' ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)'; delete el.dataset.hot; }
     el.dataset.kind = kind;
     shown++;
   }
@@ -666,7 +669,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     const rel = (p: V3): V3 => [p[0] - c[0], p[1] - c[1], p[2] - c[2]];
     // the Sun, once it is a star
     tag('The Sun', rel([0, 0, 0]), sunGain.value * (1 - smooth(2e4, 1e5, dS)), view, 'sun', 'sun');
-    for (const e of view.extra ?? []) tag(e.text, e.dir, e.alpha, view, 'body');
+    for (const e of view.extra ?? []) tag(e.text, e.dir, e.alpha, view, 'body', '', !!e.hot);
     // the Sun's neighbours by name, faint or not, while you are among them
     const neighbours = smooth(0.3, 1.5, dS) * (1 - smooth(60, 150, dS));
     const reach = Math.max(4, dS * 0.9);

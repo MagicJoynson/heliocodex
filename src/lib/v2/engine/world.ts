@@ -626,7 +626,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         return Math.acos(Math.min(1, dot)) < c.ang * 1.05;
       });
     };
-    const extra = PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), alpha: covered(p) ? 0 : Math.max(wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1), named(p) * 0.9) })).filter((x) => x.alpha > 0.01);
+    const extra = PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), hot: cruising && p === focusKey, alpha: covered(p) ? 0 : Math.max(wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1), named(p) * 0.9) })).filter((x) => x.alpha > 0.01);
     deep.update({ cam, quaternion: camera.quaternion, fovDeg: camera.fov, heightPx: o.canvas.clientHeight, widthPx: o.canvas.clientWidth, starGain: sky.starGain.value, extra });
 
     // light: from the Sun's direction (only the direction matters)
@@ -694,7 +694,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const nr = sub(cam, posOf(nearId)), nd = len(nr), R = radOf(nearId);
       const closeness = 1 - smooth(R * 0.5, R * 4, nd - R); // 1 on the ground, 0 far off
       const sunSide = nearId === 'sun' ? 1 : smooth(-0.25, 0.25, vdot(norm(nr), sunDir)); // 1 in daylight, 0 at night
-      const target = (1 - closeness * (sunSide * 0.2 - (1 - sunSide) * 0.6)) * (1 - 0.3 * sunInView);
+      const target = (1 - closeness * (sunSide * 0.2 - (1 - sunSide) * 0.6)) * (1 - 0.12 * sunInView);
       exposureNow += (target - exposureNow) * (1 - Math.exp(-wall / (target < exposureNow ? 0.5 : 2.2)));
       post.exposure.value = exposureNow;
     }

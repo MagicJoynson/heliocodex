@@ -81,6 +81,7 @@ export function createSky(opts: { catalogue?: boolean } = {}) {
   const sunBoost = uniform(1); // lifts a Sun too small to show as a disc, so it is still the brightest thing
   const sunTex = new THREE.TextureLoader().load('/textures/4k_sun.webp');
   sunTex.colorSpace = THREE.SRGBColorSpace;
+  sunTex.wrapS = sunTex.wrapT = THREE.RepeatWrapping;
   {
     const d = sub(uv(), 0.5).mul(2);
     const r = d.length();
@@ -91,15 +92,17 @@ export function createSky(opts: { catalogue?: boolean } = {}) {
     const edge = float(1).sub(smoothstep(0.97, 1.015, q));
     // the visible hemisphere of the surface picture, for its granulation and spots (its light and dark only)
     const lon = atan(p.x, mu), lat = asin(p.y.clamp(-1, 1));
-    const luma = dot(texture(sunTex, vec2(lon.div(6.2832).add(0.5), lat.div(3.1416).add(0.5))).rgb, vec3(0.3, 0.59, 0.11));
-    const detail = float(1).add(luma.sub(0.615).mul(0.55)).clamp(0.82, 1.2);
+    const uvs = vec2(lon.div(6.2832).add(0.5), lat.div(3.1416).add(0.5));
+    const lumaAt = (c: any) => dot(texture(sunTex, c).rgb, vec3(0.3, 0.59, 0.11));
+    // fine granulation: the picture's light and dark repeated small, plus a trace of its large spots
+    const detail = float(1).add(lumaAt(uvs.mul(vec2(7, 7))).sub(0.615).mul(0.35)).add(lumaAt(uvs).sub(0.615).mul(0.12)).clamp(0.85, 1.15);
     // limb darkening (about 0.6), and the limb redder than the centre, as the real one is
     const dark = float(1).sub(float(0.6).mul(float(1).sub(mu)));
-    const tint = mix(vec3(1.0, 0.42, 0.16), vec3(1.0, 0.88, 0.64), pow(mu, 0.5));
-    const disc = tint.mul(dark).mul(detail).mul(1.75).mul(edge);
+    const tint = mix(vec3(1.0, 0.36, 0.12), vec3(1.0, 0.9, 0.7), pow(mu, 0.45));
+    const disc = tint.mul(dark).mul(detail).mul(2.3).mul(edge);
     // glare: a warm corona hugging the limb, and a faint wider one, both gone before the sprite's edge
     const out = max(float(0), q.sub(1));
-    const corona = exp(out.mul(-4)).mul(0.55).add(exp(out.mul(-0.7)).mul(0.05)).mul(float(1).sub(edge)).mul(float(1).sub(smoothstep(0.55, 1, r)));
+    const corona = exp(out.mul(-3)).mul(1.1).add(exp(out.mul(-0.7)).mul(0.05)).mul(float(1).sub(edge)).mul(float(1).sub(smoothstep(0.55, 1, r)));
     sunMat.colorNode = vec4(disc.add(vec3(1, 0.74, 0.46).mul(corona)).mul(sunBoost).mul(sunFade), 1);
   }
   const sun = new THREE.Sprite(sunMat);
