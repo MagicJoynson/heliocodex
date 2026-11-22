@@ -101,7 +101,7 @@ The licence covers the data. It doesn't cover the rest of the site, which stays 
 
 ## 6. Fonts
 
-Each page has its own typeface. They are free under the [SIL Open Font Licence 1.1](https://openfontlicense.org/) and are served from this site, not from Google or anyone else, through the [Fontsource](https://fontsource.org/) packages: Spectral, IBM Plex, Fraunces, Archivo, Bodoni Moda, Source Serif, Libre Caslon, Newsreader, Young Serif, Literata, Bevan, Libre Franklin, Italiana, EB Garamond, Instrument Serif, Big Shoulders and Inter. Each font's designers and its copyright notice are on the Fontsource page for it.
+The site reads in Spectral, Inter and IBM Plex Mono, and each world page adds one display typeface of its own. They are free under the [SIL Open Font Licence 1.1](https://openfontlicense.org/) and are served from this site, not from Google or anyone else, through the [Fontsource](https://fontsource.org/) packages: Spectral, IBM Plex, Fraunces, Archivo, Bodoni Moda, Libre Caslon, Young Serif, Bevan, Italiana, Instrument Serif, Big Shoulders and Inter. Each font's designers and its copyright notice are on the Fontsource page for it.
 
 ## 7. Software
 

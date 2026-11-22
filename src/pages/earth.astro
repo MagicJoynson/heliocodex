@@ -3,7 +3,6 @@ import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { moonCount } from '../data/moon-counts';
 import '@fontsource/libre-caslon-display';
-import '@fontsource-variable/newsreader';
 import '@fontsource/ibm-plex-mono/400.css';
 import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
@@ -85,7 +84,7 @@ const rows: [string, string][] = [
 <style is:global>
   :root {
     --ink: #fff3e0; --ink-soft: #f0d9b8; --ink-faint: #c2a57f; --accent: #ffb46b; --night: #0b1522; --night-a: rgba(8,16,28,.78);
-    --display: 'Libre Caslon Display', Georgia, serif; --text: 'Newsreader Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --display: 'Libre Caslon Display', Georgia, serif; --text: 'Spectral', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
     --shade: linear-gradient(0deg, rgba(8,14,24,.82) 0%, rgba(8,14,24,.35) 40%, rgba(8,14,24,0) 70%);
     --tshadow: 0 1px 12px rgba(6,12,22,.7);
     --scrim: rgba(8,14,24,.42);

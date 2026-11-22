@@ -3,7 +3,6 @@ import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { moonCount } from '../data/moon-counts';
 import '@fontsource/young-serif';
-import '@fontsource-variable/literata';
 import '@fontsource/ibm-plex-mono/400.css';
 import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
@@ -121,7 +120,7 @@ const rows: [string, string][] = [
     <style is:global>
       :root {
         --ink: #f2e3d3; --ink-soft: #d9c1ab; --ink-faint: #a58b78; --accent: #e08a5a; --night: #120a08; --night-a: rgba(14,7,5,.82);
-        --display: 'Young Serif', Georgia, serif; --text: 'Literata Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+        --display: 'Young Serif', Georgia, serif; --text: 'Spectral', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
         --shade: linear-gradient(90deg, rgba(14,7,5,.72) 0%, rgba(14,7,5,.4) 38%, rgba(14,7,5,0) 66%);
         --tshadow: 0 1px 14px rgba(10,5,4,.6);
       }

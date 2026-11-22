@@ -13,7 +13,15 @@
   .alt-label, .kicker, .more-btn, .more-link, .more-h3, .ml-strand, .wglance dt, .wg-go a, .profile figcaption, .plates figcaption,
   /* Sky, Atlas, Stars, Discovery */
   .sky-hint, .sky-bar button, .pop summary span, .pop-body button, .go3d, .unit, .val, .ruler .more a, .tag, .src, .print-button, .moons th, .moons .go a, .fit,
-  .age label, .age button, .letter h3, .soon li span, .also, .m-item small, .p-years, .names dt, .along a.a-map { font-size: .8125rem !important; }
+  .age label, .age button, .letter h3, .soon li span, .also, .m-item small, .p-years, .names dt, .along a.a-map,
+  /* lessons, sources, cookies, world records (found in the type audit) */
+  .go-see, .go-see a, .d-time, .depths-nav a, .depths-nav .absent, figcaption b, .prose table th, .facts-table thead th, .count-switch button,
+  .ledger-kicker, .sheets a, .drawn-list span, .plate-world, .plate figcaption, .wo-badge span, .wo-facts dt, .plate-holder::after { font-size: .8125rem !important; }
+  /* words inside drawings that are drawn at roughly one pixel to the unit */
+  .wm-vs text, .up-ring .r-alt, .up-ring .r-dir, .narrow .t-sub { font-size: 13px !important; }
+  /* drawings shown at about 0.6 of their own size (600-unit viewBox in a 358 px column) */
+  .wo-orbit .ring-t, .wo-orbit .foc-t, .wo-orbit .me-t, .wo-size .s-t { font-size: 22px !important; }
+  .profile svg text { font-size: 21px !important; }
 }
 
 /* Tap floor: small links in dense lists and charts get a hit area of at least 24 px high without moving anything. */

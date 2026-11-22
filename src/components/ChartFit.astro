@@ -4,7 +4,7 @@
 <script>
   // One rule for the words in drawings and charts: however wide a drawing is shown, its largest words
   // come out at 17px on screen, everything else shrinks with them in proportion, and nothing goes under
-  // 12px. The sizes written in the file are the most a word may grow to.
+  // 13px. The sizes written in the file are the most a word may grow to.
   const fit = () => {
     for (const svg of document.querySelectorAll<SVGSVGElement>('svg.chart')) {
       const vb = svg.viewBox.baseVal, w = svg.getBoundingClientRect().width;
@@ -14,7 +14,7 @@
       for (const t of texts) if (!t.dataset.fs) t.dataset.fs = String(parseFloat(getComputedStyle(t).fontSize) || 16);
       const most = Math.max(...texts.map((t) => +t.dataset.fs!));
       const f = Math.min(1, 17 / (most * scale));
-      for (const t of texts) { const fs = +t.dataset.fs!; t.style.fontSize = `${Math.max(fs * f, 12 / scale).toFixed(1)}px`; }
+      for (const t of texts) { const fs = +t.dataset.fs!; t.style.fontSize = `${Math.max(fs * f, 13 / scale).toFixed(1)}px`; }
     }
   };
   // charts can be hidden at first (a story that opens later) or change width, so each is watched

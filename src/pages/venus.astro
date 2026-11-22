@@ -4,7 +4,6 @@ import WorldGlance from '../components/WorldGlance.astro';
 import { moonCount } from '../data/moon-counts';
 import '@fontsource/bodoni-moda/400.css';
 import '@fontsource/bodoni-moda/400-italic.css';
-import '@fontsource-variable/source-serif-4';
 import '@fontsource/ibm-plex-mono/400.css';
 import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
@@ -87,7 +86,7 @@ const rows: [string, string][] = [
 <style is:global>
   :root {
     --ink: #fbefd2; --ink-soft: #e8d3a5; --ink-faint: #b69a68; --accent: #f6c453; --night: #140b04; --night-a: rgba(20,11,4,.8);
-    --display: 'Bodoni Moda', Georgia, serif; --text: 'Source Serif 4 Variable', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --display: 'Bodoni Moda', Georgia, serif; --text: 'Spectral', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
     --shade: linear-gradient(270deg, rgba(20,11,4,.78) 0%, rgba(20,11,4,.45) 38%, rgba(20,11,4,0) 66%);
     --tshadow: 0 1px 12px rgba(20,10,2,.7);
   }

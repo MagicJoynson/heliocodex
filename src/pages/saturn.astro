@@ -3,7 +3,6 @@ import PlanetSheet from '../components/PlanetSheet.astro';
 import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource/italiana';
-import '@fontsource-variable/eb-garamond';
 import '@fontsource/ibm-plex-mono/400.css';
 import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
@@ -101,7 +100,7 @@ const rows: [string, string][] = [
 <style is:global>
   :root {
     --ink: #f7f0e1; --ink-soft: #e2d4b6; --ink-faint: #b3a07e; --accent: #e9cf95; --night: #0b0a0d; --night-a: rgba(10,9,12,.82);
-    --display: 'Italiana', 'Didot', Georgia, serif; --text: 'EB Garamond Variable', Garamond, Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --display: 'Italiana', 'Didot', Georgia, serif; --text: 'Spectral', Georgia, serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
     --shade: radial-gradient(60% 65% at 50% 55%, rgba(14,11,8,.62) 0%, rgba(14,11,8,.32) 60%, rgba(14,11,8,.08) 100%);
     --tshadow: 0 1px 12px rgba(8,6,4,.75);
     --scrim: rgba(16,12,8,.5);

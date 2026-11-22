@@ -73,7 +73,7 @@ import { PLANNED_LESSONS } from '../../data/plan';
 
   <section class="row wide" id="map">
     <div class="hang"><h2>Every named star, by colour and true brightness</h2><p class="note">How bright each star really is, not how bright it looks from here, against how hot it is. Most stars, the Sun among them, fall on one band; the giants and the dead stars sit apart. Touch or click a dot to meet that star.</p></div>
-    <figure class="hr">
+    <figure class="hr" role="group" aria-label="Hertzsprung-Russell chart of named stars. On a phone, scroll sideways.">
       <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-label={`A chart of ${hr.length} named stars, by colour across and true brightness up the side`}>
         <defs><linearGradient id="hr-sky" x1="0" x2="1"><stop offset="0" stop-color="#9db4ff" stop-opacity=".07" /><stop offset=".5" stop-color="#fff4e8" stop-opacity=".03" /><stop offset="1" stop-color="#ff9b5a" stop-opacity=".07" /></linearGradient></defs>
         <rect x={PADL} y="10" width={W - PADL - 10} height={H - PADB - 10} fill="url(#hr-sky)" />
@@ -150,6 +150,12 @@ import { PLANNED_LESSONS } from '../../data/plan';
 </Reading>
 
 <script>
+  // On a phone the H-R chart scrolls sideways; only then is it a stop for the keyboard.
+  const hrFrame = document.querySelector<HTMLElement>('figure.hr');
+  if (hrFrame) {
+    const syncHr = () => { if (hrFrame.scrollWidth > hrFrame.clientWidth + 1) hrFrame.tabIndex = 0; else hrFrame.removeAttribute('tabindex'); };
+    syncHr(); addEventListener('resize', syncHr);
+  }
   import { CITIES, guess } from '../../lib/sky/cities';
   import { readPlace } from '../../lib/sky/remember';
   type Near = [name: string, ly: number, mag: number, href: string, index: number, dec: number];
@@ -214,6 +220,13 @@ import { PLANNED_LESSONS } from '../../data/plan';
   .cons a:hover { color: var(--accent); }
   .cons span { font: 400 .72rem/1 var(--r-mono); color: var(--ink-faint); }
   .hr { margin: 0; }
+  @media (max-width: 700px) {
+    .hr { overflow-x: auto; overscroll-behavior-x: contain; }
+    .hr svg { margin-left: 84px; }
+    .hr:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .hr .tick text, .hr .axis, .hr .name, .hr .hov { font-size: 21px !important; }
+    .hr .zone { font-size: 21px !important; }
+  }
   .hr svg { width: 100%; height: auto; display: block; overflow: visible; }
   .hr .tick line { stroke: rgba(236,231,220,.08); }
   .hr .tick text, .hr .axis { font: 400 11px var(--r-mono); fill: var(--ink-faint); letter-spacing: .04em; }

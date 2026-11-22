@@ -8,7 +8,7 @@
 @media screen and (max-width: 760px) {
   .plate-holder { overflow-x: auto; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
   .plate-holder:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .plate-holder svg.plate { width: 780px; max-width: none; }
+  .plate-holder svg.plate { width: 1000px; max-width: none; }
   .plate-holder::after { content: 'Drag sideways to see the whole drawing.'; display: block; position: sticky; left: 0; width: calc(100vw - 2rem); max-width: 100%; margin-top: .5rem; font: 400 .68rem/1.4 var(--r-mono); letter-spacing: .06em; color: var(--ink-faint); }
 }
 svg.plate { display: block; width: 100%; height: auto; font-family: var(--r-serif); }

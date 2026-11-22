@@ -4,7 +4,7 @@ import WorldGlance from '../components/WorldGlance.astro';
 import { MOONS_AS_OF_TEXT, moonCount } from '../data/moon-counts';
 import '@fontsource-variable/big-shoulders-display/wght';
 import '@fontsource/ibm-plex-mono/400.css';
-import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource-variable/inter';
 import World from '../layouts/World.astro';
 import facts from '../data/facts.json';
 import { fmt, daysToYear } from '../lib/format';
@@ -101,7 +101,7 @@ const rows: [string, string][] = [
 <style is:global>
   :root {
     --ink: #eef3ff; --ink-soft: #c3d0f2; --ink-faint: #8597c6; --accent: #9fc0ff; --night: #030817; --night-a: rgba(3,8,23,.86);
-    --display: 'Big Shoulders Display Variable', 'Arial Narrow', sans-serif; --text: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --display: 'Big Shoulders Display Variable', 'Arial Narrow', sans-serif; --text: 'Inter Variable', 'Helvetica Neue', Arial, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
     --shade: linear-gradient(90deg, rgba(3,8,24,.8) 0%, rgba(3,8,24,.5) 38%, rgba(3,8,24,0) 68%);
     --tshadow: 0 1px 12px rgba(2,6,20,.8);
     --scrim: rgba(3,8,24,.45);
