@@ -20,7 +20,7 @@ function bvToRgb(bv: number): [number, number, number] {
   let bl = t >= 66 ? 255 : t <= 19 ? 0 : 138.5177312231 * Math.log(t - 10) - 305.0447927307;
   r = Math.min(255, Math.max(0, r)); g = Math.min(255, Math.max(0, g)); bl = Math.min(255, Math.max(0, bl));
   const m = Math.max(r, g, bl);
-  return [0.55 + 0.45 * r / m, 0.55 + 0.45 * g / m, 0.55 + 0.45 * bl / m];
+  return [0.36 + 0.64 * r / m, 0.36 + 0.64 * g / m, 0.36 + 0.64 * bl / m];
 }
 
 /** `catalogue: false` leaves the bright-star catalogue out, for when the deep layer draws the stars at their real distances */

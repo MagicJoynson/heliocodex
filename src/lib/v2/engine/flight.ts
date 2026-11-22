@@ -31,12 +31,12 @@ export interface Cruise {
 
 const UP: V3 = [0, 1, 0];
 /**
- * Free flight speeds, in metres a second. Gear 0 is "local": about your own height a second above the
- * nearest body, so the ground always moves the same. The rest are fixed speeds, from a fast spacecraft
- * to a thousand million light years a second. Near any body the speed is held to a few times your height,
- * so you can never run into a planet at warp.
+ * Free flight speed. Your top speed is always a multiple of your height above the nearest surface
+ * (about once your own height a second), so it eases off by itself as you arrive and builds as you leave,
+ * as it does in the games that do this well. The gears are extra multiples for crossing empty space; close to
+ * a body they fade out, so a gear can never carry you into a planet.
  */
-export const GEARS = [1e4, 1e6, 2.99792458e8, 1.495978707e11, 9.4607304725808e15, 9.4607304725808e18, 9.4607304725808e21, 9.4607304725808e24];
+export const GEARS = [4, 16, 64, 256, 1024, 4096, 16384, 65536];
 const MAX_EL = THREE.MathUtils.degToRad(84);
 
 export function createFlight(canvas: HTMLElement) {
@@ -48,6 +48,7 @@ export function createFlight(canvas: HTMLElement) {
   let gear = 0; // 0 local, 1..GEARS.length the fixed speeds
   let onGear: ((g: number) => void) | null = null;
   let onPadFree: (() => void) | null = null;
+  let onWheelIn: ((x: number, y: number, amount: number) => void) | null = null;
   const setGear = (g: number) => { const n = clamp(Math.round(g), 0, GEARS.length); if (n !== gear) { gear = n; onGear?.(gear); } };
   let lastFloor = 0, lastR = 0, floorOff = 0;
   let reduced = false; // reduced motion: no drift after a drag, faster settling
@@ -117,7 +118,7 @@ export function createFlight(canvas: HTMLElement) {
     // Firefox reports lines, not pixels; a trackpad pinch arrives as a wheel with ctrlKey
     const px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 600 : 1) * (e.ctrlKey ? 3 : 1);
     if (mode === 'free') { if (gear === 0) speedMul = clamp(speedMul * Math.pow(1.0015, -px), 0.02, 50); }
-    else zoomBy *= Math.pow(1.0018, clamp(px, -240, 240));
+    else { zoomBy *= Math.pow(1.0018, clamp(px, -240, 240)); if (px < 0 && mode === 'orbit') onWheelIn?.(e.clientX, e.clientY, -px); }
   }, { passive: false });
   /** touch pad: -1 back, 0 still, 1 forward (set by the page's on-screen control) */
   let pad = 0;
@@ -258,16 +259,20 @@ export function createFlight(canvas: HTMLElement) {
       const ta = ((k('ArrowLeft') ? 1 : 0) - (k('ArrowRight') ? 1 : 0)) * 0.9 * wall;
       if (ta) rotate(norm(add(scale(upv(), 1 - ground), scale(upLocal, ground))), ta);
       zoomBy = 1;
-      // gear 0: about your own height a second, so the ground always moves the same.
-      // other gears: a fixed speed, held to a few times your height near a body so you cannot hit it at warp
+      // top speed: about your own height a second; a gear multiplies it in open space and fades out near a body
       const boost = fast > 1 ? 4 : 1;
       const h = clamp(alt, 2, 1e27);
-      const base = gear === 0 ? h * 0.9 * speedMul * boost : Math.min(GEARS[gear - 1] * boost, h * 4 * boost);
+      const open = smooth(near.radius * 0.5, near.radius * 3, dNear - near.radius);
+      const mult = gear === 0 ? speedMul : 1 + (GEARS[gear - 1] - 1) * open;
+      const base = h * 0.9 * mult * boost;
       const f = clamp((k('KeyW') || k('ArrowUp') ? 1 : 0) - (k('KeyS') || k('ArrowDown') ? 1 : 0) + pad - (gp?.ly ?? 0), -1, 1);
       const s = clamp((k('KeyD') ? 1 : 0) - (k('KeyA') ? 1 : 0) + (gp?.lx ?? 0), -1, 1);
       const u = clamp((k('Space') || k('KeyE') ? 1 : 0) - (k('KeyC') || k('KeyQ') ? 1 : 0) + (gp ? gp.up - gp.down : 0), -1, 1);
       const want = scale(add(add(scale(fwd(), f), scale(right(), s)), scale(upLocal, u)), base);
-      const kv = 1 - Math.exp(-dt * 5);
+      // easing: speeding up takes a moment (longer at higher gears), letting go glides to a stop, X brakes at once
+      const pushing = f !== 0 || s !== 0 || u !== 0;
+      const tau = k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : 0.5 + 0.18 * gear;
+      const kv = 1 - Math.exp(-dt / tau);
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
       pos[0] += vel[0] * dt; pos[1] += vel[1] * dt; pos[2] += vel[2] * dt;
 
@@ -319,6 +324,7 @@ export function createFlight(canvas: HTMLElement) {
     setGear,
     onGear(cb: (g: number) => void) { onGear = cb; },
     onPadFree(cb: () => void) { onPadFree = cb; },
+    onWheelIn(cb: (x: number, y: number, amount: number) => void) { onWheelIn = cb; },
     get focus() { return focus; },
     /** where a trip in progress is going, or the focus */
     get target() { return cr ? cr.to : focus; },

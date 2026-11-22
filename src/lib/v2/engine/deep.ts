@@ -263,7 +263,7 @@ export interface DeepView {
   extra?: { text: string; dir: V3; alpha: number }[];
 }
 
-export function createDeep(o: { scene: THREE.Scene; far: number; particles: number; labelsAfter: HTMLElement; pxRatio: number }) {
+export function createDeep(o: { scene: THREE.Scene; far: number; particles: number; labelsAfter: HTMLElement; pxRatio: number; onPick?: (id: string) => void }) {
   const FAR = o.far;
   const camPc = uniform(new THREE.Vector3());
   const pxPerRad = u1(800);
@@ -324,7 +324,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     let bl = t >= 66 ? 255 : t <= 19 ? 0 : 138.5177312231 * Math.log(t - 10) - 305.0447927307;
     r = Math.min(255, Math.max(0, r)); g = Math.min(255, Math.max(0, g)); bl = Math.min(255, Math.max(0, bl));
     const mx = Math.max(r, g, bl);
-    return [0.55 + 0.45 * r / mx, 0.55 + 0.45 * g / mx, 0.55 + 0.45 * bl / mx];
+    return [0.36 + 0.64 * r / mx, 0.36 + 0.64 * g / mx, 0.36 + 0.64 * bl / mx];
   }
 
   // the Sun as a star, for when it is too far away to be a disc
@@ -564,6 +564,10 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   Object.assign(labels.style, { position: 'fixed', inset: '0', pointerEvents: 'none', overflow: 'hidden', zIndex: '0' });
   // just above the 3D view and below everything else on the page
   o.labelsAfter.after(labels);
+  // a name that stands for somewhere you can fly to is a button: click or tap it to go there
+  labels.addEventListener('click', (e) => { const go = (e.target as HTMLElement)?.dataset?.go; if (go) o.onPick?.(go); });
+  labels.addEventListener('pointerover', (e) => { const t = e.target as HTMLElement; if (t?.dataset?.go) t.style.color = '#f1c98e'; });
+  labels.addEventListener('pointerout', (e) => { const t = e.target as HTMLElement; if (t?.dataset?.go) t.style.color = ''; });
   const pool: HTMLSpanElement[] = [];
   const tagStyle = 'position:absolute;left:0;top:0;white-space:nowrap;font:400 .8125rem/1 var(--mono, monospace);letter-spacing:.08em;color:rgba(236,231,220,.72);padding-left:12px;will-change:transform;text-shadow:0 0 3px #000,0 0 6px #000;background:radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px) no-repeat;';
 
@@ -575,7 +579,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   // the places on screen where text of the page's own sits, so a name is never drawn under it
   let avoid: { left: number; right: number; top: number; bottom: number }[] = [];
   let avoidAt = 0;
-  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '') {
+  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '') {
     if (alpha <= 0.02 || shown >= 28) return;
     v.set(dir[0], dir[1], dir[2]).applyQuaternion(invQ);
     if (v.z >= -1e-6) return; // behind the camera
@@ -594,7 +598,11 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     if (!el) { el = document.createElement('span'); el.style.cssText = tagStyle; labels.appendChild(el); pool.push(el); }
     if (el.textContent !== text) el.textContent = text;
     el.style.opacity = String(Math.min(1, alpha));
-    el.style.transform = `translate(${(x - 4).toFixed(1)}px, ${(y - 5).toFixed(1)}px)`;
+    el.style.transform = `translate(${(x - 4).toFixed(1)}px, ${(y - (go ? 12 : 5)).toFixed(1)}px)`;
+    el.dataset.go = go;
+    el.style.pointerEvents = go && alpha > 0.35 ? 'auto' : 'none';
+    el.style.cursor = go ? 'pointer' : '';
+    el.style.padding = go ? '7px 8px 7px 12px' : '0 0 0 12px';
     el.style.display = '';
     if (el.dataset.kind !== kind) {
       // a constellation is an area, not a point: no ring, and a cooler, spaced-out name
@@ -657,27 +665,27 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     invQ.copy(view.quaternion).invert();
     const rel = (p: V3): V3 => [p[0] - c[0], p[1] - c[1], p[2] - c[2]];
     // the Sun, once it is a star
-    tag('The Sun', rel([0, 0, 0]), sunGain.value * (1 - smooth(2e4, 1e5, dS)), view, 'sun');
+    tag('The Sun', rel([0, 0, 0]), sunGain.value * (1 - smooth(2e4, 1e5, dS)), view, 'sun', 'sun');
     for (const e of view.extra ?? []) tag(e.text, e.dir, e.alpha, view, 'body');
     // the Sun's neighbours by name, faint or not, while you are among them
     const neighbours = smooth(0.3, 1.5, dS) * (1 - smooth(60, 150, dS));
     const reach = Math.max(4, dS * 0.9);
     if (neighbours > 0.01 && starNames.length) {
       const near = starNames.filter((s) => len(s.p) < reach).sort((a, b) => len(a.p) - len(b.p)).slice(0, 14);
-      for (const s of near) tag(s.name, rel(s.p), neighbours, view, 'star');
+      for (const s of near) tag(s.name, rel(s.p), neighbours, view, 'star', `star:${s.i}`);
     }
     // otherwise the brightest named stars, once you are out among them
     const starsOn = smooth(0.02, 0.2, dS) * (1 - smooth(3000, 8000, dS)) * (1 - neighbours);
     if (starsOn > 0.01 && starNames.length) {
-      const scored: { name: string; d: V3; m: number }[] = [];
+      const scored: { name: string; d: V3; m: number; i: number }[] = [];
       for (const s of starNames) {
         const r = rel(s.p);
         const dd = Math.max(1e-5, len(r));
         const m = s.M + 5 * Math.log10(dd / 10);
-        if (m < 2.2) scored.push({ name: s.name, d: r, m });
+        if (m < 2.2) scored.push({ name: s.name, d: r, m, i: s.i });
       }
       scored.sort((a, b) => a.m - b.m);
-      for (const s of scored.slice(0, 12)) tag(s.name, s.d, starsOn * (1 - smooth(0.5, 2.2, s.m)) + 0.25 * starsOn, view, 'star');
+      for (const s of scored.slice(0, 12)) tag(s.name, s.d, starsOn * (1 - smooth(0.5, 2.2, s.m)) + 0.25 * starsOn, view, 'star', `star:${s.i}`);
     }
     // the constellations' names, while the figures still look like themselves
     const figOn = smooth(150 * AUpc, 2000 * AUpc, dS) * (1 - smooth(1, 4, dS));
@@ -689,20 +697,20 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       }
     }
     // our galaxy and its neighbours
-    tag('The Milky Way', rel(mwCentreLabel), smooth(1.2e4, 3e4, dS) * (1 - smooth(4e6, 2e7, dS)), view, 'galaxy');
+    tag('The Milky Way', rel(mwCentreLabel), smooth(1.2e4, 3e4, dS) * (1 - smooth(4e6, 2e7, dS)), view, 'galaxy', 'milky-way');
     if (lg.length) {
       for (const n of ['Andromeda', 'Triangulum', 'LMC', 'SMC']) {
         const g = lg.find((x) => x.name === n);
         if (!g) continue;
         const name = n === 'LMC' ? 'Large Magellanic Cloud' : n === 'SMC' ? 'Small Magellanic Cloud' : n === 'Andromeda' ? 'Andromeda' : 'Triangulum';
         const small = n === 'LMC' || n === 'SMC';
-        tag(name, rel(g.p), out * (1 - smooth(small ? 4e5 : 4e6, small ? 1.5e6 : 2e7, dS)) * (small ? smooth(1e4, 2.5e4, dS) : 1), view, 'galaxy');
+        tag(name, rel(g.p), out * (1 - smooth(small ? 4e5 : 4e6, small ? 1.5e6 : 2e7, dS)) * (small ? smooth(1e4, 2.5e4, dS) : 1), view, 'galaxy', `galaxy:${n}`);
       }
       const mid = lgMid();
-      if (mid) tag('The Local Group', rel(mid), smooth(6e6, 1.5e7, dS) * (1 - smooth(4e8, 1.5e9, dS)), view, 'group');
+      if (mid) tag('The Local Group', rel(mid), smooth(6e6, 1.5e7, dS) * (1 - smooth(4e8, 1.5e9, dS)), view, 'group', 'local-group');
     }
     const webOn = smooth(8e6, 3e7, dS) * (1 - smooth(3e9, 8e9, dS));
-    if (webOn > 0.01) for (const k of CLUSTERS) tag(k.name, rel(scale(radecToEngine(k.ra, k.dec), (k.cz / 70) * 1e6)), webOn, view, 'cluster');
+    if (webOn > 0.01) for (const k of CLUSTERS) tag(k.name, rel(scale(radecToEngine(k.ra, k.dec), (k.cz / 70) * 1e6)), webOn, view, 'cluster', 'cosmic-web');
     // named at the sphere's top edge as you see it
     const up = new THREE.Vector3(0, 1, 0).applyQuaternion(view.quaternion);
     const toSun = norm(scale(c, -1));
@@ -722,7 +730,9 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     if (!starF || !Number.isInteger(n) || n < 0 || n >= starF.length / 5) return null;
     return [starF[n * 5], starF[n * 5 + 1], starF[n * 5 + 2]];
   };
-  return { update, ready: settled, dispose, lgCentre: lgMid, starAt, starName: (i: number) => starNames.find((s) => s.i === i)?.name, load: () => open() };
+  /** a Local Group galaxy by name: where it is (parsecs from the Sun) and how far out to stand to see it */
+  const galaxyAt = (name: string): { p: V3; stand: number; label: string } | null => { const g = lg.find((x) => x.name === name); return g ? { p: g.p, stand: name === 'LMC' || name === 'SMC' ? 25_000 : 90_000, label: name === 'LMC' ? 'the Large Magellanic Cloud' : name === 'SMC' ? 'the Small Magellanic Cloud' : name } : null; };
+  return { update, ready: settled, galaxyAt, dispose, lgCentre: lgMid, starAt, starName: (i: number) => starNames.find((s) => s.i === i)?.name, load: () => open() };
 }
 
 function smooth(a: number, b: number, x: number) {

@@ -159,7 +159,7 @@ import { sections } from '../lib/nav';
             <div><dt>Closer and further</dt><dd>scroll, pinch, W and S, or + and −</dd></div>
             <div><dt>Go to a planet</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
             <div><dt>Fly yourself</dt><dd>F, then W A S D, E and Q. Esc stops</dd></div>
-            <div><dt>Flying speed</dt><dd>. faster, , slower, from a spacecraft to a light year a second</dd></div>
+            <div><dt>Flying speed</dt><dd>. faster, , slower. X stops at once. Speed always eases off near a body</dd></div>
             <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
             <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to fly</dd></div>
             <div><dt>The Codex</dt><dd>M</dd></div>
@@ -247,6 +247,7 @@ import { sections } from '../lib/nav';
       const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
       const params = new URLSearchParams(location.search);
+      const linkedTo = params.has('go'); // a link that names a place goes in without the click
       // coming back to the 3D view in the same tab, with nowhere asked for: carry on from where you were
       if (!params.has('go') && !params.has('tour')) { try { const at = sessionStorage.getItem('hc-at'); if (at) params.set('go', at); } catch {} }
       // coming from the lesson on how big space is: show distances again on its scale, the Sun as a football 22 cm across
@@ -263,7 +264,7 @@ import { sections } from '../lib/nav';
           back.addEventListener('click', () => { try { sessionStorage.setItem('hc-from', JSON.stringify({ ...from, back: true })); } catch {} });
         }
       } catch {}
-      const GEAR_NAMES = ['Local', 'Spacecraft', 'Fast spacecraft', 'Light speed', 'An au a second', 'A light year a second', 'A thousand light years a second', 'A million light years a second', 'A billion light years a second'];
+      const GEAR_NAMES = ['Local', 'Quick', 'Fast', 'Faster', 'Warp 1', 'Warp 2', 'Warp 3', 'Warp 4', 'Warp 5'];
       const gearName = (g: number) => GEAR_NAMES[g] ?? 'Local';
       // the places you have been, for Back
       const trail: [string, string][] = [];
@@ -840,6 +841,7 @@ import { sections } from '../lib/nav';
         setTimeout(() => { const g = params.get('go'); wentDirect = world.enter(5, g && !g.startsWith('star:') && !params.has('d') ? g : undefined); }, reducedNow() ? 300 : 700);
       }
       ap.addEventListener('click', go);
+      if (linkedTo) setTimeout(go, 250);
       addEventListener('keydown', (e) => { if (e.key === 'Enter' && !body.classList.contains('in') && !(e.target as HTMLElement)?.closest?.('a, button')) go(); });
       $('skip').addEventListener('click', () => world.skip());
       // any press of a key (Space, Escape, an arrow) or a tap on the view also ends the way in early

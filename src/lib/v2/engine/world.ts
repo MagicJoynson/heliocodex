@@ -1,11 +1,12 @@
 import * as THREE from 'three/webgpu';
-import { uniform, positionLocal, texture, uv, min, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
+import { uniform, positionLocal, normalWorld, normalView, positionViewDirection, pow, texture, uv, min, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
 import { createSky, GLINT, FAR as SKY_FAR } from './sky';
 import { createDeep, PC, radecToEngine, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
 import { createTerrain } from './terrain';
 import { loadDemSpec } from './dem';
 import type { SourceSpec } from './tilebuild';
 import { createFlight, type Focus } from './flight';
+import { createPost, type Post } from './post';
 import { createSystem } from './system';
 import { POLES } from '../atlas/kepler';
 import { positionAU, centuriesSinceJ2000 } from '../../orbit';
@@ -75,6 +76,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   renderer.toneMapping = THREE.NoToneMapping;
   const backend = (renderer.backend as { isWebGPUBackend?: boolean }).isWebGPUBackend ? 'WebGPU' : 'WebGL 2';
   const depthMode = renderer.reversedDepthBuffer ? 'reversed-z' : 'log depth';
+  // the finishing pass (exposure, bloom, edge smoothing); off with ?post=0, and dropped if it ever fails
+  let post: Post | null = null;
+  if (new URLSearchParams(location.search).get('post') !== '0') {
+    try { post = createPost(renderer, { bloom: quality.tier >= 2, msaa: quality.tier >= 3, hdr: quality.tier >= 2 }); } catch (e) { console.warn('the finishing pass could not start', e); post = null; }
+  }
+  let exposureNow = 1;
 
   // ---- where everything is, on the engine's clock (heliocentric, metres, engine frame).
   // The body list holds every moon, so it is loaded after the first paint, not with the page.
@@ -116,7 +123,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // ---- scenes: the space layer first, then the local scene with depth
   const sky = createSky({ catalogue: false });
   // beyond the Solar System: stars at their real distances, our galaxy, its neighbours, the cosmic web
-  const deep = createDeep({ scene: sky.scene, far: SKY_FAR, particles: [40_000, 70_000, 110_000, 150_000][quality.tier], labelsAfter: o.canvas, pxRatio: Math.min(devicePixelRatio, 2) });
+  const deep = createDeep({ scene: sky.scene, far: SKY_FAR, particles: [40_000, 70_000, 110_000, 150_000][quality.tier], labelsAfter: o.canvas, pxRatio: Math.min(devicePixelRatio, 2), onPick: (id) => { if (canFlyTo(id)) engine.flyTo({ target: id }).catch(() => {}); } });
   for (const p of PLANETS) if (p !== bodySlug) sky.glint(p, GLINT[p]);
   sky.glint(bodySlug, GLINT[bodySlug]);
 
@@ -259,6 +266,30 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     }
   }
 
+  // ---- the thin glow of an atmosphere round each planet's edge, brighter on the sunlit side. Drawn for effect:
+  // the colours and depths are a look, not a measurement.
+  // colour, depth of the glow as a share of the radius, and strength (the gas giants have no sharp edge to glow from)
+  const ATMO: Record<string, [number, number, number, number, number]> = {
+    venus: [1.0, 0.82, 0.5, 0.03, 0.8], earth: [0.32, 0.58, 1.0, 0.04, 0.9], mars: [0.95, 0.62, 0.45, 0.03, 0.55],
+    jupiter: [0.86, 0.76, 0.62, 0.012, 0.28], saturn: [0.92, 0.86, 0.66, 0.012, 0.28], uranus: [0.55, 0.88, 0.95, 0.03, 0.6], neptune: [0.38, 0.52, 1.0, 0.03, 0.6],
+  };
+  const shells = new Map<string, { mesh: THREE.Mesh; h: number; sun: { value: THREE.Vector3 } }>();
+  for (const [id, [r, g, b, h, gain]] of Object.entries(ATMO)) {
+    const s = 1 + h;
+    const sunDirU = uniform(new THREE.Vector3(0, 1, 0)) as any;
+    const maxN = Math.sqrt(1 - 1 / (s * s)); // the shell's own edge, where the surface normal is square on to the view
+    const ndv = (normalView as any).dot(positionViewDirection as any).abs();
+    const t = ndv.div(maxN).clamp(0, 1); // 0 at the shell's edge, 1 at the planet's edge
+    const lit = (positionLocal as any).normalize().dot(sunDirU).mul(0.5).add(0.5).clamp(0, 1);
+    const k = pow(t, 1.8).mul(pow(lit, 1.6).mul(gain).add(0.01));
+    const mat = new THREE.MeshBasicNodeMaterial({ transparent: true, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending });
+    mat.colorNode = vec4(vec3(r, g, b).mul(k), 1);
+    const mesh = new THREE.Mesh(globeGeo, mat);
+    mesh.frustumCulled = false; mesh.visible = false; mesh.renderOrder = 2;
+    local.add(mesh);
+    shells.set(id, { mesh, h, sun: sunDirU });
+  }
+
   // ---- layers other parts of the site add (moons, orbits, labels); drawn with depth, round the camera
   const layers = new Set<Layer>();
   const layerRoot = new THREE.Group();
@@ -270,8 +301,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   let reduced = false;
   const fwdOf = (): V3 => { const v = new THREE.Vector3(0, 0, -1).applyQuaternion(flight.q); return [v.x, v.y, v.z]; };
   // a click or tap on a body (or its name) goes there
-  flight.onTap((x, y) => {
-    if (flight.mode === 'cruise') return;
+  /** the body (or moon) under a point of the screen, if any */
+  const pickAt = (x: number, y: number): string => {
     const rect = o.canvas.getBoundingClientRect();
     const pxPerRad = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
     const inv = flight.q.clone().invert();
@@ -295,7 +326,23 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const score = off - rpx + (isMoon ? 12 : 0);
       if (score < bestScore) { bestScore = score; best = id; }
     }
+    return best;
+  };
+  flight.onTap((x, y) => {
+    if (flight.mode === 'cruise') return;
+    const best = pickAt(x, y);
     if (best) engine.flyTo({ target: best }).catch(() => {});
+  });
+  // zoom to the cursor: scrolling in while pointing at some other body takes you to it (the orbit view always
+  // looks at its focus, so this is its way of zooming towards a point)
+  let wheelAcc = 0, wheelAt = 0;
+  flight.onWheelIn((x, y, amount) => {
+    const now = performance.now();
+    wheelAcc = now - wheelAt > 600 ? amount : wheelAcc + amount;
+    wheelAt = now;
+    if (wheelAcc < 360) return;
+    const id = pickAt(x, y);
+    if (id) { wheelAcc = 0; engine.flyTo({ target: id }).catch(() => {}); }
   });
 
   // ---- the way in: the whole Solar System from 30 au, looking down at it from about 30° above the
@@ -383,6 +430,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     ratio = Math.min(ratio, Math.sqrt(quality.maxPx / Math.max(1, w * h)));
     renderer.setPixelRatio(ratio);
     renderer.setSize(w, h, false);
+    post?.fit();
     camera.aspect = w / h;
     camera.fov = THREE.MathUtils.clamp(55 / Math.min(1, camera.aspect * 1.3), 55, 78);
     camera.updateProjectionMatrix();
@@ -601,6 +649,14 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (p === bodySlug) { marsBoosted = k > 1.02 || dBody - terrain.radius > GENERATED_FROM; g.visible = marsBoosted && (radOf(p) * k / d) * pxPerRad > 1.5; }
       if (g.visible) g.position.set(r[0], r[1], r[2]);
     }
+    for (const [id, sh] of shells) {
+      const r = sub(posOf(id), cam), d = len(r), k = sizeBoost(id, d), R = radOf(id) * k * (1 + sh.h);
+      const sd = norm(sub(sunPos, posOf(id)));
+      sh.sun.value.set(sd[0], sd[1], sd[2]);
+      // only while the planet is more than a few pixels across, and not once you are inside the glow
+      sh.mesh.visible = (radOf(id) * k / d) * pxPerRad > 4 && d > R * 1.002;
+      if (sh.mesh.visible) { sh.mesh.position.set(r[0], r[1], r[2]); sh.mesh.scale.setScalar(R); }
+    }
     const jd = system.jd();
     if (saturnShadows?.holder.visible) {
       // the Sun as seen from Saturn, into the holder's frame and then into the globe's unscaled one
@@ -627,11 +683,30 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const tiny = terrain.radius / dBody < 0.0004 || sizeBoost(bodySlug, dBody) > 1.02;
     if (!tiny) stats = terrain.update(bodyRel, camera);
 
-    renderer.clear();
-    renderer.render(sky.scene, sky.camera);
-    renderer.clearDepth();
-    terrain.group.visible = !tiny && !marsBoosted;
-    renderer.render(local, camera);
+    // exposure, like an eye: dimmer on the sunlit side or looking at the Sun, brighter on the night side
+    if (post) {
+      const sunDir = norm(sub(sunPos, cam)), look = fwdOf();
+      const sunInView = vdot(sunDir, look) > Math.cos(THREE.MathUtils.degToRad(Math.min(75, camera.fov * 0.8))) ? 1 : 0;
+      const nr = sub(cam, posOf(nearId)), nd = len(nr), R = radOf(nearId);
+      const closeness = 1 - smooth(R * 0.5, R * 4, nd - R); // 1 on the ground, 0 far off
+      const sunSide = nearId === 'sun' ? 1 : smooth(-0.25, 0.25, vdot(norm(nr), sunDir)); // 1 in daylight, 0 at night
+      const target = (1 - closeness * (sunSide * 0.2 - (1 - sunSide) * 0.6)) * (1 - 0.3 * sunInView);
+      exposureNow += (target - exposureNow) * (1 - Math.exp(-wall / (target < exposureNow ? 0.5 : 2.2)));
+      post.exposure.value = exposureNow;
+    }
+    try {
+      post?.begin();
+      renderer.clear();
+      renderer.render(sky.scene, sky.camera);
+      renderer.clearDepth();
+      terrain.group.visible = !tiny && !marsBoosted;
+      renderer.render(local, camera);
+      post?.end();
+    } catch (e) {
+      console.warn('the finishing pass failed and was switched off', e);
+      renderer.setRenderTarget(null);
+      post = null;
+    }
 
     // tell the margin where we are, when that changes (and the distance at most once a second)
     if (contextCbs.size) {
@@ -710,7 +785,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const p = m ? deep.starAt(Number(m[1])) : null;
     return p && len(p) > 0 ? scale(p, PC) : null;
   };
-  const canFlyTo = (id: string) => id in PLACES || id === 'sun' || !!planetPos[id] || !!system.pos(id) || !!starOf(id);
+  // a galaxy of the Local Group, as 'galaxy:<name>'
+  const galaxyOf = (id: string) => (id.startsWith('galaxy:') ? deep.galaxyAt(id.slice(7)) : null);
+  const canFlyTo = (id: string) => id in PLACES || id === 'sun' || !!planetPos[id] || !!system.pos(id) || !!starOf(id) || !!galaxyOf(id);
   const engine: Engine = {
     canFlyTo,
     flyTo(view: View, opts) {
@@ -722,11 +799,13 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (view.timeIso) system.setTime(view.timeIso);
       const sp = starOf(id);
       { const m = /^star:(\d+)$/.exec(id); starAim = sp && m ? Number(m[1]) : -1; }
-      const P = PLACES[id] ?? (sp ? { centre: () => sp, dist: 2000 * AU, dir: () => norm(add(norm(scale(sp, -1)), [0, 0.15, 0])) } : undefined);
+      const ga = galaxyOf(id);
+      const gc = ga ? scale(ga.p, PC) : null;
+      const P = PLACES[id] ?? (ga && gc ? { centre: () => gc, dist: ga.stand * PC, dir: () => norm(add(norm(scale(gc, -1)), [0, 0.2, 0])) } : undefined) ?? (sp ? { centre: () => sp, dist: 2000 * AU, dir: () => norm(add(norm(scale(sp, -1)), [0, 0.15, 0])) } : undefined);
       const secs = reduced ? 0 : opts?.secs ?? -1;
       if (P) {
         focusId = ''; focusHold = 0;
-        focusKey = id; focusName = PLACE_NAMES[id] ?? (sp ? (deep.starName(starAim) ?? 'the star') : id);
+        focusKey = id; focusName = PLACE_NAMES[id] ?? ga?.label ?? (sp ? (deep.starName(starAim) ?? 'the star') : id);
         const c = P.centre();
         flight.startCruise({ to: len(c) < 1 ? sunFocus : { centre: () => c, radius: 0 }, endDist: view.distanceKm ? view.distanceKm * 1000 : P.dist, endDir: P.dir(), secs });
       } else {
