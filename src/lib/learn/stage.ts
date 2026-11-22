@@ -115,6 +115,8 @@ export function mount(host: HTMLElement, first: Scene): Mounted {
     // the mark gets its own strip above the drawing so it never covers a label
     if (NOT_TO_SCALE.test(scene.caption) && h > STRIP * 3) {
       ctx.save(); ctx.translate(0, STRIP);
+      // anything a scene draws above its own top edge is cut off here, as it was at the top of the canvas, never into the strip
+      ctx.beginPath(); ctx.rect(0, 0, w, h - STRIP); ctx.clip();
       scene.draw({ ctx, w, h: h - STRIP, still, pointer: pointer && { x: pointer.x, y: pointer.y - STRIP }, say, t });
       ctx.restore(); tag(ctx, w);
     } else scene.draw({ ctx, w, h, still, pointer, say, t });
