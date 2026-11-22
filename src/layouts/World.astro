@@ -22,11 +22,9 @@ import { thumb as lessonThumb } from '../lib/learn/map';
 interface Props { world: string; title: string; description: string; readout?: string; accent?: string }
 const { world, title, description, readout = 'Altitude' } = Astro.props;
 // lessons whose camera looks at this world, so the fall leads on into reading
-const named = world === 'sun' ? /\bSun\b/ : world === 'earth' ? /\bEarth\b/ : new RegExp(`\\b${title}\\b`);
 const all = await allLessons();
 // the same lessons the search results offer: ranked by what they are about, not by where their 3D camera points
-const about = lessonsAbout(all, world, title, 4, await allFacts());
-const elsewhere = all.filter((l) => !about.includes(l) && named.test(`${l.data.title} ${l.data.summary} ${(l.data as { scene?: string }).scene ?? ''}`)).slice(0, 4);
+const about = lessonsAbout(all, world, title, 3, await allFacts());
 const leadPic = about[0] ? lessonThumb(about[0]) : null;
 const who = world === 'sun' ? 'the Sun' : world === 'earth' ? 'the Earth' : title;
 const face = portraits.find((p) => p.slug === world);
@@ -144,14 +142,6 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
                 {about.slice(1).map((l) => <li><a href={`/learn/${l.id}`}><span class="name">{l.data.title}</span><span class="line">{l.data.summary}</span></a></li>)}
               </ul>
             )}
-          </div>
-        )}
-        {elsewhere.length > 0 && (
-          <div class="ml-else">
-            <p class="more-h3">Where {who} comes up elsewhere</p>
-            <ul class="ml-mentions">
-              {elsewhere.map((l) => <li><a href={`/learn/${l.id}`}><span class="ml-strand">{STRAND_NAMES[l.data.strand]}</span><span class="name">{l.data.title}</span></a></li>)}
-            </ul>
           </div>
         )}
       </div>
@@ -296,7 +286,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .g-facts dt { font: 400 .7rem/1.6 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: #a8a296; }
       .g-facts dd { margin: 0; font: 300 1rem/1.45 'Spectral', Georgia, serif; color: #ece7dc; }
       .more-go2 { margin: 2rem 0 0; }
-      /* lessons: the one that looks at this world, large, the rest of its own beside it, then the places it comes up elsewhere */
+      /* lessons: the one that looks at this world, large, the rest of its own beside it */
       .ml-about { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 0 3rem; align-items: start; }
       .ml-about .more-h3 { grid-column: 1 / -1; }
       .ml-lead { display: grid; gap: 1rem; text-decoration: none; color: #ece7dc; }
@@ -312,7 +302,6 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .ml-rest li:first-child a { padding-top: 0; }
       .ml-rest .name { font: 400 1.2rem/1.25 'Spectral', Georgia, serif; }
       .ml-lead:hover .name, .ml-rest a:hover .name, .ml-mentions a:hover .name { color: #e9c48a; }
-      .ml-else { margin-top: 2.6rem; }
       .ml-mentions { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .9rem 2.4rem; }
       .ml-mentions a { display: grid; gap: .15rem; text-decoration: none; color: #ece7dc; }
       .ml-mentions .name { font: 400 1.1rem/1.3 'Spectral', Georgia, serif; }

@@ -28,7 +28,13 @@ const count = (re: RegExp, t: string) => (t.match(re) ?? []).length;
 export const LEAD_LESSON: Record<string, string> = {
   sun: 'what-the-sun-is', venus: 'air-and-the-greenhouse', earth: 'the-earth-as-a-planet', mars: 'air-and-the-greenhouse',
   jupiter: 'three-kinds-of-planet', saturn: 'rings', uranus: 'three-kinds-of-planet', neptune: 'finding-neptune',
-  moon: 'the-moon', io: 'moons-in-step', europa: 'ocean-moons', ganymede: 'moons-in-step', callisto: 'moons-in-step', enceladus: 'ocean-moons',
+  moon: 'the-moon', io: 'moons-in-step', europa: 'ocean-moons', ganymede: 'moons-in-step', enceladus: 'ocean-moons',
+};
+
+/** Lessons that name a world often but are not about it, taken out by an editor. */
+const NOT_ABOUT: Record<string, string[]> = {
+  jupiter: ['balance-points', 'ocean-moons', 'brown-dwarfs'],
+  mars: ['leaving-and-arriving'],
 };
 
 /**
@@ -46,7 +52,7 @@ export function lessonsAbout(all: L[], id: string, title: string, max = 3, facts
     const about = inTitle > 0 || inText >= 12;
     const score = inTitle * 12 + inSummary * 6 + (isFiled ? 2 : 0) + (l.data.title.replace(/^The /, '') === title ? 20 : 0) + Math.min(inText, 12);
     return { l, score, about };
-  }).filter((x) => x.about);
+  }).filter((x) => x.about && !(NOT_ABOUT[id] ?? []).includes(x.l.id));
   const ranked = scored.sort((a, b) => b.score - a.score).map((x) => x.l);
   const lead = LEAD_LESSON[id] ? all.find((l) => l.id === LEAD_LESSON[id]) : undefined;
   if (LEAD_LESSON[id] && !lead) throw new Error(`The lead lesson "${LEAD_LESSON[id]}" for ${id} does not exist`);
