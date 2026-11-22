@@ -36,6 +36,11 @@ Nobody has been near a black hole, and no probe could report back from inside on
 | The black hole at the centre of our galaxy, 4.3 million Suns | 12.7 million km | 18 times the radius of the Sun, well inside the orbit of Mercury |
 | The black hole in M87, 6.5 billion Suns | 19 billion km | About 130 times the Earth's distance from the Sun, as far out as the edge of the Sun's bubble of wind |
 
+<figure class="photo">
+  <img src="/img/learn/charts/horizon-sizes.svg" alt="Four bars on a scale where each line is 1,000 times more. The horizon radius for the Earth is the shortest, then the Sun, then the black hole at the centre of the Milky Way, and the longest is the black hole in M87." width="800" height="436" loading="lazy" />
+  <figcaption><b>A chart.</b> The radius of the event horizon, for the four masses in the table. The scale is not even: each line to the right is 1,000 times more, which is the only way the Earth's 9 millimetres and M87's 19 billion kilometres can share one chart.</figcaption>
+</figure>
+
 Neither the Earth nor the Sun will ever become a black hole. The table only shows how hard each would have to be squeezed.
 
 **A surprising consequence.** The size of a horizon goes up with the mass, so the volume inside goes up with the mass cubed. The average density inside therefore falls as black holes get bigger. For the one in our galaxy it works out at about a million kilograms in each cubic metre, a thousand times the density of water. For the one in M87 it is about 0.4 kilograms in each cubic metre, a third of the density of the air in your room (sums). A black hole need not be dense. It needs enough mass within a small enough space, and for the giants "small enough" is very large.

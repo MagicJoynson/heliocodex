@@ -23,6 +23,11 @@ The squeeze makes the centre hot and dense. In the Sun's core it is nearly 16 mi
 | 1 | A star like the Sun | 1 | About 10 billion years |
 | 10 | A blue-white giant | Several thousand | About 30 million years |
 
+<figure class="photo">
+  <img src="/img/learn/charts/star-lifetimes.svg" alt="Three bars on a scale where each line is ten times longer. A star of 0.1 Suns has the longest bar, running off the right-hand edge. The Sun's bar is shorter, at 10 billion years, and a star of 10 Suns has the shortest, at 30 million years." width="800" height="352" loading="lazy" />
+  <figcaption><b>A chart.</b> How long stars of three sizes spend burning hydrogen, from the last column of the table. The scale is not even: each line to the right is ten times longer. The red dwarf's bar runs on past the edge because the table says only "trillions of years".</figcaption>
+</figure>
+
 The last column is the surprise. A heavy star has more fuel, but it burns it far faster, so it dies young. A red dwarf sips its fuel so slowly that none has ever yet run out: the universe, at 13.8 billion years, is not old enough. The figures for red dwarfs come from computer models of stars, because nobody can watch one grow old.
 
 **Why heavy stars die young: the sum.** For stars like the Sun and heavier, the light given out climbs very steeply with mass: roughly as the mass raised to the power of three and a half. A star of 10 Suns therefore shines about 3,000 times as brightly as the Sun. It has 10 times the fuel and spends it 3,000 times as fast, so it lasts about a three-hundredth as long: 10 billion years divided by 300 is about 30 million years, the figure in the table. The rule is a rough one, found by measuring many stars, and it bends at both ends of the range.

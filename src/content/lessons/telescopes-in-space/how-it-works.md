@@ -34,6 +34,11 @@ lastChecked: 2026-11-12
 | TESS | 2018 to now | Planets crossing the nearer, brighter stars |
 | Euclid | 2023 to now | The shapes of galaxies, to map dark matter |
 
+<figure class="photo">
+  <img src="/img/learn/charts/space-telescope-years.svg" alt="A time line from 1990 to 2028 with nine bars, one for each space telescope in the table. Compton runs 1991 to 2000, Chandra from 1999 and Fermi from 2008 to now, Spitzer 2003 to 2020, Kepler 2009 to 2018, Planck 2009 to 2013, Gaia 2013 to 2025, TESS from 2018 and Euclid from 2023 to now." width="800" height="856" loading="lazy" />
+  <figcaption><b>A chart.</b> When each telescope in the table worked. The ones still working are in gold and stop at today. The Webb telescope and the newest, Roman, are not in the table and are left out.</figcaption>
+</figure>
+
 **The newest.** NASA's Nancy Grace Roman Space Telescope was launched on 30 August 2026 and is on its way to the same balance point as Webb. Its mirror is the same size as Hubble's, but each picture takes in about 100 times as much sky. It is named after the NASA astronomer who did most to get Hubble built. Its first science pictures are expected early in 2027.
 
 **Is the ground finished, then?** No. A mirror on the ground can be far bigger and far cheaper, and can be mended on a Tuesday afternoon. Modern telescopes on mountains measure the shaking of the air and bend a small mirror hundreds of times a second to undo it. The largest now being built has a mirror 39 metres across. The two kinds work together: the ground for size, and space for the kinds of light that never arrive.

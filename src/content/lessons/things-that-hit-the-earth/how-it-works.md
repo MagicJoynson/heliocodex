@@ -20,6 +20,11 @@ lastChecked: 2026-11-11
 | 1 kilometre | 700,000 years | Digs a crater about 10 km wide |
 | 10 kilometres | 100 million years | Leaves a crater about 100 km wide and changes the whole world |
 
+<figure class="photo">
+  <img src="/img/learn/charts/impact-gaps.svg" alt="Five bars showing how many years pass between hits by objects of five sizes. A 10 metre object arrives about every 10 years, 50 metres every 1,000 years, 140 metres every 20,000 years, 1 kilometre every 700,000 years and 10 kilometres every 100 million years, the longest bar." width="800" height="520" loading="lazy" />
+  <figcaption><b>A chart.</b> The wait between hits, for each size in the table. The scale is not even: each line to the right is ten times longer, so each step up in size is a far longer wait than the bars first suggest.</figcaption>
+</figure>
+
 **Four that we know about.**
 
 | When and where | What happened |
