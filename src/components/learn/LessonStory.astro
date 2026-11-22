@@ -2,6 +2,7 @@
 import ChartFit from '../ChartFit.astro';
 // A lesson in the visual style. This page is the first look: a picture that stays in view and
 // changes as each paragraph comes past. The deeper levels are pages of their own, linked below.
+import { lessonLd } from '../../lib/site';
 import Base from '../../layouts/Base.astro';
 import Stage from './Stage.astro';
 import PackLinks from './PackLinks.astro';
@@ -26,7 +27,7 @@ const worthKnowing = facts.filter((f) => f.about.includes(lesson.id)).slice(0, 5
 const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
 const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
 ---
-<Base title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary}>
+<Base title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary} jsonld={lessonLd(lesson.id, lesson.data.title, lesson.data.summary)}>
   <article class="lesson" data-lesson={lesson.id}>
     <header class="l-hero" data-stage>
       <canvas aria-hidden="true"></canvas>

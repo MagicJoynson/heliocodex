@@ -1,5 +1,6 @@
 /** The header and home-page search: loads /search.json once, ranks matches, and drives the result list from the keyboard. */
-export type Entry = [string, string, string, string?, string?];
+/** [title, kind, page, other names, hidden text, the 3D id, ids of lessons about it] */
+export type Entry = [string, string, string, string?, string?, string?, string?];
 let index: Promise<Entry[]> | null = null;
 export const loadIndex = () => (index ??= fetch('/search.json').then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json() as Promise<Entry[]>; }).catch((e) => { index = null; throw e; }));
 
@@ -142,6 +143,15 @@ export function rank(all: Entry[], query: string, max = 8): Entry[] {
   return out.slice(0, max);
 }
 
+/** What else can be done with a result: fly to it in 3D, and read the lessons about it. Lesson titles come from the lesson entries in the same index. */
+export function extras(all: Entry[], e: Entry): { go: string | null; lessons: { title: string; href: string }[] } {
+  const ids = e[6] ? e[6].split(' ') : [];
+  const byUrl = new Map<string, Entry>();
+  if (ids.length) for (const x of all) if (x[1] === 'Lesson') byUrl.set(x[2], x);
+  const lessons = ids.flatMap((id) => { const l = byUrl.get(`/learn/${id}`); return l ? [{ title: l[0], href: l[2] }] : []; });
+  return { go: e[5] ? `/explore?go=${encodeURIComponent(e[5])}` : null, lessons };
+}
+
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
 
 /** Wires a search box to a result list. `btn` is the header's small-screen toggle; the home page's box has none. */
@@ -157,7 +167,7 @@ export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
   const paint = () => {
     const typed = input.value.trim();
     list.innerHTML = hits.length
-      ? hits.map((h, i) => `<li role="option" id="${list.id}-${i}" aria-selected="${i === at}" data-href="${esc(h[2])}"><b>${esc(h[0])}</b><span>${esc(h[1])}</span></li>`).join('')
+      ? hits.map((h, i) => `<li role="option" id="${list.id}-${i}" aria-selected="${i === at}" data-href="${esc(h[2])}"><b>${esc(h[0])}</b><span>${esc(h[1])}${h[5] ? ' · in 3D' : ''}${h[6] ? ' · lessons' : ''}</span></li>`).join('') + `<li class="more" role="option" id="${list.id}-${hits.length}" aria-selected="${at === hits.length}" data-href="/search?q=${encodeURIComponent(typed)}"><b>All results for “${esc(typed)}”</b><span>with 3D and lessons</span></li>`
       : `<li class="none" role="presentation">Nothing found for “${esc(typed)}”. Try one word, such as a name or a topic.</li>`;
     if (at >= 0) input.setAttribute('aria-activedescendant', `${list.id}-${at}`); else input.removeAttribute('aria-activedescendant');
     status.textContent = typed ? (hits.length ? `${hits.length} suggestion${hits.length > 1 ? 's' : ''}. Use the up and down arrow keys, then Enter.` : `Nothing found for ${typed}.`) : '';
@@ -174,15 +184,15 @@ export function wireSearch(form: HTMLFormElement, btn?: HTMLButtonElement) {
     hits = rank(all, input.value); at = hits.length ? 0 : -1; paint();
   });
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown' && hits.length) { e.preventDefault(); if (list.hidden) show(true); else at = (at + 1) % hits.length; paint(); }
-    else if (e.key === 'ArrowUp' && hits.length) { e.preventDefault(); at = (at - 1 + hits.length) % hits.length; paint(); }
+    if (e.key === 'ArrowDown' && hits.length) { e.preventDefault(); if (list.hidden) show(true); else at = (at + 1) % (hits.length + 1); paint(); }
+    else if (e.key === 'ArrowUp' && hits.length) { e.preventDefault(); at = (at - 1 + hits.length + 1) % (hits.length + 1); paint(); }
     else if (e.key === 'Escape') {
       e.preventDefault(); // the browser would otherwise empty a search box
       if (!list.hidden) { show(false); e.stopPropagation(); }
       else if (btn && document.body.classList.contains('finding')) { document.body.classList.remove('finding'); btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
     }
   });
-  form.addEventListener('submit', (e) => { if (!list.hidden && at >= 0 && hits[at]) { e.preventDefault(); location.href = hits[at][2]; } });
+  form.addEventListener('submit', (e) => { if (!list.hidden && at >= 0 && hits[at]) { e.preventDefault(); location.href = hits[at][2]; } else if (!list.hidden && at === hits.length && hits.length) { e.preventDefault(); location.href = `/search?q=${encodeURIComponent(input.value.trim())}`; } });
   document.addEventListener('click', (e) => { if (!form.contains(e.target as Node) && e.target !== btn) show(false); });
   if (!btn) return;
   document.addEventListener('keydown', (e) => {

@@ -3,10 +3,10 @@ import ChartFit from '../components/ChartFit.astro';
 import Base from './Base.astro';
 import '../styles/reading.css';
 import VideoEmbeds from '../components/VideoEmbeds.astro';
-interface Props { title: string; description: string; path: string }
-const { title, description, path } = Astro.props;
+interface Props { title: string; description: string; path: string; jsonld?: Record<string, unknown> | Record<string, unknown>[] }
+const { title, description, path, jsonld } = Astro.props;
 ---
-<Base title={title} description={description} path={path}>
+<Base title={title} description={description} path={path} jsonld={jsonld}>
   <article class="reading">
     <slot />
   </article>
