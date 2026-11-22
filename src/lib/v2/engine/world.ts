@@ -658,7 +658,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const sd = norm(sub(sunPos, posOf(id)));
       sh.sun.value.set(sd[0], sd[1], sd[2]);
       // only while the planet is more than a few pixels across, and not once you are inside the glow
-      sh.mesh.visible = (radOf(id) * k / d) * pxPerRad > 4 && d > R * 1.002;
+      // (and not close round the world whose ground is drawn as terrain tiles: its outline is not quite this sphere's)
+      sh.mesh.visible = (radOf(id) * k / d) * pxPerRad > 4 && d > R * 1.002 && !(id === bodySlug && d < radOf(id) * 40);
       if (sh.mesh.visible) { sh.mesh.position.set(r[0], r[1], r[2]); sh.mesh.scale.setScalar(R); }
     }
     const jd = system.jd();
