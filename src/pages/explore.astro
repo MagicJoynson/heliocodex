@@ -285,7 +285,7 @@ import { sections } from '../lib/nav';
             } else {
               const name = world?.focus.name ?? r.target;
               // circling: how far from what you are looking at; flying yourself: how high above the ground
-              $('r-k').textContent = r.far ? 'Your distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
+              $('r-k').textContent = r.far ? 'Your distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : name === 'the Sun' ? 'Distance to the Sun\u2019s surface' : `Distance to ${name}`;
               $('r-v').textContent = fmt(r.mode === 'free' || r.far ? (r.far ? shown(r.alt) : r.alt) : r.dist);
               $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : football && r.far ? `Sun as a football: ${fmt(shown(r.alt) * (0.22 / 1.3927e9))}` : '';
             }
@@ -797,7 +797,7 @@ import { sections } from '../lib/nav';
         mctx.beginPath(); mctx.arc(yx, yy, 3 * dpr, 0, Math.PI * 2); mctx.stroke(); mctx.fill();
         // beyond the rim: say how far
         const far = yau > EDGE;
-        $('where-d').textContent = far ? `You are ${fmt(Math.hypot(...st.cam))} from the Sun, off this map` : `${fmt(Math.hypot(...st.cam))} from the Sun`;
+        { const dc = Math.hypot(...st.cam); const sub = dc < 40 * 695_700_000 ? '\u2019s centre' : ''; $('where-d').textContent = far ? `You are ${fmt(dc)} from the Sun, off this map` : `${fmt(dc)} from the Sun${sub}`; }
         map.classList.toggle('beyond', far);
         if (document.activeElement === map && hits.length) {
           const h = hits[kbAt()];

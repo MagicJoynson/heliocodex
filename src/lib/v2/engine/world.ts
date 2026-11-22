@@ -271,7 +271,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   // colour, depth of the glow as a share of the radius, and strength (the gas giants have no sharp edge to glow from)
   const ATMO: Record<string, [number, number, number, number, number]> = {
     venus: [1.0, 0.82, 0.5, 0.03, 0.8], earth: [0.32, 0.58, 1.0, 0.04, 0.9], mars: [0.95, 0.62, 0.45, 0.03, 0.55],
-    jupiter: [0.86, 0.76, 0.62, 0.012, 0.28], saturn: [0.92, 0.86, 0.66, 0.012, 0.28], uranus: [0.55, 0.88, 0.95, 0.03, 0.6], neptune: [0.38, 0.52, 1.0, 0.03, 0.6],
+    // Jupiter and Saturn have none: they are flattened at the poles, so a round shell reads as a fringe, and the
+    // honest haze at their edge is too thin to draw
+    uranus: [0.55, 0.88, 0.95, 0.03, 0.6], neptune: [0.38, 0.52, 1.0, 0.03, 0.6],
   };
   const shells = new Map<string, { mesh: THREE.Mesh; h: number; sun: { value: THREE.Vector3 } }>();
   for (const [id, [r, g, b, h, gain]] of Object.entries(ATMO)) {
@@ -600,7 +602,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const pxPerRad0 = o.canvas.clientHeight / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
     // the lines of the planets' paths are not drawn across a planet that fills the view: they would seem to run over its face
     const biggestPx = Math.max(...PLANETS.map((q) => { const d = len(sub(planetPos[q], cam)); return (radOf(q) * sizeBoost(q, d) / d) * pxPerRad0; }));
-    orbitMat.opacity = 0.22 * wide * (1 - smooth(50, 160, biggestPx));
+    // nor when close to any planet: from beside Saturn the other planets' paths are just lines across the view
+    const nearestR = Math.min(...PLANETS.map((q) => len(sub(planetPos[q], cam)) / radOf(q)));
+    orbitMat.opacity = 0.22 * wide * (1 - smooth(50, 160, biggestPx)) * smooth(300, 3000, nearestR);
     orbits.visible = orbitMat.opacity > 0.001;
     orionPhoto(len(sub(ORION, cam)), cam);
     if (orbits.visible) orbits.position.set(-cam[0], -cam[1], -cam[2]);

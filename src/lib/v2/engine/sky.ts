@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, uniform, texture, max, pow, smoothstep } from 'three/tsl';
+import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, uniform, texture, max, pow, smoothstep, atan, asin, vec2, mix } from 'three/tsl';
 import { len, norm, type V3 } from './vec';
 
 /**
@@ -75,19 +75,32 @@ export function createSky(opts: { catalogue?: boolean } = {}) {
     scene.add(stars);
   });
 
-  // ---- the Sun: a disc of the right angular size, plus a soft glare that does not depend on it
+  // ---- the Sun: a disc of the right angular size, with limb darkening and surface texture, and a warm glare
   const sunMat = new THREE.SpriteNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
   const sunDisc = uniform(0.05); // disc radius as a fraction of the sprite's half-width
+  const sunBoost = uniform(1); // lifts a Sun too small to show as a disc, so it is still the brightest thing
+  const sunTex = new THREE.TextureLoader().load('/textures/4k_sun.webp');
+  sunTex.colorSpace = THREE.SRGBColorSpace;
   {
     const d = sub(uv(), 0.5).mul(2);
     const r = d.length();
-    // limb-darkened disc, its edge softened over about a pixel
-    const mu = float(1).sub(r.div(sunDisc).pow(2)).max(0).sqrt();
-    const edge = float(1).sub(smoothstep(sunDisc.mul(0.92), sunDisc.mul(1.04), r));
-    const disc = float(0.4).add(mu.mul(0.6)).mul(6).mul(edge).max(edge.mul(3));
-    // glare: a tight core and a wide, faint halo
-    const glare = exp(r.div(sunDisc).mul(-1.1)).mul(1.4).add(pow(max(float(0), float(1).sub(r)), float(3)).mul(0.18));
-    sunMat.colorNode = vec4(vec3(1, 0.96, 0.9).mul(disc.add(glare)).mul(sunFade), 1);
+    const p = d.div(sunDisc); // the point on the disc, its radius 1
+    const q = p.length();
+    // mu: how squarely this point faces us (1 at the centre, 0 at the limb)
+    const mu = float(1).sub(q.mul(q)).max(0).sqrt();
+    const edge = float(1).sub(smoothstep(0.97, 1.015, q));
+    // the visible hemisphere of the surface picture, for its granulation and spots (its light and dark only)
+    const lon = atan(p.x, mu), lat = asin(p.y.clamp(-1, 1));
+    const luma = dot(texture(sunTex, vec2(lon.div(6.2832).add(0.5), lat.div(3.1416).add(0.5))).rgb, vec3(0.3, 0.59, 0.11));
+    const detail = float(1).add(luma.sub(0.615).mul(0.55)).clamp(0.82, 1.2);
+    // limb darkening (about 0.6), and the limb redder than the centre, as the real one is
+    const dark = float(1).sub(float(0.6).mul(float(1).sub(mu)));
+    const tint = mix(vec3(1.0, 0.42, 0.16), vec3(1.0, 0.88, 0.64), pow(mu, 0.5));
+    const disc = tint.mul(dark).mul(detail).mul(1.75).mul(edge);
+    // glare: a warm corona hugging the limb, and a faint wider one, both gone before the sprite's edge
+    const out = max(float(0), q.sub(1));
+    const corona = exp(out.mul(-4)).mul(0.55).add(exp(out.mul(-0.7)).mul(0.05)).mul(float(1).sub(edge)).mul(float(1).sub(smoothstep(0.55, 1, r)));
+    sunMat.colorNode = vec4(disc.add(vec3(1, 0.74, 0.46).mul(corona)).mul(sunBoost).mul(sunFade), 1);
   }
   const sun = new THREE.Sprite(sunMat);
   sun.renderOrder = 5;
@@ -136,6 +149,8 @@ export function createSky(opts: { catalogue?: boolean } = {}) {
     // brightest thing in the sky rather than a faint smudge
     const spritePx = (Math.tan(halo) / Math.tan(THREE.MathUtils.degToRad(main.fov / 2))) * viewH;
     sunDisc.value = Math.min(0.9, Math.max(Math.tan(angR) / Math.tan(halo), 1.6 / Math.max(1, spritePx)));
+
+    sunBoost.value = Math.max(1, 14 / Math.max(1, sunDisc.value * spritePx));
 
     for (const b of bodies) {
       const s = glints.get(b.slug);
