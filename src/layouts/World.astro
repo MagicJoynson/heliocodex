@@ -6,13 +6,14 @@ import SiteNav from '../components/SiteNav.astro';
 import SiteSearch from '../components/SiteSearch.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThreeDReturn from '../components/ThreeDReturn.astro';
-import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
+import { allLessons, allFacts, STRAND_NAMES } from '../lib/v2/margin/content';
 import { bodies } from '../data/bodies';
 import { portraits } from '../lib/portraits';
 import facts from '../data/facts.json';
 import { moonCount, MOONS_AS_OF_TEXT } from '../data/moon-counts';
 import { plates } from '../lib/v2/atlas/plates/index';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
+import { lessonsAbout } from '../lib/objects';
 import { thumb as lessonThumb } from '../lib/learn/map';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
@@ -23,11 +24,9 @@ const { world, title, description, readout = 'Altitude' } = Astro.props;
 // lessons whose camera looks at this world, so the fall leads on into reading
 const named = world === 'sun' ? /\bSun\b/ : world === 'earth' ? /\bEarth\b/ : new RegExp(`\\b${title}\\b`);
 const all = await allLessons();
-const aimed = all.filter((l) => (l.data as { view?: { target?: string } }).view?.target === world);
-const lessons = [...aimed, ...all.filter((l) => !aimed.includes(l) && named.test(`${l.data.title} ${l.data.summary} ${(l.data as { scene?: string }).scene ?? ''}`))].slice(0, 6);
-const about = lessons.filter((l) => aimed.includes(l));
-const elsewhere = lessons.filter((l) => !aimed.includes(l));
-if (!about.length && elsewhere.length) about.push(elsewhere.shift()!);
+// the same lessons the search results offer: ranked by what they are about, not by where their 3D camera points
+const about = lessonsAbout(all, world, title, 4, await allFacts());
+const elsewhere = all.filter((l) => !about.includes(l) && named.test(`${l.data.title} ${l.data.summary} ${(l.data as { scene?: string }).scene ?? ''}`)).slice(0, 4);
 const leadPic = about[0] ? lessonThumb(about[0]) : null;
 const who = world === 'sun' ? 'the Sun' : world === 'earth' ? 'the Earth' : title;
 const face = portraits.find((p) => p.slug === world);

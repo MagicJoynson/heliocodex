@@ -6,7 +6,7 @@ import PackLinks from '../../components/learn/PackLinks.astro';
 import { STORY_LESSONS } from '../../lib/learn/stories';
 import { thumb, cover } from '../../lib/learn/map';
 import { allLessons, allTerms, allFacts, STRAND_NAMES, LEVEL_NAMES, levelOf, type Lesson } from '../../lib/v2/margin/content';
-import { PUBLISHER } from '../../lib/site';
+import { lessonLd } from '../../lib/site';
 import equationStyles from 'katex/dist/katex.min.css?url';
 
 export async function getStaticPaths() {
@@ -44,7 +44,7 @@ const nextPic = nextLesson ? thumb(nextLesson) : null;
 const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
 ---
 {visual ? <LessonStory lesson={lesson} /> : (
-<Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary} jsonld={{ '@context': 'https://schema.org', '@type': 'Article', headline: lesson.data.title, description: lesson.data.summary, inLanguage: 'en-GB', mainEntityOfPage: `https://heliocodex.com/learn/${lesson.id}`, isPartOf: { '@type': 'WebSite', name: 'Heliocodex', url: 'https://heliocodex.com/' }, publisher: PUBLISHER }}>
+<Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary} jsonld={lessonLd(lesson.id, lesson.data.title, lesson.data.summary)}>
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
   <header class:list={['opener', { 'no-pic': !pic }]}>
     <div class="op-words">
