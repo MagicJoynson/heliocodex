@@ -25,6 +25,11 @@ lastChecked: 2026-11-12
 | Betelgeuse | Red supergiant | 640 to 764 | Into the belt of asteroids beyond Mars |
 | WOH G64 | Red supergiant | about 1,540 | Past Jupiter, three-quarters of the way to Saturn |
 
+<figure class="photo">
+  <img src="/img/learn/charts/giant-star-widths.svg" alt="Eight bars showing how wide each star is compared with the Sun. The Sun is a thin line, Arcturus, Aldebaran and Rigel are short, the Sun in 5 billion years is longer, Antares and Betelgeuse reach about halfway across, and WOH G64 stretches almost to the right-hand edge." width="800" height="772" loading="lazy" />
+  <figcaption><b>A chart.</b> The widths in the table, in Suns, on an even scale. For Betelgeuse the paler part of the bar is the range between 640 and 764. The Sun's own future width is given as "more than 200", so the bar shows 200.</figcaption>
+</figure>
+
 **Not all supergiants are red.** Rigel, the blue-white foot of Orion, is a supergiant too. It is 74 times as wide as the Sun, but its surface is at about 12,100 kelvin, twice as hot as the Sun's, and it gives out about 120,000 times the Sun's light, counting every kind, most of it ultraviolet the eye cannot see. In visible light alone it is about 52,000 Suns. It is about 8 million years old. Heavy stars can swing between blue and red more than once before the end.
 
 **How empty?** Betelgeuse has perhaps 14 times the mass of the Sun, spread through a space that would hold about 340 million Suns. On average that makes it about 20,000 times thinner than the air at sea level. Worked out here, taking it as 700 times the Sun's width. A supergiant has been called a red-hot vacuum, and the edge of one is not a surface at all but a slow fading out.
