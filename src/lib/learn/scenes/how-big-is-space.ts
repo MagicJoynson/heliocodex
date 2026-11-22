@@ -41,9 +41,12 @@ export const lens: Scene = {
     if (w < 520) {                                                // on a phone the two lines sit together at the foot, not on the moving light
       label(ctx, `Light, ${nf(age)} s after leaving`, 16, 26, { colour: ACCENT });
       label(ctx, gone, 16, 46);
-    } else if (lx < w - 150 && ly > 40) {
-      label(ctx, `Light, ${nf(age)} s after leaving`, lx + 8, ly - 8, { colour: ACCENT });
-      label(ctx, gone, lx + 8, ly + 8);
+    } else if (ly > 40) {
+      // the longer line is about 7.5 px a letter: on the right of the light if it fits, otherwise on its left, so it never runs off the canvas
+      const need = gone.length * 7.5 + 12, onRight = lx + 8 + need < w;
+      const ax = onRight ? lx + 8 : lx - 8, al = onRight ? 'left' : 'right';
+      label(ctx, `Light, ${nf(age)} s after leaving`, ax, ly - 8, { colour: ACCENT, align: al });
+      label(ctx, gone, ax, ly + 8, { align: al });
     }
   },
 };
@@ -136,6 +139,12 @@ const emptyScene: Scene = {
       line(ctx, [x0, y0 + r * gap, x0 + Math.min(rowW, upto - from), y0 + r * gap], 'rgba(236,231,220,.13)');
     }
     const place = (au: number): [number, number, boolean] => { const d = au * pxPerAu, r = Math.floor(d / rowW); return [x0 + (d - r * rowW), y0 + r * gap, d <= upto]; };
+    // ruler ticks: a short mark on the line at every 5 au, so a distance can be read off the rows
+    for (const tick of [5, 10, 15, 20, 25, 30]) {
+      const [tx, ty, here] = place(tick); if (!here) continue;
+      line(ctx, [tx, ty - 4, tx, ty + 4], 'rgba(233,196,138,.7)');
+    }
+    label(ctx, `Ticks: every 5 au, ${nf(Math.round(5 * M_PER_AU))} m on this scale`, x0, y0 + (rows - 1) * gap + 24, { colour: FAINT });
     const sunPx = (SUN_KM / AU_KM) * pxPerAu;
     dot(ctx, x0, y0, Math.max(sunPx / 2, 1.5), '#ffd88c');
     label(ctx, 'Sun', x0 + 8, y0 - 9, { colour: ACCENT });
