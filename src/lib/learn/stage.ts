@@ -49,7 +49,7 @@ export function rng(seed: number): () => number {
 /** The room a scene has to draw in; set by `mount` before each frame so labels can keep inside it. */
 const room = new WeakMap<CanvasRenderingContext2D, { w: number; h: number; boxes: { x0: number; x1: number; y0: number; y1: number }[] }>();
 
-export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { align?: CanvasTextAlign; colour?: string; size?: number } = {}): void {
+export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { align?: CanvasTextAlign; colour?: string; size?: number; nudge?: boolean } = {}): void {
   const size = opts.size ?? 11, align = opts.align ?? 'left', up = text.toUpperCase();
   ctx.font = `400 ${size}px ${MONO}`;
   ctx.textAlign = align;
@@ -78,9 +78,10 @@ export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y:
   });
   const top = half + 2, bottom = r.h - half - (lines.length - 1) * lh - 2;
   const base = Math.min(Math.max(y - (lines.length - 1) * lh / 2, top), bottom);
-  // a label that would touch one already drawn is moved up or down, a line at a time, to the nearest free place
+  // off by default, because a label belongs to the thing it names and only the scene knows which: with `nudge`, a label that would
+  // touch one already drawn is moved up or down, a line at a time, to the nearest free place
   let chosen = base, found = false;
-  for (const dy of [0, lh, -lh, 2 * lh, -2 * lh, 3 * lh, -3 * lh, 4 * lh, -4 * lh]) {
+  for (const dy of (opts.nudge ? [0, lh, -lh, 2 * lh, -2 * lh, 3 * lh, -3 * lh, 4 * lh, -4 * lh] : [0])) {
     const yy = base + dy;
     if (dy && (yy < top || yy > bottom)) continue;
     const clash = placed(0).some((q) => {
@@ -91,7 +92,9 @@ export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y:
   }
   if (!found) chosen = base;
   ctx.textAlign = 'left';
+  const log = (globalThis as { __labelMoves?: unknown[] }).__labelMoves; // only set by scripts/check-not-to-scale.mjs
   placed(0).forEach((q) => {
+    if (log) log.push({ canvas: ctx.canvas, text: lines[q.i], dx: q.x - (align === 'right' ? x - widths[q.i] : align === 'center' ? x - widths[q.i] / 2 : x), dy: chosen + q.i * lh - (y + (q.i - (lines.length - 1) / 2) * lh) });
     const yy = chosen + q.i * lh;
     r.boxes.push({ x0: q.box.x0, x1: q.box.x1, y0: yy - half + 1, y1: yy + half - 1 });
     ctx.fillText(lines[q.i], q.x, yy);

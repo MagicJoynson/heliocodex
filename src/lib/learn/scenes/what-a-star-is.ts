@@ -91,12 +91,12 @@ const sizesScene: Scene = {
       if (r > 0.6) globe(ctx, cx, cy, r, b.lit, b.dark); else dot(ctx, cx, cy, 0.8, `rgb(${b.lit})`);
       const show = i === 3 ? k > 0.6 : i === 2 ? r > 6 || k > 0.9 : k < 0.1;
       if (show) {
-        const lx = i === 3 ? Math.min(cx, w * 0.6) : cx, ly = i === 3 ? Math.max(cy - r - 16, h * 0.16) : base + 18 + (i === 1 && w <= 520 ? 15 : 0);
+        const lx = i === 3 ? Math.min(cx, w * 0.6) : cx, ly = i === 3 ? Math.max(cy - r - 16, h * 0.16) : base + 18 + (i === 1 ? (w <= 520 ? 15 : 34) : 0);
         ctx.shadowColor = '#000'; ctx.shadowBlur = i === 3 ? 6 : 0;
         label(ctx, b.name, lx, ly, { align: 'center', colour: i === 2 ? ACCENT : INK }); if (b.note && w > 520) label(ctx, b.note, lx, ly + 15, { align: 'center' });
         ctx.shadowBlur = 0;
       }
-      if (i === 3 && k > 0.9) { ring(ctx, cx, cy, (2 * 1.524 * 107.5 * sunPx) / 2, 'rgba(11,11,12,.55)', 1, [3, 5]); ctx.fillStyle = 'rgba(11,11,12,.8)'; ctx.font = '400 11px "IBM Plex Mono", monospace'; ctx.textAlign = 'center'; ctx.fillText('THE ORBIT OF MARS, FOR SIZE', cx, cy + 1.524 * 107.5 * sunPx - 12); }
+      if (i === 3 && k > 0.9) { ring(ctx, cx, cy, (2 * 1.524 * 107.5 * sunPx) / 2, 'rgba(11,11,12,.55)', 1, [3, 5]); label(ctx, 'The orbit of Mars, for size', Math.min(Math.max(cx, 100), w - 100), cy + 1.524 * 107.5 * sunPx - 12, { align: 'center', colour: 'rgba(11,11,12,.8)' }); }
     });
     say(k < 0.05 ? 'The smallest stars are hardly wider than Jupiter' : k < 1 ? 'Pulling back' : 'Antares: about 700 Suns wide', k >= 1 ? 'The Sun is the dot at the left' : 'All to the same scale');
   },

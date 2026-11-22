@@ -55,7 +55,7 @@ const edgeScene: Scene = {
     dot(ctx, cx, cy, unit, '#000');
     ring(ctx, cx, cy, unit, 'rgba(233,196,138,.5)', 1, [3, 5]);
     label(ctx, 'The event horizon', cx + unit * 0.75, cy + unit * 0.75 + 12, { colour: ACCENT });
-    label(ctx, 'Nothing is here to touch', cx + unit * 0.75, cy + unit * 0.75 + 28);
+    label(ctx, 'Nothing is here to touch', Math.min(cx + unit * 0.75, w - 6 - 158), cy + unit * 0.75 + 28);
     // the fall, from 2.9 edge radii to the centre, takes the first 9 seconds of each turn
     const far = 2.9, r = fall(far, clamp(x / 9)), py = cy - r * unit;
     line(ctx, [cx, cy - far * unit, cx, py], 'rgba(236,231,220,.25)');

@@ -22,7 +22,7 @@ const marble = photoScene({
   say: ['Home, from the outside', 'Taken by people, on their way to the Moon'],
   zoom: [0.94, 1.02],
   pointers: [
-    { at: [0.36, 0.2], to: [0.12, 0.06], text: 'Africa', align: 'left' },
+    { at: [0.36, 0.2], to: [0.12, 0.2], text: 'Africa', align: 'left' },
     { at: [0.63, 0.11], to: [0.86, 0.05], text: 'Arabia' },
     { at: [0.58, 0.42], to: [0.9, 0.36], text: 'Madagascar' },
     { at: [0.5, 0.88], to: [0.16, 0.95], text: 'Antarctica', align: 'left' },

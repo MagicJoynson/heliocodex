@@ -46,7 +46,8 @@ const stretch: Scene = {
     const n = 9; for (let i = 0; i <= n; i++) { const x = mix(x0, far, i / n); line(ctx, [x, y - 7, x, y + 7], 'rgba(236,231,220,.35)'); }
     line(ctx, [x0, y, far, y], 'rgba(236,231,220,.5)');
     dot(ctx, x0, y, 5, '#fff'); label(ctx, 'Us', x0, y + 26, { align: 'center' });
-    dot(ctx, far, y, 5, 'rgba(233,160,90,1)'); label(ctx, 'Where it came from', far, y + 26, { align: 'right', colour: SOFT });
+    dot(ctx, far, y, 5, 'rgba(233,160,90,1)'); if (far - 130 > x0 + 16) label(ctx, 'Where it came from', far, y + 26, { align: 'right', colour: SOFT });
+    else label(ctx, 'Where it came from', 4, y + 44, { align: 'left', colour: SOFT }); // a second row, from the edge, when it would run into 'Us'
     if (k < 1) { dot(ctx, lx, y, 3.5, ACCENT); line(ctx, [lx + 4, y, Math.min(lx + 26, far), y], ACCENT, 2); }
     label(ctx, k < 0.05 ? 'At the start: 42 million light years' : k >= 1 ? 'Now: 46 billion light years' : 'Space stretches as the light travels', w / 2, h * 0.16, { align: 'center', colour: ACCENT });
     say(k >= 1 ? 'The light arrives' : 'Light on its way', 'Its source is now far beyond where it started');

@@ -40,11 +40,11 @@ const turnScene: Scene = {
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, -Math.PI / 2, Math.PI / 2); ctx.closePath(); ctx.fillStyle = '#5d7ea6'; ctx.fill(); ctx.restore();
     // lines of longitude turning with it
     for (let i = 0; i < 6; i++) { const b = a + (i * TAU) / 6; line(ctx, [cx, cy, cx + Math.cos(b) * R, cy + Math.sin(b) * R], 'rgba(236,231,220,.14)'); }
-    dot(ctx, cx, cy, 2.5, INK); label(ctx, 'North Pole', cx + 8, cy + 12, { colour: SOFT });
+    dot(ctx, cx, cy, 2.5, INK); label(ctx, 'North Pole', cx, cy + 12, { align: 'center', colour: SOFT });
     ring(ctx, cx, cy, R * 1.22, 'rgba(236,231,220,.18)', 1, [2, 5]);
     const ax = cx + Math.cos(a - 0.5) * R * 1.22, ay = cy + Math.sin(a - 0.5) * R * 1.22; line(ctx, [ax, ay, ax + Math.cos(a - 0.5 + 2.2) * 9, ay + Math.sin(a - 0.5 + 2.2) * 9], 'rgba(236,231,220,.5)'); line(ctx, [ax, ay, ax + Math.cos(a - 0.5 + 0.9) * 9, ay + Math.sin(a - 0.5 + 0.9) * 9], 'rgba(236,231,220,.5)');
     const px = cx + Math.cos(a) * R, py = cy + Math.sin(a) * R, day = Math.cos(a) > 0;
-    dot(ctx, px, py, 5, ACCENT); label(ctx, 'You', px + Math.cos(a) * 16, py + Math.sin(a) * 16, { align: 'center', colour: ACCENT });
+    dot(ctx, px, py, 5, ACCENT); label(ctx, 'You', px + Math.cos(a) * 22, py + Math.sin(a) * 22, { align: 'center', colour: ACCENT });
     say(day ? 'Turned towards the Sun: day' : 'Turned away from it: night', 'At the equator the ground moves at about 1,670 kilometres an hour');
   },
 };
@@ -135,7 +135,7 @@ const south = photoScene({
   caption: 'The same real photograph, closer in. This is the south pole of the sky, and there is no bright star at the middle of the rings. Credit: ESO/F. Char, CC BY 4.0. The marks were added here.',
   say: ['One of the two still points: the southern pole of the sky', 'No bright star marks this one. The northern one has Polaris'],
   zoom: [1.5, 1.7], focus: [0.47, 0.4],
-  pointers: [{ at: [0.17, 0.2], to: [0.3, 0.07], text: 'A neighbouring galaxy' }],
+  pointers: [{ at: [0.17, 0.2], to: [0.36, 0.25], text: 'A neighbouring galaxy' }],
 });
 
 export const scenes: Scene[] = [trails, turnScene, south, poleScene, domeScene, fourScene];

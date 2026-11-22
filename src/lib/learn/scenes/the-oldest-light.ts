@@ -85,11 +85,12 @@ const tells: Scene = {
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.4);
     const x0 = w * 0.08, bw = w * 0.84, y = h * 0.28, bh = h * 0.14, k = ease(clamp(t / 2, 0, 1)); let x = x0;
+    let fx = x0; // where each part ends up: the names go there from the start and fade in, so they never cross while the bar grows
     PARTS.forEach(([name, pc, col], i) => {
       const ww = (bw * pc * k) / 100; ctx.fillStyle = col; ctx.fillRect(x, y, ww, bh);
-      const mid = x + ww / 2, up = i === 0;
-      label(ctx, `${name} ${pc}%`, up ? x0 : mid, up ? y - 12 : y + bh + 20, { align: up ? 'left' : 'center', colour: i === 0 ? ACCENT : SOFT });
-      x += ww;
+      const fw = (bw * pc) / 100, up = i === 0;
+      ctx.globalAlpha = k; label(ctx, `${name} ${pc}%`, up ? x0 : fx + fw / 2, up ? y - 12 : y + bh + 20, { align: up ? 'left' : 'center', colour: i === 0 ? ACCENT : SOFT }); ctx.globalAlpha = 1;
+      x += ww; fx += fw;
     });
     label(ctx, 'Age: 13.77 billion years', w / 2, y + bh + 54, { align: 'center' });
     say('The patches fix the numbers', 'Everything made of atoms is about a twentieth of what there is');

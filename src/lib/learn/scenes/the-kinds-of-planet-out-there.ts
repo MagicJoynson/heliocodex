@@ -97,7 +97,7 @@ const lavaScene: Scene = {
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.5);
     const s = Math.min(w, h), wide = w > 560, sx = w * (wide ? 0.36 : 0.5), sy = h * 0.46, R = s * (wide ? 0.2 : 0.16), a = t * 0.5, orbit = s * 0.42;
-    const px = sx + Math.cos(a) * (wide ? orbit * 1.25 : w * 0.36), py = sy + Math.sin(a) * orbit * 0.34, behind = Math.sin(a) < 0, r = s * 0.06;
+    const r = s * 0.06, px = sx + Math.cos(a) * (wide ? Math.min(orbit * 1.25, sx - r - 10) : w * 0.36), py = sy + Math.sin(a) * orbit * 0.34, behind = Math.sin(a) < 0;
     const planet = () => {
       ctx.save(); ctx.beginPath(); ctx.arc(px, py, r, 0, TAU); ctx.clip();
       const dx = sx - px, dy = sy - py, d = Math.hypot(dx, dy), ux = dx / d, uy = dy / d;

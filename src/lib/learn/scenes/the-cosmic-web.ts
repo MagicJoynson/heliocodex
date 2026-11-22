@@ -99,8 +99,9 @@ const wedge: Scene = {
     for (const g of FIELD) { const a = a0 + g.x * (a1 - a0), d = 0.1 + g.y * 0.88; dot(ctx, ox + Math.cos(a) * d * L, oy + Math.sin(a) * d * L, 0.8 + g.b, 'rgba(215,225,255,.8)'); }
     dot(ctx, ox, oy, 3, '#ffe7a8'); label(ctx, 'Us', ox + 16, oy + 12, { align: 'left', colour: SOFT, size: 10 });
     label(ctx, 'Surveyed', ox, oy + L * 0.55, { align: 'center', colour: ACCENT, size: 10 });
-    label(ctx, 'Not surveyed here', ox - L * 0.8, oy + L * 0.5, { align: w < 520 ? 'left' : 'center', colour: FAINT, size: 9 });
-    label(ctx, 'Not surveyed here', ox + L * 0.8, oy + L * 0.5, { align: w < 520 ? 'right' : 'center', colour: FAINT, size: 9 });
+    // on a phone the two blank sides take the outer corners, below the arc, so they are clear of 'Surveyed' and of the wedge
+    if (w < 520) { label(ctx, 'Not surveyed here', 4, oy + L * 0.88, { align: 'left', colour: FAINT, size: 9 }); label(ctx, 'Not surveyed here', w - 4, oy + L * 0.88, { align: 'right', colour: FAINT, size: 9 }); }
+    else { label(ctx, 'Not surveyed here', ox - L * 0.8, oy + L * 0.5, { align: 'center', colour: FAINT, size: 9 }); label(ctx, 'Not surveyed here', ox + L * 0.8, oy + L * 0.5, { align: 'center', colour: FAINT, size: 9 }); }
     say('The 3D view is a wedge of the whole', 'A large part of the sky was never surveyed');
   },
 };

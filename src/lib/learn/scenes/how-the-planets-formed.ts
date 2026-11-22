@@ -110,22 +110,24 @@ const frost: Scene = {
     backdrop(ctx, w, h, 0.2);
     const y = h * 0.34, x0 = w * 0.14, xs = w * 0.4, x1 = w * 0.92, narrow = w < 600;
     const g = ctx.createRadialGradient(x0 - 14, y, 0, x0 - 14, y, 28); g.addColorStop(0, 'rgba(255,235,180,1)'); g.addColorStop(1, 'rgba(255,200,100,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x0 - 14, y, 28, 0, TAU); ctx.fill();
-    line(ctx, [xs, y - 90, xs, y + 70], 'rgba(236,231,220,.35)');
+    // the three labels above the line stay inside a short picture: the frost line's name first, then the two sides under it
+    const fy = Math.max(10, y - 100), hy = fy + 16;
+    line(ctx, [xs, hy + 10, xs, y + 70], 'rgba(236,231,220,.35)');
     [[0.3, 3], [0.5, 3.5], [0.7, 4], [0.85, 4.5]].forEach(([f, r]) => dot(ctx, x0 + (xs - x0) * f, y, r, '#c9a98a'));
     [[0.3, 11], [0.6, 14], [0.85, 9]].forEach(([f, r]) => dot(ctx, xs + (x1 - xs) * f, y, r, '#9fc0d8'));
-    label(ctx, 'Frost line', xs, y - 100, { align: 'center', colour: FAINT, size: 9 });
+    label(ctx, 'Frost line', xs, fy, { align: 'center', colour: FAINT, size: 9 });
     if (narrow) {
       // on a phone the two sides are too narrow to centre long labels in, so each hugs the frost line from its own side, on two lines
-      label(ctx, 'Too hot for ice', xs - 6, y - 84, { align: 'right', colour: SOFT, size: 10 });
-      label(ctx, 'Cold enough for ice too', xs + 6, y - 84, { align: 'left', colour: SOFT, size: 10 });
+      label(ctx, 'Too hot for ice', xs - 6, hy, { align: 'right', colour: SOFT, size: 10 });
+      label(ctx, 'Cold enough for ice too', xs + 6, hy, { align: 'left', colour: SOFT, size: 10 });
       label(ctx, 'Rock and metal:', xs - 6, y + 90, { align: 'right', colour: ACCENT, size: 10 });
       label(ctx, 'small planets', xs - 6, y + 104, { align: 'right', colour: ACCENT, size: 10 });
       label(ctx, 'More to build', xs + 6, y + 90, { align: 'left', colour: ACCENT, size: 10 });
       label(ctx, 'from: giants', xs + 6, y + 104, { align: 'left', colour: ACCENT, size: 10 });
     } else {
-      label(ctx, 'Too hot for ice', (x0 + xs) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
+      label(ctx, 'Too hot for ice', (x0 + xs) / 2, hy, { align: 'center', colour: SOFT, size: 10 });
       label(ctx, 'Rock and metal only: small, rocky planets', (x0 + xs) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
-      label(ctx, 'Cold enough for ice too', (xs + x1) / 2, y - 84, { align: 'center', colour: SOFT, size: 10 });
+      label(ctx, 'Cold enough for ice too', (xs + x1) / 2, hy, { align: 'center', colour: SOFT, size: 10 });
       label(ctx, 'Far more to build from: giant planets', (xs + x1) / 2, y + 96, { align: 'center', colour: ACCENT, size: 10 });
     }
     say('Rock near the Sun, giants far out', 'Ice could stay solid only where it was cold');

@@ -119,7 +119,10 @@ const farScene: Scene = {
     for (const [km, name] of HEIGHTS) {
       const r = 1 + km / R_EARTH, p = 1 / (r * r);
       dot(ctx, X(r), Y(p), 2.6, INK);
-      if (w > 520 || km !== 20_200) { const end = X(r) > w * 0.7; label(ctx, `${name}: ${nf(p * 100, p < 0.1 ? 1 : 0)}%`, X(r) + (end ? 0 : 7), Y(p) - (end ? 24 : 11), { colour: SOFT, align: end ? 'right' : 'left' }); }
+      if (w > 520 || km !== 20_200) { const end = X(r) > w * 0.7, text = `${name}: ${nf(p * 100, p < 0.1 ? 1 : 0)}%`;
+        // the last, flattest part of the curve leaves room just above and to the right of its dot, so the TV label sits there, kept in from the edge by label()
+        if (end && w > 520) label(ctx, text, X(r) + 7, Y(p) - 11, { colour: SOFT });
+        else label(ctx, text, X(r) + (end ? 0 : 7), Y(p) - (end ? 24 : 11), { colour: SOFT, align: end ? 'right' : 'left' }); }
     }
     const loop = 13, k = ease(((t % loop) - 0.6) / 9), r = 1 + k * (reach - 1), p = 1 / (r * r);
     line(ctx, [X(r), base, X(r), Y(p)], 'rgba(233,196,138,.5)');

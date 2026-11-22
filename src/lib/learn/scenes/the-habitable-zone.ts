@@ -31,7 +31,7 @@ const zone: Scene = {
       const ang = -0.5 + i * 0.9 - (t * 0.5) / yr, x = cx + Math.cos(ang) * a * au, y = cy + Math.sin(ang) * a * au;
       dot(ctx, x, y, 4, c); label(ctx, name, x + 8, y - 6, { align: 'left' });
     });
-    label(ctx, 'The zone', cx, cy - 1.35 * au + 4, { align: 'center', colour: '#8fdcaa' });
+    label(ctx, 'The zone', cx, cy - 1.7 * au - 14 >= 10 ? cy - 1.7 * au - 14 : cy + 1.7 * au + 14, { align: 'center', colour: '#8fdcaa' }); // above the zone's outer edge, where no planet or planet name goes
     say('Not too hot, not too cold', 'Venus is outside. The Earth and Mars are inside');
   },
 };
@@ -59,7 +59,7 @@ const dwarf: Scene = {
     const wide = w > 560, cx = wide ? w * 0.36 : w * 0.34, cy = h * 0.4, mk = Math.min(wide ? w * 0.3 : w * 0.3, h * 0.36) / 9.3;
     ctx.strokeStyle = 'rgba(236,231,220,.35)'; ctx.setLineDash([5, 6]); ctx.beginPath(); ctx.arc(cx, cy, 58 * mk, -0.42, 0.42); ctx.stroke(); ctx.setLineDash([]);
     const mx = Math.min(w - 8, cx + 58 * mk * Math.cos(0.3) - 8);
-    label(ctx, wide ? 'Mercury’s orbit' : 'Mercury', mx, cy + 58 * mk * Math.sin(0.3) + 16, { align: 'right', colour: SOFT });
+    label(ctx, wide ? 'Mercury’s orbit' : 'Mercury', mx, Math.min(cy + 58 * mk * Math.sin(0.3) + 16, h - 12), { align: 'right', colour: SOFT });
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 9); g.addColorStop(0, '#ffd0b0'); g.addColorStop(0.5, '#e0563a'); g.addColorStop(1, 'rgba(224,86,58,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, 9, 0, TAU); ctx.fill();
     T1.forEach(([name, a, yr], i) => {
       const inZone = i >= 3 && i <= 5; ctx.strokeStyle = inZone ? 'rgba(120,210,150,.75)' : 'rgba(236,231,220,.25)'; ctx.lineWidth = inZone ? 1.4 : 1; ctx.beginPath(); ctx.arc(cx, cy, a * mk, 0, TAU); ctx.stroke();

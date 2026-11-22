@@ -43,7 +43,7 @@ const collapseScene: Scene = {
     if (x < 4 && w <= 520) label(ctx, 'Iron core', cx, cy + R + 16, { align: 'center', colour: SOFT });
     // the blast: a bright ring leaving the middle
     if (blast > 0 && blast < 1) { ring(ctx, cx, cy, R * (0.1 + blast * 2.6), `rgba(255,240,210,${0.9 * (1 - blast)})`, 3); ring(ctx, cx, cy, R * (0.1 + blast * 2.6) - 5, `rgba(233,196,138,${0.4 * (1 - blast)})`, 6); }
-    if (fall >= 1) { sun(ctx, cx, cy, 3.2, 1, '200,220,255'); if (gone > 0.6) label(ctx, 'What is left: a neutron star', cx + 12, cy - 14, { colour: ACCENT }); }
+    if (fall >= 1) { sun(ctx, cx, cy, 3.2, 1, '200,220,255'); if (gone > 0.6) label(ctx, 'What is left: a neutron star', Math.min(cx + 12, w - 6 - 182), cy - 14, { colour: ACCENT }); }
     say(x < 4 ? 'The core is iron, and iron gives no energy back' : x < 4.7 ? 'The core falls in on itself in less than a second' : 'It bounces, and the rest of the star is blown away', x < 4 ? 'Nothing is left to hold it up' : x < 4.7 ? 'Squeezed until it can be squeezed no further' : 'The blast, not the fall, is what we see');
   },
 };
