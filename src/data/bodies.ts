@@ -2,7 +2,7 @@ import { moonCount, MOONS_AS_OF_TEXT } from './moon-counts';
 // Hand-written editorial content for each body. Numbers that come from NASA
 // fact sheets and JPL elements live in facts.json (built by scripts/build-facts.py).
 // Atmosphere compositions and temperatures below are copied from the NASA NSSDC
-// fact sheets (see /sources).
+// fact sheets (see /sources); Mercury's temperature range is from NASA Science's "Mercury facts".
 
 export type Kind = 'star' | 'terrestrial' | 'gas giant' | 'ice giant';
 

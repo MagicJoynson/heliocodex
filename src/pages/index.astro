@@ -31,7 +31,7 @@ const plain = (h: string) => h.replace(/<[^>]+>/g, '');
 const ledger = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].map((slug) => {
   const c = planetCells(slug);
   const get = (k: string) => { const x = c.find((y) => y.key === k)!; return plain(`${x.value}${x.unit ? ` ${x.unit.replace(' on average', '').replace(' across', '')}` : ''}`); };
-  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: `${get('temperature')} (${TEMPS[slug].kind})` };
+  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: get('temperature'), tempKind: TEMPS[slug].kind };
 });
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
 const jupiterKm = portraits.find((p) => p.slug === 'jupiter')!.km;
@@ -97,7 +97,7 @@ const far = worlds.map((w) => {
         <thead><tr><th scope="col">World</th><th scope="col">From the Sun</th><th scope="col">Size</th><th scope="col">Temperature</th></tr></thead>
         <tbody>
           {ledger.map((r) => (
-            <tr><th scope="row"><a href={`/${r.slug}`}>{r.name}</a></th><td>{r.dist}</td><td>{r.size}</td><td>{r.temp}</td></tr>
+            <tr><th scope="row"><a href={`/${r.slug}`}>{r.name}</a></th><td>{r.dist}</td><td>{r.size}</td><td>{r.temp}<span class="kind">{r.tempKind}</span></td></tr>
           ))}
         </tbody>
       </table>
@@ -235,6 +235,7 @@ const far = worlds.map((w) => {
   .ledger caption { text-align: left; font: 400 .82rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding: 0 0 .6rem; }
   .ledger th, .ledger td { text-align: left; padding: .42rem 1rem .42rem 0; border-top: 1px solid rgba(236,231,220,.12); font-weight: 400; }
   .ledger thead th { font: 400 .8rem/1.3 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); border-top: 0; }
+  .ledger .kind { display: block; font: 400 .78rem/1.3 'IBM Plex Mono', monospace; color: var(--ink-faint); }
   .ledger tbody th a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.45); }
   .ledger tbody th a:hover { color: var(--accent); }
   .ledger-go { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; margin: 1rem 0 0; }

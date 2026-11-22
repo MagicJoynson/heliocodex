@@ -70,7 +70,7 @@ const transit: Scene = {
 };
 
 // ---- 4. a picture
-const PAIR = 'Two real pictures of planets. On the left: the brown dwarf 2M1207 and, in red, its planet, in infrared from the Very Large Telescope in Chile (the colours were chosen for the picture). On the right: Beta Pictoris b, 70 light years away: the star is hidden, the dust disc was recorded in 1996, and the two bright dots in the circle are the planet in 2003 and in 2009, on opposite sides of its star. The thin ring is ESO’s drawing of the orbit, with the tilt exaggerated. Credit: ESO and A.-M. Lagrange, CC BY 4.0.';
+const PAIR = 'Two real pictures of planets. In the first, the brown dwarf 2M1207 and, in red, its planet, in infrared from the Very Large Telescope in Chile (the colours were chosen for the picture). In the second, Beta Pictoris b, 70 light years away: the star is hidden, the dust disc was recorded in 1996, and the two bright dots in the circle are the planet in 2003 and in 2009, on opposite sides of its star. The thin ring is ESO’s drawing of the orbit, with the tilt exaggerated. Credit: ESO/A.-M. Lagrange (second picture), CC BY 4.0.';
 const picture = pairScene({
   a: '/img/learn/2m1207-planet-vlt.jpg', b: '/img/learn/beta-pictoris-b-vlt.jpg', caption: PAIR,
   say: ['Planets, actually seen', 'Both are young and still glowing with heat'], tags: ['2M1207 b', 'Beta Pictoris b'],

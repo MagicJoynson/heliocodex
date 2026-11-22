@@ -24,7 +24,7 @@ export interface Pointer { at: [number, number]; to: [number, number]; text: str
 
 export interface PairOptions { a: string; b: string; caption: string; say: [string, string?]; tags?: [string, string]; focusA?: [number, number]; focusB?: [number, number] }
 /**
- * Two real photographs side by side (one above the other only when the picture is taller than wide), each shown whole and
+ * Two real photographs, side by side when the picture is wide and one above the other when it is not, so captions call them the first and the second, each shown whole and
  * labelled, for a lesson that needs a second picture of the same kind of thing.
  */
 export function pairScene(o: PairOptions): Scene {

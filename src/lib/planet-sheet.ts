@@ -6,7 +6,7 @@ import { moonCount, MOONS_AS_OF_TEXT } from '../data/moon-counts';
 import { fmt, daysToYear, hoursToDay } from './format';
 import { ratio, type Cell } from './record';
 
-/** Temperatures, from the NSSDC fact sheets: for the giants, the air where its pressure is the same as at sea level here. */
+/** Temperatures, from the NSSDC fact sheets (Mercury's range from NASA Science's "Mercury facts"): for the giants, the air where its pressure is the same as at sea level here. */
 export const TEMPS: Record<string, { value: string; note: string; short: string; kind: string }> = {
   sun: { value: 'About 5,500 °C', short: 'about 5,500 °C', note: 'At the visible surface. The core is about 15 million °C.', kind: 'visible surface' },
   mercury: { value: '−180 to 430 °C', short: '−180 to 430 °C', note: 'Night to day at the ground. With almost no air, the heat escapes as soon as the Sun sets.', kind: 'ground, night to day' },

@@ -67,13 +67,14 @@ export function stars(count: number, seed: number): (ctx: CanvasRenderingContext
 
 export const nf = (n: number, digits = 0) => n.toLocaleString('en-GB', { maximumFractionDigits: digits, minimumFractionDigits: digits });
 
-const NOT_TO_SCALE = /not (drawn )?to scale/i;
-/** A small outlined "Not to scale" mark in the top corner, 13 px so it reads on a 360 px phone. */
+const NOT_TO_SCALE = /not (drawn )?to scale|far from scale/i;
+const STRIP = 30;
+/** A small outlined "Not to scale" mark in a strip reserved above the drawing, 13 px so it reads on a 360 px phone. */
 function tag(ctx: CanvasRenderingContext2D, w: number): void {
   ctx.save();
   ctx.font = "13px 'IBM Plex Mono', ui-monospace, monospace";
   ctx.letterSpacing = '0px'; ctx.textAlign = 'left'; ctx.globalAlpha = 1;
-  const text = 'NOT TO SCALE', pad = 8, tw = ctx.measureText(text).width, x = w - tw - pad * 2 - 4, y = 4;
+  const text = 'NOT TO SCALE', pad = 8, tw = ctx.measureText(text).width, x = w - tw - pad * 2 - 4, y = 3;
   ctx.fillStyle = 'rgba(7,8,13,.7)'; ctx.fillRect(x, y, tw + pad * 2, 26);
   ctx.strokeStyle = 'rgba(236,231,220,.45)'; ctx.lineWidth = 1; ctx.strokeRect(x + .5, y + .5, tw + pad * 2 - 1, 25);
   ctx.fillStyle = 'rgba(236,231,220,.92)'; ctx.textBaseline = 'middle'; ctx.fillText(text, x + pad, y + 13.5);
@@ -109,9 +110,14 @@ export function mount(host: HTMLElement, first: Scene): Mounted {
     if (!w || !h) return;
     const still = calm.matches;
     ctx.clearRect(0, 0, w, h);
-    scene.draw({ ctx, w, h, still, pointer, say, t: still ? scene.stillAt ?? 0 : (performance.now() - started) / 1000 });
-    // a drawing of an idea says so on the picture itself, where it cannot be scrolled away from the caption
-    if (NOT_TO_SCALE.test(scene.caption)) tag(ctx, w);
+    const t = still ? scene.stillAt ?? 0 : (performance.now() - started) / 1000;
+    // a drawing of an idea says so on the picture itself, where it cannot be scrolled away from the caption;
+    // the mark gets its own strip above the drawing so it never covers a label
+    if (NOT_TO_SCALE.test(scene.caption) && h > STRIP * 3) {
+      ctx.save(); ctx.translate(0, STRIP);
+      scene.draw({ ctx, w, h: h - STRIP, still, pointer: pointer && { x: pointer.x, y: pointer.y - STRIP }, say, t });
+      ctx.restore(); tag(ctx, w);
+    } else scene.draw({ ctx, w, h, still, pointer, say, t });
     if (!still && seen) raf = requestAnimationFrame(frame);
   }
   const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };

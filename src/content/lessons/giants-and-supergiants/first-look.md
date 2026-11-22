@@ -7,7 +7,7 @@ sources:
   - { label: "Wikipedia, Betelgeuse", url: "https://en.wikipedia.org/wiki/Betelgeuse" }
   - { label: "Wikipedia, List of largest stars", url: "https://en.wikipedia.org/wiki/List_of_largest_stars" }
   - { label: "ESO, First close-up picture of a star outside our galaxy", url: "https://www.eso.org/public/news/eso2417/" }
-  - { label: "Muñoz-Sánchez and others, The dramatic transition of the extreme red supergiant WOH G64 to a yellow hypergiant (arXiv, 2024)", url: "https://arxiv.org/abs/2411.19329" }
+  - { label: "Muñoz-Sánchez and others, The dramatic transition of the extreme red supergiant WOH G64 to a yellow hypergiant (Nature Astronomy, 2026; first posted on arXiv, 2024)", url: "https://arxiv.org/abs/2411.19329" }
   - { label: "JMMC catalogues of stellar angular diameters, used with the HYG distances", url: "https://www.jmmc.fr/" }
 ---
 What will happen to the Sun when it runs low on fuel? You might expect it to shrink and go dim. It will do the opposite. In about 5 billion years the hydrogen at its centre will be used up. The centre will shrink and grow hotter, the burning will move outward into a shell round it, and the rest of the Sun will swell to more than 200 times its present width. It will be a red giant: huge, cool at the surface, and thousands of times brighter than it is now. Mercury and Venus will be swallowed, and probably the Earth as well.
