@@ -7,8 +7,8 @@ import SiteNav from '../components/SiteNav.astro';
 import SiteSearch from '../components/SiteSearch.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThreeDReturn from '../components/ThreeDReturn.astro';
-interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean }
-const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex } = Astro.props;
+interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean; jsonld?: Record<string, unknown> | Record<string, unknown>[] }
+const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex, jsonld } = Astro.props;
 const url = new URL(path, Astro.site).toString();
 // a search result shows about 60 characters of title: keep the site name only where it fits
 const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? title : `${title} · Heliocodex`;
@@ -37,6 +37,7 @@ const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? ti
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#07080d" />
+    {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld).replace(/</g, '\\u003c')} />}
     {accent && <style set:html={`:root{--accent:${accent}}`} />}
     <Analytics />
   </head>

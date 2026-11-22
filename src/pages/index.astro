@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { siteLd } from '../lib/site';
 import '../styles/reading.css';
 import { portraits } from '../lib/portraits';
 import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
@@ -50,7 +51,7 @@ const far = worlds.map((w) => {
   return { ...w, a, x: au(a), d: Math.round(d), ih: Math.round(ih), iw: Math.round(ih * (w.width / w.height)), light: lightTime(a) };
 });
 ---
-<Base title="Heliocodex" path="/" description="The Sun, its planets and everything beyond, from real photographs and measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
+<Base title="Heliocodex" path="/" jsonld={{ '@context': 'https://schema.org', ...siteLd, potentialAction: { '@type': 'SearchAction', target: 'https://heliocodex.com/search?q={search_term_string}', 'query-input': 'required name=search_term_string' } }} description="The Sun, its planets and everything beyond, from real photographs and measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
   <script is:inline>
     // links made before the 3D view moved (/?go=mars and the like) still land in it
     if (/[?&](go|gl)=?/.test(location.search)) location.replace('/explore' + location.search + location.hash);
@@ -125,6 +126,7 @@ const far = worlds.map((w) => {
             <ul>{g.lessons.map((l) => <li><a href={`/learn/${l.id}`}>{l.data.title}</a></li>)}</ul>
           </div>
         ))}
+        <p class="b-more-lessons"><a class="b-all" href="/learn">All {lessons.length} lessons, in order</a></p>
       </div>
     </section>
 
@@ -296,6 +298,8 @@ const far = worlds.map((w) => {
   .b-list a:hover { color: var(--accent); }
   .b-all { margin-left: .6rem; font: 400 .82rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent) !important; }
   .b-refs { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin-top: 1rem; }
+  .b-more-lessons { grid-column: 1 / -1; margin: .6rem 0 0; }
+  .b-more-lessons .b-all { margin-left: 0; }
   .b-strands { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1rem 2rem; }
   .b-strand ul { list-style: none; margin: 0; padding: 0; }
   .b-strand li { font: 400 .98rem/1.4 var(--r-serif); margin: 0 0 .3rem; }

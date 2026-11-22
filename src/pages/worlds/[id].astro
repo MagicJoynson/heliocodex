@@ -8,6 +8,8 @@ import { plates } from '../../lib/v2/atlas/plates';
 import { fmt } from '../../lib/format';
 import type { Body } from '../../lib/v2/atlas/types';
 import { WORLD_PAGES } from '../../data/world-pages';
+import { allLessons } from '../../lib/v2/margin/content';
+import { goFor, lessonsAbout } from '../../lib/objects';
 import { sheet, head, ratio, sig, type Cell } from '../../lib/record';
 import { SHOW_OUTLINES } from '../../lib/site';
 import { sunAu } from '../../lib/worlds';
@@ -105,6 +107,8 @@ const parCx = parEdge - parR;
 const meR = Math.max(1.2, rMe * sk), meCx = parEdge + 50 + meR;
 const moonR = cmp ? cmp * sk : 0, moonCx = meCx + meR + 50 + moonR;
 // the record leads with the whole world; a close view moves into the first chapter
+const go = goFor(b);
+const related = lessonsAbout(await allLessons(), b.id, b.name.replace(/^The /, ''), 2);
 const lead = page ? (page.globe ?? page.picture ?? null) : null;
 const closeup = page?.globe ? (page.picture ?? null) : null;
 // a body that is not a moon is drawn beside our Moon when it is big enough to compare, and beside a named length when it is not
@@ -133,7 +137,8 @@ const moonR2 = MOON_KM * sk2;
         <p class="rec-go">
           {parentHref && <a href={parentHref}>{nameOf(b.parent).replace(/^the /, 'The ')}</a>}
           {chart && <a href={chart}>On the charts</a>}
-          <a href={`/explore?go=${b.id}`}>Fly to it in 3D</a>
+          {go && <a href={`/explore?go=${go}`}>Fly to it in 3D</a>}
+          {related.map((l) => <a href={`/learn/${l.id}`}>Lesson: {l.data.title}</a>)}
         </p>
       </div>
     </section>

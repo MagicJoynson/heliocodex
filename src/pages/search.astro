@@ -12,20 +12,28 @@ import '../styles/reading.css';
 <style>
   .search-page h1 { font: 300 clamp(2rem, 4vw, 3rem)/1.1 var(--r-serif); margin: 0 0 1.6rem; }
   .search-results { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; max-width: 44rem; }
-  .search-results :global(a) { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); text-decoration: none; font: 400 1.15rem/1.3 var(--r-serif); }
+  .search-results :global(a.main) { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); text-decoration: none; font: 400 1.15rem/1.3 var(--r-serif); }
+  .search-results :global(.hit) { border-bottom: 1px solid var(--rule); }
+  .search-results :global(.hit a.main) { border-bottom: 0; padding-bottom: .3rem; }
+  .search-results :global(.also) { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; margin: 0 0 .8rem; font: 400 .95rem/1.4 var(--r-serif); }
+  .search-results :global(.also a) { color: var(--ink-soft, var(--ink)); text-underline-offset: 3px; }
   .search-results :global(.none) { padding: .8rem 0; font: 400 1.05rem/1.5 var(--r-serif); color: var(--ink-soft, var(--ink)); }
   .search-results :global(.none a) { display: inline; padding: 0; border: 0; text-decoration: underline; }
   .search-results :global(span) { font: 400 .8rem/1.3 var(--r-mono); color: var(--ink-faint); }
 </style>
 <script>
-  import { loadIndex, rank } from '../lib/search';
+  import { loadIndex, rank, extras } from '../lib/search';
   const q = new URLSearchParams(location.search).get('q') ?? '';
   const ol = document.querySelector('.search-results')!;
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
   document.querySelector('.search-page h1')!.textContent = q ? `Search: ${q}` : 'Search';
   loadIndex().then((all) => {
     const hits = rank(all, q, 60);
-    if (hits.length || !q) { ol.innerHTML = hits.map((h) => `<li><a href="${h[2]}">${esc(h[0])}<span>${esc(h[1])}</span></a></li>`).join(''); return; }
+    if (hits.length || !q) { ol.innerHTML = hits.map((h) => {
+        const x = extras(all, h);
+        const more = [x.go ? `<a href="${esc(x.go)}">Fly there in 3D</a>` : '', ...x.lessons.map((l) => `<a href="${esc(l.href)}">Lesson: ${esc(l.title)}</a>`)].join('');
+        return `<li class="hit"><a class="main" href="${esc(h[2])}">${esc(h[0])}<span>${esc(h[1])}</span></a>${more ? `<p class="also">${more}</p>` : ''}</li>`;
+      }).join(''); return; }
     // Nothing matched: say so, then point at the places people most often want to start.
     const start: [string, string, string][] = [
       ['What the Sun is', 'Lesson', '/learn/what-the-sun-is'],
@@ -36,6 +44,6 @@ import '../styles/reading.css';
       ['The sky tonight', 'Sky map', '/sky'],
       ['Every world', 'Worlds', '/worlds'],
     ];
-    ol.innerHTML = `<li class="none">Nothing found for “${esc(q)}”. Try one word, such as a name or a topic, or start with one of these.</li>` + start.map((h) => `<li><a href="${h[2]}">${h[0]}<span>${h[1]}</span></a></li>`).join('') + `<li class="none">Or <a href="/learn">browse all the lessons</a> or the <a href="/glossary">glossary</a>.</li>`;
+    ol.innerHTML = `<li class="none">Nothing found for “${esc(q)}”. Try one word, such as a name or a topic, or start with one of these.</li>` + start.map((h) => `<li><a class="main" href="${h[2]}">${h[0]}<span>${h[1]}</span></a></li>`).join('') + `<li class="none">Or <a href="/learn">browse all the lessons</a> or the <a href="/glossary">glossary</a>.</li>`;
   });
 </script>
