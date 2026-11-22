@@ -85,6 +85,7 @@ import { sections } from '../lib/nav';
       <div class="stepper" role="group" aria-label="Step along the map">
         <button type="button" id="step-in" disabled>In</button>
         <button type="button" id="step-out" disabled>Out</button>
+        <button type="button" id="step-back" disabled title="Back to the place you were at before (B)">Back</button>
       </div>
     </section>
 
@@ -103,6 +104,7 @@ import { sections } from '../lib/nav';
         <button type="button" id="z-in" aria-label="Closer" title="Closer (W or +)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg></button>
         <button type="button" id="z-out" aria-label="Further away" title="Further away (S or −)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12" /></svg></button>
       </div>
+      <button type="button" class="pill" id="fly-btn" aria-pressed="false" title="Fly yourself (F)">Fly</button>
       <button type="button" class="pill" id="tour-btn" aria-controls="tour" aria-expanded="false">Tour</button>
       <div class="pop" id="goto">
         <button type="button" class="pill" id="goto-btn" aria-expanded="false" aria-controls="goto-list">Go to</button>
@@ -157,12 +159,20 @@ import { sections } from '../lib/nav';
             <div><dt>Closer and further</dt><dd>scroll, pinch, W and S, or + and −</dd></div>
             <div><dt>Go to a planet</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
             <div><dt>Fly yourself</dt><dd>F, then W A S D, E and Q. Esc stops</dd></div>
+            <div><dt>Flying speed</dt><dd>. faster, , slower, from a spacecraft to a light year a second</dd></div>
+            <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
+            <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to fly</dd></div>
             <div><dt>The Codex</dt><dd>M</dd></div>
           </dl>
         </div>
       </div>
     </div>
 
+    <div class="gears" id="gears" role="group" aria-label="Flying speed" hidden>
+      <button type="button" id="gear-down" aria-label="Slower" title="Slower (,)">−</button>
+      <p class="gear-name" id="gear-name">Local</p>
+      <button type="button" id="gear-up" aria-label="Faster" title="Faster (.)">+</button>
+    </div>
     <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to turn round · Scroll to zoom · Click a planet to go there</span><span class="coarse-only">Drag to turn · Pinch to zoom · Tap a planet to go there</span></p>
     <section class="tour" id="tour" aria-label="Guided tour" hidden>
       <p class="tour-k" id="tour-k">Stop 1 of 10</p>
@@ -184,6 +194,7 @@ import { sections } from '../lib/nav';
 
     <script>
       import { createWorld } from '../lib/v2/engine/world';
+      import { GEARS } from '../lib/v2/engine/flight';
       const $ = (id: string) => document.getElementById(id)!;
       const body = document.body;
 
@@ -206,7 +217,7 @@ import { sections } from '../lib/nav';
 
       // ---- settings, kept in this browser only (see the cookies page)
       const KEY = 'heliocodex-view';
-      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean; quality?: 'auto' | 'smooth' | 'sharp' };
+      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean; quality?: 'auto' | 'smooth' | 'sharp'; marks?: [string, string][] };
       let prefs: Prefs = {};
       try { prefs = JSON.parse(localStorage.getItem(KEY) ?? '{}') ?? {}; } catch {}
       const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
@@ -252,6 +263,11 @@ import { sections } from '../lib/nav';
           back.addEventListener('click', () => { try { sessionStorage.setItem('hc-from', JSON.stringify({ ...from, back: true })); } catch {} });
         }
       } catch {}
+      const GEAR_NAMES = ['Local', 'Spacecraft', 'Fast spacecraft', 'Light speed', 'An au a second', 'A light year a second', 'A thousand light years a second', 'A million light years a second', 'A billion light years a second'];
+      const gearName = (g: number) => GEAR_NAMES[g] ?? 'Local';
+      // the places you have been, for Back
+      const trail: [string, string][] = [];
+      let backTarget = '';
       let world: Awaited<ReturnType<typeof createWorld>>;
       const startedAt = performance.now();
       try {
@@ -278,10 +294,18 @@ import { sections } from '../lib/nav';
             body.classList.toggle('far', !!r.far);
             body.classList.toggle('free', r.mode === 'free');
             $('free-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
+            $('fly-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
+            ($('gears') as HTMLElement).hidden = r.mode !== 'free';
+            $('gear-name').textContent = gearName(r.gear);
+            ($('gear-down') as HTMLButtonElement).disabled = r.gear <= 0;
+            ($('gear-up') as HTMLButtonElement).disabled = r.gear >= GEARS.length;
           },
           onFocus(id, name) {
             focusId = id;
             $('where-name').textContent = cap(name);
+            if (backTarget === id) backTarget = '';
+            else if (trail.at(-1)?.[0] !== id) { trail.push([id, name]); if (trail.length > 40) trail.shift(); }
+            ($('step-back') as HTMLButtonElement).disabled = trail.length < 2;
             if (!body.classList.contains('touring')) $('said').textContent = `Now at ${name}.`;
             // remember where you are, in the address (so a reload or a shared link comes back here) and for this tab
             try { sessionStorage.setItem('hc-at', id); } catch {}
@@ -403,7 +427,23 @@ import { sections } from '../lib/nav';
       fetch('/data/deep/stars.json').then((r) => r.json()).then((j: [number, string][]) => { stars = j; }).catch(() => {});
       const FAMOUS = ['Sirius', 'Proxima Centauri', 'Rigil Kentaurus', 'Betelgeuse', 'Rigel', 'Vega', 'Polaris', 'Arcturus', 'Canopus', 'Antares', 'Aldebaran'];
       const ALIASES: [string, string][] = [['pleiades', 'Seven Sisters'], ['pleiades', 'M45'], ['orion-nebula', 'M42'], ['orion-nebula', 'Orion'], ['local-group', 'Andromeda'], ['local-group', 'Triangulum'], ['local-group', 'Magellanic Clouds'], ['milky-way', 'Galactic Centre'], ['cosmic-web', 'Virgo Cluster'], ['cosmic-web', 'Great Attractor']];
-      const all = () => [...ALIASES.filter(([id]) => world.canFlyTo(id)), ...PLACES.flatMap(([, ps]) => ps).filter(([id]) => world.canFlyTo(id)), ...stars.map(([i, n]) => [`star:${i}`, n] as [string, string])];
+      // every body we hold an orbit for (moons, dwarf planets, asteroids, comets), and every catalogue star by name, Bayer name, HD or HIP number
+      let bodyList: [string, string][] = [];
+      import('../data/bodies/index').then(({ allBodies }) => { bodyList = allBodies.filter((b) => b.id && b.name).map((b) => [b.id, b.name] as [string, string]); }).catch(() => {});
+      let catalogue: [string, string, string][] = []; // id, shown name, text searched
+      let catalogueAsked = false;
+      const loadCatalogue = () => {
+        if (catalogueAsked) return; catalogueAsked = true;
+        fetch('/data/deep/stars-meta.json').then((r) => r.json()).then((j: { stars: [number, string, string, number, number, string][] }) => {
+          catalogue = j.stars.filter((r) => r[1] || r[2] || r[4]).map((r) => [`star:${r[0]}`, r[1] || r[2] || `HD ${r[4]}`, `${r[1] ?? ''} ${r[2] ?? ''} ${r[4] ? `hd ${r[4]} hd${r[4]}` : ''} ${r[3] ? `hip ${r[3]} hip${r[3]}` : ''}`] as [string, string, string]);
+        }).catch((e) => console.error('catalogue failed', e));
+      };
+      const all = (): [string, string, string?][] => {
+        const seen = new Set<string>();
+        const out: [string, string, string?][] = [];
+        for (const e of [...ALIASES, ...PLACES.flatMap(([, ps]) => ps), ...bodyList, ...(catalogue.length ? [] : stars.map(([i, n]) => [`star:${i}`, n] as [string, string]))]) if (!seen.has(e[0] + e[1]) && world.canFlyTo(e[0])) { seen.add(e[0] + e[1]); out.push(e); }
+        return [...out, ...catalogue];
+      };
       const showStars = () => {
         // a short group of famous stars, always one tap away
         if (list.querySelector('.goto-famous') || !stars.length) return;
@@ -412,16 +452,17 @@ import { sections } from '../lib/nav';
         for (const n of FAMOUS) { const st = stars.find(([, nm]) => nm === n); if (!st) continue; const b = document.createElement('button'); b.type = 'button'; b.textContent = n === 'Rigil Kentaurus' ? 'Alpha Centauri' : n; b.addEventListener('click', () => { shutPops(); goTo(`star:${st[0]}`); }); row.appendChild(b); }
         if (row.children.length) { list.appendChild(h); list.appendChild(row); }
       };
-      $('goto-btn').addEventListener('click', () => { showStars(); });
+      $('goto-btn').addEventListener('click', () => { showStars(); loadCatalogue(); renderMarks(); });
+      find.addEventListener('focus', loadCatalogue);
       find.addEventListener('input', () => {
-        const norm = (t: string) => t.toLowerCase().replace(/['‘’]/g, '’');
-        const q = find.value.trim().toLowerCase().replace(/['‘’]/g, '’');
+        const norm = (t: string) => t.toLowerCase().replace(/['‘’]/g, '’').replace(/-/g, ' ');
+        const q = norm(find.value.trim());
         results.replaceChildren();
         for (const g of groups) g.hidden = !!q;
         list.querySelectorAll<HTMLElement>('.goto-famous, .goto-famous + .goto-row').forEach((e) => { e.hidden = !!q; });
         results.hidden = !q;
         if (!q) return;
-        const hits = all().filter(([, n]) => norm(n).includes(q)).sort((a, b) => Number(!norm(a[1]).startsWith(q)) - Number(!norm(b[1]).startsWith(q))).slice(0, 12);
+        const hits = all().filter(([, n, hay]) => norm(hay ?? n).includes(q)).sort((a, b) => Number(!norm(a[1]).startsWith(q)) - Number(!norm(b[1]).startsWith(q))).slice(0, 12);
         for (const [id, n] of hits) { const b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.addEventListener('click', () => { shutPops(); find.value = ''; find.dispatchEvent(new Event('input')); goTo(id); }); results.appendChild(b); }
         $('said').textContent = hits.length ? `${hits.length} ${hits.length === 1 ? 'place' : 'places'} found.` : 'Nothing found.';
         if (!hits.length) { const m = document.createElement('p'); m.className = 'goto-h'; m.textContent = 'Nothing by that name.'; results.appendChild(m); }
@@ -437,6 +478,42 @@ import { sections } from '../lib/nav';
         };
         go();
       }
+
+      // Back: the place before this one. Saved places: kept in this browser only (see the cookies page)
+      const goBack = () => {
+        if (trail.length < 2 || !body.classList.contains('in')) return;
+        trail.pop();
+        const prev = trail.at(-1)!;
+        backTarget = prev[0];
+        ($('step-back') as HTMLButtonElement).disabled = trail.length < 2;
+        goTo(prev[0]);
+      };
+      $('step-back').addEventListener('click', goBack);
+      const marksHead = document.createElement('p'); marksHead.className = 'goto-h'; marksHead.textContent = 'Saved places';
+      const marksRow = document.createElement('div'); marksRow.className = 'goto-row marks';
+      const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'save-place'; saveBtn.textContent = 'Save this place';
+      const marksWrap = document.createElement('div'); marksWrap.className = 'goto-marks';
+      marksWrap.append(marksHead, marksRow, saveBtn);
+      list.insertBefore(marksWrap, groups[0]);
+      function renderMarks() {
+        marksRow.replaceChildren();
+        const ms = prefs.marks ?? [];
+        marksHead.hidden = marksRow.hidden = !ms.length;
+        for (const [id, name] of ms) {
+          const w = document.createElement('div'); w.className = 'mark';
+          const go = document.createElement('button'); go.type = 'button'; go.textContent = name; go.addEventListener('click', () => { shutPops(); goTo(id); });
+          const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = '×'; rm.setAttribute('aria-label', `Forget ${name}`);
+          rm.addEventListener('click', () => { prefs.marks = (prefs.marks ?? []).filter((m) => m[0] !== id); if (!prefs.marks.length) delete prefs.marks; save(); renderMarks(); $('said').textContent = `${name} forgotten.`; });
+          w.append(go, rm); marksRow.appendChild(w);
+        }
+        const here = world.focus;
+        saveBtn.hidden = !here.id || (prefs.marks ?? []).some((m) => m[0] === here.id) || (prefs.marks ?? []).length >= 12 || !world.canFlyTo(here.id);
+      }
+      saveBtn.addEventListener('click', () => {
+        const here = world.focus;
+        prefs.marks = [...(prefs.marks ?? []), [here.id, cap(here.name)] as [string, string]].slice(-12); save(); renderMarks(); $('said').textContent = `${cap(here.name)} saved.`;
+      });
+      renderMarks();
 
       // The guided tour: one stop for each step of ten or so in distance, from the Earth out to the oldest light
       const STOPS: [string, string, string][] = [
@@ -538,6 +615,19 @@ import { sections } from '../lib/nav';
         }).observe($('time-sheet'), { attributes: true, attributeFilter: ['hidden'] });
         refresh();
       }
+      const flyHint = () => {
+        const h = $('hint');
+        h.querySelector('.fine-only')!.textContent = 'W A S D to move · mouse drag to look · E and Q up and down · . and , change speed · Esc to stop';
+        h.querySelector('.coarse-only')!.textContent = 'Drag to look · hold Fly for forward, Back for back · + and − change speed';
+        h.classList.add('show'); clearTimeout(flyHintT); flyHintT = window.setTimeout(() => h.classList.remove('show'), 8000);
+      };
+      let flyHintT = 0;
+      const toggleFly = () => { const on = world.mode !== 'free'; world.setFree(on); if (on) flyHint(); else $('hint').classList.remove('show'); };
+      $('fly-btn').addEventListener('click', () => { toggleFly(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
+      world.onPadFree(() => { if (body.classList.contains('arrived')) toggleFly(); });
+      world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; });
+      $('gear-up').addEventListener('click', () => world.setGear(world.gear + 1));
+      $('gear-down').addEventListener('click', () => world.setGear(world.gear - 1));
       $('free-btn').addEventListener('click', () => { world.setFree(world.mode !== 'free'); shutPops(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
 
       // zoom buttons: a press is one step; holding keeps going
@@ -556,7 +646,8 @@ import { sections } from '../lib/nav';
         if (!body.classList.contains('arrived') || e.metaKey || e.ctrlKey || e.altKey) return;
         const t = e.target as HTMLElement;
         if (t?.closest?.('input, textarea, select, .margin')) return;
-        if (e.code === 'KeyF') world.setFree(world.mode !== 'free');
+        if (e.code === 'KeyF') toggleFly();
+        else if (e.code === 'KeyB' && !e.shiftKey) goBack();
         else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
         else if (e.key === '[' || e.key === ']') {
           const i = ORDER.indexOf(world.focus.id);
@@ -859,6 +950,20 @@ import { sections } from '../lib/nav';
       .where-k { display: block; font: 400 .8125rem/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
       .where-d { order: 3; margin: 8px 0 0; max-width: 178px; font: 300 .9rem/1.35 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; min-height: 1.2em; }
       .stepper { display: flex; gap: 6px; margin-top: 8px; width: 160px; }
+      .gears { position: fixed; z-index: 21; left: var(--gut); bottom: calc(var(--bot) + 104px); display: flex; align-items: center; gap: 4px; padding: 4px; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; }
+      .gears[hidden] { display: none; }
+      .gears button { width: 44px; height: 44px; border-radius: 50%; font: 300 1.3rem/1 var(--serif); color: var(--ink); }
+      .gears button:disabled { opacity: .35; }
+      .gears button:hover:not(:disabled), .gears button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
+      .gear-name { margin: 0; min-width: 9.5rem; text-align: center; font: 400 .8125rem/1.25 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+      .pill[aria-pressed="true"], .pill[aria-pressed="true"]:hover, .pill[aria-pressed="true"]:focus-visible { color: #111; background: var(--warm); border-color: var(--warm); }
+      .goto-marks { margin-bottom: 4px; }
+      .goto-row.marks { grid-template-columns: 1fr; margin-bottom: 8px; }
+      .mark { display: flex; border-bottom: 1px solid rgba(236,231,220,.08); }
+      .mark button:first-child { flex: 1; border-bottom: 0; }
+      .mark .rm { width: 44px; text-align: center; color: var(--faint); font-size: 1.2rem; border-bottom: 0; }
+      .save-place { font: 400 .8125rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--warm); border: 1px solid var(--line); border-radius: 999px; padding: 12px 16px; margin: 0 0 14px; }
+      .save-place[hidden] { display: none; }
       .stepper button { flex: 1; min-height: 44px; font: 400 .875rem/1 var(--sans, system-ui, sans-serif); color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
       .stepper button:disabled { opacity: .35; cursor: default; }
       .stepper button:focus-visible { outline: 2px solid #f1c98e; outline-offset: 2px; }
@@ -866,7 +971,7 @@ import { sections } from '../lib/nav';
       .map:focus-visible { outline: 2px solid #f1c98e; outline-offset: 3px; }
       .map { display: block; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(16,16,20,.88), rgba(8,8,10,.88)); border: 1px solid var(--line); cursor: pointer; }
       body.no-map .map { display: none; }
-      @media (max-width: 600px) { .where { width: 176px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 176px; height: 176px; } .stepper { width: 176px; } }
+      @media (max-width: 600px) { .where { width: 176px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 176px; height: 176px; } .stepper { width: 176px; } .stepper button { font-size: .8125rem; } }
 
       /* ---- readout */
       .hud { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; padding: 0 var(--gut) var(--bot); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1s ease .8s; pointer-events: none; }
@@ -954,13 +1059,16 @@ import { sections } from '../lib/nav';
       /* ---- phone dock: four big slots along the bottom, in place of the floating pills */
       @media (max-width: 600px) {
         :root { --dock: calc(56px + env(safe-area-inset-bottom, 0px)); }
-        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
         .controls .zoom { display: none; }
         .controls .pop { display: block; min-width: 0; }
         .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .75rem; letter-spacing: .12em; display: grid; place-items: center; }
-        .controls > #tour-btn { order: 4; }
+        .controls > #tour-btn { order: 5; }
+        .controls > #fly-btn { order: 4; }
+        .gears { bottom: calc(var(--dock) + 100px); }
         .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 3; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
+        .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }
         .sheet { bottom: calc(var(--dock) + 8px); }
         .hud { padding-bottom: calc(var(--dock) + 10px); }
         .tour { bottom: calc(var(--dock) + 10px); }

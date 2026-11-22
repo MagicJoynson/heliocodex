@@ -146,7 +146,7 @@ Cookies are small files a website saves on your device. Similar technologies inc
 Heliocodex sets no cookies. It keeps up to six small things in your browser, all described in full on the [cookies and storage page](/cookies):
 
 - the place you chose on the sky map, in local storage, so that the sky map and star pages can show your sky;
-- your choices in the 3D view's View menu (planet sizes, motion, picture quality and the map), in local storage, but only once you change one;
+- your choices in the 3D view's View menu (planet sizes, motion, picture quality and the map) and any places you save in the 3D view, in local storage, but only once you change one;
 - a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method;
 - two notes in session storage, also kept only until you close the tab: the page you were reading when you stepped into the 3D view, with how far down it you were, so the 3D view can offer a way back, and the place you were last looking at in the 3D view, so that going back in the same tab carries on from there; and
 - a note in local storage that says you have chosen not to be counted, which exists only if you use the switch on the cookies page.

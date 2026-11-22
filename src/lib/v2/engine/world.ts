@@ -33,6 +33,8 @@ export interface Readout {
   illustrative?: boolean;
   /** out beyond the planets, where the distance that matters is from the Sun */
   far?: boolean;
+  /** free flight speed: 0 is local (about your height a second), 1 and up are fixed speeds */
+  gear: number;
 }
 
 export interface Quality { tier: 0 | 1 | 2 | 3; scale: number; split: number; maxTiles: number; antialias: boolean; target: number; maxPx: number }
@@ -215,7 +217,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     for (let k = 0; k < ps.count; k++) uvs.setXY(k, (Math.hypot(ps.getX(k), ps.getY(k)) - IN) / (OUT - IN), 0.5);
     const tex = loader.load('/textures/4k_saturn_ring.webp');
     tex.colorSpace = THREE.SRGBColorSpace;
-    const ringMat = new THREE.MeshStandardNodeMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, roughness: 1, metalness: 0, depthWrite: false });
+    const ringMat = new THREE.MeshBasicNodeMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, depthWrite: false });
     const ring = new THREE.Mesh(geo, ringMat);
     ring.rotation.x = -Math.PI / 2; // into the equator plane
     ring.frustumCulled = false;
@@ -660,7 +662,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const illustrative = onTerrain && !terrain.source.resolution && f.alt < terrain.radius * 0.5;
     readoutAt = now;
     o.onReadout?.({
-      alt: f.alt, speed: f.speed, mode: f.mode, arriving: f.arriving,
+      alt: f.alt, speed: f.speed, gear: flight.gear, mode: f.mode, arriving: f.arriving,
       target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
@@ -813,6 +815,11 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     },
     skip() { flight.skipCruise(); },
     setPad: flight.setPad,
+    /** free flight speed steps: 0 local, then fixed speeds up to warp (see GEARS in flight.ts) */
+    get gear() { return flight.gear; },
+    setGear: flight.setGear,
+    onGear: flight.onGear,
+    onPadFree: flight.onPadFree,
     backend, depthMode,
     /** where the Sun is on screen, for the threshold ring to close onto */
     sunScreen(): [number, number] {

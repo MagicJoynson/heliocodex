@@ -30,6 +30,13 @@ export interface Cruise {
 }
 
 const UP: V3 = [0, 1, 0];
+/**
+ * Free flight speeds, in metres a second. Gear 0 is "local": about your own height a second above the
+ * nearest body, so the ground always moves the same. The rest are fixed speeds, from a fast spacecraft
+ * to a thousand million light years a second. Near any body the speed is held to a few times your height,
+ * so you can never run into a planet at warp.
+ */
+export const GEARS = [1e4, 1e6, 2.99792458e8, 1.495978707e11, 9.4607304725808e15, 9.4607304725808e18, 9.4607304725808e21, 9.4607304725808e24];
 const MAX_EL = THREE.MathUtils.degToRad(84);
 
 export function createFlight(canvas: HTMLElement) {
@@ -38,6 +45,10 @@ export function createFlight(canvas: HTMLElement) {
   const vel: V3 = [0, 0, 0];
   let mode: 'idle' | 'orbit' | 'cruise' | 'free' = 'idle';
   let speedMul = 1;
+  let gear = 0; // 0 local, 1..GEARS.length the fixed speeds
+  let onGear: ((g: number) => void) | null = null;
+  let onPadFree: (() => void) | null = null;
+  const setGear = (g: number) => { const n = clamp(Math.round(g), 0, GEARS.length); if (n !== gear) { gear = n; onGear?.(gear); } };
   let lastFloor = 0, lastR = 0, floorOff = 0;
   let reduced = false; // reduced motion: no drift after a drag, faster settling
 
@@ -60,6 +71,8 @@ export function createFlight(canvas: HTMLElement) {
   addEventListener('keydown', (e) => {
     if (typing(e) || e.metaKey || e.ctrlKey || e.altKey) return;
     keys.add(e.code);
+    if (mode === 'free' && !e.repeat && e.code === 'Period') setGear(gear + 1);
+    if (mode === 'free' && !e.repeat && e.code === 'Comma') setGear(gear - 1);
     if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown'].includes(e.code) && mode !== 'idle' && !(e.target as HTMLElement)?.closest?.('button, a, [role="tab"]')) e.preventDefault();
   });
   addEventListener('keyup', (e) => keys.delete(e.code));
@@ -103,11 +116,27 @@ export function createFlight(canvas: HTMLElement) {
     e.preventDefault();
     // Firefox reports lines, not pixels; a trackpad pinch arrives as a wheel with ctrlKey
     const px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 600 : 1) * (e.ctrlKey ? 3 : 1);
-    if (mode === 'free') speedMul = clamp(speedMul * Math.pow(1.0015, -px), 0.02, 50);
+    if (mode === 'free') { if (gear === 0) speedMul = clamp(speedMul * Math.pow(1.0015, -px), 0.02, 50); }
     else zoomBy *= Math.pow(1.0018, clamp(px, -240, 240));
   }, { passive: false });
   /** touch pad: -1 back, 0 still, 1 forward (set by the page's on-screen control) */
   let pad = 0;
+
+  // ---- a game controller, if one is plugged in or paired: sticks move and look, triggers go up and down
+  // (or zoom, when circling), the bumpers change gear, and Y (top button) starts and stops flying yourself
+  const padHeld: boolean[] = [];
+  function readPad() {
+    const gp = (navigator.getGamepads?.() ?? []).find((g) => g && g.connected);
+    if (!gp) return null;
+    const dz = (v: number) => (Math.abs(v) < 0.18 ? 0 : (v - Math.sign(v) * 0.18) / 0.82);
+    const btn = (i: number) => gp.buttons[i]?.pressed ?? false;
+    for (const [i, act] of [[5, () => setGear(gear + 1)], [4, () => setGear(gear - 1)], [3, () => onPadFree?.()]] as const) {
+      const now = btn(i);
+      if (now && !padHeld[i]) act();
+      padHeld[i] = now;
+    }
+    return { lx: dz(gp.axes[0] ?? 0), ly: dz(gp.axes[1] ?? 0), rx: dz(gp.axes[2] ?? 0), ry: dz(gp.axes[3] ?? 0), up: gp.buttons[7]?.value ?? 0, down: gp.buttons[6]?.value ?? 0 };
+  }
 
   // ---- helpers
   const fwd = () => { const v = new THREE.Vector3(0, 0, -1).applyQuaternion(q); return [v.x, v.y, v.z] as V3; };
@@ -161,6 +190,8 @@ export function createFlight(canvas: HTMLElement) {
     // ---- keys in orbit and cruise: turn and zoom at a steady, gentle rate
     const k = (c: string) => keys.has(c);
     const fast = k('ShiftLeft') || k('ShiftRight') ? 2.5 : 1;
+    const gp = readPad();
+    if (gp && (gp.rx || gp.ry) && mode !== 'cruise') { look.dx += gp.rx * 600 * wall; look.dy += gp.ry * 600 * wall; }
 
     if (mode === 'cruise' && cr) {
       cr.t = Math.min(cr.secs, cr.t + wall);
@@ -193,7 +224,7 @@ export function createFlight(canvas: HTMLElement) {
       }
       if (az || el) dir = turn(dir, az, el);
       // zooming: the wheel, a pinch, W and S, + and −, Page Up and Down
-      const zin = (k('KeyW') || k('Equal') || k('NumpadAdd') || k('PageUp') ? 1 : 0) - (k('KeyS') || k('Minus') || k('NumpadSubtract') || k('PageDown') ? 1 : 0);
+      const zin = (gp ? gp.up - gp.down : 0) + (k('KeyW') || k('Equal') || k('NumpadAdd') || k('PageUp') ? 1 : 0) - (k('KeyS') || k('Minus') || k('NumpadSubtract') || k('PageDown') ? 1 : 0);
       if (zin) zoomBy *= Math.pow(0.45, zin * fast * wall);
       const lo = minDistOf(focus, dir);
       distGoal = clamp(distGoal * zoomBy, lo, MAX_DIST);
@@ -227,12 +258,15 @@ export function createFlight(canvas: HTMLElement) {
       const ta = ((k('ArrowLeft') ? 1 : 0) - (k('ArrowRight') ? 1 : 0)) * 0.9 * wall;
       if (ta) rotate(norm(add(scale(upv(), 1 - ground), scale(upLocal, ground))), ta);
       zoomBy = 1;
-      // speed follows height: about your own height per second, so the ground always moves the same
-      const base = clamp(alt, 2, 1e27) * 0.9 * speedMul;
-      const f = (k('KeyW') || k('ArrowUp') ? 1 : 0) - (k('KeyS') || k('ArrowDown') ? 1 : 0) + pad;
-      const s = (k('KeyD') ? 1 : 0) - (k('KeyA') ? 1 : 0);
-      const u = (k('Space') || k('KeyE') ? 1 : 0) - (k('KeyC') || k('KeyQ') ? 1 : 0);
-      const want = scale(add(add(scale(fwd(), f), scale(right(), s)), scale(upLocal, u)), base * (fast > 1 ? 4 : 1));
+      // gear 0: about your own height a second, so the ground always moves the same.
+      // other gears: a fixed speed, held to a few times your height near a body so you cannot hit it at warp
+      const boost = fast > 1 ? 4 : 1;
+      const h = clamp(alt, 2, 1e27);
+      const base = gear === 0 ? h * 0.9 * speedMul * boost : Math.min(GEARS[gear - 1] * boost, h * 4 * boost);
+      const f = clamp((k('KeyW') || k('ArrowUp') ? 1 : 0) - (k('KeyS') || k('ArrowDown') ? 1 : 0) + pad - (gp?.ly ?? 0), -1, 1);
+      const s = clamp((k('KeyD') ? 1 : 0) - (k('KeyA') ? 1 : 0) + (gp?.lx ?? 0), -1, 1);
+      const u = clamp((k('Space') || k('KeyE') ? 1 : 0) - (k('KeyC') || k('KeyQ') ? 1 : 0) + (gp ? gp.up - gp.down : 0), -1, 1);
+      const want = scale(add(add(scale(fwd(), f), scale(right(), s)), scale(upLocal, u)), base);
       const kv = 1 - Math.exp(-dt * 5);
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
       pos[0] += vel[0] * dt; pos[1] += vel[1] * dt; pos[2] += vel[2] * dt;
@@ -281,6 +315,10 @@ export function createFlight(canvas: HTMLElement) {
     pos, q, step,
     get mode() { return mode; },
     get speedMul() { return speedMul; },
+    get gear() { return gear; },
+    setGear,
+    onGear(cb: (g: number) => void) { onGear = cb; },
+    onPadFree(cb: () => void) { onPadFree = cb; },
     get focus() { return focus; },
     /** where a trip in progress is going, or the focus */
     get target() { return cr ? cr.to : focus; },
