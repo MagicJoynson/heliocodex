@@ -49,6 +49,9 @@ export function createFlight(canvas: HTMLElement) {
   const pos: V3 = [0, 0, 0];
   const q = new THREE.Quaternion();
   const vel: V3 = [0, 0, 0];
+  let calm: { f: Focus; t: number } | null = null; // Esc in free flight: slow to a halt, then circle this
+  let loVel = 0;
+  let loCap = Infinity; // after leaving free flight below the orbit limit, the limit rises into place instead of jumping
   let stopRamp = 0; // seconds of gentle braking left after Stop or Esc
   let cruiseVel: V3 = [0, 0, 0]; // how the camera was moving on a trip, so Stop can slow it down instead of freezing it
   let mode: 'idle' | 'orbit' | 'cruise' | 'free' = 'idle';
@@ -236,7 +239,14 @@ export function createFlight(canvas: HTMLElement) {
       // zooming: the wheel, a pinch, W and S, + and −, Page Up and Down
       const zin = (gp ? gp.up - gp.down : 0) + (k('KeyW') || k('Equal') || k('NumpadAdd') || k('PageUp') ? 1 : 0) - (k('KeyS') || k('Minus') || k('NumpadSubtract') || k('PageDown') ? 1 : 0);
       if (zin) zoomBy *= Math.pow(0.45, zin * fast * wall);
-      const lo = minDistOf(focus, dir);
+      let lo = minDistOf(focus, dir);
+      if (loCap < lo) {
+        // the limit rises into place like a spring settling (starts from rest, no jump): about a second
+        const w0 = 5, gap = lo - loCap;
+        loVel += (gap * w0 * w0 - 2 * w0 * loVel) * wall;
+        loCap += loVel * wall;
+        if (lo - loCap < Math.max(1, gap * 1e-3) && loVel < 1) { loCap = Infinity; loVel = 0; } else lo = Math.min(loCap, lo);
+      }
       distGoal = clamp(distGoal * zoomBy, lo, MAX_DIST);
       zoomBy = 1;
       // the distance settles on its goal over about a fifth of a second, evenly in powers of ten
@@ -283,15 +293,17 @@ export function createFlight(canvas: HTMLElement) {
       const s = clamp((k('KeyD') ? 1 : 0) - (k('KeyA') ? 1 : 0) + (gp?.lx ?? 0), -1, 1);
       const u = clamp((k('Space') || k('KeyE') ? 1 : 0) - (k('KeyC') || k('KeyQ') ? 1 : 0) + (gp ? gp.up - gp.down : 0), -1, 1);
       const dirWant = add(add(scale(fwd(), f), scale(right(), s)), scale(upLocal, u));
-      const want = len(dirWant) > 0 ? scale(norm(dirWant), eased(norm(dirWant), base) * Math.min(1, len(dirWant))) : [0, 0, 0] as V3;
+      const calming = calm !== null;
+      const want = !calming && len(dirWant) > 0 ? scale(norm(dirWant), eased(norm(dirWant), base) * Math.min(1, len(dirWant))) : [0, 0, 0] as V3;
       // easing: speeding up takes a moment (longer at higher gears), letting go glides to a stop, X brakes at once
-      const pushing = f !== 0 || s !== 0 || u !== 0;
+      const pushing = !calming && (f !== 0 || s !== 0 || u !== 0);
       if (stopRamp > 0) stopRamp = Math.max(0, stopRamp - wall);
-      const tau = k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : stopRamp > 0 ? 0.3 : 0.5 + 0.18 * gear;
+      const tau = calming ? 0.3 : k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : stopRamp > 0 ? 0.3 : 0.5 + 0.18 * gear;
       const kv = 1 - Math.exp(-dt / tau);
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
       // momentum too: the speed you already have is held to the same rule, so a long glide cannot carry you into a body
-      { const sp = len(vel); if (sp > 0) { const cap = eased(norm(vel), sp); if (cap < sp) { const c = cap / sp; vel[0] *= c; vel[1] *= c; vel[2] *= c; } } }
+      // it comes down over about a tenth of a second (not in one frame), faster only as the surface gets close, and never so slowly that the surface is under a tenth of a second (or three frames) away
+      { const sp = len(vel); if (sp > 0) { const nv = norm(vel); const cap = eased(nv, sp); if (cap < sp) { const room = near.ahead ? near.ahead(nv) : Infinity; const tts = room / sp; const hard = room / Math.max(0.1, 3 * dt); const tau2 = clamp(0.3 * tts, 0.02, 0.12); const soft = cap + (sp - cap) * Math.exp(-dt / tau2); const to = Math.min(soft, Math.max(hard, cap)); const c = Math.min(sp, to) / sp; vel[0] *= c; vel[1] *= c; vel[2] *= c; } } }
       pos[0] += vel[0] * dt; pos[1] += vel[1] * dt; pos[2] += vel[2] * dt;
 
       // never below the ground
@@ -308,6 +320,11 @@ export function createFlight(canvas: HTMLElement) {
         pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
         const vn = dot(vel, up2);
         if (vn < 0) { vel[0] -= up2[0] * vn; vel[1] -= up2[1] * vn; vel[2] -= up2[2] * vn; }
+      }
+      // Esc in free flight: once you have nearly stopped (or a few seconds have passed), settle into circling
+      if (calm) {
+        calm.t += wall;
+        if (len(vel) < 0.004 * Math.max(h, 2) + 0.2 || calm.t > 4) { const f2 = calm.f; calm = null; enterOrbit(f2); }
       }
       // level the horizon: take out any roll, gently, when near a body
       if (ground > 0.01) {
@@ -334,6 +351,18 @@ export function createFlight(canvas: HTMLElement) {
     return { alt, mode, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.secs, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.secs - cr.t) : 0 };
   }
 
+  function enterOrbit(f: Focus) {
+    startBlend();
+    focus = f; calm = null;
+    const r = sub(pos, f.centre());
+    // below the orbit limit (a skim over the ground): start where you are and let the limit rise under you
+    const lim = minDistOf(f, norm(r));
+    loCap = len(r) < lim ? len(r) : Infinity; loVel = 0;
+    dist = distGoal = len(r);
+    dir = clampEl(norm(r));
+    mode = 'orbit';
+  }
+
   return {
     pos, q, step,
     get mode() { return mode; },
@@ -354,7 +383,7 @@ export function createFlight(canvas: HTMLElement) {
     zoom(steps: number) { zoomBy *= Math.pow(0.4, steps); },
     /** look at a focus from a side and distance at once, without moving there */
     orbitAt(f: Focus, d: number, side: V3, hold = false) {
-      focus = f; dir = clampEl(norm(side)); dist = distGoal = d; cr = null; mode = hold ? 'idle' : 'orbit';
+      focus = f; loCap = Infinity; calm = null; dir = clampEl(norm(side)); dist = distGoal = d; cr = null; mode = hold ? 'idle' : 'orbit';
       const p = add(f.centre(), scale(dir, d));
       pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
       lookAlong(scale(dir, -1), UP);
@@ -362,6 +391,7 @@ export function createFlight(canvas: HTMLElement) {
     /** go to a new focus: slide and zoom, keeping the view's direction unless told otherwise */
     startCruise(c: Cruise) {
       if (mode === 'free') startBlend();
+      loCap = Infinity; calm = null;
       const from = focus;
       // where the view is centred now: the focus in orbit, or straight ahead in free flight
       const c0: V3 = mode === 'free' ? add(pos, scale(fwd(), Math.max(1, len(sub(pos, from.centre()))))) : [...from.centre()] as V3;
@@ -382,16 +412,11 @@ export function createFlight(canvas: HTMLElement) {
     /** brake at once: a trip in progress ends where the camera is, and you are flying free with no speed */
     stop() { if (mode === 'cruise') { cr = null; mode = 'free'; vel[0] = cruiseVel[0]; vel[1] = cruiseVel[1]; vel[2] = cruiseVel[2]; stopRamp = 1; } },
     /** fly yourself from where you are */
-    setFree() { if (mode === 'cruise') return; mode = 'free'; vel[0] = vel[1] = vel[2] = 0; },
+    setFree() { if (mode === 'cruise') return; if (mode !== 'free') vel[0] = vel[1] = vel[2] = 0; mode = 'free'; calm = null; },
+    /** Esc in free flight: ease to a halt over a second or so, then circle `f` */
+    calmTo(f: Focus) { if (mode === 'free') calm = { f, t: 0 }; },
     /** back to orbiting a focus, from wherever free flight left you */
-    backToOrbit(f: Focus) {
-      startBlend();
-      focus = f;
-      const r = sub(pos, f.centre());
-      dist = distGoal = Math.max(len(r), minDistOf(f, norm(r)));
-      dir = clampEl(norm(r));
-      mode = 'orbit';
-    },
+    backToOrbit(f: Focus) { enterOrbit(f); },
     /** the trip so far, 0 to 1, and how long it lasts */
     get cruise() { return cr ? { u: cr.t / Math.max(cr.secs, 1e-6), secs: cr.secs } : null; },
   };

@@ -10,6 +10,7 @@ import { createPost, type Post } from './post';
 import { createSystem } from './system';
 import { POLES } from '../atlas/kepler';
 import { positionAU, centuriesSinceJ2000 } from '../../orbit';
+import { ellipsoidRadius, ellipsoidAhead, type Ellipsoid } from './ellipsoid';
 import { AU, add, len, norm, scale, sub, cross, smooth, slerp, dot as vdot, type V3 } from './vec';
 import type { Context, Engine, Layer, View } from './index';
 
@@ -169,6 +170,22 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     jupiter: [284.95, 870.536], saturn: [38.9, 810.7939024], uranus: [203.81, -501.1600928], neptune: [249.978, 541.1397757], pluto: [302.695, 56.3625225],
   };
   const spinning: { id: string; mesh: THREE.Mesh }[] = [];
+  // the drawn surface of a flattened world: semi-axes along the globe's own x (towards the node), y (the pole) and z, in the engine frame.
+  // Brakes, floors and orbit limits all use this, so what you stop above is what is drawn, not a mean sphere.
+  const ellipsoids = new Map<string, Ellipsoid | null>();
+  const ellipsoidOf = (id: string): Ellipsoid | null => {
+    let e = ellipsoids.get(id);
+    if (e !== undefined) return e;
+    const sh = SHAPE[id];
+    if (!sh) { ellipsoids.set(id, null); return null; }
+    const Yv = poleOf(id), X0 = nodeOf(id);
+    const Xv = X0.sub(Yv.clone().multiplyScalar(X0.dot(Yv))).normalize();
+    const Zv = new THREE.Vector3().crossVectors(Xv, Yv);
+    e = { X: Xv.toArray() as V3, Y: Yv.toArray() as V3, Z: Zv.toArray() as V3, a: sh[0] * 1000, b: sh[1] * 1000, c: sh[2] * 1000 };
+    ellipsoids.set(id, e);
+    return e;
+  };
+  const surfaceAlong = (id: string, u: V3, mean: number): number => { const e = ellipsoidOf(id); return e ? ellipsoidRadius(e, u) : mean; };
   function makeGlobe(id: string, radius: number, map?: THREE.Texture) {
     const holder = new THREE.Group();
     // y along the spin pole and x towards the node, so turning about y by W puts longitude 0 where the IAU says
@@ -358,7 +375,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const enterDir = norm(add(add(scale(toSun, 0.7), scale(side, 0.55)), scale(north, 0.62)));
   const focusOf = (id: string): Focus => id === bodySlug
     ? { centre: () => bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) }
-    : { centre: () => posOf(id), radius: radOf(id) };
+    : { centre: () => posOf(id), radius: radOf(id), ...(ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, radOf(id)) - radOf(id) } : {}) };
   const sunFocus: Focus = { centre: () => sunPos, radius: 695_700_000 };
   flight.orbitAt(sunFocus, 30 * AU, enterDir, true);
   let entered = false;
@@ -578,20 +595,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const c = flight.pos;
       let best = Infinity;
       for (const id of focusId && !SPHERES.includes(focusId) ? [...SPHERES, focusId] : SPHERES) {
-        const oc = sub(posOf(id), c);
-        const t = vdot(oc, d);
-        if (t < 0) { if (len(oc) > radOf(id) * 1.01) continue; else return 0; }
-        const r = radOf(id);
-        const d2 = vdot(oc, oc) - t * t;
-        if (d2 > r * r) continue;
-        const hit = t - Math.sqrt(r * r - d2);
-        if (hit < best) best = Math.max(0, hit);
+        const hit = ellipsoidAhead(ellipsoidOf(id), radOf(id), sub(posOf(id), c), d);
+        if (hit < best) best = hit;
+        if (best === 0) break;
       }
       return best;
     };
     const f = flight.step(dt, wall, onTerrain
       ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d), ahead }
-      : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0, ahead });
+      : { centre: posOf(nearId), radius: radOf(nearId), ground: ellipsoidOf(nearId) ? (u) => surfaceAlong(nearId, u, radOf(nearId)) - radOf(nearId) : () => 0, ahead });
     // a cruise has ended (even one so short it started and finished within this frame)
     nearest(flight.pos); // for next frame
     if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } o.onTripEnd?.(); }
@@ -859,7 +871,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
           for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (vdot(norm(slerp(now, lit, m)), toS) < 0.3) lo = m; else hi = m; }
           endDir = norm(slerp(now, lit, hi));
         }
-        flight.startCruise({ to: id === bodySlug ? focusOf(id) : { centre: target, radius: measured ? r : 0 }, endDist, endDir, secs });
+        flight.startCruise({ to: id === bodySlug ? focusOf(id) : { centre: target, radius: measured ? r : 0, ...(measured && ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, r) - r } : {}) }, endDist, endDir, secs });
       }
       cruising = true;
       if (reduced) o.onJump?.();
@@ -924,7 +936,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     /** fly yourself (true) or go back to circling what is nearest (false) */
     setFree(v: boolean) {
       if (v) flight.setFree();
-      else if (flight.mode === 'free') { const id = nearNow; focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? id; flight.backToOrbit(focusOf(id)); o.onFocus?.(focusKey, focusName); }
+      else if (flight.mode === 'free') { const id = nearNow; focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? id; flight.calmTo(focusOf(id)); o.onFocus?.(focusKey, focusName); }
     },
     get mode() { return flight.mode; },
     get focus() { return { id: focusKey, name: focusName }; },

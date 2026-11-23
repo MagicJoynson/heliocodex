@@ -445,6 +445,7 @@ import { sections } from '../lib/nav';
       }
 
       // ---- pop-up sheets: Go to and View. One open at a time; Esc or a click elsewhere shuts them.
+      const tourEl = $('tour');
       const pops = ['goto', 'time', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : `${id}-sheet`) }));
       // an open sheet hides only what it would sit on top of
       const coverable = () => ['.readout', '#pad', '#gears', '#margin-tab', '.back-chip', '.gen', '#hint', '#coach', '#scale', '#eta'].map((s) => document.querySelector(s) as HTMLElement | null).filter((e): e is HTMLElement => !!e);
@@ -452,10 +453,14 @@ import { sections } from '../lib/nav';
         const open = pops.find((p) => !p.sheet.hidden);
         body.classList.toggle('sheet-open', !!open);
         const m = document.getElementById('margin');
-        const r = open ? open.sheet.getBoundingClientRect() : body.classList.contains('margin-open') && m ? m.getBoundingClientRect() : undefined;
+        // what is open on top of the view: a sheet or the Codex, and the tour card
+        const covers: DOMRect[] = [];
+        if (open) covers.push(open.sheet.getBoundingClientRect());
+        else if (body.classList.contains('margin-open') && m) covers.push(m.getBoundingClientRect());
+        if (!tourEl.hidden) covers.push(tourEl.getBoundingClientRect());
         for (const e of coverable()) {
           const b = e.getBoundingClientRect();
-          e.classList.toggle('under-sheet', !!r && b.width > 0 && b.left < r.right && r.left < b.right && b.top < r.bottom && r.top < b.bottom);
+          e.classList.toggle('under-sheet', b.width > 0 && covers.some((r) => b.left < r.right && r.left < b.right && b.top < r.bottom && r.top < b.bottom));
         }
       };
       addEventListener('resize', syncSheet);
@@ -463,6 +468,8 @@ import { sections } from '../lib/nav';
       document.getElementById('margin')?.addEventListener('transitionend', syncSheet);
       new MutationObserver(() => { setTimeout(syncSheet, 420); setTimeout(syncSheet, 900); syncSheet(); }).observe(body, { attributes: true, attributeFilter: ['class'] });
       for (const p of pops) new MutationObserver(syncSheet).observe(p.sheet, { attributes: true, attributeFilter: ['hidden'] });
+      new MutationObserver(syncSheet).observe(tourEl, { attributes: true, attributeFilter: ['hidden'] });
+      new ResizeObserver(syncSheet).observe(tourEl);
       const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
       for (const p of pops) p.btn.addEventListener('click', () => {
         const open = p.sheet.hidden;
@@ -611,7 +618,7 @@ import { sections } from '../lib/nav';
         ['cmb', 'The oldest light', 'The edge of what can be seen: light that left when the universe was about 380,000 years old, and has been travelling for about 13.8 billion years. It started about 46 billion light years from here, because space has stretched since.'],
       ];
       let tourAt = -1;
-      const tourEl = $('tour'), tourBtn = $('tour-btn');
+      const tourBtn = $('tour-btn');
       function tourShow(i: number) {
         tourAt = Math.max(0, Math.min(STOPS.length - 1, i));
         const [id, h, p] = STOPS[tourAt];
@@ -844,8 +851,6 @@ import { sections } from '../lib/nav';
       .menu a:hover, .menu a:focus-visible { background: rgba(241,201,142,.08); outline: none; }
       .menu a:hover b, .menu a:focus-visible b { color: var(--warm); }
       @media (max-width: 980px) { .menu-btn { display: block; } }
-      body.margin-open .top { z-index: 28; }
-      @media (min-width: 601px) { body.margin-open .site-nav, body.margin-open .menu-btn { visibility: hidden; } }
 
       /* ---- threshold */
       .threshold::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 46% 40% at 50% 46%, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%); transition: opacity 1s ease; }
@@ -888,7 +893,6 @@ import { sections } from '../lib/nav';
       .back-chip { position: fixed; z-index: 20; left: var(--gut); top: calc(var(--top) + 112px); min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: var(--ink); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .back-chip { opacity: 1; pointer-events: auto; }
       .back-chip:disabled { display: none; }
-      body.touring .back-chip, body.touring .hint { opacity: 0; pointer-events: none; }
       .back-chip:hover { color: var(--warm); border-color: rgba(241,201,142,.6); }
       .gears.throttle { left: 50%; transform: translateX(-50%); bottom: calc(var(--bot) + 6px); flex-direction: column; align-items: stretch; gap: 6px; width: min(380px, calc(100vw - 32px)); padding: 12px 18px 10px; border-radius: 14px; }
       .gears[hidden] { display: none; }
@@ -918,7 +922,7 @@ import { sections } from '../lib/nav';
       .eta-bar i { display: block; height: 4px; width: 0; background: var(--warm); border-radius: 2px; }
       .eta button { pointer-events: auto; margin-top: 18px; padding: 14px 22px; min-height: 48px; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
       .eta button:hover, .eta button:focus-visible { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
-      body.touring .scale, body.touring .eta { opacity: 0; pointer-events: none; }
+      body.touring .eta { opacity: 0; pointer-events: none; }
       .coach { position: fixed; z-index: 17; left: 50%; bottom: calc(var(--bot) + 132px); transform: translateX(-50%); display: flex; align-items: center; gap: 18px; padding: 14px 20px; max-width: calc(100vw - 32px); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; }
       .coach[hidden] { display: none; }
       .coach p { margin: 0; display: flex; align-items: center; gap: 9px; font: 300 1.0625rem/1.3 var(--serif); color: var(--ink); }
@@ -949,7 +953,7 @@ import { sections } from '../lib/nav';
       body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
 
       /* ---- controls */
-      @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } body.touring .readout { opacity: 0; } .readout { max-width: none; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .8125rem; } .zoom button { width: 44px; } }
+      @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } .readout { max-width: none; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .8125rem; } .zoom button { width: 44px; } }
       .controls { position: fixed; z-index: 31; right: var(--gut); bottom: var(--bot); display: flex; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .controls { opacity: 1; pointer-events: auto; }
       .pop { position: relative; }

@@ -39,7 +39,7 @@
   .margin-tab:focus-visible, .margin button:focus-visible, .margin a:focus-visible, .margin input:focus-visible, .margin summary:focus-visible, .margin [role='tabpanel']:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
   body.margin-open .margin-tab { transform: translateX(calc(-1 * var(--m-w))); color: var(--ink); }
 
-  .margin { position: fixed; z-index: 29; top: 0; right: 0; bottom: var(--m-foot); width: var(--m-w); display: flex; flex-direction: column; background: rgba(9, 9, 11, .93); border-left: 1px solid rgba(236, 231, 220, .2); border-bottom: 1px solid rgba(236, 231, 220, .2); transform: translateX(100%); visibility: hidden; transition: transform .35s ease, visibility 0s .35s; }
+  .margin { position: fixed; z-index: 29; top: var(--m-top, 56px); right: 0; bottom: var(--m-foot); width: var(--m-w); display: flex; flex-direction: column; background: rgba(9, 9, 11, .93); border-left: 1px solid rgba(236, 231, 220, .2); border-bottom: 1px solid rgba(236, 231, 220, .2); transform: translateX(100%); visibility: hidden; transition: transform .35s ease, visibility 0s .35s; }
   body.margin-open .margin { transform: none; visibility: visible; transition: transform .35s ease; }
   .margin-head { display: flex; align-items: stretch; justify-content: space-between; border-bottom: 1px solid rgba(236, 231, 220, .14); padding: 0 .4rem 0 1.1rem; flex: none; }
   .margin-tabs { display: flex; gap: 1.2rem; }
