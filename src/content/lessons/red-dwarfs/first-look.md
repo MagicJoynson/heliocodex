@@ -1,6 +1,6 @@
 ---
 sources:
-  - { label: "Laughlin, Bodenheimer and Adams, The end of the main sequence (Astrophysical Journal, 1997): lifetimes of the least massive stars", url: "https://doi.org/10.1086/304125" }
+  - { label: "Adams and Laughlin, A dying universe (Reviews of Modern Physics, 1997): main-sequence lifetime of a star of 0.1 solar masses", url: "https://arxiv.org/abs/astro-ph/9701131" }
   - { label: "Wikipedia, Proxima Centauri", url: "https://en.wikipedia.org/wiki/Proxima_Centauri" }
   - { label: "Wikipedia, Barnard's Star", url: "https://en.wikipedia.org/wiki/Barnard%27s_Star" }
   - { label: "ESA/Hubble, Hubble's view of Proxima Centauri", url: "https://esahubble.org/images/potw1343a/" }
@@ -11,7 +11,7 @@ The nearest star of all is one of them. Proxima Centauri is 4.25 light years awa
 
 A red dwarf is a real star. It makes its light the way the Sun does, by pressing hydrogen into helium at its centre. But it is small. The smallest have about a twelfth of the Sun's mass and are hardly wider than Jupiter. Proxima is about a seventh as wide as the Sun. With so little weight pressing down, the centre is cooler and the hydrogen burns very slowly indeed.
 
-That slowness is their great secret. The Sun will shine for about 10 billion years. A small red dwarf will shine for more than 10 trillion, a thousand times longer. A red dwarf also stirs itself like a pan of soup, so it can use up nearly all of its hydrogen, where the Sun will use only the part at its centre. The universe is 13.8 billion years old. No red dwarf has ever died of old age, anywhere. There has not been time.
+That slowness is their great secret. The Sun will shine for about 10 billion years. A red dwarf with a tenth of the Sun's mass will shine for about 10 trillion, a thousand times longer. A red dwarf also stirs itself like a pan of soup, so it can use up nearly all of its hydrogen, where the Sun will use only the part at its centre. The universe is 13.8 billion years old. No red dwarf has ever died of old age, anywhere. There has not been time.
 
 They are not quiet, though. Many red dwarfs throw off sudden flares, bursts of light and X-rays from tangled magnetism at the surface. In March 2016 Proxima brightened 68 times over in a flare that lasted minutes. For a moment the star could just have been seen without a telescope, by someone under a dark sky who happened to be looking.
 

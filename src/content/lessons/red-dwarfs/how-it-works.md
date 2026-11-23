@@ -1,6 +1,6 @@
 ---
 sources:
-  - { label: "Laughlin, Bodenheimer and Adams, The end of the main sequence (Astrophysical Journal, 1997): lifetimes of the least massive stars", url: "https://doi.org/10.1086/304125" }
+  - { label: "Adams and Laughlin, A dying universe (Reviews of Modern Physics, 1997): main-sequence lifetime of a star of 0.1 solar masses", url: "https://arxiv.org/abs/astro-ph/9701131" }
   - { label: "Wikipedia, Proxima Centauri", url: "https://en.wikipedia.org/wiki/Proxima_Centauri" }
   - { label: "Wikipedia, Barnard's Star", url: "https://en.wikipedia.org/wiki/Barnard%27s_Star" }
   - { label: "ESA/Hubble, Hubble's view of Proxima Centauri", url: "https://esahubble.org/images/potw1343a/" }

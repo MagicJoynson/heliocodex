@@ -213,7 +213,7 @@ facts:
     basis: worked-out
     source: { label: "Bond and others, The Sirius system and its astrophysical puzzles (2017)", url: "https://arxiv.org/abs/1703.10625" }
   - id: red-dwarf-lifetime
-    text: "The Sun will shine for about 10 billion years. A small red dwarf will shine for more than 10 trillion. The universe is 13.8 billion years old, so no red dwarf has yet died of old age, anywhere."
+    text: "The Sun will shine for about 10 billion years. A red dwarf with a tenth of the Sun's mass will shine for about 10 trillion. The universe is 13.8 billion years old, so no red dwarf has yet died of old age, anywhere."
     about: [red-dwarfs]
     basis: theory
-    source: { label: "Laughlin, Bodenheimer and Adams, The end of the main sequence (Astrophysical Journal, 1997): lifetimes of the least massive stars", url: "https://doi.org/10.1086/304125" }
+    source: { label: "Adams and Laughlin, A dying universe (Reviews of Modern Physics, 1997): main-sequence lifetime of a star of 0.1 solar masses", url: "https://arxiv.org/abs/astro-ph/9701131" }
