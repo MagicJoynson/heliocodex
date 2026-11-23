@@ -77,16 +77,20 @@ const kepler: Scene = {
   stillAt: 5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.3);
-    const cx = w / 2, cy = h * 0.45, R = Math.min(w * 0.4, h * 0.34), pa = (t / 229) * 24 * TAU * 0.5, sa = (t / 41) * 24 * TAU * 0.5, r1 = R * 0.12, r2 = R * 0.2;
+    const cx = w / 2, cy = h * 0.45, R = Math.min(w * 0.3, h * 0.34), pa = (t / 229) * 24 * TAU * 0.5, sa = (t / 41) * 24 * TAU * 0.5, r1 = R * 0.12, r2 = R * 0.2;
     ring(ctx, cx, cy, R, 'rgba(159,192,230,.3)', 1, [3, 5]);
     dot(ctx, cx + Math.cos(sa) * r1, cy + Math.sin(sa) * r1, 6, '#ffd9a0'); dot(ctx, cx - Math.cos(sa) * r2 * 0.5, cy - Math.sin(sa) * r2 * 0.5, 4, '#e88f5a');
     dot(ctx, cx + Math.cos(pa) * R, cy + Math.sin(pa) * R, 4.5, '#9fc0e6');
-    // the planet's name rides on the outside of its orbit, away from the stars and from the two steady labels inside and below it
-    const ux = Math.cos(pa), uy = Math.sin(pa), px = cx + ux * R, py = cy + uy * R;
-    if (Math.abs(ux) > 0.5) label(ctx, 'Kepler-16b', px + ux * 10, py + uy * 6, { align: ux > 0 ? 'left' : 'right', colour: SOFT, size: 10 });
-    else label(ctx, 'Kepler-16b', px, py + uy * 14, { align: 'center', colour: SOFT, size: 10 });
+    // the planet's name and its 229 days ride together on the outside of its orbit, in the planet's own colour, away from the stars
+    const per = w > 560 ? 'Planet: 229 days' : '229 days', ux = Math.cos(pa), uy = Math.sin(pa), px = cx + ux * R, py = cy + uy * R, PL = '#9fc0e6';
+    if (Math.abs(ux) > 0.5) {
+      const al = ux > 0 ? 'left' : 'right', lx = px + ux * 10;
+      label(ctx, 'Kepler-16b', lx, py + uy * 6 - 5, { align: al, colour: PL, size: 10 }); label(ctx, per, lx, py + uy * 6 + 8, { align: al, colour: PL, size: 10 });
+    } else {
+      const d = uy > 0 ? 14 : -26;
+      label(ctx, 'Kepler-16b', px, py + d, { align: 'center', colour: PL, size: 10 }); label(ctx, per, px, py + d + 13, { align: 'center', colour: PL, size: 10 });
+    }
     label(ctx, 'Stars: 41 days', cx, cy + r2 + 22, { align: 'center', colour: FAINT, size: 9 });
-    label(ctx, 'Planet: 229 days', Math.max(4, cx - R - 4), h - 10, { align: 'left', colour: ACCENT, size: 10 });
     say('A planet that has two suns', 'The pair turns about five and a half times for each lap of the planet');
   },
 };

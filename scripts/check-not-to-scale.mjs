@@ -4,11 +4,13 @@
 //   - any canvas text (fillText or strokeText) that overlaps, or comes within 2 px of, any other text, the mark included;
 //   - any canvas text that runs past the edge of the drawing (below the mark's strip when there is one).
 // It samples each step at six moments out to 15.5 s, and checks that the step it means to look at is the active one.
+//   - any drawn line that runs through a label, and any small filled dot (radius 12 px or less) that touches one,
+//     unless the scene and step is listed in scripts/not-to-scale-known.txt (older crossings, listed so that new ones fail).
 // It also prints WARNINGS (which do not fail the run): a label that label() moved more than 10 px from where its scene put it,
-// and a drawn line that crosses a label.
+// and a known crossing that is listed but no longer happens.
 // Needs `npm run build` and `npx astro preview --port 4399` running, and Playwright (NODE_PATH=$(npm root -g)).
 // Set ONLY=lesson-id,lesson-id to check a few lessons.
-import { readdirSync } from 'node:fs';
+import { readdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const { chromium } = createRequire(import.meta.url)('playwright');
 const base = process.env.BASE || 'http://localhost:4399';
@@ -17,6 +19,8 @@ const ids = readdirSync(new URL('../src/lib/learn/scenes/', import.meta.url)).fi
 const CAP = /not (drawn )?to scale|far from scale/i, GAP = 2, SKEWS = [0, 2500, 5000, 8000, 11000, 15500];
 const browser = await chromium.launch();
 const problems = new Set(), warnings = new Set(); let looked = 0, marked = 0;
+const known = new Set(existsSync(new URL('./not-to-scale-known.txt', import.meta.url)) ? readFileSync(new URL('./not-to-scale-known.txt', import.meta.url), 'utf8').split('\n').map((x) => x.trim()).filter((x) => x && !x.startsWith('#')) : []);
+const seenKnown = new Set(), found = new Set();
 
 function check(where, t, W, H, top) {
   for (const q of t) {
@@ -35,6 +39,11 @@ function check(where, t, W, H, top) {
   }
 }
 
+function nearDot(d, b) { // does the dot (centre and radius) touch the box b, with a 1 px margin?
+  const nx = Math.max(b.x0 - 1, Math.min(d.x, b.x1 + 1)), ny = Math.max(b.y0 - 1, Math.min(d.y, b.y1 + 1));
+  return (d.x - nx) ** 2 + (d.y - ny) ** 2 < d.r * d.r;
+}
+
 function crosses(l, b) { // does the segment l run through the box b (shrunk by 1 px)?
   const x0 = b.x0 + 1, x1 = b.x1 - 1, y0 = b.y0 + 1, y1 = b.y1 - 1;
   if (x1 <= x0 || y1 <= y0) return false;
@@ -51,9 +60,13 @@ for (const [w, h] of [[390, 844], [1440, 900]]) {
     window.__moves = new Map(); window.__labelMoves = { push(o) { if (Math.abs(o.dx) > 10 || Math.abs(o.dy) > 10) { const ix = [...document.querySelectorAll('canvas')].indexOf(o.canvas); window.__moves.set(ix + '|' + o.text, `${Math.round(o.dx)},${Math.round(o.dy)}`); } } };
     window.__skew = 0; const now = performance.now.bind(performance); performance.now = () => now() + window.__skew;
     const P = CanvasRenderingContext2D.prototype, fill = P.fillText, stroke = P.strokeText, clear = P.clearRect;
-    P.clearRect = function (...a) { if (a[2] >= this.canvas.width * 0.9) { this.canvas.__t = []; this.canvas.__l = []; this.canvas.__clip = null; this.__st = []; } return clear.apply(this, a); };
+    P.clearRect = function (...a) { if (a[2] >= this.canvas.width * 0.9) { this.canvas.__t = []; this.canvas.__l = []; this.canvas.__d = []; this.canvas.__pl = []; this.canvas.__clip = null; this.__st = []; } return clear.apply(this, a); };
     const mt = P.moveTo, lt = P.lineTo, bp = P.beginPath, st = P.stroke;
-    P.beginPath = function () { this.__seg = []; this.__cur = null; return bp.call(this); };
+    const arc = P.arc, fillP = P.fill, fr = P.fillRect;
+    P.fillRect = function (x, y, w, h) { if (h > 6 && h < 30 && w < 400) { const m = this.getTransform(); (this.canvas.__pl ||= []).push({ x0: m.e + x * m.a, x1: m.e + (x + w) * m.a, y0: m.f + y * m.d, y1: m.f + (y + h) * m.d }); } return fr.call(this, x, y, w, h); };
+    P.beginPath = function () { this.__seg = []; this.__arcs = []; this.__cur = null; return bp.call(this); };
+    P.arc = function (x, y, r, ...a) { const m = this.getTransform(); (this.__arcs ||= []).push({ x: m.e + x * m.a, y: m.f + y * m.d, r: r * m.a }); return arc.call(this, x, y, r, ...a); };
+    P.fill = function (...a) { (this.canvas.__d ||= []).push(...(this.__arcs || [])); this.__arcs = []; return fillP.apply(this, a); };
     P.moveTo = function (x, y) { const m = this.getTransform(); this.__cur = [m.e + x * m.a, m.f + y * m.d]; return mt.call(this, x, y); };
     P.lineTo = function (x, y) { const m = this.getTransform(), n = [m.e + x * m.a, m.f + y * m.d]; if (this.__cur) (this.__seg ||= []).push([...this.__cur, ...n]); this.__cur = n; return lt.call(this, x, y); };
     P.stroke = function (...a) { (this.canvas.__l ||= []).push(...(this.__seg || [])); return st.apply(this, a); };
@@ -84,7 +97,7 @@ for (const [w, h] of [[390, 844], [1440, 900]]) {
         const box = cv.getBoundingClientRect();
         const cap = (st ? document.querySelector('.story-stage [data-caption]') : cv.closest('figure, .stage-fig, section')?.querySelector('[data-caption], figcaption'))?.textContent || '';
         const moves = [...window.__moves].filter(([k]) => k.startsWith(ix + '|')).map(([k, v]) => `${k.split('|')[1]} (${v})`); window.__moves.clear();
-        return { cap, t: (cv.__t || []).map((q) => ({ ...q })), l: cv.__l || [], moves, W: box.width, H: box.height };
+        return { cap, t: (cv.__t || []).map((q) => ({ ...q })), l: cv.__l || [], d: cv.__d || [], pl: cv.__pl || [], moves, W: box.width, H: box.height };
       }, [index, story]);
       if (!r || !r.t.length && !CAP.test(r.cap)) continue;
       looked++;
@@ -92,11 +105,18 @@ for (const [w, h] of [[390, 844], [1440, 900]]) {
       if (isMarked) { if (!r.t.some((q) => q.text === 'NOT TO SCALE')) { problems.add(`${where}: caption says not to scale but there is no mark`); continue; } marked++; }
       check(where, r.t, r.W, r.H, isMarked ? 30 : 0);
       for (const m of r.moves) warnings.add(`${where}: label ${m} was moved more than 10 px from where the scene put it`);
-      for (const q of r.t) if (q.text !== 'NOT TO SCALE' && r.l.some((l) => crosses(l, q))) warnings.add(`${where}: a line crosses "${q.text}"`);
+      for (const q of r.t) {
+        if (q.text === 'NOT TO SCALE') continue;
+        if (r.pl.some((b) => b.x0 <= q.x0 + 0.5 && b.x1 >= q.x1 - 0.5 && b.y0 <= q.y0 + 0.5 && b.y1 >= q.y1 - 0.5)) continue; // a label on its own dark patch is not struck through
+        const hit = (msg) => { const key = `${id} ${label} @${w}: ${msg}`; found.add(key); if (known.has(key)) seenKnown.add(key); else problems.add(key); };
+        if (r.l.some((l) => crosses(l, q))) hit(`a line crosses "${q.text}"`);
+        if (r.d.some((d) => d.r <= 12 && nearDot(d, q))) hit(`a dot touches "${q.text}"`);
+      }
     }
     await p.evaluate(() => { window.__skew = 0; });
   };
   for (const id of ids) {
+    const before = looked;
     await p.goto(`${base}/learn/${id}`, { waitUntil: 'networkidle' }).catch(() => {});
     const n = await p.locator('.story-steps > *').count();
     const storyIndex = await p.evaluate(() => [...document.querySelectorAll('canvas')].indexOf(document.querySelector('.story-stage canvas')));
@@ -121,11 +141,15 @@ for (const [w, h] of [[390, 844], [1440, 900]]) {
       await p.locator('canvas').nth(k).scrollIntoViewIfNeeded().catch(() => {});
       await sample(id, `canvas ${k + 1}`, k, false);
     }
+    if (looked === before) problems.add(`${id} @${w}: nothing could be sampled (page did not load or has no canvas)`);
+    if (process.env.VERBOSE) console.error(`${id} @${w}: ${looked - before} samples`);
   }
   await ctx.close();
 }
 await browser.close();
 console.log(`${looked} samples, ${marked} with the mark`);
+if (process.env.WRITE_KNOWN) writeFileSync(new URL('./not-to-scale-known.txt', import.meta.url), `# Line or dot against label crossings that were already there. A new one fails; remove a line when its scene is fixed.\n${[...found].sort().join('\n')}\n`);
+for (const k of known) if (!seenKnown.has(k) && !only) warnings.add(`known crossing no longer happens, remove it from not-to-scale-known.txt: ${k}`);
 if (warnings.size) console.log(`WARNINGS (${warnings.size}):\n${[...warnings].sort().join('\n')}\n`);
 if (problems.size) { console.log([...problems].sort().join('\n')); process.exit(1); }
 console.log('no overlaps, no cut-off text');

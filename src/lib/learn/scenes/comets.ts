@@ -44,7 +44,12 @@ export const lens: Scene = {
     const years = (t * 5) % PERIOD, p = place(years / PERIOD);
     dot(ctx, sx + p.x * s, sy + p.y * s, 3.2, '#f4efe4');
     label(ctx, `${Math.floor(years)} years after 1986`, roomX + roomW / 2, h * (roomX ? 0.13 : 0.1), { align: 'center', colour: ACCENT });
-    label(ctx, 'Farthest: 35 AU', sx + Q_FAR * s, sy + 16, { align: 'right', colour: SOFT, size: 10 });
+    {
+      // beyond the end of the orbit, where nothing is drawn; where there is no room there, under the orbit's end on a dark patch
+      const endX = sx + Q_FAR * s;
+      if (endX + 8 + 100 <= w) label(ctx, 'Farthest: 35 AU', endX + 8, sy, { align: 'left', colour: SOFT, size: 10 });
+      else { let hb = 0; for (let i = 0; i <= 60; i++) hb = Math.max(hb, Math.abs(place(i / 60).y)); label(ctx, 'Farthest: 35 AU', endX, sy + hb * s + 16, { align: 'right', colour: SOFT, size: 10, plate: true }); }
+    }
     say('A path from inside Venus’s orbit to beyond Neptune’s', 'It takes about 76 years to go round once');
   },
 };

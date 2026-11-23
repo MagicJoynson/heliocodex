@@ -89,8 +89,8 @@ const throwScene: Scene = {
       ctx.stroke();
       const r = th.pts[n] * k, landed = th.back && n === th.pts.length - 1;
       if (!landed) { ctx.fillStyle = i === 2 ? ACCENT : INK; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 3, 0, TAU); ctx.fill(); }
-      const out = i === 2 ? R + 32 : R + 16, lx = cx + Math.cos(a) * out + (i === 0 ? -10 : i === 1 ? 14 : 12), ly = cy + Math.sin(a) * out; // the straight-up ball's label rides higher, clear of the 9 km/s one
-      label(ctx, `${th.speed} km/s`, lx, ly, { align: i === 0 ? 'right' : 'left', colour: i === 2 ? ACCENT : SOFT });
+      const out = i === 2 ? R + 32 : R + 16, lx = cx + Math.cos(a) * out + (i === 0 ? -10 : i === 1 ? 14 : -10), ly = cy + Math.sin(a) * out; // the straight-up ball's label sits left of its own line, higher, where the 9 km/s ball never goes
+      label(ctx, `${th.speed} km/s`, lx, ly, { align: i === 1 ? 'left' : 'right', colour: i === 2 ? ACCENT : SOFT });
     });
     say('Speed needed to leave the Earth', '11.2 km every second');
   },

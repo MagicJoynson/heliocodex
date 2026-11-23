@@ -49,7 +49,7 @@ export function rng(seed: number): () => number {
 /** The room a scene has to draw in; set by `mount` before each frame so labels can keep inside it. */
 const room = new WeakMap<CanvasRenderingContext2D, { w: number; h: number; boxes: { x0: number; x1: number; y0: number; y1: number }[] }>();
 
-export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { align?: CanvasTextAlign; colour?: string; size?: number; nudge?: boolean } = {}): void {
+export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, opts: { align?: CanvasTextAlign; colour?: string; size?: number; nudge?: boolean; plate?: boolean } = {}): void {
   const size = opts.size ?? 11, align = opts.align ?? 'left', up = text.toUpperCase();
   ctx.font = `400 ${size}px ${MONO}`;
   ctx.textAlign = align;
@@ -97,6 +97,8 @@ export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y:
     if (log) log.push({ canvas: ctx.canvas, text: lines[q.i], dx: q.x - (align === 'right' ? x - widths[q.i] : align === 'center' ? x - widths[q.i] / 2 : x), dy: chosen + q.i * lh - (y + (q.i - (lines.length - 1) / 2) * lh) });
     const yy = chosen + q.i * lh;
     r.boxes.push({ x0: q.box.x0, x1: q.box.x1, y0: yy - half + 1, y1: yy + half - 1 });
+    // `plate`: a dark patch behind the words, for a label that has to sit among lines (draw it after the lines)
+    if (opts.plate) { ctx.fillStyle = 'rgba(11,11,12,.88)'; ctx.fillRect(q.box.x0 - 3, yy - half, widths[q.i] + 6, half * 2); ctx.fillStyle = opts.colour ?? FAINT; }
     ctx.fillText(lines[q.i], q.x, yy);
   });
 }
