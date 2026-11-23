@@ -375,7 +375,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const enterDir = norm(add(add(scale(toSun, 0.7), scale(side, 0.55)), scale(north, 0.62)));
   const focusOf = (id: string): Focus => id === bodySlug
     ? { centre: () => bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) }
-    : { centre: () => posOf(id), radius: radOf(id), ...(ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, radOf(id)) - radOf(id) } : {}) };
+    : { centre: () => posOf(id), radius: radOf(id), ...(ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, radOf(id)) - radOf(id), flat: true } : {}) };
   const sunFocus: Focus = { centre: () => sunPos, radius: 695_700_000 };
   flight.orbitAt(sunFocus, 30 * AU, enterDir, true);
   let entered = false;
@@ -871,7 +871,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
           for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (vdot(norm(slerp(now, lit, m)), toS) < 0.3) lo = m; else hi = m; }
           endDir = norm(slerp(now, lit, hi));
         }
-        flight.startCruise({ to: id === bodySlug ? focusOf(id) : { centre: target, radius: measured ? r : 0, ...(measured && ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, r) - r } : {}) }, endDist, endDir, secs });
+        flight.startCruise({ to: id === bodySlug ? focusOf(id) : { centre: target, radius: measured ? r : 0, ...(measured && ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, r) - r, flat: true } : {}) }, endDist, endDir, secs });
       }
       cruising = true;
       if (reduced) o.onJump?.();

@@ -19,6 +19,8 @@ export interface Focus {
   radius: number; // metres; 0 for a place with no surface
   /** ground height above the radius under a direction from the centre, metres */
   ground?: (dir: V3) => number;
+  /** a flattened world: `ground` is the drawn surface's height over the mean radius (it may be negative), not terrain */
+  flat?: boolean;
 }
 
 export interface Cruise {
@@ -62,6 +64,7 @@ export function createFlight(canvas: HTMLElement) {
   let onWheelIn: ((x: number, y: number, amount: number) => void) | null = null;
   const setGear = (g: number) => { const n = clamp(Math.round(g), 0, GEARS.length); if (n !== gear) { gear = n; onGear?.(gear); } };
   let lastFloor = 0, lastR = 0, floorOff = 0;
+  let wheelAcc = 0, wheelAt = 0;
   let reduced = false; // reduced motion: no drift after a drag, faster settling
 
   // ---- orbit state
@@ -128,7 +131,13 @@ export function createFlight(canvas: HTMLElement) {
     e.preventDefault();
     // Firefox reports lines, not pixels; a trackpad pinch arrives as a wheel with ctrlKey
     const px = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 600 : 1) * (e.ctrlKey ? 3 : 1);
-    if (mode === 'free') { if (gear === 0) speedMul = clamp(speedMul * Math.pow(1.0015, -px), 0.02, 50); }
+    if (mode === 'free') {
+      // each notch of the wheel is one gear: up for faster, down for slower (a trackpad adds up small movements into one notch)
+      const now = performance.now();
+      if (now - wheelAt > 400) wheelAcc = 0;
+      wheelAt = now; wheelAcc += px;
+      if (Math.abs(wheelAcc) >= 60) { setGear(gear + (wheelAcc < 0 ? 1 : -1)); wheelAcc = 0; }
+    }
     else { zoomBy *= Math.pow(1.0018, clamp(px, -240, 240)); if (px < 0 && mode === 'orbit') onWheelIn?.(e.clientX, e.clientY, -px); }
   }, { passive: false });
   /** touch pad: -1 back, 0 still, 1 forward (set by the page's on-screen control) */
@@ -177,7 +186,7 @@ export function createFlight(canvas: HTMLElement) {
     if (len(side) > 0.01 && el) { const w = new THREE.Vector3(...o).applyAxisAngle(new THREE.Vector3(...side), -el); o = [w.x, w.y, w.z]; }
     return clampEl(norm(o));
   }
-  const minDistOf = (f: Focus, d: V3) => (f.radius > 0 ? f.radius + Math.max(0, f.ground?.(d) ?? 0) + Math.max(f.radius * 0.0012, 400) : 1e3);
+  const minDistOf = (f: Focus, d: V3) => (f.radius > 0 ? f.radius + (f.flat ? f.ground?.(d) ?? 0 : Math.max(0, f.ground?.(d) ?? 0)) + Math.max(f.radius * 0.0012, 400) : 1e3);
   const MAX_DIST = 1e28;
 
   const ease = (u: number) => (u < 0.5 ? 4 * u ** 3 : 1 - Math.pow(-2 * u + 2, 3) / 2);
@@ -280,14 +289,17 @@ export function createFlight(canvas: HTMLElement) {
       zoomBy = 1;
       // top speed: about your own height a second; a gear multiplies it in open space and fades out near a body
       const boost = fast > 1 ? 4 : 1;
+      // the room you have is to the floor you may not go below (see the floor below), not to the bare surface
+      const floorGap = Math.max(1.7, near.radius * 3e-7);
+      const roomAhead = near.ahead ? (d: V3) => Math.max(0, near.ahead!(d) - floorGap) : undefined;
       const h = clamp(alt, 2, 1e27);
       const open = smooth(near.radius * 0.5, near.radius * 3, dNear - near.radius);
       // gear 0 is your height a second; a gear lets the speed grow faster, up to a top speed, and fades out near a body
       const rate = gear === 0 ? 0.9 * speedMul : 0.9 + (RATES[gear - 1] - 0.9) * open;
       // what gear 0 gives: your height a second, but measured to whatever is in the way in the direction you are heading (so a far Sun does not make you fast near a planet)
-      const localAt = (dir: V3) => { const room = near.ahead ? near.ahead(dir) : Infinity; return Math.min(h, Math.max(room, 0.05 * h)) * 0.9 * speedMul * boost; };
+      const localAt = (dir: V3) => { const room = roomAhead ? roomAhead(dir) : Infinity; return Math.min(h, Math.max(room, 0.05 * h)) * 0.9 * speedMul * boost; };
       // never faster than lets you ease up to what is in the way: the speed falls off as the body nears, so you arrive gently, not through it
-      const eased = (dir: V3, v: number) => { if (!near.ahead) return v; return Math.min(v, Math.max(near.ahead(dir) / (gear === 0 ? 1 : BRAKES[gear - 1]), localAt(dir))); };
+      const eased = (dir: V3, v: number) => { if (!roomAhead) return v; return Math.min(v, Math.max(roomAhead(dir) / (gear === 0 ? 1 : BRAKES[gear - 1]), localAt(dir))); };
       const base = gear === 0 ? h * 0.9 * speedMul * boost : Math.min(h * rate * boost, TOPS[gear - 1]);
       const f = clamp((k('KeyW') || k('ArrowUp') ? 1 : 0) - (k('KeyS') || k('ArrowDown') ? 1 : 0) + pad - (gp?.ly ?? 0), -1, 1);
       const s = clamp((k('KeyD') ? 1 : 0) - (k('KeyA') ? 1 : 0) + (gp?.lx ?? 0), -1, 1);
@@ -303,13 +315,14 @@ export function createFlight(canvas: HTMLElement) {
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
       // momentum too: the speed you already have is held to the same rule, so a long glide cannot carry you into a body
       // it comes down over about a tenth of a second (not in one frame), faster only as the surface gets close, and never so slowly that the surface is under a tenth of a second (or three frames) away
-      { const sp = len(vel); if (sp > 0) { const nv = norm(vel); const cap = eased(nv, sp); if (cap < sp) { const room = near.ahead ? near.ahead(nv) : Infinity; const tts = room / sp; const hard = room / Math.max(0.1, 3 * dt); const tau2 = clamp(0.3 * tts, 0.02, 0.12); const soft = cap + (sp - cap) * Math.exp(-dt / tau2); const to = Math.min(soft, Math.max(hard, cap)); const c = Math.min(sp, to) / sp; vel[0] *= c; vel[1] *= c; vel[2] *= c; } } }
+      { const sp = len(vel); if (sp > 0) { const nv = norm(vel); const cap = eased(nv, sp); if (cap < sp) { const room = roomAhead ? roomAhead(nv) : Infinity; const tts = room / sp; const hard = room / Math.max(0.1, 3 * dt); const tau2 = clamp(0.3 * tts, 0.02, 0.12); const soft = cap + (sp - cap) * Math.exp(-dt / tau2); const to = Math.min(soft, Math.max(hard, cap)); const c = Math.min(sp, to) / sp; vel[0] *= c; vel[1] *= c; vel[2] *= c; } } }
       pos[0] += vel[0] * dt; pos[1] += vel[1] * dt; pos[2] += vel[2] * dt;
 
       // never below the ground
       const rel2 = sub(pos, near.centre);
       const up2 = norm(rel2);
-      const target = near.radius + near.ground(up2) + 1.7;
+      // 1.7 m, but not less than the finest step the graphics card can place a surface on a big world (single precision): about 3e-7 of the radius
+      const target = near.radius + near.ground(up2) + floorGap;
       if (near.radius === lastR && Math.abs(target - lastFloor) > 5 + len(vel) * dt * 2) floorOff += lastFloor - target;
       floorOff *= Math.exp(-dt * 6);
       if (Math.abs(floorOff) < 0.01) floorOff = 0;
@@ -324,7 +337,12 @@ export function createFlight(canvas: HTMLElement) {
       // Esc in free flight: once you have nearly stopped (or a few seconds have passed), settle into circling
       if (calm) {
         calm.t += wall;
-        if (len(vel) < 0.004 * Math.max(h, 2) + 0.2 || calm.t > 4) { const f2 = calm.f; calm = null; enterOrbit(f2); }
+        if (len(vel) < 0.004 * Math.max(h, 2) + 0.2 || calm.t > 4) {
+          const f2 = calm.f; calm = null;
+          // close to the ground, Esc is just a stop: circling would lift you out to the orbit limit
+          const gap = minDistOf(f2, upLocal) - (near.radius + near.ground(upLocal));
+          if (alt >= 3 * gap) enterOrbit(f2);
+        }
       }
       // level the horizon: take out any roll, gently, when near a body
       if (ground > 0.01) {

@@ -142,9 +142,9 @@ import { sections } from '../lib/nav';
           <dl class="keys">
             <div><dt>Look round</dt><dd>drag, or the left and right arrow keys</dd></div>
             <div><dt>Move</dt><dd>W or the up arrow ahead, S or the down arrow astern, A and D sideways, E up, Q down</dd></div>
-            <div><dt>Speed</dt><dd>scroll, the throttle, or . faster and , slower. Shift goes quicker. X brakes at once. Speed always eases off near a world</dd></div>
+            <div><dt>Speed</dt><dd>scroll (one gear a notch), the throttle, or . faster and , slower. Shift goes quicker. X brakes at once. Speed always eases off near a world</dd></div>
             <div><dt>Go to a world</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
-            <div><dt>Circle a world</dt><dd>Esc eases a trip to a stop. In free flight it stops you and circles the nearest world, and F sets you flying free again</dd></div>
+            <div><dt>Circle a world</dt><dd>Esc eases a trip to a stop. In free flight it stops you, and unless you are close to the ground it then circles the nearest world; F sets you flying free again</dd></div>
             <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
             <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to circle or fly</dd></div>
             <div><dt>The Codex</dt><dd>M</dd></div>
@@ -448,7 +448,7 @@ import { sections } from '../lib/nav';
       const tourEl = $('tour');
       const pops = ['goto', 'time', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : `${id}-sheet`) }));
       // an open sheet hides only what it would sit on top of
-      const coverable = () => ['.readout', '#pad', '#gears', '#margin-tab', '.back-chip', '.gen', '#hint', '#coach', '#scale', '#eta'].map((s) => document.querySelector(s) as HTMLElement | null).filter((e): e is HTMLElement => !!e);
+      const coverable = () => ['.readout', '#pad', '#gears', '#margin-tab', '.back-chip', '.gen', '#hint', '#scale', '#eta'].map((s) => document.querySelector(s) as HTMLElement | null).filter((e): e is HTMLElement => !!e);
       const syncSheet = () => {
         const open = pops.find((p) => !p.sheet.hidden);
         body.classList.toggle('sheet-open', !!open);
@@ -458,6 +458,8 @@ import { sections } from '../lib/nav';
         if (open) covers.push(open.sheet.getBoundingClientRect());
         else if (body.classList.contains('margin-open') && m) covers.push(m.getBoundingClientRect());
         if (!tourEl.hidden) covers.push(tourEl.getBoundingClientRect());
+        const coachEl = document.getElementById('coach');
+        if (coachEl && !coachEl.hidden) covers.push(coachEl.getBoundingClientRect());
         for (const e of coverable()) {
           const b = e.getBoundingClientRect();
           e.classList.toggle('under-sheet', b.width > 0 && covers.some((r) => b.left < r.right && r.left < b.right && b.top < r.bottom && r.top < b.bottom));
@@ -469,6 +471,7 @@ import { sections } from '../lib/nav';
       new MutationObserver(() => { setTimeout(syncSheet, 420); setTimeout(syncSheet, 900); syncSheet(); }).observe(body, { attributes: true, attributeFilter: ['class'] });
       for (const p of pops) new MutationObserver(syncSheet).observe(p.sheet, { attributes: true, attributeFilter: ['hidden'] });
       new MutationObserver(syncSheet).observe(tourEl, { attributes: true, attributeFilter: ['hidden'] });
+      { const c = document.getElementById('coach'); if (c) { new MutationObserver(syncSheet).observe(c, { attributes: true, attributeFilter: ['hidden'] }); new ResizeObserver(syncSheet).observe(c); } }
       new ResizeObserver(syncSheet).observe(tourEl);
       const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
       for (const p of pops) p.btn.addEventListener('click', () => {
@@ -703,7 +706,7 @@ import { sections } from '../lib/nav';
       }
       const flyHint = () => {
         const h = $('hint');
-        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc circles a world, F flies free again';
+        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc stops you, then circles a world (not near the ground), F flies free again';
         h.querySelector('.coarse-only')!.textContent = 'Drag to look · press the pad for ahead or astern · slide the throttle for speed';
         h.classList.add('show'); clearTimeout(flyHintT); flyHintT = window.setTimeout(() => h.classList.remove('show'), 8000);
       };
@@ -856,8 +859,9 @@ import { sections } from '../lib/nav';
       .threshold::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 46% 40% at 50% 46%, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%); transition: opacity 1s ease; }
       body.in .threshold::before { opacity: 0; }
       .threshold { position: fixed; inset: 0; z-index: 2; display: grid; place-content: center; justify-items: center; text-align: center; padding: 24px; transition: opacity 1s ease .2s; }
-      .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; }
-      .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; }
+      /* the title and intro sit on a dark backing so the orbit labels under them (Uranus, Jupiter) do not show through the words */
+      .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; position: relative; background: rgba(0,0,0,.94); box-shadow: 0 0 26px 26px rgba(0,0,0,.94); border-radius: 12px; }
+      .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; position: relative; background: rgba(0,0,0,.94); box-shadow: 0 0 26px 26px rgba(0,0,0,.94); border-radius: 12px; }
       .aperture { position: relative; width: clamp(150px, 22vmin, 210px); aspect-ratio: 1; display: grid; place-items: center; transition: transform .8s cubic-bezier(.6,0,.3,1), opacity .5s ease .4s; }
       .aperture svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
       .ring { fill: none; stroke: rgba(236,231,220,.55); stroke-width: .8; vector-effect: non-scaling-stroke; transition: stroke .4s, r .8s cubic-bezier(.6,0,.3,1); }
@@ -945,7 +949,8 @@ import { sections } from '../lib/nav';
       /* ---- readout */
       .hud { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; padding: 0 var(--gut) var(--bot); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1s ease .8s; pointer-events: none; }
       body.in .hud { opacity: 1; }
-      .readout { display: grid; gap: .3rem; text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
+      /* a near-solid dark backing, so the figures stay readable over bright ground (the Sun, Saturn's tan cloud tops close up) */
+      .readout { display: grid; gap: .3rem; width: fit-content; padding: 12px 16px; margin: -12px -14px; border-radius: 14px; background: rgba(9,9,11,.94); backdrop-filter: blur(6px); text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
       .readout .k, .readout .k2 { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
       .readout .k2 { text-transform: none; }
       .readout .v { font: 200 clamp(1.8rem, 4.4vw, 3rem)/1 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
@@ -953,7 +958,7 @@ import { sections } from '../lib/nav';
       body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
 
       /* ---- controls */
-      @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } .readout { max-width: none; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .8125rem; } .zoom button { width: 44px; } }
+      @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } .readout { max-width: none; padding-bottom: 2px; margin-bottom: 0; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .8125rem; } .zoom button { width: 44px; } }
       .controls { position: fixed; z-index: 31; right: var(--gut); bottom: var(--bot); display: flex; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .controls { opacity: 1; pointer-events: auto; }
       .pop { position: relative; }
@@ -1034,7 +1039,7 @@ import { sections } from '../lib/nav';
         .scale { top: calc(var(--top) + 50px); }
         .coach { left: var(--gut); right: var(--gut); width: auto; transform: none; bottom: calc(var(--dock) + 10px); padding: 12px 16px; gap: 6px; }
         .coach p { font-size: 1rem; }
-        body.coaching .gears.throttle, body.coaching .pad, body.picking .gears.throttle, body.picking .pad { visibility: hidden; }
+        body.picking .gears.throttle, body.picking .pad { visibility: hidden; }
         body.coaching .hud, body.picking .hud { padding-bottom: calc(var(--dock) + 170px); }
         .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 4; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
@@ -1052,11 +1057,9 @@ import { sections } from '../lib/nav';
       body:has(.back-chip:not(:disabled)) .gen { left: calc(var(--gut) + 104px); }
       @media (min-width: 601px) { .coach { width: max-content; max-width: calc(100vw - 112px); } }
       body.tripping .coach, body.tripping .readout, body.tripping .hint { opacity: 0; pointer-events: none; }
-      body.coaching .pad { visibility: hidden; }
       /* one thing at a time: the Fly here sheet, or the first-visit prompts, not both; and a sheet hides what it would cover */
       body.picking .coach { visibility: hidden; }
       .under-sheet { visibility: hidden !important; }
-      @media (max-height: 520px) { body.coaching .gen, body.coaching .readout { visibility: hidden; } }
       @media (max-height: 520px) { .sheet { bottom: calc(100% + 12px); max-height: calc(100dvh - var(--bot) - 48px - 12px - 64px); } }
       @media (min-width: 601px) and (max-width: 1180px) {
         .gears.throttle { left: calc(var(--gut) + 190px); transform: none; width: clamp(220px, calc(100vw - 2 * var(--gut) - 560px), 340px); }
