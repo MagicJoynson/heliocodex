@@ -56,7 +56,7 @@ export function pickQuality(): Quality {
 /** metres above Mars below which the generated ground is drawn; above it the smooth globe stands in */
 const GENERATED_FROM = 1.5e6;
 
-export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; onJump?: () => void; onFocus?: (id: string, name: string) => void; forceWebGL?: boolean; quality?: Quality }) {
+export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; onJump?: () => void; /** with this set, a tap on a world selects it (the page shows a card with Fly here) instead of flying at once; null is a tap on empty sky */ onSelect?: (a: { id: string; name: string; metres: number } | null) => void; onFocus?: (id: string, name: string) => void; forceWebGL?: boolean; quality?: Quality }) {
   const quality = o.quality ?? pickQuality();
   // Reversed-z only gains precision with a float depth buffer, which three.js gives us on WebGPU.
   // On WebGL 2 the canvas depth is 24-bit integer, so there a logarithmic buffer is the better choice.
@@ -331,9 +331,11 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     }
     return best;
   };
+  const aimOf = (id: string) => ({ id, name: id === 'sun' ? 'The Sun' : PLANET_NAMES[id] ?? system.body(id)?.name ?? id, metres: Math.max(0, len(sub(posOf(id), flight.pos)) - radOf(id)) });
   flight.onTap((x, y) => {
     if (flight.mode === 'cruise') return;
     const best = pickAt(x, y);
+    if (o.onSelect) { o.onSelect(best ? aimOf(best) : null); return; }
     if (best) engine.flyTo({ target: best }).catch(() => {});
   });
   // zoom to the cursor: scrolling in while pointing at some other body takes you to it (the orbit view always
@@ -883,9 +885,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     aim(x: number, y: number): { id: string; name: string; metres: number } | null {
       if (flight.mode === 'cruise') return null;
       const id = pickAt(x, y);
-      if (!id) return null;
-      const name = id === 'sun' ? 'The Sun' : PLANET_NAMES[id] ?? system.body(id)?.name ?? id;
-      return { id, name, metres: Math.max(0, len(sub(posOf(id), flight.pos)) - radOf(id)) };
+      return id ? aimOf(id) : null;
     },
     /** + (positive) and − on screen */
     zoom(steps: number) { flight.zoom(steps); },

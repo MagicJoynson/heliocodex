@@ -131,7 +131,7 @@ import { sections } from '../lib/nav';
         </div>
       </div>
       <div class="pop" id="view">
-        <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet">View</button>
+        <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet" aria-label="Controls and settings" title="Controls and settings">?</button>
         <div class="sheet view-sheet" id="view-sheet" role="group" aria-label="View settings" hidden>
           <fieldset>
             <legend>Planet sizes</legend>
@@ -190,7 +190,7 @@ import { sections } from '../lib/nav';
       <p><b>3</b><span class="fine-only">Scroll or hold W for speed</span><span class="coarse-only">Slide the throttle for speed</span></p>
       <button type="button" id="coach-ok">Got it</button>
     </div>
-    <div class="aim" id="aim" hidden aria-hidden="true"><b id="aim-n"></b><span id="aim-d"></span><i>Click to fly there</i></div>
+    <div class="aim" id="aim" hidden aria-hidden="true"><b id="aim-n"></b><span id="aim-d"></span><i>Click to fly there</i><button type="button" class="aim-go" id="aim-go">Fly here</button></div>
     <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to turn round · Scroll to zoom · Click a planet to go there</span><span class="coarse-only">Drag to turn · Pinch to zoom · Tap a planet to go there</span></p>
     <section class="tour" id="tour" aria-label="Guided tour" hidden>
       <p class="tour-k" id="tour-k">Stop 1 of 10</p>
@@ -254,7 +254,7 @@ import { sections } from '../lib/nav';
         if (m > 1000) return `${(m / 1000).toFixed(2)} km`;
         return `${Math.max(0, Math.round(m)).toLocaleString('en-GB')} m`;
       };
-      const fmtSpeed = (v: number) => (v > 3e9 ? `${fmt(v)} a second` : v > 1000 ? `${(v / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km a second` : `${Math.round(v)} m a second`);
+      const fmtSpeed = (v: number) => (v > 3e9 ? `${(v / 299_792_458).toLocaleString('en-GB', { maximumFractionDigits: v > 3e10 ? 0 : 1 })} × light speed` : v >= 1000 ? `${Math.round(v / 1000).toLocaleString('en-GB')} km/s` : v >= 1 ? `${Math.round(v)} m/s` : '0 km/s');
       // a catalogue star the camera has flown to is shown at the distance its page gives (Gaia for Proxima Centauri),
       // not at where the camera stopped, which is a little short of it
       let focusId = '';
@@ -290,10 +290,22 @@ import { sections } from '../lib/nav';
       let prevMode = '';
       let tripFrom = 1;
       let world: Awaited<ReturnType<typeof createWorld>>;
+      // on a touch screen a tap on a world selects it and a card offers Fly here; with a mouse a click flies at once
+      const coarse = matchMedia('(pointer: coarse)').matches;
+      let picked = '';
+      const lightText = (m: number) => { const sec = m / 299_792_458; return sec < 1 ? '' : sec < 90 ? `Light takes ${Math.round(sec)} s` : sec < 5400 ? `Light takes ${Math.round(sec / 60)} min` : sec < 172800 ? `Light takes ${(sec / 3600).toFixed(1)} h` : ''; };
       const startedAt = performance.now();
       try {
         world = await createWorld({
           canvas: $('space') as HTMLCanvasElement,
+          onSelect: coarse ? (a) => {
+            const card = $('aim');
+            if (!a) { card.hidden = true; picked = ''; body.classList.remove('picking'); return; }
+            body.classList.add('picking');
+            picked = a.id; $('aim-n').textContent = a.name;
+            $('aim-d').textContent = [`${fmt(a.metres)} away`, lightText(a.metres)].filter(Boolean).join(' · ');
+            card.hidden = false;
+          } : undefined,
           forceWebGL: params.has('gl') || (() => { try { return sessionStorage.getItem('hc-gl') === '1'; } catch { return false; } })(),
           onReadout(r) {
             $('where-k').textContent = r.mode === 'cruise' ? 'Flying to' : 'Looking at';
@@ -324,6 +336,7 @@ import { sections } from '../lib/nav';
             // on a trip: where to, how long, and a way to stop
             { const eta = $('eta'), cr = r.mode === 'cruise' && !body.classList.contains('touring');
               eta.hidden = !cr;
+              if (cr) { $('aim').hidden = true; picked = ''; body.classList.remove('picking'); }
               if (cr) {
                 if (prevMode !== 'cruise') { tripFrom = Math.max(r.dist, 1); $('eta-n').textContent = cap(world?.focus.name ?? r.target); }
                 const secs = r.secsLeft;
@@ -358,7 +371,7 @@ import { sections } from '../lib/nav';
             $('threshold').setAttribute('inert', '');
             $('skip').hidden = true;
             $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
-            if (!prefs.coached) $('coach').hidden = false;
+            if (!prefs.coached) { $('coach').hidden = false; body.classList.add('coaching'); }
             else { $('hint').classList.add('show'); setTimeout(() => $('hint').classList.remove('show'), 9000); }
             // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
             const go = params.get('go');
@@ -661,9 +674,10 @@ import { sections } from '../lib/nav';
       $('fly-btn').addEventListener('click', () => { toggleFly(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
       world.onPadFree(() => { if (body.classList.contains('arrived')) toggleFly(); });
       world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; });
-      { const done = () => { const c = $('coach'); if (!c.hidden) { c.hidden = true; prefs.coached = true; save(); } };
+      { const done = () => { const c = $('coach'); if (!c.hidden) { c.hidden = true; body.classList.remove('coaching'); prefs.coached = true; save(); } };
         $('coach-ok').addEventListener('click', done);
         ($('space') as HTMLElement).addEventListener('pointerdown', () => setTimeout(done, 4000)); }
+      $('aim-go').addEventListener('click', () => { if (picked) world.flyTo({ target: picked }).catch(() => {}); $('aim').hidden = true; picked = ''; body.classList.remove('picking'); });
       $('eta-stop').addEventListener('click', () => { world.setFree(true); ($('space') as HTMLElement).focus({ preventScroll: true }); });
       $('throttle').addEventListener('input', (e) => world.setGear(Number((e.target as HTMLInputElement).value)));
       // the world under the pointer gets a card saying what a click will do
@@ -682,8 +696,8 @@ import { sections } from '../lib/nav';
           card.hidden = false; cv.style.cursor = 'pointer';
           card.style.transform = `translate(${Math.min(e.clientX + 18, innerWidth - 260)}px, ${Math.min(e.clientY + 14, innerHeight - 120)}px)`;
         });
-        cv.addEventListener('pointerleave', () => { card.hidden = true; on = ''; });
-        cv.addEventListener('pointerdown', () => { card.hidden = true; on = ''; });
+        cv.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { card.hidden = true; on = ''; } });
+        cv.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse') { card.hidden = true; on = ''; } });
       }
       $('free-btn').addEventListener('click', () => { world.setFree(world.mode !== 'free'); shutPops(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
 
@@ -1062,8 +1076,18 @@ import { sections } from '../lib/nav';
       .coach p { margin: 0; display: flex; align-items: center; gap: 9px; font: 300 1.0625rem/1.3 var(--serif); color: var(--ink); }
       .coach b { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--warm); color: #111; font: 600 .8125rem/24px var(--mono); text-align: center; }
       .coach button { flex: none; background: none; border: 0; color: var(--warm); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; padding: 14px 6px; min-height: 44px; cursor: pointer; }
-      @media (max-width: 600px) { .coach { width: calc(100vw - 32px); flex-direction: column; align-items: flex-start; gap: 8px; bottom: calc(var(--dock) + 112px); padding: 14px 18px; } .coach button { align-self: flex-end; padding: 4px 6px; } }
-      .map, #step-in, #step-out, #fly-btn { display: none !important; }
+      @media (max-width: 600px) { .coach { flex-direction: column; align-items: flex-start; gap: 8px; bottom: calc(var(--dock) + 112px); padding: 14px 18px; } .coach button { align-self: flex-end; padding: 4px 6px; } }
+      .map, #step-in, #step-out, #fly-btn, .controls .zoom { display: none !important; }
+      /* the place panel is gone: its name is in the readout, its distance in the ribbon; only Back is kept */
+      .where { width: auto; top: calc(var(--top) + 52px); }
+      @media (max-width: 600px) { .where { top: calc(var(--top) + 108px); } .gen { top: calc(var(--top) + 160px); } }
+      .where-h, .where-d { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+      .stepper { width: auto; display: block; }
+      #step-back { min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: var(--ink); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+      #step-back:disabled { display: none; }
+      .gen { left: var(--gut); top: calc(var(--top) + 112px); max-width: min(26rem, calc(100vw - 2 * var(--gut))); }
+      .aim .aim-go { display: none; }
+      @media (pointer: coarse) { .aim { z-index: 30; background: rgba(9,9,11,.94); left: 0; right: 0; bottom: calc(var(--dock, 0px) + 8px); top: auto; width: auto; margin: 0 var(--gut); pointer-events: auto; transform: none !important; padding: 16px 18px; } .aim i { display: none; } .aim .aim-go { display: block; margin-top: 12px; padding: 16px; min-height: 52px; border: 0; border-radius: 999px; background: var(--warm); color: #111; font: 600 .875rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } }
       .gear-name { margin: 0; min-width: 9.5rem; text-align: center; font: 400 .8125rem/1.25 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
       .pill[aria-pressed="true"], .pill[aria-pressed="true"]:hover, .pill[aria-pressed="true"]:focus-visible { color: #111; background: var(--warm); border-color: var(--warm); }
       .goto-marks { margin-bottom: 4px; }
@@ -1087,6 +1111,7 @@ import { sections } from '../lib/nav';
       body.in .hud { opacity: 1; }
       .readout { display: grid; gap: .3rem; text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
       .readout .k, .readout .k2 { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+      .readout .k2 { text-transform: none; }
       .readout .v { font: 200 clamp(1.8rem, 4.4vw, 3rem)/1 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
       .skip { pointer-events: auto; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); border-bottom: 1px solid rgba(236,231,220,.3); padding: 10px 0 3px; margin-bottom: 70px; }
       body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
@@ -1168,18 +1193,20 @@ import { sections } from '../lib/nav';
       /* ---- phone dock: four big slots along the bottom, in place of the floating pills */
       @media (max-width: 600px) {
         :root { --dock: calc(56px + env(safe-area-inset-bottom, 0px)); }
-        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
         .controls .zoom { display: none; }
         .controls .pop { display: block; min-width: 0; }
         .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .75rem; letter-spacing: .12em; display: grid; place-items: center; }
-        .controls > #tour-btn { order: 5; }
+        .controls > #tour-btn { order: 3; }
         .controls > #fly-btn { order: 4; }
         .gears.throttle { left: var(--gut); transform: none; bottom: calc(var(--dock) + 10px); width: calc(100vw - 2 * var(--gut) - 76px); padding: 10px 14px 6px; }
         .throttle .th { display: none; }
         .scale { top: calc(var(--top) + 50px); }
-        .where { top: calc(var(--top) + 112px); }
-        .coach { bottom: calc(var(--dock) + 210px); }
-        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 3; }
+        .coach { left: var(--gut); right: var(--gut); width: auto; transform: none; bottom: calc(var(--dock) + 10px); padding: 12px 16px; gap: 6px; }
+        .coach p { font-size: 1rem; }
+        body.coaching .gears.throttle, body.coaching .pad, body.picking .gears.throttle, body.picking .pad { visibility: hidden; }
+        body.coaching .hud, body.picking .hud { padding-bottom: calc(var(--dock) + 170px); }
+        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 4; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
         .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }
         .sheet { bottom: calc(var(--dock) + 8px); }
@@ -1196,7 +1223,6 @@ import { sections } from '../lib/nav';
       .gen { position: fixed; z-index: 5; top: calc(var(--top) + 58px); left: 214px; right: var(--gut); max-width: 26rem; margin: 0; font: 400 .9375rem/1.45 var(--serif); font-style: normal; color: var(--ink); background: rgba(8, 8, 10, .62); border-left: 2px solid rgba(241, 201, 142, .6); padding: .4rem .7rem; text-shadow: 0 1px 8px #000; pointer-events: none; }
       .gen:empty { display: none; }
       .gen.illus { font: 500 .8125rem/1.4 var(--sans, system-ui, sans-serif); font-style: normal; color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid rgba(241, 201, 142, .55); border-radius: 6px; padding: .45rem .65rem; text-shadow: none; }
-      @media (max-width: 600px) { .gen { left: 204px; } }
       body:not(.in) .gen, body.margin-open .gen { visibility: hidden; }
 
       @media (prefers-reduced-motion: reduce) {
