@@ -1,7 +1,7 @@
 ---
 import Reading from '../../../layouts/Reading.astro';
 import { allFacts, allLessons } from '../../../lib/v2/margin/content';
-import { linksFor, PLAIN } from '../../../lib/fact-links';
+import { linksFor, PLAIN, LEAD } from '../../../lib/fact-links';
 
 const [all, lessons] = await Promise.all([allFacts(), allLessons()]);
 const SUBJECTS: Record<string, string> = {
@@ -11,9 +11,9 @@ const SUBJECTS: Record<string, string> = {
 const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', theory: 'From a model, not a direct measurement' } as const;
 const pool = all.filter((f) => !PLAIN.has(f.id)).map((f) => ({
   id: f.id, text: f.text, subject: SUBJECTS[f.subject] ?? '', basis: basisNote[f.basis],
-  source: f.source, links: linksFor(f, lessons),
+  source: f.source, links: linksFor(f, lessons), lead: LEAD.includes(f.id),
 }));
-const first = pool[0];
+const first = pool.find((f) => f.lead) ?? pool[0];
 ---
 <Reading title="A fact at a time" path="/learn/facts/random" description="One fact about space, with its source. Press the button for another.">
   <header class="reading-head">
@@ -52,7 +52,7 @@ const first = pool[0];
 
 <script>
   type L = { href: string; label: string; kind: string };
-  type F = { id: string; text: string; subject: string; basis: string; source: { label: string; url: string }; links: L[] };
+  type F = { id: string; text: string; subject: string; basis: string; source: { label: string; url: string }; links: L[]; lead: boolean };
   const root = document.querySelector<HTMLElement>('[data-draw]');
   const pool: F[] = JSON.parse(document.getElementById('facts-pool')?.textContent ?? '[]');
   if (root && pool.length > 1) {
@@ -62,8 +62,10 @@ const first = pool[0];
     $('[data-actions]').hidden = false;
     // A shuffled deck, so nothing repeats until every fact has been shown. Nothing is stored.
     const shuffle = (d: number[]) => { for (let i = d.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [d[i], d[j]] = [d[j], d[i]]; } };
-    const deck = pool.map((_, i) => i);
-    shuffle(deck);
+    // The strongest facts come first, in random order, then the rest.
+    const lead = pool.flatMap((f, i) => (f.lead ? [i] : [])), rest = pool.flatMap((f, i) => (f.lead ? [] : [i]));
+    shuffle(lead); shuffle(rest);
+    const deck = [...lead, ...rest];
     const wanted = pool.findIndex((f) => f.id === decodeURIComponent(location.hash.slice(1)));
     if (wanted >= 0) { deck.splice(deck.indexOf(wanted), 1); deck.unshift(wanted); }
     let pos = -1, angle = Math.random() * 360;
@@ -131,7 +133,7 @@ const first = pool[0];
     .draw { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hang" "panel" "actions"; grid-template-rows: auto auto auto; row-gap: 1.2rem; }
     .hang { grid-template-columns: auto 1fr; align-items: center; gap: 1rem; }
     .ring { width: 3.6rem; }
-    .fact { min-height: 22rem; }
+    .fact { min-height: 16rem; }
   }
   @media (prefers-reduced-motion: reduce) { .arm, .fact { transition: none; } }
 </style>

@@ -16,6 +16,11 @@ export const PLAIN = new Set([
   'virgo-cluster-distance', 'oort-cloud-name', 'earth-true-day', 'nearest-star', 'uranus-one-visitor', 'pluto-flyby',
 ]);
 
+/** The strongest facts: the first clicks come from these, in a random order, before the rest are shuffled in. */
+export const LEAD = [
+  'neutron-star-teaspoon', 'magnetar-flare', 'hawking-glow', 'dart-moved-asteroid', 'trappist-1-packed', 'crab-pulsar-spin', 'sun-not-burning',
+];
+
 export function linksFor(f: Fact, lessons: Lesson[]): FactLink[] {
   const out: FactLink[] = [];
   const lesson = f.about.map((id) => lessons.find((l) => l.id === id)).filter(Boolean) as Lesson[];
