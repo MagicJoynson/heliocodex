@@ -37,12 +37,20 @@ const UP: V3 = [0, 1, 0];
  * a body they fade out, so a gear can never carry you into a planet.
  */
 export const GEARS = [4, 16, 64, 256, 1024, 4096, 16384, 65536];
+/** how fast a gear lets the speed grow, in heights a second (local flight is 0.9): fast, but never a runaway */
+const RATES = [1.8, 2.6, 3.6, 4.8, 6, 7.4, 9, 11];
+/** the top speed of each gear in metres a second, from a few km/s up to about a thousand light years a second */
+const TOPS = Array.from({ length: GEARS.length }, (_, i) => 1e5 * Math.pow(75, i + 1));
+/** per gear: how many seconds a body ahead may be from you at your speed. Faster than that and you are slowed, so you ease up to it: the speed falls in step with the distance, gently, with no hard stop. Higher gears close in quicker. */
+const BRAKES = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.42, 0.35];
 const MAX_EL = THREE.MathUtils.degToRad(84);
 
 export function createFlight(canvas: HTMLElement) {
   const pos: V3 = [0, 0, 0];
   const q = new THREE.Quaternion();
   const vel: V3 = [0, 0, 0];
+  let stopRamp = 0; // seconds of gentle braking left after Stop or Esc
+  let cruiseVel: V3 = [0, 0, 0]; // how the camera was moving on a trip, so Stop can slow it down instead of freezing it
   let mode: 'idle' | 'orbit' | 'cruise' | 'free' = 'idle';
   let speedMul = 1;
   let gear = 0; // 0 local, 1..GEARS.length the fixed speeds
@@ -187,7 +195,7 @@ export function createFlight(canvas: HTMLElement) {
    * Advance one frame. `near` is the nearest body, for free flight's floor and speed.
    * Returns the height above that body's ground.
    */
-  function step(dt: number, wall: number, near: { centre: V3; radius: number; ground: (dir: V3) => number }) {
+  function step(dt: number, wall: number, near: { centre: V3; radius: number; ground: (dir: V3) => number; /** metres along a direction to the surface of the first body in the way (Infinity if none) */ ahead?: (dir: V3) => number }) {
     // ---- keys in orbit and cruise: turn and zoom at a steady, gentle rate
     const k = (c: string) => keys.has(c);
     const fast = k('ShiftLeft') || k('ShiftRight') ? 2.5 : 1;
@@ -199,6 +207,7 @@ export function createFlight(canvas: HTMLElement) {
       const u = cr.secs > 0 ? cr.t / cr.secs : 1;
       const at = cruiseAt(u);
       const p = add(at.c, scale(at.dir, at.d));
+      if (wall > 1e-4) cruiseVel = [(p[0] - pos[0]) / wall, (p[1] - pos[1]) / wall, (p[2] - pos[2]) / wall];
       pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
       lookAlong(scale(at.dir, -1), UP);
       if (u >= 1) {
@@ -263,17 +272,26 @@ export function createFlight(canvas: HTMLElement) {
       const boost = fast > 1 ? 4 : 1;
       const h = clamp(alt, 2, 1e27);
       const open = smooth(near.radius * 0.5, near.radius * 3, dNear - near.radius);
-      const mult = gear === 0 ? speedMul : 1 + (GEARS[gear - 1] - 1) * open;
-      const base = h * 0.9 * mult * boost;
+      // gear 0 is your height a second; a gear lets the speed grow faster, up to a top speed, and fades out near a body
+      const rate = gear === 0 ? 0.9 * speedMul : 0.9 + (RATES[gear - 1] - 0.9) * open;
+      // what gear 0 gives: your height a second, but measured to whatever is in the way in the direction you are heading (so a far Sun does not make you fast near a planet)
+      const localAt = (dir: V3) => { const room = near.ahead ? near.ahead(dir) : Infinity; return Math.min(h, Math.max(room, 0.05 * h)) * 0.9 * speedMul * boost; };
+      // never faster than lets you ease up to what is in the way: the speed falls off as the body nears, so you arrive gently, not through it
+      const eased = (dir: V3, v: number) => { if (!near.ahead) return v; return Math.min(v, Math.max(near.ahead(dir) / (gear === 0 ? 1 : BRAKES[gear - 1]), localAt(dir))); };
+      const base = gear === 0 ? h * 0.9 * speedMul * boost : Math.min(h * rate * boost, TOPS[gear - 1]);
       const f = clamp((k('KeyW') || k('ArrowUp') ? 1 : 0) - (k('KeyS') || k('ArrowDown') ? 1 : 0) + pad - (gp?.ly ?? 0), -1, 1);
       const s = clamp((k('KeyD') ? 1 : 0) - (k('KeyA') ? 1 : 0) + (gp?.lx ?? 0), -1, 1);
       const u = clamp((k('Space') || k('KeyE') ? 1 : 0) - (k('KeyC') || k('KeyQ') ? 1 : 0) + (gp ? gp.up - gp.down : 0), -1, 1);
-      const want = scale(add(add(scale(fwd(), f), scale(right(), s)), scale(upLocal, u)), base);
+      const dirWant = add(add(scale(fwd(), f), scale(right(), s)), scale(upLocal, u));
+      const want = len(dirWant) > 0 ? scale(norm(dirWant), eased(norm(dirWant), base) * Math.min(1, len(dirWant))) : [0, 0, 0] as V3;
       // easing: speeding up takes a moment (longer at higher gears), letting go glides to a stop, X brakes at once
       const pushing = f !== 0 || s !== 0 || u !== 0;
-      const tau = k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : 0.5 + 0.18 * gear;
+      if (stopRamp > 0) stopRamp = Math.max(0, stopRamp - wall);
+      const tau = k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : stopRamp > 0 ? 0.3 : 0.5 + 0.18 * gear;
       const kv = 1 - Math.exp(-dt / tau);
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
+      // momentum too: the speed you already have is held to the same rule, so a long glide cannot carry you into a body
+      { const sp = len(vel); if (sp > 0) { const cap = eased(norm(vel), sp); if (cap < sp) { const c = cap / sp; vel[0] *= c; vel[1] *= c; vel[2] *= c; } } }
       pos[0] += vel[0] * dt; pos[1] += vel[1] * dt; pos[2] += vel[2] * dt;
 
       // never below the ground
@@ -362,7 +380,7 @@ export function createFlight(canvas: HTMLElement) {
     },
     skipCruise() { if (mode === 'cruise' && cr) cr.t = Math.max(cr.t, cr.secs - 0.6); },
     /** brake at once: a trip in progress ends where the camera is, and you are flying free with no speed */
-    stop() { if (mode === 'cruise') { cr = null; mode = 'free'; vel[0] = vel[1] = vel[2] = 0; } },
+    stop() { if (mode === 'cruise') { cr = null; mode = 'free'; vel[0] = cruiseVel[0]; vel[1] = cruiseVel[1]; vel[2] = cruiseVel[2]; stopRamp = 1; } },
     /** fly yourself from where you are */
     setFree() { if (mode === 'cruise') return; mode = 'free'; vel[0] = vel[1] = vel[2] = 0; },
     /** back to orbiting a focus, from wherever free flight left you */

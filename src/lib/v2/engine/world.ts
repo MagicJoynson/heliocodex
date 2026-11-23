@@ -573,9 +573,25 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     prevNear = { id: nearId, p: [nowNear[0], nowNear[1], nowNear[2]] };
 
     const onTerrain = nearId === bodySlug;
+    // how far you can go in a direction before the first body's surface: for the speed to ease off on the way in
+    const ahead = (d: V3): number => {
+      const c = flight.pos;
+      let best = Infinity;
+      for (const id of focusId && !SPHERES.includes(focusId) ? [...SPHERES, focusId] : SPHERES) {
+        const oc = sub(posOf(id), c);
+        const t = vdot(oc, d);
+        if (t < 0) { if (len(oc) > radOf(id) * 1.01) continue; else return 0; }
+        const r = radOf(id);
+        const d2 = vdot(oc, oc) - t * t;
+        if (d2 > r * r) continue;
+        const hit = t - Math.sqrt(r * r - d2);
+        if (hit < best) best = Math.max(0, hit);
+      }
+      return best;
+    };
     const f = flight.step(dt, wall, onTerrain
-      ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d) }
-      : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0 });
+      ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d), ahead }
+      : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0, ahead });
     // a cruise has ended (even one so short it started and finished within this frame)
     nearest(flight.pos); // for next frame
     if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } o.onTripEnd?.(); }

@@ -144,7 +144,7 @@ import { sections } from '../lib/nav';
             <div><dt>Move</dt><dd>W or the up arrow ahead, S or the down arrow astern, A and D sideways, E up, Q down</dd></div>
             <div><dt>Speed</dt><dd>scroll, the throttle, or . faster and , slower. Shift goes quicker. X brakes at once. Speed always eases off near a world</dd></div>
             <div><dt>Go to a world</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
-            <div><dt>Circle a world</dt><dd>Esc brakes a trip at once. In free flight it stops you and circles the nearest world</dd></div>
+            <div><dt>Circle a world</dt><dd>Esc eases a trip to a stop. In free flight it stops you and circles the nearest world, and F sets you flying free again</dd></div>
             <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
             <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to circle or fly</dd></div>
             <div><dt>The Codex</dt><dd>M</dd></div>
@@ -446,7 +446,22 @@ import { sections } from '../lib/nav';
 
       // ---- pop-up sheets: Go to and View. One open at a time; Esc or a click elsewhere shuts them.
       const pops = ['goto', 'time', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : `${id}-sheet`) }));
-      const syncSheet = () => body.classList.toggle('sheet-open', pops.some((p) => !p.sheet.hidden));
+      // an open sheet hides only what it would sit on top of
+      const coverable = () => ['.readout', '#pad', '#gears', '#margin-tab', '.back-chip', '.gen', '#hint', '#coach', '#scale', '#eta'].map((s) => document.querySelector(s) as HTMLElement | null).filter((e): e is HTMLElement => !!e);
+      const syncSheet = () => {
+        const open = pops.find((p) => !p.sheet.hidden);
+        body.classList.toggle('sheet-open', !!open);
+        const m = document.getElementById('margin');
+        const r = open ? open.sheet.getBoundingClientRect() : body.classList.contains('margin-open') && m ? m.getBoundingClientRect() : undefined;
+        for (const e of coverable()) {
+          const b = e.getBoundingClientRect();
+          e.classList.toggle('under-sheet', !!r && b.width > 0 && b.left < r.right && r.left < b.right && b.top < r.bottom && r.top < b.bottom);
+        }
+      };
+      addEventListener('resize', syncSheet);
+      // the Codex slides in: measure it once it has arrived
+      document.getElementById('margin')?.addEventListener('transitionend', syncSheet);
+      new MutationObserver(() => { setTimeout(syncSheet, 420); setTimeout(syncSheet, 900); syncSheet(); }).observe(body, { attributes: true, attributeFilter: ['class'] });
       for (const p of pops) new MutationObserver(syncSheet).observe(p.sheet, { attributes: true, attributeFilter: ['hidden'] });
       const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
       for (const p of pops) p.btn.addEventListener('click', () => {
@@ -681,7 +696,7 @@ import { sections } from '../lib/nav';
       }
       const flyHint = () => {
         const h = $('hint');
-        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc stops, then circles a world';
+        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc circles a world, F flies free again';
         h.querySelector('.coarse-only')!.textContent = 'Drag to look · press the pad for ahead or astern · slide the throttle for speed';
         h.classList.add('show'); clearTimeout(flyHintT); flyHintT = window.setTimeout(() => h.classList.remove('show'), 8000);
       };
@@ -724,6 +739,7 @@ import { sections } from '../lib/nav';
         if (e.code === 'KeyB' && !e.shiftKey) goBack();
         else if (e.key === 'Escape' && world.mode === 'cruise') { stoppedHere = true; world.stop(); }
         else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
+        else if (e.code === 'KeyF' && world.mode === 'orbit') { world.setFree(true); flyHint(); }
         else if (e.key === '[' || e.key === ']') {
           const i = ORDER.indexOf(world.focus.id);
           const n = i < 0 ? (e.key === ']' ? 0 : ORDER.length - 1) : (i + (e.key === ']' ? 1 : ORDER.length - 1)) % ORDER.length;
@@ -829,7 +845,7 @@ import { sections } from '../lib/nav';
       .menu a:hover b, .menu a:focus-visible b { color: var(--warm); }
       @media (max-width: 980px) { .menu-btn { display: block; } }
       body.margin-open .top { z-index: 28; }
-      body.margin-open .site-nav, body.margin-open .menu-btn { visibility: hidden; }
+      @media (min-width: 601px) { body.margin-open .site-nav, body.margin-open .menu-btn { visibility: hidden; } }
 
       /* ---- threshold */
       .threshold::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 46% 40% at 50% 46%, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%); transition: opacity 1s ease; }
@@ -976,7 +992,7 @@ import { sections } from '../lib/nav';
       .keys dt { font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
       .keys dd { margin: 0; font: 300 .9rem/1.35 var(--serif); color: var(--soft); }
       @media (pointer: coarse) { .keys { display: none; } }
-      @media (max-width: 760px) { body.margin-open .controls { opacity: 0; pointer-events: none; } }
+      @media (min-width: 601px) and (max-width: 760px) { body.margin-open .controls { opacity: 0; pointer-events: none; } }
 
       /* a hint, once, after arriving */
       .hint { position: fixed; z-index: 15; left: 50%; bottom: calc(var(--bot) + 124px); transform: translateX(-50%); margin: 0; padding: 10px 16px; max-width: calc(100vw - 32px); text-align: center; font: 300 1rem/1.4 var(--serif); color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; opacity: 0; pointer-events: none; transition: opacity .8s ease; width: max-content; }
@@ -1020,6 +1036,8 @@ import { sections } from '../lib/nav';
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
         .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }
         .sheet { bottom: calc(var(--dock) + 8px); }
+        /* the Codex leaves the header and the dock free, so Menu and the pills stay usable */
+        body .margin { top: 56px; bottom: var(--dock); }
         .hud { padding-bottom: calc(var(--dock) + 92px); }
         .tour { bottom: calc(var(--dock) + 10px); }
         .hint { bottom: calc(var(--dock) + 20px); }
@@ -1033,13 +1051,17 @@ import { sections } from '../lib/nav';
       body.coaching .pad { visibility: hidden; }
       /* one thing at a time: the Fly here sheet, or the first-visit prompts, not both; and a sheet hides what it would cover */
       body.picking .coach { visibility: hidden; }
-      body.sheet-open .readout, body.sheet-open .pad, body.sheet-open .gears, body.sheet-open .margin-tab, body.sheet-open .back-chip, body.sheet-open .gen, body.sheet-open .hint, body.sheet-open .coach, body.sheet-open .scale { visibility: hidden; }
+      .under-sheet { visibility: hidden !important; }
       @media (max-height: 520px) { body.coaching .gen, body.coaching .readout { visibility: hidden; } }
       @media (max-height: 520px) { .sheet { bottom: calc(100% + 12px); max-height: calc(100dvh - var(--bot) - 48px - 12px - 64px); } }
       @media (min-width: 601px) and (max-width: 1180px) {
         .gears.throttle { left: calc(var(--gut) + 190px); transform: none; width: clamp(220px, calc(100vw - 2 * var(--gut) - 560px), 340px); }
         .throttle .th { display: none; }
         .readout { max-width: 180px; }
+      }
+      @media (min-width: 601px) and (max-width: 760px) {
+        .gears.throttle { left: auto; right: var(--gut); transform: none; bottom: calc(var(--bot) + 60px); width: min(320px, calc(100vw - 2 * var(--gut))); }
+        body .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 150px); height: 96px; padding: 8px 0; }
       }
       @media (max-height: 520px) { .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 66px); height: 116px; padding: 10px 0; } }
       @media (max-width: 600px) {
@@ -1058,7 +1080,7 @@ import { sections } from '../lib/nav';
       .tech { display: none; } body.debug .tech { display: block; }
       .tech { position: fixed; z-index: 5; right: var(--gut); top: calc(var(--top) + 48px); margin: 0; max-width: 60vw; text-align: right; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .06em; color: rgba(236,231,220,.38); pointer-events: none; }
       /* what is drawn from a model, and what was measured, for wherever you are: always shown, beside the map */
-      .gen { position: fixed; z-index: 5; top: calc(var(--top) + 112px); left: var(--gut); right: var(--gut); max-width: min(26rem, calc(100vw - 2 * var(--gut))); margin: 0; font: 400 .9375rem/1.45 var(--serif); font-style: normal; color: var(--ink); background: rgba(8, 8, 10, .62); border-left: 2px solid rgba(241, 201, 142, .6); padding: .4rem .7rem; text-shadow: 0 1px 8px #000; pointer-events: none; }
+      .gen { position: fixed; z-index: 5; top: calc(var(--top) + 112px); left: var(--gut); right: var(--gut); max-width: min(26rem, calc(100vw - 2 * var(--gut) - 48px)); margin: 0; font: 400 .9375rem/1.45 var(--serif); font-style: normal; color: var(--ink); background: rgba(8, 8, 10, .62); border-left: 2px solid rgba(241, 201, 142, .6); padding: .4rem .7rem; text-shadow: 0 1px 8px #000; pointer-events: none; }
       .gen:empty { display: none; }
       .gen.illus { font: 500 .8125rem/1.4 var(--sans, system-ui, sans-serif); font-style: normal; color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid rgba(241, 201, 142, .55); border-radius: 6px; padding: .45rem .65rem; text-shadow: none; }
       body:not(.in) .gen, body.margin-open .gen { visibility: hidden; }
