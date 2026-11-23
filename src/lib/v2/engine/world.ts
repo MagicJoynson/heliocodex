@@ -897,7 +897,6 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     get rate() { return system.rate; },
     /** reduced motion: every trip is a jump hidden by a quick fade, and nothing drifts */
     setReduced(v: boolean) { reduced = v; flight.setReduced(v); },
-    /** fly yourself (true) or go back to circling what is nearest (false) */
     /** brake at once, mid-trip: you stay where you are, flying free, and the place named is the one nearest */
     stop() {
       if (flight.mode !== 'cruise') return;
@@ -906,6 +905,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? PLANET_NAMES[id] ?? id;
       flight.stop();
     },
+    /** fly yourself (true) or go back to circling what is nearest (false) */
     setFree(v: boolean) {
       if (v) flight.setFree();
       else if (flight.mode === 'free') { const id = nearNow; focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? id; flight.backToOrbit(focusOf(id)); o.onFocus?.(focusKey, focusName); }

@@ -141,10 +141,10 @@ import { sections } from '../lib/nav';
           </fieldset>
           <dl class="keys">
             <div><dt>Look round</dt><dd>drag, or the left and right arrow keys</dd></div>
-            <div><dt>Move</dt><dd>W ahead, S astern, A and D sideways, E up, Q down</dd></div>
+            <div><dt>Move</dt><dd>W or the up arrow ahead, S or the down arrow astern, A and D sideways, E up, Q down</dd></div>
             <div><dt>Speed</dt><dd>scroll, the throttle, or . faster and , slower. Shift goes quicker. X brakes at once. Speed always eases off near a world</dd></div>
             <div><dt>Go to a world</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
-            <div><dt>Circle a world</dt><dd>Esc stops you and circles the nearest one</dd></div>
+            <div><dt>Circle a world</dt><dd>Esc brakes a trip at once. In free flight it stops you and circles the nearest world</dd></div>
             <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
             <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to circle or fly</dd></div>
             <div><dt>The Codex</dt><dd>M</dd></div>
@@ -446,6 +446,8 @@ import { sections } from '../lib/nav';
 
       // ---- pop-up sheets: Go to and View. One open at a time; Esc or a click elsewhere shuts them.
       const pops = ['goto', 'time', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : `${id}-sheet`) }));
+      const syncSheet = () => body.classList.toggle('sheet-open', pops.some((p) => !p.sheet.hidden));
+      for (const p of pops) new MutationObserver(syncSheet).observe(p.sheet, { attributes: true, attributeFilter: ['hidden'] });
       const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
       for (const p of pops) p.btn.addEventListener('click', () => {
         const open = p.sheet.hidden;
@@ -679,7 +681,7 @@ import { sections } from '../lib/nav';
       }
       const flyHint = () => {
         const h = $('hint');
-        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc circles a world';
+        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc stops, then circles a world';
         h.querySelector('.coarse-only')!.textContent = 'Drag to look · press the pad for ahead or astern · slide the throttle for speed';
         h.classList.add('show'); clearTimeout(flyHintT); flyHintT = window.setTimeout(() => h.classList.remove('show'), 8000);
       };
@@ -720,6 +722,7 @@ import { sections } from '../lib/nav';
         const t = e.target as HTMLElement;
         if (t?.closest?.('input, textarea, select, .margin')) return;
         if (e.code === 'KeyB' && !e.shiftKey) goBack();
+        else if (e.key === 'Escape' && world.mode === 'cruise') { stoppedHere = true; world.stop(); }
         else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
         else if (e.key === '[' || e.key === ']') {
           const i = ORDER.indexOf(world.focus.id);
@@ -844,7 +847,7 @@ import { sections } from '../lib/nav';
       .aperture:hover .word, .aperture:focus-visible .word { color: var(--warm); }
       .aperture:focus-visible { outline: none; }
       .aperture::after { content: ''; position: absolute; inset: 47%; border-radius: 50%; background: radial-gradient(circle, #fff6e6 0%, rgba(255,214,150,.6) 35%, rgba(255,180,90,0) 70%); opacity: 0; transition: opacity .5s ease .3s, inset .8s cubic-bezier(.6,0,.3,1); }
-      .note.alt { margin-top: 14px; opacity: .9; } .note.alt a { color: var(--soft); }
+      .note.alt { margin-top: 14px; opacity: .9; } .note.alt a { color: var(--soft); display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; }
       .note { margin: clamp(28px, 5vh, 48px) 0 0; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase; }
       .nope { max-width: 26em; margin-top: 8px; }
       .nope p, .nope-ns { font: 300 1.05rem/1.55 var(--serif); color: var(--soft); margin: 0 0 1rem; }
@@ -906,7 +909,7 @@ import { sections } from '../lib/nav';
       .coach b { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--warm); color: #111; font: 600 .8125rem/24px var(--mono); text-align: center; }
       .coach button { flex: none; background: none; border: 0; color: var(--warm); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; padding: 14px 6px; min-height: 44px; cursor: pointer; }
       @media (max-width: 600px) { .coach { flex-direction: column; align-items: flex-start; gap: 8px; bottom: calc(var(--dock) + 112px); padding: 14px 18px; } .coach button { align-self: flex-end; padding: 4px 6px; } }
-      .deep-labels { clip-path: inset(calc(var(--top) + 100px) 0 0 0); }
+      .deep-labels { clip-path: inset(calc(var(--top) + 100px) 52px 0 0); }
       .aim .aim-go { display: none; }
       @media (pointer: coarse) { .aim { z-index: 30; background: rgba(9,9,11,.94); left: 0; right: 0; bottom: calc(var(--dock, 0px) + 8px); top: auto; width: auto; margin: 0 var(--gut); pointer-events: auto; transform: none !important; padding: 16px 18px; } .aim i { display: none; } .aim .aim-go { display: block; margin-top: 12px; padding: 16px; min-height: 52px; border: 0; border-radius: 999px; background: var(--warm); color: #111; font: 600 .875rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } }
       .gear-name { margin: 0; min-width: 9.5rem; text-align: center; font: 400 .8125rem/1.25 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
@@ -1028,6 +1031,11 @@ import { sections } from '../lib/nav';
       @media (min-width: 601px) { .coach { width: max-content; max-width: calc(100vw - 112px); } }
       body.tripping .coach, body.tripping .readout, body.tripping .hint { opacity: 0; pointer-events: none; }
       body.coaching .pad { visibility: hidden; }
+      /* one thing at a time: the Fly here sheet, or the first-visit prompts, not both; and a sheet hides what it would cover */
+      body.picking .coach { visibility: hidden; }
+      body.sheet-open .readout, body.sheet-open .pad, body.sheet-open .gears, body.sheet-open .margin-tab, body.sheet-open .back-chip, body.sheet-open .gen, body.sheet-open .hint, body.sheet-open .coach, body.sheet-open .scale { visibility: hidden; }
+      @media (max-height: 520px) { body.coaching .gen, body.coaching .readout { visibility: hidden; } }
+      @media (max-height: 520px) { .sheet { bottom: calc(100% + 12px); max-height: calc(100dvh - var(--bot) - 48px - 12px - 64px); } }
       @media (min-width: 601px) and (max-width: 1180px) {
         .gears.throttle { left: calc(var(--gut) + 190px); transform: none; width: clamp(220px, calc(100vw - 2 * var(--gut) - 560px), 340px); }
         .throttle .th { display: none; }
@@ -1037,7 +1045,7 @@ import { sections } from '../lib/nav';
       @media (max-width: 600px) {
         .gen { top: calc(var(--top) + 164px); }
         .eta { width: calc(100vw - 96px); }
-        body:has(.back-chip:not(:disabled)) .gen { left: var(--gut); }
+        body:has(.back-chip:not(:disabled)) .gen { left: var(--gut); top: calc(var(--top) + 164px); }
         .controls .pill:focus-visible { outline-offset: -4px; }
       }
 
