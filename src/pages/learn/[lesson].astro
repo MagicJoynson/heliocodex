@@ -46,6 +46,7 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
 {visual ? <LessonStory lesson={lesson} /> : (
 <Reading title={lesson.data.title} path={`/learn/${lesson.id}`} description={lesson.data.summary} jsonld={lessonLd(lesson.id, lesson.data.title, lesson.data.summary)}>
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
+  <div class="read-progress" aria-hidden="true"></div>
   <header class:list={['opener', { 'no-pic': !pic }]}>
     <div class="op-words">
       <p class="label"><a href="/learn">Learn</a> / <a href={`/learn/subject/${lesson.data.strand}`}>{STRAND_NAMES[lesson.data.strand]}</a></p>
@@ -162,6 +163,39 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
     table.replaceWith(wrap);
     wrap.append(table);
   });
+
+  // A thin line under the header shows how far down the lesson you are.
+  const bar = document.querySelector<HTMLElement>('.read-progress');
+  if (bar) {
+    let pending = 0;
+    const update = () => {
+      pending = 0;
+      const h = document.documentElement, max = h.scrollHeight - innerHeight;
+      bar.style.transform = `scaleX(${max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0})`;
+    };
+    addEventListener('scroll', () => { if (!pending) pending = requestAnimationFrame(update); }, { passive: true });
+    update();
+  }
+
+  // A chart below the fold is wiped in from the left, once, as it arrives. Reduced motion: it simply shows.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const svg = charts.get(e.target as Element);
+        if (svg) svg.style.clipPath = 'inset(0 0 0 0)';
+        io.unobserve(e.target);
+      }
+    }, { threshold: 0.35 });
+    // the figure is watched, not the drawing: a clipped drawing counts as hidden and would never arrive
+    const charts = new Map<Element, SVGElement>();
+    document.querySelectorAll<SVGElement>('.prose svg.chart').forEach((svg) => {
+      if (svg.getBoundingClientRect().top < innerHeight) return;
+      svg.style.clipPath = 'inset(0 100% 0 0)';
+      svg.style.transition = 'clip-path 1.2s cubic-bezier(.3,.6,.2,1)';
+      const box = svg.parentElement ?? svg; charts.set(box, svg); io.observe(box);
+    });
+  }
 </script>
 
 <style>
@@ -172,6 +206,12 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
   .opener h1 { font: 300 clamp(2.3rem, 5vw, 4rem)/1.04 var(--r-serif); letter-spacing: -.02em; margin: 0 0 1.1rem; text-wrap: balance; }
   .opener .lead { font: 300 clamp(1.1rem, 1rem + .4vw, 1.3rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
   .op-pic { margin: 0; }
+  .read-progress { position: fixed; top: var(--header-h); left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; z-index: 40; pointer-events: none; }
+  @media (min-width: 761px) {
+    .opener:not(.no-pic) { grid-template-columns: minmax(0, 1fr); gap: 2.2rem; }
+    .opener:not(.no-pic) .op-words { max-width: 50rem; }
+    .opener:not(.no-pic) .op-frame { aspect-ratio: auto; width: 100%; height: clamp(320px, 38vw, 520px); }
+  }
   .op-frame { display: block; aspect-ratio: 4 / 3; border-radius: 4px; overflow: hidden; background: #000; }
   .op-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .op-pic figcaption { font: italic 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .7rem; }

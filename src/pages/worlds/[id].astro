@@ -145,7 +145,7 @@ const moonR2 = MOON_KM * sk2;
     <section class="row wide wo-draw">
       <div class="hang"><h2>{isMoon ? 'Its path and size' : 'Its path'}</h2></div>
       <div class:list={['draw-pair', { one: !isMoon && !sized }]}>
-      <figure class="wo-orbit">
+      <figure class="wo-orbit" data-e={o.e} data-days={periodDays} data-cx={ecx} data-cy={fy} data-rx={erx} data-ry={ery}>
         <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`The path of ${b.name} round ${round ? 'the Sun' : nameOf(b.parent)}, drawn to scale`}>
           <defs><clipPath id="frame"><rect x="0" y="0" width={W} height={H} /></clipPath></defs>
           <g clip-path="url(#frame)">
@@ -173,7 +173,7 @@ const moonR2 = MOON_KM * sk2;
                 : <circle cx={parCx} cy={scy} r={parR} class="s-par" clip-path="url(#sframe)" />}
               <circle cx={meCx} cy={scy} r={meR} fill="url(#shade)" />
               {cmp && <circle cx={moonCx} cy={scy} r={moonR} class="s-moon" />}
-              <text x={parR > 150 ? 6 : parCx} y={SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `${nameOf(b.parent).replace(/^the /, 'The ')}’s edge` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
+              <text x={parR > 150 ? 6 : parCx} y={parR > 150 ? SH - 42 : SH - 14} text-anchor={parR > 150 ? "start" : "middle"} class="s-t">{parR > 150 ? `${nameOf(b.parent).replace(/^the /, 'The ')}’s edge` : nameOf(b.parent).replace(/^the /, 'The ')}</text>
               <text x={meCx} y={SH - 14} text-anchor="middle" class="s-t me">{b.name}</text>
               {cmp && <text x={moonCx} y={SH - 14} text-anchor="middle" class="s-t">Our Moon</text>}
             </svg>
@@ -226,6 +226,49 @@ const moonR2 = MOON_KM * sk2;
   </article>
 </Reading>
 
+<script>
+  // The path draws itself once as it arrives; then the world moves round it at its true pace (Kepler's equation), one orbit
+  // in 24 seconds, with a plain statement of how fast time is running. Reduced motion: the path is simply there, with the world at its nearest point.
+  const fig = document.querySelector<HTMLElement>('.wo-orbit');
+  const svg = fig?.querySelector<SVGSVGElement>('svg');
+  const path = svg?.querySelector<SVGEllipseElement>('ellipse.path');
+  const me = svg?.querySelector<SVGCircleElement>('circle.me');
+  if (fig && svg && path && me && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const e = Number(fig.dataset.e), days = Number(fig.dataset.days), cx = Number(fig.dataset.cx), cy = Number(fig.dataset.cy), rx = Number(fig.dataset.rx), ry = Number(fig.dataset.ry);
+    const LOOP = 24; // seconds for one orbit
+    const per = days / LOOP; // days of the world's time in one second of ours
+    const rate = per < 1 / 24 ? `${(per * 1440).toFixed(per * 1440 < 10 ? 1 : 0)} minutes` : per < 2 ? `${(per * 24).toFixed(per * 24 < 10 ? 1 : 0)} hours` : per < 400 ? `${per.toFixed(per < 10 ? 1 : 0)} days` : `${(per / 365.25).toFixed(per / 365.25 < 10 ? 1 : 0)} years`;
+    const control = document.createElement('p');
+    control.className = 'wo-rate';
+    const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'Pause';
+    const say = document.createElement('span'); say.textContent = `One second here is about ${rate}`;
+    control.append(btn, say); fig.append(control);
+    let playing = true, last = 0, M = 0, visible = false;
+    const place = () => {
+      // Kepler's equation by a few rounds of Newton's method, then the position on the ellipse from the focus
+      let E = M; for (let i = 0; i < 6; i++) E -= (E - e * Math.sin(E) - M) / (1 - e * Math.cos(E));
+      me.setAttribute('cx', String(cx + rx * Math.cos(E))); me.setAttribute('cy', String(cy - ry * Math.sin(E)));
+    };
+    const frame = (t: number) => {
+      if (playing && visible && !document.hidden) {
+        if (last) M = (M + ((t - last) / 1000 / LOOP) * 2 * Math.PI) % (2 * Math.PI); // a mean anomaly advances evenly with time
+        place();
+      }
+      last = t; requestAnimationFrame(frame);
+    };
+    btn.addEventListener('click', () => { playing = !playing; btn.textContent = playing ? 'Pause' : 'Play'; });
+    path.setAttribute('pathLength', '1'); path.style.strokeDasharray = '1'; path.style.strokeDashoffset = '1'; me.style.opacity = '0';
+    const io = new IntersectionObserver((entries) => {
+      visible = entries[0].isIntersecting;
+      if (visible && path.style.strokeDashoffset === '1') {
+        path.style.transition = 'stroke-dashoffset 2.2s cubic-bezier(.3,.6,.2,1)'; path.style.strokeDashoffset = '0';
+        setTimeout(() => { me.style.transition = 'opacity .6s'; me.style.opacity = '1'; requestAnimationFrame(frame); }, 1800);
+      }
+    }, { threshold: 0.4 });
+    io.observe(fig);
+  }
+</script>
+
 <style>
   .draw-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px); align-items: start; }
   .draw-pair figure { margin: 0; }
@@ -237,6 +280,8 @@ const moonR2 = MOON_KM * sk2;
   .wo-badge span { font: 400 .66rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); border: 1px dashed var(--accent); padding: .4rem .55rem; border-radius: 2px; }
   .wo-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
   .wo-orbit { margin: 0; }
+  :global(.wo-rate) { display: flex; align-items: center; gap: 1rem; margin: .6rem 0 0; font: 400 .8125rem/1.4 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  :global(.wo-rate button) { font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--accent); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: .5rem 1rem; min-height: 2.5rem; cursor: pointer; }
   .wo-orbit svg { width: 100%; height: auto; display: block; }
   .wo-orbit .ring { fill: none; stroke: rgba(142,174,255,.18); }
   .wo-orbit .ring.crossed { stroke: rgba(142,174,255,.38); stroke-dasharray: 2 5; }
