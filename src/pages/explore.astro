@@ -168,11 +168,12 @@ import { sections } from '../lib/nav';
       </div>
     </div>
 
-    <div class="gears" id="gears" role="group" aria-label="Flying speed" hidden>
-      <button type="button" id="gear-down" aria-label="Slower" title="Slower (,)">−</button>
-      <p class="gear-name" id="gear-name">Local</p>
-      <button type="button" id="gear-up" aria-label="Faster" title="Faster (.)">+</button>
+    <div class="gears throttle" id="gears" role="group" aria-label="Throttle" hidden>
+      <div class="tl" aria-hidden="true"><span>Hover</span><span id="gear-name">Local</span><span>Warp</span></div>
+      <input type="range" id="throttle" min="0" max="8" step="1" value="0" aria-label="Throttle" />
+      <p class="th" aria-hidden="true"><span class="fine-only">Scroll or hold W · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
     </div>
+    <div class="aim" id="aim" hidden aria-hidden="true"><b id="aim-n"></b><span id="aim-d"></span><i>Click to fly there</i></div>
     <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to turn round · Scroll to zoom · Click a planet to go there</span><span class="coarse-only">Drag to turn · Pinch to zoom · Tap a planet to go there</span></p>
     <section class="tour" id="tour" aria-label="Guided tour" hidden>
       <p class="tour-k" id="tour-k">Stop 1 of 10</p>
@@ -269,6 +270,7 @@ import { sections } from '../lib/nav';
       // the places you have been, for Back
       const trail: [string, string][] = [];
       let backTarget = '';
+      let prevMode = '';
       let world: Awaited<ReturnType<typeof createWorld>>;
       const startedAt = performance.now();
       try {
@@ -298,8 +300,10 @@ import { sections } from '../lib/nav';
             $('fly-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
             ($('gears') as HTMLElement).hidden = r.mode !== 'free';
             $('gear-name').textContent = gearName(r.gear);
-            ($('gear-down') as HTMLButtonElement).disabled = r.gear <= 0;
-            ($('gear-up') as HTMLButtonElement).disabled = r.gear >= GEARS.length;
+            { const t = $('throttle') as HTMLInputElement; if (document.activeElement !== t) t.value = String(r.gear); t.setAttribute('aria-valuetext', gearName(r.gear)); }
+            // flying is the way you move: when a trip ends (or the way in does) you are free to fly on
+            if (prevMode === 'cruise' && r.mode === 'orbit' && !body.classList.contains('touring') && world) world.setFree(true);
+            prevMode = r.mode;
           },
           onFocus(id, name) {
             focusId = id;
@@ -319,6 +323,7 @@ import { sections } from '../lib/nav';
           },
           onArrive() {
             body.classList.add('in', 'arrived');
+            if (!body.classList.contains('touring')) world.setFree(true);
             $('controls').removeAttribute('inert');
             $('where').removeAttribute('inert');
             $('threshold').setAttribute('inert', '');
@@ -627,8 +632,26 @@ import { sections } from '../lib/nav';
       $('fly-btn').addEventListener('click', () => { toggleFly(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
       world.onPadFree(() => { if (body.classList.contains('arrived')) toggleFly(); });
       world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; });
-      $('gear-up').addEventListener('click', () => world.setGear(world.gear + 1));
-      $('gear-down').addEventListener('click', () => world.setGear(world.gear - 1));
+      $('throttle').addEventListener('input', (e) => world.setGear(Number((e.target as HTMLInputElement).value)));
+      // the world under the pointer gets a card saying what a click will do
+      {
+        const card = $('aim'), cv = $('space') as HTMLCanvasElement;
+        let last = 0, on = '';
+        const km = (m: number) => fmt(m);
+        const light = (m: number) => { const sec = m / 299_792_458; return sec < 1 ? '' : sec < 90 ? `Light takes ${Math.round(sec)} s` : sec < 5400 ? `Light takes ${Math.round(sec / 60)} min` : sec < 172800 ? `Light takes ${(sec / 3600).toFixed(1)} h` : ''; };
+        cv.addEventListener('pointermove', (e) => {
+          if (e.pointerType !== 'mouse' || e.buttons || !body.classList.contains('arrived')) return;
+          const t = performance.now(); if (t - last < 90) return; last = t;
+          const a = world.aim(e.clientX, e.clientY);
+          if (!a) { if (on) { card.hidden = true; on = ''; cv.style.cursor = ''; } return; }
+          if (a.id !== on) { on = a.id; $('aim-n').textContent = a.name; }
+          $('aim-d').textContent = [`${km(a.metres)} away`, light(a.metres)].filter(Boolean).join(' · ');
+          card.hidden = false; cv.style.cursor = 'pointer';
+          card.style.transform = `translate(${Math.min(e.clientX + 18, innerWidth - 260)}px, ${Math.min(e.clientY + 14, innerHeight - 120)}px)`;
+        });
+        cv.addEventListener('pointerleave', () => { card.hidden = true; on = ''; });
+        cv.addEventListener('pointerdown', () => { card.hidden = true; on = ''; });
+      }
       $('free-btn').addEventListener('click', () => { world.setFree(world.mode !== 'free'); shutPops(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
 
       // zoom buttons: a press is one step; holding keeps going
@@ -957,6 +980,19 @@ import { sections } from '../lib/nav';
       .gears button { width: 44px; height: 44px; border-radius: 50%; font: 300 1.3rem/1 var(--serif); color: var(--ink); }
       .gears button:disabled { opacity: .35; }
       .gears button:hover:not(:disabled), .gears button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
+      .gears.throttle { left: 50%; transform: translateX(-50%); bottom: calc(var(--bot) + 6px); flex-direction: column; align-items: stretch; gap: 6px; width: min(380px, calc(100vw - 32px)); padding: 12px 18px 10px; border-radius: 14px; }
+      .gears[hidden] { display: none; }
+      .throttle .tl { display: flex; justify-content: space-between; font: 400 .75rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+      .throttle .tl span:nth-child(2) { color: var(--warm); }
+      .throttle input[type="range"] { width: 100%; height: 32px; margin: 0; accent-color: #f1c98e; }
+      .throttle .th { margin: 0; text-align: center; font: 300 .875rem/1.3 var(--serif); color: var(--faint); }
+      .aim { position: fixed; z-index: 16; left: 0; top: 0; pointer-events: none; display: flex; flex-direction: column; gap: 3px; min-width: 190px; padding: 12px 16px; background: var(--glass); border: 1px solid rgba(241,201,142,.55); border-radius: 10px; }
+      .aim[hidden] { display: none; }
+      .aim b { font: 400 1.4rem/1.1 var(--serif); }
+      .aim span { font: 300 .9375rem/1.3 var(--serif); color: var(--soft); }
+      .aim i { margin-top: 6px; font: 600 .75rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; font-style: normal; color: var(--warm); }
+      /* flying is the way you move: no orbit map, no In and Out, and no separate Fly button */
+      .map, #step-in, #step-out, #fly-btn { display: none !important; }
       .gear-name { margin: 0; min-width: 9.5rem; text-align: center; font: 400 .8125rem/1.25 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
       .pill[aria-pressed="true"], .pill[aria-pressed="true"]:hover, .pill[aria-pressed="true"]:focus-visible { color: #111; background: var(--warm); border-color: var(--warm); }
       .goto-marks { margin-bottom: 4px; }
@@ -1067,7 +1103,7 @@ import { sections } from '../lib/nav';
         .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .75rem; letter-spacing: .12em; display: grid; place-items: center; }
         .controls > #tour-btn { order: 5; }
         .controls > #fly-btn { order: 4; }
-        .gears { bottom: calc(var(--dock) + 100px); }
+        .gears.throttle { bottom: calc(var(--dock) + 14px); width: calc(100vw - 32px); }
         .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 3; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
         .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }

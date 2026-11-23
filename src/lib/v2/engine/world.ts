@@ -873,6 +873,14 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       if (reduced) o.onJump?.();
       return false;
     },
+    /** the world under a point of the screen, with its name and distance (to its surface), for the target card; null for empty sky */
+    aim(x: number, y: number): { id: string; name: string; metres: number } | null {
+      if (flight.mode === 'cruise') return null;
+      const id = pickAt(x, y);
+      if (!id) return null;
+      const name = id === 'sun' ? 'The Sun' : PLANET_NAMES[id] ?? system.body(id)?.name ?? id;
+      return { id, name, metres: Math.max(0, len(sub(posOf(id), flight.pos)) - radOf(id)) };
+    },
     /** + (positive) and − on screen */
     zoom(steps: number) { flight.zoom(steps); },
     /** planets drawn bigger than life, so the whole system can be seen and clicked */
