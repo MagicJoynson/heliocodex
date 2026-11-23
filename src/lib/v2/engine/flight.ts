@@ -361,6 +361,8 @@ export function createFlight(canvas: HTMLElement) {
       mode = 'cruise';
     },
     skipCruise() { if (mode === 'cruise' && cr) cr.t = Math.max(cr.t, cr.secs - 0.6); },
+    /** brake at once: a trip in progress ends where the camera is, and you are flying free with no speed */
+    stop() { if (mode === 'cruise') { cr = null; mode = 'free'; vel[0] = vel[1] = vel[2] = 0; } },
     /** fly yourself from where you are */
     setFree() { if (mode === 'cruise') return; mode = 'free'; vel[0] = vel[1] = vel[2] = 0; },
     /** back to orbiting a focus, from wherever free flight left you */

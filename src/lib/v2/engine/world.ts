@@ -56,7 +56,7 @@ export function pickQuality(): Quality {
 /** metres above Mars below which the generated ground is drawn; above it the smooth globe stands in */
 const GENERATED_FROM = 1.5e6;
 
-export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; onJump?: () => void; /** with this set, a tap on a world selects it (the page shows a card with Fly here) instead of flying at once; null is a tap on empty sky */ onSelect?: (a: { id: string; name: string; metres: number } | null) => void; onFocus?: (id: string, name: string) => void; forceWebGL?: boolean; quality?: Quality }) {
+export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r: Readout) => void; onArrive?: () => void; onLost?: () => void; onJump?: () => void; /** with this set, a tap on a world selects it (the page shows a card with Fly here) instead of flying at once; null is a tap on empty sky */ onSelect?: (a: { id: string; name: string; metres: number } | null) => void; onFocus?: (id: string, name: string) => void; /** a trip has ended, by arriving, a jump or Stop */ onTripEnd?: () => void; forceWebGL?: boolean; quality?: Quality }) {
   const quality = o.quality ?? pickQuality();
   // Reversed-z only gains precision with a float depth buffer, which three.js gives us on WebGPU.
   // On WebGL 2 the canvas depth is 24-bit integer, so there a logarithmic buffer is the better choice.
@@ -578,7 +578,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       : { centre: posOf(nearId), radius: radOf(nearId), ground: () => 0 });
     // a cruise has ended (even one so short it started and finished within this frame)
     nearest(flight.pos); // for next frame
-    if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } }
+    if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } o.onTripEnd?.(); }
     lastMode = f.mode;
     if (entered && !arrived && f.mode !== 'cruise' && f.mode !== 'idle') { arrived = true; o.onArrive?.(); }
     const cam = flight.pos;
@@ -898,6 +898,14 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     /** reduced motion: every trip is a jump hidden by a quick fade, and nothing drifts */
     setReduced(v: boolean) { reduced = v; flight.setReduced(v); },
     /** fly yourself (true) or go back to circling what is nearest (false) */
+    /** brake at once, mid-trip: you stay where you are, flying free, and the place named is the one nearest */
+    stop() {
+      if (flight.mode !== 'cruise') return;
+      const id = nearNow;
+      focusId = PLANETS.includes(id) || id === 'sun' ? '' : id;
+      focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? PLANET_NAMES[id] ?? id;
+      flight.stop();
+    },
     setFree(v: boolean) {
       if (v) flight.setFree();
       else if (flight.mode === 'free') { const id = nearNow; focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? id; flight.backToOrbit(focusOf(id)); o.onFocus?.(focusKey, focusName); }
