@@ -313,7 +313,7 @@ export function createFlight(canvas: HTMLElement) {
       else { const target = q.clone(); q.copy(blendFrom).slerp(target, smooth(0, 1, blendT)); }
     }
 
-    return { alt, mode, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.secs, 1e-6) : 1 };
+    return { alt, mode, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.secs, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.secs - cr.t) : 0 };
   }
 
   return {
@@ -356,7 +356,7 @@ export function createFlight(canvas: HTMLElement) {
       const hump = Math.max(0, Math.log(sep * 0.9) - Math.max(Math.log(d0), Math.log(d1)));
       // a negative time means "as long as the trip needs": two seconds, plus a little for every power of ten
       const decades = (Math.abs(Math.log(d1 / d0)) + 2 * hump) / Math.LN10 + 2 * Math.acos(clamp(dot(dir0, dir1), -1, 1));
-      const secs = c.secs >= 0 ? c.secs : clamp(1.9 + 0.3 * decades, 1.9, 5.5);
+      const secs = c.secs >= 0 ? c.secs : clamp(2.4 + 0.45 * decades, 2.4, 9);
       cr = { from, to: c.to, c0, d0, d1, dir0, dir1, hump, secs, t: 0 };
       mode = 'cruise';
     },

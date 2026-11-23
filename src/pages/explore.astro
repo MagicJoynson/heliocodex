@@ -173,6 +173,23 @@ import { sections } from '../lib/nav';
       <input type="range" id="throttle" min="0" max="8" step="1" value="0" aria-label="Throttle" />
       <p class="th" aria-hidden="true"><span class="fine-only">Scroll or hold W · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
     </div>
+    <nav class="scale" id="scale" aria-label="Where you are, from the Sun out to the whole universe. Choose a stop to fly there." inert>
+      <div class="scale-line"><i class="scale-you" id="scale-you"></i></div>
+      <ol>
+        <li><button type="button" data-go="sun">The Sun</button></li>
+        <li><button type="button" data-go="solar-system">Planets</button></li>
+        <li><button type="button" data-go="neighbourhood">Stars</button></li>
+        <li><button type="button" data-go="milky-way">Galaxy</button></li>
+        <li><button type="button" data-go="cosmic-web">Universe</button></li>
+      </ol>
+    </nav>
+    <div class="eta" id="eta" hidden aria-hidden="true"><b id="eta-n"></b><span id="eta-d"></span><div class="eta-bar"><i id="eta-f"></i></div><button type="button" id="eta-stop">Stop here</button></div>
+    <div class="coach" id="coach" hidden role="note">
+      <p><b>1</b><span class="fine-only">Drag to look around</span><span class="coarse-only">Drag to look around</span></p>
+      <p><b>2</b><span class="fine-only">Click a world to fly there</span><span class="coarse-only">Tap a world to fly there</span></p>
+      <p><b>3</b><span class="fine-only">Scroll or hold W for speed</span><span class="coarse-only">Slide the throttle for speed</span></p>
+      <button type="button" id="coach-ok">Got it</button>
+    </div>
     <div class="aim" id="aim" hidden aria-hidden="true"><b id="aim-n"></b><span id="aim-d"></span><i>Click to fly there</i></div>
     <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to turn round · Scroll to zoom · Click a planet to go there</span><span class="coarse-only">Drag to turn · Pinch to zoom · Tap a planet to go there</span></p>
     <section class="tour" id="tour" aria-label="Guided tour" hidden>
@@ -218,7 +235,7 @@ import { sections } from '../lib/nav';
 
       // ---- settings, kept in this browser only (see the cookies page)
       const KEY = 'heliocodex-view';
-      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean; quality?: 'auto' | 'smooth' | 'sharp'; marks?: [string, string][] };
+      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean; quality?: 'auto' | 'smooth' | 'sharp'; marks?: [string, string][]; coached?: boolean };
       let prefs: Prefs = {};
       try { prefs = JSON.parse(localStorage.getItem(KEY) ?? '{}') ?? {}; } catch {}
       const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
@@ -271,6 +288,7 @@ import { sections } from '../lib/nav';
       const trail: [string, string][] = [];
       let backTarget = '';
       let prevMode = '';
+      let tripFrom = 1;
       let world: Awaited<ReturnType<typeof createWorld>>;
       const startedAt = performance.now();
       try {
@@ -303,6 +321,16 @@ import { sections } from '../lib/nav';
             { const t = $('throttle') as HTMLInputElement; if (document.activeElement !== t) t.value = String(r.gear); t.setAttribute('aria-valuetext', gearName(r.gear)); }
             // flying is the way you move: when a trip ends (or the way in does) you are free to fly on
             if (prevMode === 'cruise' && r.mode === 'orbit' && !body.classList.contains('touring') && world) world.setFree(true);
+            // on a trip: where to, how long, and a way to stop
+            { const eta = $('eta'), cr = r.mode === 'cruise' && !body.classList.contains('touring');
+              eta.hidden = !cr;
+              if (cr) {
+                if (prevMode !== 'cruise') { tripFrom = Math.max(r.dist, 1); $('eta-n').textContent = cap(world?.focus.name ?? r.target); }
+                const secs = r.secsLeft;
+                const left = secs < 1 ? 'arriving' : secs < 90 ? `arriving in ${Math.round(secs)} s` : secs < 5400 ? `arriving in ${Math.round(secs / 60)} min` : '';
+                $('eta-d').textContent = [fmt(r.dist) + ' to go', left].filter(Boolean).join(' · ');
+                ($('eta-f') as HTMLElement).style.width = `${Math.max(0, Math.min(100, r.arriving * 100)).toFixed(1)}%`;
+              } }
             prevMode = r.mode;
           },
           onFocus(id, name) {
@@ -326,11 +354,12 @@ import { sections } from '../lib/nav';
             if (!body.classList.contains('touring')) world.setFree(true);
             $('controls').removeAttribute('inert');
             $('where').removeAttribute('inert');
+            $('scale').removeAttribute('inert');
             $('threshold').setAttribute('inert', '');
             $('skip').hidden = true;
             $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
-            $('hint').classList.add('show');
-            setTimeout(() => $('hint').classList.remove('show'), 9000);
+            if (!prefs.coached) $('coach').hidden = false;
+            else { $('hint').classList.add('show'); setTimeout(() => $('hint').classList.remove('show'), 9000); }
             // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
             const go = params.get('go');
             // a star waits for the catalogue to load, for up to 15 seconds
@@ -632,6 +661,10 @@ import { sections } from '../lib/nav';
       $('fly-btn').addEventListener('click', () => { toggleFly(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
       world.onPadFree(() => { if (body.classList.contains('arrived')) toggleFly(); });
       world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; });
+      { const done = () => { const c = $('coach'); if (!c.hidden) { c.hidden = true; prefs.coached = true; save(); } };
+        $('coach-ok').addEventListener('click', done);
+        ($('space') as HTMLElement).addEventListener('pointerdown', () => setTimeout(done, 4000)); }
+      $('eta-stop').addEventListener('click', () => { world.setFree(true); ($('space') as HTMLElement).focus({ preventScroll: true }); });
       $('throttle').addEventListener('input', (e) => world.setGear(Number((e.target as HTMLInputElement).value)));
       // the world under the pointer gets a card saying what a click will do
       {
@@ -850,6 +883,21 @@ import { sections } from '../lib/nav';
         if (best) goTo(best);
       });
 
+      // ---- the scale ribbon: where you are between the Sun and the whole universe (and a way to travel along it)
+      {
+        const ANCHORS = [8.8, 12, 16.5, 21, 26.5]; // log10 metres from the Sun at each stop
+        const you = $('scale-you'), btns = [...document.querySelectorAll<HTMLButtonElement>('#scale button')];
+        const pos = (m: number) => { const L = Math.log10(Math.max(m, 1)); let i = 0; while (i < ANCHORS.length - 2 && L > ANCHORS[i + 1]) i++; return Math.min(1, Math.max(0, (i + (L - ANCHORS[i]) / (ANCHORS[i + 1] - ANCHORS[i])) / (ANCHORS.length - 1))); };
+        btns.forEach((b) => b.addEventListener('click', () => { goTo(b.dataset.go!); ($('space') as HTMLElement).focus({ preventScroll: true }); }));
+        setInterval(() => {
+          if (document.hidden || !world || !body.classList.contains('arrived')) return;
+          const t = pos(Math.hypot(...world.mapState().cam));
+          you.style.left = `${t * 100}%`;
+          const near = Math.min(btns.length - 1, Math.round(t * (btns.length - 1)));
+          btns.forEach((b, i) => b.classList.toggle('here', i === near));
+        }, 150);
+      }
+
       // ---- going in
       let wentDirect = false;
       const ap = $('enter');
@@ -992,6 +1040,29 @@ import { sections } from '../lib/nav';
       .aim span { font: 300 .9375rem/1.3 var(--serif); color: var(--soft); }
       .aim i { margin-top: 6px; font: 600 .75rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; font-style: normal; color: var(--warm); }
       /* flying is the way you move: no orbit map, no In and Out, and no separate Fly button */
+      .scale { position: fixed; z-index: 19; left: 50%; top: calc(var(--top) + 52px); transform: translateX(-50%); width: min(720px, calc(100vw - 32px)); opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
+      body.arrived .scale { opacity: 1; pointer-events: auto; }
+      .scale-line { position: relative; height: 1px; margin: 9px 6% 0; background: rgba(236,231,220,.35); }
+      .scale-you { position: absolute; top: -6px; left: 0; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: var(--warm); box-shadow: 0 0 14px rgba(241,201,142,.6); transition: left .25s linear; }
+      .scale ol { display: flex; justify-content: space-between; margin: 0; padding: 0; list-style: none; }
+      .scale button { background: none; border: 0; color: var(--soft); font: 300 .8125rem/1 var(--serif); letter-spacing: .02em; padding: 12px 6px 10px; min-width: 44px; min-height: 44px; text-shadow: 0 1px 8px #000; cursor: pointer; }
+      .scale button:hover, .scale button:focus-visible { color: var(--warm); outline: none; }
+      .scale button.here { color: var(--warm); }
+      .eta { position: fixed; z-index: 18; left: 50%; top: 36%; transform: translateX(-50%); width: min(520px, calc(100vw - 32px)); text-align: center; pointer-events: none; }
+      .eta[hidden] { display: none; }
+      .eta b { display: block; font: 400 clamp(1.8rem, 5vw, 2.6rem)/1.1 var(--serif); text-shadow: 0 2px 20px #000; }
+      .eta span { display: block; margin-top: 6px; font: 300 1.125rem/1.3 var(--serif); color: var(--ink); text-shadow: 0 2px 14px #000; }
+      .eta-bar { width: min(360px, 80%); height: 4px; margin: 16px auto 0; background: rgba(236,231,220,.22); border-radius: 2px; }
+      .eta-bar i { display: block; height: 4px; width: 0; background: var(--warm); border-radius: 2px; }
+      .eta button { pointer-events: auto; margin-top: 18px; padding: 14px 22px; min-height: 48px; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
+      .eta button:hover, .eta button:focus-visible { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
+      body.touring .scale, body.touring .eta { opacity: 0; pointer-events: none; }
+      .coach { position: fixed; z-index: 17; left: 50%; bottom: calc(var(--bot) + 132px); transform: translateX(-50%); display: flex; align-items: center; gap: 18px; padding: 14px 20px; max-width: calc(100vw - 32px); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; }
+      .coach[hidden] { display: none; }
+      .coach p { margin: 0; display: flex; align-items: center; gap: 9px; font: 300 1.0625rem/1.3 var(--serif); color: var(--ink); }
+      .coach b { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--warm); color: #111; font: 600 .8125rem/24px var(--mono); text-align: center; }
+      .coach button { flex: none; background: none; border: 0; color: var(--warm); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; padding: 14px 6px; min-height: 44px; cursor: pointer; }
+      @media (max-width: 600px) { .coach { width: calc(100vw - 32px); flex-direction: column; align-items: flex-start; gap: 8px; bottom: calc(var(--dock) + 112px); padding: 14px 18px; } .coach button { align-self: flex-end; padding: 4px 6px; } }
       .map, #step-in, #step-out, #fly-btn { display: none !important; }
       .gear-name { margin: 0; min-width: 9.5rem; text-align: center; font: 400 .8125rem/1.25 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
       .pill[aria-pressed="true"], .pill[aria-pressed="true"]:hover, .pill[aria-pressed="true"]:focus-visible { color: #111; background: var(--warm); border-color: var(--warm); }
@@ -1103,15 +1174,19 @@ import { sections } from '../lib/nav';
         .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .75rem; letter-spacing: .12em; display: grid; place-items: center; }
         .controls > #tour-btn { order: 5; }
         .controls > #fly-btn { order: 4; }
-        .gears.throttle { bottom: calc(var(--dock) + 14px); width: calc(100vw - 32px); }
+        .gears.throttle { left: var(--gut); transform: none; bottom: calc(var(--dock) + 10px); width: calc(100vw - 2 * var(--gut) - 76px); padding: 10px 14px 6px; }
+        .throttle .th { display: none; }
+        .scale { top: calc(var(--top) + 50px); }
+        .where { top: calc(var(--top) + 112px); }
+        .coach { bottom: calc(var(--dock) + 210px); }
         .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 3; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
         .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }
         .sheet { bottom: calc(var(--dock) + 8px); }
-        .hud { padding-bottom: calc(var(--dock) + 10px); }
+        .hud { padding-bottom: calc(var(--dock) + 92px); }
         .tour { bottom: calc(var(--dock) + 10px); }
         .hint { bottom: calc(var(--dock) + 20px); }
-        .pad { bottom: calc(var(--dock) + 40px); }
+        .pad { bottom: calc(var(--dock) + 10px); }
       }
 
       /* testing only */

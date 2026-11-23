@@ -25,6 +25,7 @@ export interface Readout {
   speed: number; // m/s
   mode: 'idle' | 'orbit' | 'cruise' | 'free';
   arriving: number; // 0..1 through the cruise
+  secsLeft: number; // seconds of the cruise still to go
   target: string;
   dist: number; // to the target's surface, metres
   tech: string; // renderer, depth mode, tiles
@@ -742,7 +743,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const illustrative = onTerrain && !terrain.source.resolution && f.alt < terrain.radius * 0.5;
     readoutAt = now;
     o.onReadout?.({
-      alt: f.alt, speed: f.speed, gear: flight.gear, mode: f.mode, arriving: f.arriving,
+      alt: f.alt, speed: f.speed, gear: flight.gear, mode: f.mode, arriving: f.arriving, secsLeft: f.secsLeft,
       target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
@@ -821,7 +822,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         // the world you are flying to gets its picture as the flight starts, so it is there on arrival
         { const want = lazyMaps.get(id); if (want) { lazyMaps.delete(id); want(); } if (id === 'mars' && marsMapLoader) { marsMapLoader(); marsMapLoader = null; } }
         // a body with no measured size: stand off 200 km, since nobody knows how big it is
-        const endDist = view.distanceKm ? view.distanceKm * 1000 : measured ? r * (id === 'sun' ? 8 : 3) : 200_000;
+        const endDist = view.distanceKm ? view.distanceKm * 1000 : measured ? r * (id === 'sun' ? 8 : id === 'saturn' ? 4.6 : 3) : 200_000;
         focusHold = endDist * 4;
         focusKey = id; focusName = id === 'sun' ? 'the Sun' : system.body(id)?.name ?? PLANET_NAMES[id] ?? id;
         // arrive from the side you are looking from, unless that side is in shadow: then turn only as far as it takes to see it lit
@@ -829,7 +830,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         const toS = norm(sub(sunPos, tg));
         const now = norm(sub(flight.pos, tg));
         let endDir: V3 = now;
-        if (id !== 'sun' && len(toS) > 0 && vdot(now, toS) < 0.3) {
+        // arrive on a slant, towards the lit side and a little above the planet's plane, not square on
+        if (id !== 'sun' && len(toS) > 0) {
+          const lit0 = norm(add(add(scale(toS, 0.7), scale(norm(cross(toS, north)), 0.55)), scale(north, 0.45)));
+          endDir = norm(slerp(now, lit0, 0.6));
+        }
+        if (id !== 'sun' && len(toS) > 0 && vdot(endDir, toS) < 0.3) {
           const lit = norm(add(add(scale(toS, 0.7), scale(norm(cross(toS, north)), 0.55)), scale(north, 0.45)));
           let lo = 0, hi = 1;
           for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (vdot(norm(slerp(now, lit, m)), toS) < 0.3) lo = m; else hi = m; }
