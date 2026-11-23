@@ -23,6 +23,11 @@ No single ruler works for space. Each step outward is so much bigger than the la
 | Milky Way to the Andromeda Galaxy | | about 2.5 million light years |
 | Here to the furthest light we can see | | about 46 billion light years |
 
+<figure class="photo">
+  <img src="/img/learn/charts/distances.svg" alt="Nine bars of growing length, from the width of the Earth to the furthest light we can see. Each line is 1,000 times further than the one before." width="800" height="856" loading="lazy" />
+  <figcaption><b>A chart.</b> The nine distances in the table, all on one scale. The scale is not even: each line to the right is 1,000 times further. The light-year figures are changed to kilometres to draw them, using 9.461 million million kilometres to the light year.</figcaption>
+</figure>
+
 Two things stand out.
 
 The first is how much room there is between the planets and the stars. The planets take up the innermost 30 au. The nearest star is nearly nine thousand times further away than Neptune. If comets really do fill a cloud out to tens of thousands of au, as their orbits suggest, then most of the Sun's territory is that cloud, and nobody has ever seen any of it.

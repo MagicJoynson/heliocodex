@@ -11,7 +11,7 @@ const p = (facts.planets as unknown as Record<string, { physical: Record<string,
 const items: [string, string][] = [
   world === 'sun' ? ['From the Earth', '1 au'] : ['From the Sun', `${p.elements.a_au < 10 ? p.elements.a_au.toFixed(2).replace(/\.?0+$/, '') : p.elements.a_au.toFixed(1)} au`],
   ['Size', world === 'sun' ? '109 Earths wide' : world === 'earth' ? '12,742 km wide' : `${fmt(p.physical.radius_mean_km / 6371, 2)} Earths wide`],
-  ['Temperature', TEMPS[world].short],
+  [`Temp., ${TEMPS[world].kind}`, TEMPS[world].short],
 ];
 ---
 <div class="wglance">

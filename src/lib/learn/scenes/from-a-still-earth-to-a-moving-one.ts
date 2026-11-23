@@ -33,8 +33,9 @@ const wheels: Scene = {
     ctx.strokeStyle = 'rgba(236,231,220,.45)'; ctx.beginPath(); ctx.arc(ex, ey, r, 0, TAU); ctx.stroke();
     line(ctx, [cx, cy, ex, ey, px, py], 'rgba(236,231,220,.3)');
     dot(ctx, cx, cy, 5, '#5f8fc4'); dot(ctx, px, py, 3.5, '#fff');
-    label(ctx, 'The Earth, still', cx, cy - 16, { align: 'center', colour: SOFT });
-    label(ctx, 'The planet', px + 10, py - 12, { align: 'left', colour: '#fff' });
+    // the Earth's name stands still in a key at the bottom corner, because the planet's circles take it everywhere else
+    dot(ctx, 16, h - 14, 5, '#5f8fc4'); label(ctx, 'The Earth, still', 28, h - 14, { colour: SOFT });
+    label(ctx, 'The planet', px + 10, py - 12, { align: 'left', colour: '#fff', plate: true });
     say('Circles upon circles', 'Ptolemy’s answer to the backward loops, about AD 150');
   },
 };

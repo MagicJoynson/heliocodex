@@ -22,7 +22,7 @@ export const lens: Scene = {
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * 1.5); g.addColorStop(0, `rgba(120,70,60,${0.5 * cloud})`); g.addColorStop(1, 'rgba(120,70,60,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * 1.5, 0, TAU); ctx.fill();
     for (const m of MEMBERS) { const k = clamp((u - 0.1 - m.at * 0.4) / 0.2, 0, 1); if (!k) continue; dot(ctx, cx + Math.cos(m.a) * m.d * R, cy + Math.sin(m.a) * m.d * R, 0.8 + m.b * 1.6, `rgba(190,215,255,${(0.35 + m.b * 0.6) * k * (0.35 + 0.65 * (1 - cloud))})`); }
-    label(ctx, u < 0.55 ? 'Hidden in its cloud' : 'The cloud clears', cx, cy - R * 1.5 - 12, { align: 'center', colour: ACCENT, size: 10 });
+    label(ctx, u < 0.55 ? 'Hidden in its cloud' : 'The cloud clears', cx, Math.max(cy - R * 1.5 - 12, 12), { align: 'center', colour: ACCENT, size: 10 });
     say('Stars are not born one at a time', 'A cloud of gas makes many together, a cluster');
   },
 };
@@ -82,9 +82,9 @@ const far: Scene = {
     for (const [v, name] of [[100, '100'], [1000, '1,000'], [10000, '10,000'], [100000, '100,000']] as [number, string][]) { line(ctx, [X(v), y0 - 26, X(v), y0 + step + 20], 'rgba(236,231,220,.18)'); label(ctx, name, X(v), y0 + step + 36, { align: 'center', colour: FAINT, size: 9 }); }
     DIST.forEach(([name, v, col], i) => {
       const y = y0 + i * step, xv = x0 + (X(v) - x0) * k;
-      label(ctx, name, x0, y - 22, { align: 'left', colour: SOFT, size: 10 });
+      label(ctx, name, x0, y - 22, { align: 'left', colour: SOFT, size: 10, plate: true });
       line(ctx, [x0, y, xv, y], 'rgba(236,231,220,.25)'); dot(ctx, xv, y, 6, col);
-      if (k > 0.95) label(ctx, v.toLocaleString('en-GB'), Math.min(xv + 12, w - 60), y + (xv > w * 0.7 ? 20 : 0), { align: 'left', colour: SOFT, size: 10 });
+      if (k > 0.95) label(ctx, v.toLocaleString('en-GB'), Math.min(xv + 12, w - 60), y + (xv > w * 0.7 ? 20 : 0), { align: 'left', colour: SOFT, size: 10, plate: true });
     });
     label(ctx, 'Light years', x1, y0 + step + 54, { align: 'right', colour: FAINT, size: 9 });
     say('One is a neighbour, the other tens of thousands of light years off', 'M13 is more than fifty times as far as the Pleiades');

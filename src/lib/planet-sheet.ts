@@ -6,17 +6,17 @@ import { moonCount, MOONS_AS_OF_TEXT } from '../data/moon-counts';
 import { fmt, daysToYear, hoursToDay } from './format';
 import { ratio, type Cell } from './record';
 
-/** Temperatures, from the NSSDC fact sheets: for the giants, the air where its pressure is the same as at sea level here. */
-export const TEMPS: Record<string, { value: string; note: string; short: string }> = {
-  sun: { value: 'About 5,500 °C', short: 'about 5,500 °C', note: 'At the visible surface. The core is about 15 million °C.' },
-  mercury: { value: '−180 to 430 °C', short: '−180 to 430 °C', note: 'Night to day at the ground. With almost no air, the heat escapes as soon as the Sun sets.' },
-  venus: { value: '464 °C', short: '464 °C', note: 'At the ground, day and night: hotter than Mercury, under its thick air.' },
-  earth: { value: '15 °C', short: '15 °C', note: 'Averaged over the whole surface and the whole year.' },
-  mars: { value: '−59 °C', short: '−59 °C', note: 'Averaged over the surface. A summer afternoon at the equator can pass 20 °C.' },
-  jupiter: { value: '−108 °C', short: '−108 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.' },
-  saturn: { value: '−139 °C', short: '−139 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.' },
-  uranus: { value: '−197 °C', short: '−197 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.' },
-  neptune: { value: '−201 °C', short: '−201 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.' },
+/** Temperatures, from the NSSDC fact sheets (Mercury's range from NASA Science's "Mercury facts"): for the giants, the air where its pressure is the same as at sea level here. */
+export const TEMPS: Record<string, { value: string; note: string; short: string; kind: string }> = {
+  sun: { value: 'About 5,500 °C', short: 'about 5,500 °C', note: 'At the visible surface. The core is about 15 million °C.', kind: 'visible surface' },
+  mercury: { value: '−180 to 430 °C', short: '−180 to 430 °C', note: 'Night to day at the ground. With almost no air, the heat escapes as soon as the Sun sets.', kind: 'ground, night to day' },
+  venus: { value: '464 °C', short: '464 °C', note: 'At the ground, day and night: hotter than Mercury, under its thick air.', kind: 'ground' },
+  earth: { value: '15 °C', short: '15 °C', note: 'Averaged over the whole surface and the whole year.', kind: 'mean surface' },
+  mars: { value: '−59 °C', short: '−59 °C', note: 'Averaged over the surface. A summer afternoon at the equator can pass 20 °C.', kind: 'mean surface' },
+  jupiter: { value: '−108 °C', short: '−108 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
+  saturn: { value: '−139 °C', short: '−139 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
+  uranus: { value: '−197 °C', short: '−197 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
+  neptune: { value: '−201 °C', short: '−201 °C', note: 'In the clouds, where the air presses as hard as it does at sea level on the Earth.', kind: 'at 1 bar' },
 };
 
 const EARTH = facts.planets.earth.physical as unknown as Record<string, number>;
@@ -35,7 +35,7 @@ export function planetCells(world: string): Cell[] {
     return [
       { key: 'distance', label: 'From the Earth', value: '1', unit: 'au on average', note: 'About 150 million km. Its light takes 8 minutes 19 seconds to reach us.' },
       { key: 'size', label: 'Size', value: '1,392,700', unit: 'km across', note: '109 times the Earth’s width.' },
-      { key: 'temperature', label: 'Temperature', value: t.value, note: t.note },
+      { key: 'temperature', label: `Temperature, ${t.kind}`, value: t.value, note: t.note },
       { key: 'mass', label: 'Mass', value: sci(1.989e30), unit: 'kg', note: '333,000 times the Earth’s, and 99.8 per cent of everything that goes round it.' },
       { key: 'day', label: 'Turns once in', value: 'About 25', unit: 'days', note: 'At its equator. Near the poles it takes about 35, because it is not solid.' },
       { key: 'density', label: 'Density', value: '1.41', unit: 'times water', note: 'Hot gas, packed tightest at the centre.' },
@@ -47,9 +47,9 @@ export function planetCells(world: string): Cell[] {
   return [
     { key: 'distance', label: 'From the Sun', value: a < 10 ? a.toFixed(2) : a.toFixed(1), unit: 'au on average', note: `From ${fmt(ph.perihelion_1e6km)} to ${fmt(ph.aphelion_1e6km)} million km. The ${ORDINAL[ORDER.indexOf(world)]} planet out.` },
     { key: 'size', label: 'Size', value: fmt(km), unit: 'km across', note: isEarth ? 'The yardstick for the other planets.' : `${ratio(km / (EARTH.radius_mean_km * 2), 'the Earth’s width')}.` },
-    { key: 'temperature', label: 'Temperature', value: t.value, note: t.note },
+    { key: 'temperature', label: `Temperature, ${t.kind}`, value: t.value, note: t.note },
     { key: 'mass', label: 'Mass', value: sci(kg), unit: 'kg', note: isEarth ? 'The yardstick for the other planets.' : `${ratio(ph.mass_1e24kg / EARTH.mass_1e24kg, 'the Earth’s')}.` },
-    { key: 'orbit', label: 'A year', value: daysToYear(ph.orbit_period_days).split(' ')[0], unit: daysToYear(ph.orbit_period_days).split(' ').slice(1).join(' '), note: 'Once round the Sun, in the Earth’s days or years.' },
+    { key: 'orbit', label: 'A year (sidereal)', value: daysToYear(ph.orbit_period_days).split(' ')[0], unit: daysToYear(ph.orbit_period_days).split(' ').slice(1).join(' '), note: isEarth ? 'Once round the Sun against the stars: 365.256 days. The seasons repeat a little sooner, every 365.242 days (the tropical year).' : 'Once round the Sun against the stars, in the Earth’s days or years.' },
     { key: 'day', label: 'A day', value: hoursToDay(ph.day_hours).split(' ')[0], unit: hoursToDay(ph.day_hours).split(' ').slice(1).join(' '), note: ph.rotation_hours < 0 ? 'Sunrise to sunrise. It spins backwards.' : 'Sunrise to sunrise.' },
     { key: 'density', label: 'Density', value: fmt(ph.density_kgm3 / 1000, 2), unit: 'times water', note: DENSITY_SAYS[world] },
     { key: 'moons', label: 'Moons', value: n === 0 ? 'None' : String(n), note: n === 0 ? undefined : `Known, as of ${MOONS_AS_OF_TEXT}, from NASA JPL.` },

@@ -4,7 +4,7 @@
  * scales are drawings of the idea, with the effects made far larger than life.
  */
 import { type Scene, SOFT, ACCENT, clamp, ease, label, stars, nf } from '../stage';
-import { TAU, photoScene, sun, dot, line } from '../kit';
+import { TAU, photoScene, pairScene, sun, dot, line } from '../kit';
 import { micro } from './gravity-as-a-lens';
 
 const backdrop = stars(110, 173);
@@ -70,10 +70,10 @@ const transit: Scene = {
 };
 
 // ---- 4. a picture
-const picture = photoScene({
-  src: '/img/learn/2m1207-planet-vlt.jpg', caption: PIC,
-  say: ['A planet, actually seen', 'Five times the mass of Jupiter, and still glowing with heat'],
-  zoom: [0.92, 1.05], focus: [0.5, 0.5], tag: 'Infrared picture',
+const PAIR = 'Two real pictures of planets. In the first, the brown dwarf 2M1207 and, in red, its planet, in infrared from the Very Large Telescope in Chile (the colours were chosen for the picture). In the second, Beta Pictoris b, 70 light years away: the star is hidden, the dust disc was recorded in 1996, and the two bright dots in the circle are the planet in 2003 and in 2009, on opposite sides of its star. The thin ring is ESO’s drawing of the orbit, with the tilt exaggerated. Credit, first picture: ESO. Credit, second picture: ESO/A.-M. Lagrange. Both CC BY 4.0.';
+const picture = pairScene({
+  a: '/img/learn/2m1207-planet-vlt.jpg', b: '/img/learn/beta-pictoris-b-vlt.jpg', caption: PAIR,
+  say: ['Planets, actually seen', 'Both are young and still glowing with heat'], tags: ['2M1207 b', 'Beta Pictoris b'],
 });
 
 // ---- 6. two measurements

@@ -53,7 +53,7 @@ const bend: Scene = {
     }
     const small = w <= 560;
     label(ctx, small ? 'Far' : 'Far galaxy', xs, cy + 30, { align: 'left' });
-    label(ctx, small ? 'Near' : 'Nearer galaxy', xl, cy + 44, { align: 'center', colour: ACCENT });
+    label(ctx, small ? 'Near' : 'Nearer galaxy', xl, cy + up * (small ? 0.9 : 0.6) + 20, { align: 'center', colour: ACCENT }); // just under the lowest bend of the rays, not on it
     label(ctx, 'Earth', xe, cy + 22, { align: 'right' });
     if (k2 > 0.98) { label(ctx, small ? 'Seen' : 'Where we see it', xs + 22, cy - up * 2.5, { align: 'left', colour: SOFT }); }
     say('Mass bends the path of light', 'So we see the far galaxy where it is not, and more than once');
@@ -94,8 +94,8 @@ const gather: Scene = {
     }
     dot(ctx, xs, cy, 4, '#fff'); if (on > 0) { ctx.globalAlpha = on; galaxy(ctx, xl, cy, 26, 'rgba(240,190,120,.95)'); ctx.globalAlpha = 1; }
     dot(ctx, xe, cy, 5 + hits * 0.5, '#5a9bff');
-    label(ctx, w > 560 ? 'A far star' : 'Star', xs, cy + 22, { align: 'left' }); label(ctx, 'Earth', xe, cy + 26, { align: 'right' });
-    if (on > 0.5) label(ctx, w > 560 ? 'A cluster of galaxies' : 'Cluster', xl, cy + 40, { align: 'center', colour: ACCENT });
+    label(ctx, w > 560 ? 'A far star' : 'Star', xs, cy + 22, { align: 'left', plate: true }); label(ctx, 'Earth', xe, cy + 26, { align: 'right', plate: true });
+    if (on > 0.5) label(ctx, w > 560 ? 'A cluster of galaxies' : 'Cluster', xl, cy + 40, { align: 'center', colour: ACCENT, plate: true });
     say(on < 0.5 ? 'Most of the light misses us' : 'The lens turns more of it our way', 'Earendel looks a thousand times brighter or more');
   },
 };

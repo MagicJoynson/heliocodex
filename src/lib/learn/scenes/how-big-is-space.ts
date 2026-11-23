@@ -69,8 +69,8 @@ const ballScene: Scene = {
     pitch(ctx, cx, cy, pxPerM);
     const r = (BALL_M / 2) * pxPerM;
     if (r > 6) sun(ctx, cx, cy, r, clamp((r - 6) / 10)); else dot(ctx, cx, cy, Math.max(r, 0.8), '#ffd88c');
-    if (k > 0.9) label(ctx, 'The Sun: a football, 22 cm', cx, cy + r * 2.9 + 14, { align: 'center', colour: ACCENT });
-    else if (k < 0.1) label(ctx, 'The Sun is on the centre spot', cx, cy - 9.15 * pxPerM - 14, { align: 'center', colour: SOFT });
+    if (k > 0.9) label(ctx, 'The Sun: a football, 22 cm', cx, cy + r * 2.9 + 14, { align: 'center', colour: ACCENT, plate: true });
+    else if (k < 0.1) label(ctx, 'The Sun is on the centre spot', cx, cy - 9.15 * pxPerM - 14, { align: 'center', colour: SOFT, plate: true });
     say('The Sun, 1.39 million km wide', 'shrunk to a football 22 cm wide');
   },
 };
@@ -93,7 +93,7 @@ const planetsScene: Scene = {
       const ang = -0.9 - i * 0.5 + t * 0.03 / (i + 1), px = cx + Math.cos(ang) * r, py = cy + Math.sin(ang) * r;
       if (px > 14 && px < w - 14 && py > 22 && py < h - 8) {
         dot(ctx, px, py, 2.4, `rgba(233,196,138,${a})`);
-        ctx.globalAlpha = a; label(ctx, `${name}, ${what}, ${far}`, px + (px > cx ? -8 : 8), py - 11, { colour: SOFT, align: px > cx ? 'right' : 'left' }); ctx.globalAlpha = 1;
+        ctx.globalAlpha = a; label(ctx, `${name}, ${what}, ${far}`, px + (px > cx ? -8 : 8), py - 11, { colour: SOFT, align: px > cx ? 'right' : 'left', plate: true }); ctx.globalAlpha = 1;
       }
     });
     dot(ctx, cx, cy, Math.max((BALL_M / 2) * pxPerM, 1.2), '#ffd88c');
@@ -117,7 +117,7 @@ const moonScene: Scene = {
     label(ctx, 'Centimetres', x0 + cm * 8, y + 76, { align: 'right', colour: FAINT });
     const ex = x0 + cm * 0.9, mx = ex + gap * k;
     dot(ctx, ex, y, Math.max(earthR, 2), '#6ea8ff'); label(ctx, 'The Earth, 2 mm', ex, y - 26, { align: 'center', colour: SOFT });
-    dot(ctx, mx, y, Math.max(moonR, 1.2), INK); label(ctx, 'The Moon, 0.5 mm', mx, y - 26, { align: 'center', colour: SOFT });
+    dot(ctx, mx, y, Math.max(moonR, 1.2), INK); label(ctx, 'The Moon, 0.5 mm', mx, y - 42, { align: 'center', colour: SOFT }); // a row above the Earth's, so the two never meet while the Moon sets out
     line(ctx, [ex + 8, y, mx - 6, y], `rgba(233,196,138,${0.5 * k})`, 1, [2, 5]);
     if (k > 0.95) label(ctx, '6 cm: every place people have visited', (ex + mx) / 2, y + 14, { align: 'center', colour: ACCENT, size: w < 520 ? 10 : 11 });
     say('The Earth and the Moon', 'Shrunk like the Sun: 6 cm apart');
@@ -150,7 +150,7 @@ const emptyScene: Scene = {
       const lx = px + (left ? -6 : 6), ly = py - 8, tw = name.length * (w < 520 ? 9 : 7), box: [number, number, number] = left ? [lx - tw, lx, ly] : [lx, lx + tw, ly];
       if (drawn.some(([a, b, y]) => Math.abs(y - ly) < 14 && box[0] < b + 4 && box[1] > a - 4)) continue;
       drawn.push(box);
-      label(ctx, name, lx, ly, { colour: SOFT, align: left ? 'right' : 'left' });
+      label(ctx, name, lx, ly, { colour: SOFT, align: left ? 'right' : 'left', plate: true });
     }
     const au = (upto / pxPerAu);
     say(`${nf(au * M_PER_AU)} m from the football: ${nf(au * AU_KM / 1e6)} million km`, k >= 1 ? 'All the rest of the line is empty space' : `Last thing passed: ${last}`);
@@ -167,20 +167,28 @@ const nextScene: Scene = {
     const loop = 19, x = t % loop, k = ease((x - 1) / 12), cx = w * 0.2, cy = h * 0.6;
     const view = 1_800 * Math.pow((PROXIMA_M * 1.25) / 1_800, k), pxPerM = (w * 0.76) / view;
     const fadeFor = (r: number) => clamp((r - 6) / 24) * clamp((Math.hypot(w, h) - r) / 80);
+    // labels are placed in order of importance, and a ring's name is left out while it would sit on one already placed (the ring itself stays)
+    const taken: number[][] = [], wid = (text: string) => text.length * 6.6 + 4;
+    const put = (text: string, x: number, y: number, right: boolean, colour?: string): boolean => {
+      const wd = wid(text), x0 = Math.min(Math.max(right ? x - wd : x, 4), w - 4 - wd), box = [x0, x0 + wd, y - 5, y + 5]; // where label() will keep it
+      if (taken.some((o) => box[0] < o[1] + 3 && o[0] < box[1] + 3 && box[2] < o[3] + 3 && o[2] < box[3] + 3)) return false;
+      taken.push(box); label(ctx, text, x0, y, { align: 'left', colour, plate: true }); return true;
+    };
+    const px = cx + PROXIMA_M * pxPerM, pa = px < w + 20 ? clamp((w + 20 - px) / 60) : 0;
+    if (pa > 0) { ctx.globalAlpha = pa; put('Proxima Centauri', px, cy - 24, true, ACCENT); put('a ball 3 cm across', px, cy - 10, true); ctx.globalAlpha = 1; }
+    put('The Sun and all its planets', cx - 4, cy + 16, false, k > 0.4 ? ACCENT : FAINT);
+    const nep = 710 * pxPerM;
+    if (nep > 26) put('Neptune\'s orbit, 710 m', cx + nep * 0.72 + 8, cy - nep * 0.72, false, SOFT);
     for (const [m, name] of MARKS) {
       const r = m * pxPerM, a = fadeFor(r); if (a <= 0) continue;
       ring(ctx, cx, cy, r, `rgba(236,231,220,${0.16 * a})`, 1, [2, 6]);
-      ctx.globalAlpha = a; if (cx + r * 0.94 + 70 < w) label(ctx, name, cx + r * 0.94 + 6, cy - r * 0.34, {}); ctx.globalAlpha = 1;
+      ctx.globalAlpha = a; if (cx + r * 0.94 + 70 < w) put(name, cx + r * 0.94 + 6, cy - r * 0.34, false); ctx.globalAlpha = 1;
     }
-    const nep = 710 * pxPerM;
-    if (nep > 3) { ring(ctx, cx, cy, nep, `rgba(236,231,220,${0.4 * clamp(nep / 20)})`); if (nep > 26) label(ctx, 'Neptune\'s orbit, 710 m', cx + nep * 0.72 + 8, cy - nep * 0.72, { colour: SOFT }); }
-    dot(ctx, cx, cy, 2, '#ffd88c'); label(ctx, 'The Sun and all its planets', cx - 4, cy + 16, { colour: k > 0.4 ? ACCENT : FAINT });
-    const px = cx + PROXIMA_M * pxPerM;
+    if (nep > 3) ring(ctx, cx, cy, nep, `rgba(236,231,220,${0.4 * clamp(nep / 20)})`);
+    dot(ctx, cx, cy, 2, '#ffd88c');
     if (px < w + 20) {
-      const a = clamp((w + 20 - px) / 60);
-      line(ctx, [cx + 6, cy, px - 6, cy], `rgba(233,196,138,${0.3 * a})`, 1, [1, 5]);
-      dot(ctx, px, cy, 2, `rgba(255,170,130,${a})`);
-      ctx.globalAlpha = a; label(ctx, 'Proxima Centauri', px, cy - 24, { colour: ACCENT, align: 'right' }); label(ctx, 'a ball 3 cm across', px, cy - 10, { align: 'right' }); ctx.globalAlpha = 1;
+      line(ctx, [cx + 6, cy, px - 6, cy], `rgba(233,196,138,${0.3 * pa})`, 1, [1, 5]);
+      dot(ctx, px, cy, 2, `rgba(255,170,130,${pa})`);
     }
     say(`This picture is ${view < 10_000 ? `${nf(Math.round(view / 100) * 100)} m` : `${nf(Math.round(view / 1000))} km`} across`, k >= 1 ? 'About 6,350 km to the next star: London to Chicago' : 'Nothing but empty space so far');
   },

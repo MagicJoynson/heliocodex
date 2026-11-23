@@ -40,11 +40,11 @@ const turnScene: Scene = {
     ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, R, -Math.PI / 2, Math.PI / 2); ctx.closePath(); ctx.fillStyle = '#5d7ea6'; ctx.fill(); ctx.restore();
     // lines of longitude turning with it
     for (let i = 0; i < 6; i++) { const b = a + (i * TAU) / 6; line(ctx, [cx, cy, cx + Math.cos(b) * R, cy + Math.sin(b) * R], 'rgba(236,231,220,.14)'); }
-    dot(ctx, cx, cy, 2.5, INK); label(ctx, 'North Pole', cx + 8, cy + 12, { colour: SOFT });
+    dot(ctx, cx, cy, 2.5, INK); label(ctx, 'North Pole', cx, cy + 12, { align: 'center', colour: SOFT, plate: true });
     ring(ctx, cx, cy, R * 1.22, 'rgba(236,231,220,.18)', 1, [2, 5]);
     const ax = cx + Math.cos(a - 0.5) * R * 1.22, ay = cy + Math.sin(a - 0.5) * R * 1.22; line(ctx, [ax, ay, ax + Math.cos(a - 0.5 + 2.2) * 9, ay + Math.sin(a - 0.5 + 2.2) * 9], 'rgba(236,231,220,.5)'); line(ctx, [ax, ay, ax + Math.cos(a - 0.5 + 0.9) * 9, ay + Math.sin(a - 0.5 + 0.9) * 9], 'rgba(236,231,220,.5)');
     const px = cx + Math.cos(a) * R, py = cy + Math.sin(a) * R, day = Math.cos(a) > 0;
-    dot(ctx, px, py, 5, ACCENT); label(ctx, 'You', px + Math.cos(a) * 16, py + Math.sin(a) * 16, { align: 'center', colour: ACCENT });
+    dot(ctx, px, py, 5, ACCENT); label(ctx, 'You', px + Math.cos(a) * 22, py + Math.sin(a) * 22, { align: 'center', colour: ACCENT, plate: true });
     say(day ? 'Turned towards the Sun: day' : 'Turned away from it: night', 'At the equator the ground moves at about 1,670 kilometres an hour');
   },
 };
@@ -70,12 +70,12 @@ const poleScene: Scene = {
       ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.strokeStyle = 'rgba(233,196,138,.4)'; ctx.lineWidth = 1; ctx.stroke();
       for (const [x, y] of pts) dot(ctx, x, y, 2.2, INK);
       const mx = pts.reduce((n, p) => n + p[0], 0) / pts.length, my = pts.reduce((n, p) => n + p[1], 0) / pts.length;
-      label(ctx, g.name!, mx, my + (my > py ? 22 : -22), { align: 'center', colour: SOFT });
+      label(ctx, g.name!, mx, my + (my > py ? 22 : -22), { align: 'center', colour: SOFT, plate: true });
     }
-    const [qx, qy] = at(POLARIS[0], 90 - POLARIS[1]); sun(ctx, qx, qy, 3.4, 1, '255,240,210'); label(ctx, 'The pole star', qx + 10, qy - 10, { colour: ACCENT });
+    const [qx, qy] = at(POLARIS[0], 90 - POLARIS[1]); sun(ctx, qx, qy, 3.4, 1, '255,240,210'); label(ctx, 'The pole star', qx + 10, qy - 10, { colour: ACCENT, plate: true });
     ctx.restore();
     ctx.fillStyle = '#0b0b0c'; ctx.fillRect(0, hy, w, h - hy); line(ctx, [0, hy, w, hy], 'rgba(236,231,220,.35)');
-    label(ctx, 'North', cx, hy + 14, { align: 'center', colour: FAINT }); label(ctx, 'West', w * 0.06, hy + 14, { colour: FAINT }); label(ctx, 'East', w * 0.94, hy + 14, { align: 'right', colour: FAINT });
+    label(ctx, 'North', cx, hy + 14, { align: 'center', colour: FAINT, plate: true }); label(ctx, 'West', w * 0.06, hy + 14, { colour: FAINT }); label(ctx, 'East', w * 0.94, hy + 14, { align: 'right', colour: FAINT });
     say(`${nf(Math.floor(hours % 24))} hours gone`, 'The Plough goes right round the pole star and never sets');
   },
 };
@@ -100,9 +100,9 @@ const domeScene: Scene = {
     ctx.restore();
     line(ctx, [cx, hy, cx + ux * R * 1.08, hy + uy * R * 1.08], ACCENT, 1.4); sun(ctx, cx + ux * R, hy + uy * R, 3, 1, '255,240,210');
     if (lat > 3) { ctx.beginPath(); ctx.arc(cx, hy, R * 0.22, -a, 0); ctx.strokeStyle = 'rgba(233,196,138,.6)'; ctx.stroke(); }
-    label(ctx, `${nf(lat)}°`, cx + Math.cos(a / 2) * R * 0.3, hy - Math.sin(a / 2) * R * 0.3 - 2, { colour: ACCENT });
+    label(ctx, `${nf(lat)}°`, cx + Math.cos(a / 2) * R * 0.3, hy - Math.sin(a / 2) * R * 0.3 - 2, { colour: ACCENT, plate: true });
     line(ctx, [cx - R * 1.15, hy, cx + R * 1.15, hy], 'rgba(236,231,220,.4)'); dot(ctx, cx, hy, 3, INK);
-    label(ctx, 'North', cx + R * 1.15, hy + 14, { align: 'right', colour: FAINT }); label(ctx, 'South', cx - R * 1.15, hy + 14, { colour: FAINT }); label(ctx, 'You', cx, hy + 14, { align: 'center', colour: SOFT });
+    label(ctx, 'North', cx + R * 1.15, hy + 14, { align: 'right', colour: FAINT, plate: true }); label(ctx, 'South', cx - R * 1.15, hy + 14, { colour: FAINT, plate: true }); label(ctx, 'You', cx, hy + 14, { align: 'center', colour: SOFT, plate: true });
     say(PLACES[n][0], PLACES[n][2]);
   },
 };
@@ -123,7 +123,7 @@ const fourScene: Scene = {
     globe(ctx, ex, ey, r);
     line(ctx, [ex, ey, ex + Math.cos(face) * r * 2.6, ey - Math.sin(face) * r * 2.6], ACCENT, 1.6); dot(ctx, ex + Math.cos(face) * r, ey - Math.sin(face) * r, 3, ACCENT);
     // the far star is the same way from everywhere on the orbit
-    if (go >= 1) { line(ctx, [ex, ey, ex + Math.cos(start) * r * 5, ey - Math.sin(start) * r * 5], 'rgba(236,231,220,.4)', 1, [3, 4]); label(ctx, 'To the same far star', ex + Math.cos(start) * r * 5 + (w > 520 ? 8 : -4), ey - Math.sin(start) * r * 5 + 14, { align: w > 520 ? 'left' : 'right', colour: SOFT }); }
+    if (go >= 1) { line(ctx, [ex, ey, ex + Math.cos(start) * r * 5, ey - Math.sin(start) * r * 5], 'rgba(236,231,220,.4)', 1, [3, 4]); label(ctx, 'To the same far star', ex + Math.cos(start) * r * 5 + (w > 520 ? 8 : -4), ey - Math.sin(start) * r * 5 + 14, { align: w > 520 ? 'left' : 'right', colour: SOFT, plate: true }); }
     line(ctx, [ex, ey, sx, sy], 'rgba(255,214,140,.22)');
     say(go < 1 ? 'One full turn against the stars' : more < 1 ? 'The stars are back, but the Sun is not' : 'A little more turning brings the Sun back', go < 1 ? '23 hours and 56 minutes' : more < 1 ? 'The Earth has moved along its orbit' : 'Nearly four minutes more: 24 hours');
   },
@@ -135,7 +135,7 @@ const south = photoScene({
   caption: 'The same real photograph, closer in. This is the south pole of the sky, and there is no bright star at the middle of the rings. Credit: ESO/F. Char, CC BY 4.0. The marks were added here.',
   say: ['One of the two still points: the southern pole of the sky', 'No bright star marks this one. The northern one has Polaris'],
   zoom: [1.5, 1.7], focus: [0.47, 0.4],
-  pointers: [{ at: [0.17, 0.2], to: [0.3, 0.07], text: 'A neighbouring galaxy' }],
+  pointers: [{ at: [0.17, 0.2], to: [0.36, 0.25], text: 'A neighbouring galaxy' }],
 });
 
 export const scenes: Scene[] = [trails, turnScene, south, poleScene, domeScene, fourScene];

@@ -22,6 +22,32 @@ export function photo(src: string): Loaded {
 /** A line from a point on a photograph out to a word beside it. Positions are fractions of the photograph. */
 export interface Pointer { at: [number, number]; to: [number, number]; text: string; align?: CanvasTextAlign }
 
+export interface PairOptions { a: string; b: string; caption: string; say: [string, string?]; tags?: [string, string]; focusA?: [number, number]; focusB?: [number, number] }
+/**
+ * Two real photographs, side by side when the picture is wide and one above the other when it is not, so captions call them the first and the second, each shown whole and
+ * labelled, for a lesson that needs a second picture of the same kind of thing.
+ */
+export function pairScene(o: PairOptions): Scene {
+  const A = photo(o.a), B = photo(o.b);
+  return {
+    caption: o.caption,
+    stillAt: 4,
+    ready: Promise.all([A.ready, B.ready]).then(() => undefined),
+    draw({ ctx, w, h, t, say }) {
+      const wide = w / h > 1.2, gap = 12, k = ease(clamp(t / 1.2, 0, 1));
+      const rooms: [number, number, number, number][] = wide ? [[0, 0, (w - gap) / 2, h], [(w + gap) / 2, 0, (w - gap) / 2, h]] : [[0, 0, w, (h - gap) / 2], [0, (h + gap) / 2, w, (h - gap) / 2]];
+      ([[A, o.focusA, o.tags?.[0] ?? 'Photograph'], [B, o.focusB, o.tags?.[1] ?? 'Photograph']] as const).forEach(([ph, , tag], i) => {
+        const img = ph.img, [rx, ry, rw, rh] = rooms[i];
+        if (!img?.naturalWidth) { label(ctx, 'Fetching the photograph', rx + rw / 2, ry + rh / 2, { align: 'center' }); return; }
+        const top = 26, ratio = img.naturalWidth / img.naturalHeight, fit = Math.min(rw / ratio, (rh - top) * 0.98), pw = fit * ratio, x = rx + (rw - pw) / 2, y = ry + top + (rh - top - fit) / 2;
+        ctx.globalAlpha = k; ctx.drawImage(img, x, y, pw, fit); ctx.globalAlpha = 1;
+        label(ctx, tag, x, y - 10, { colour: ACCENT, size: w < 520 ? 13 : 11 });
+      });
+      say(o.say[0], o.say[1] ?? '');
+    },
+  };
+}
+
 export interface PhotoOptions {
   src: string;
   /** Says it is a photograph, what of, who took it and under what licence. */
@@ -84,7 +110,7 @@ export function photoScene(o: PhotoOptions): Scene {
           bx = right ? Math.min(bx, w - tw) : Math.max(bx, tw);
           ctx.strokeStyle = 'rgba(236,231,220,.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
           ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 6;
-          label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right', size: w < 520 ? 13 : 11 });
+          label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right', size: w < 520 ? 13 : 11, plate: true });
           ctx.shadowBlur = 0;
         }
         ctx.globalAlpha = 1;

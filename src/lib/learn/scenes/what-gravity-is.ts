@@ -34,7 +34,7 @@ const dropScene: Scene = {
     const top = h * 0.1, ground = h * 0.88, pxPerM = (ground - top) / 45, x = w * 0.5, loop = 5.2, tt = Math.min(t % loop, Math.sqrt(90 / G_EARTH));
     line(ctx, [w * 0.2, ground, w * 0.8, ground], 'rgba(236,231,220,.35)');
     line(ctx, [x - 46, top, x - 46, ground], 'rgba(236,231,220,.18)');
-    for (let m = 0; m <= 45; m += 5) { line(ctx, [x - 50, top + m * pxPerM, x - 42, top + m * pxPerM], 'rgba(236,231,220,.3)'); if (m % 15 === 0) label(ctx, `${m} m`, x - 56, top + m * pxPerM, { align: 'right' }); }
+    for (let m = 0; m <= 45; m += 5) { line(ctx, [x - 50, top + m * pxPerM, x - 42, top + m * pxPerM], 'rgba(236,231,220,.3)'); if (m % 15 === 0) label(ctx, `${m} m`, x - 56, top + m * pxPerM - (m === 45 ? 9 : 0), { align: 'right' }); }
     for (let sec = 1; sec <= 3; sec++) {
       const d = 0.5 * G_EARTH * sec * sec; if (sec > tt) break;
       ring(ctx, x, top + d * pxPerM, 5, 'rgba(236,231,220,.4)');
@@ -119,7 +119,10 @@ const farScene: Scene = {
     for (const [km, name] of HEIGHTS) {
       const r = 1 + km / R_EARTH, p = 1 / (r * r);
       dot(ctx, X(r), Y(p), 2.6, INK);
-      if (w > 520 || km !== 20_200) { const end = X(r) > w * 0.7; label(ctx, `${name}: ${nf(p * 100, p < 0.1 ? 1 : 0)}%`, X(r) + (end ? 0 : 7), Y(p) - (end ? 24 : 11), { colour: SOFT, align: end ? 'right' : 'left' }); }
+      if (w > 520 || km !== 20_200) { const end = X(r) > w * 0.7, text = `${name}: ${nf(p * 100, p < 0.1 ? 1 : 0)}%`;
+        // the last, flattest part of the curve leaves room just above and to the right of its dot, so the TV label sits there, kept in from the edge by label()
+        if (end && w > 520) label(ctx, text, X(r) + 7, Y(p) - 11, { colour: SOFT });
+        else label(ctx, text, X(r) + (end ? 0 : 7), Y(p) - (end ? 24 : 11), { colour: SOFT, align: end ? 'right' : 'left' }); }
     }
     const loop = 13, k = ease(((t % loop) - 0.6) / 9), r = 1 + k * (reach - 1), p = 1 / (r * r);
     line(ctx, [X(r), base, X(r), Y(p)], 'rgba(233,196,138,.5)');

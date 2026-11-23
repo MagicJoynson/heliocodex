@@ -113,7 +113,7 @@ const watchScene: Scene = {
       if (px < 0 || px > w || py < 0 || py > h * 0.9) continue;
       dot(ctx, px, py, 1.1, 'rgba(236,231,220,.7)');
     }
-    label(ctx, 'The Earth’s orbit', cx, cy + au + 14, { align: 'center', colour: SOFT });
+    label(ctx, 'The Earth’s orbit', cx, cy + au + 14, { align: 'center', colour: SOFT, plate: true });
     say(`${Math.round(found * 43238).toLocaleString('en-GB')} found`, 'Each one has a known path that can be worked out years ahead');
   },
 };
@@ -127,6 +127,12 @@ const target = photoScene({
 });
 
 // ---- 7. the orbit that changed
+/** A name set right beside a dot, on the side pointing along (ux, uy), so it never lies over the dot or across the drawing's middle. */
+function beside(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, ux: number, uy: number, opts: { colour?: string } = {}): void {
+  if (Math.abs(ux) > 0.5) label(ctx, text, x + ux * 18, y + uy * 6, { align: ux > 0 ? 'left' : 'right', plate: true, ...opts });
+  else label(ctx, text, x, y + uy * 20, { align: 'center', plate: true, ...opts });
+}
+
 const orbitScene: Scene = {
   caption: 'Dimorphos going round its larger companion Didymos, seen from above. The faint ghost shows where it would have been without the crash. A drawing of the idea, not to scale and enormously speeded up.',
   stillAt: 11,
@@ -140,9 +146,9 @@ const orbitScene: Scene = {
     if (after > 0) { ring(ctx, cx, cy, R1, 'rgba(232,163,61,.5)', 1.2); dot(ctx, cx + Math.cos(a0) * R0, cy + Math.sin(a0) * R0, s * 0.016, 'rgba(236,231,220,.28)'); }
     const mx = cx + Math.cos(a1) * R, my = cy + Math.sin(a1) * R;
     // DART coming in head-on
-    if (x < hitAt) { const ahead = a1 - (1 - x / hitAt) * 0.9, sx = cx + Math.cos(ahead) * R0, sy = cy + Math.sin(ahead) * R0; dot(ctx, sx, sy, 2, ACCENT); label(ctx, 'DART', sx, sy - 12, { align: 'center', colour: ACCENT }); }
+    if (x < hitAt) { const ahead = a1 - (1 - x / hitAt) * 0.9, sx = cx + Math.cos(ahead) * R0, sy = cy + Math.sin(ahead) * R0; dot(ctx, sx, sy, 2, ACCENT); beside(ctx, 'DART', sx, sy, -Math.cos(ahead), -Math.sin(ahead), { colour: ACCENT }); }
     const flash = after > 0 ? Math.max(0, 1 - after / 1.2) : 0; if (flash > 0) sun(ctx, mx, my, s * 0.06, flash, '255,235,200');
-    dot(ctx, mx, my, s * 0.016, '#c9c4b8'); label(ctx, 'Dimorphos', mx, my - s * 0.016 - 10, { align: 'center', colour: after > 0 ? ACCENT : undefined });
+    dot(ctx, mx, my, s * 0.016, '#c9c4b8'); beside(ctx, 'Dimorphos', mx, my, Math.cos(a1), Math.sin(a1), { colour: after > 0 ? ACCENT : undefined });
     say(after <= 0 ? 'Before: once round in 11 hours 55 minutes' : 'After: once round in 11 hours 23 minutes', after <= 0 ? 'DART comes in head-on' : 'A smaller, quicker orbit: it pulls ahead of where it would have been');
   },
 };

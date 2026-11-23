@@ -55,7 +55,7 @@ const edgeScene: Scene = {
     dot(ctx, cx, cy, unit, '#000');
     ring(ctx, cx, cy, unit, 'rgba(233,196,138,.5)', 1, [3, 5]);
     label(ctx, 'The event horizon', cx + unit * 0.75, cy + unit * 0.75 + 12, { colour: ACCENT });
-    label(ctx, 'Nothing is here to touch', cx + unit * 0.75, cy + unit * 0.75 + 28);
+    label(ctx, 'Nothing is here to touch', Math.min(cx + unit * 0.75, w - 6 - 158), cy + unit * 0.75 + 28);
     // the fall, from 2.9 edge radii to the centre, takes the first 9 seconds of each turn
     const far = 2.9, r = fall(far, clamp(x / 9)), py = cy - r * unit;
     line(ctx, [cx, cy - far * unit, cx, py], 'rgba(236,231,220,.25)');
@@ -108,7 +108,7 @@ const riverScene: Scene = {
       if (i === 0) label(ctx, 'Swimming upstream', at(Math.max(u, 0)) - 14, y - 22, { colour: SOFT });
     });
     line(ctx, [at(noReturn), y - 3, at(noReturn), y + deep], 'rgba(233,196,138,.35)', 1, [2, 4]);
-    label(ctx, 'Here the water matches the swimmer', at(noReturn), y + deep + 16, { align: 'center', colour: ACCENT });
+    label(ctx, 'Here the water matches the swimmer', at(noReturn), y + deep + 16, { align: 'center', colour: ACCENT, plate: true });
     label(ctx, 'Slow water', x0, y + deep + 16); label(ctx, 'The falls', x1, y - 16, { align: 'right' });
     say('Upstream of the line, every swimmer gets away', 'Past it, every swimmer goes over');
   },
@@ -140,7 +140,7 @@ const spaceScene: Scene = {
         dot(ctx, cx + ux * r * unit, cy + uy * r * unit, 2.2, `rgba(${colour},${0.95 * (1 - age / 7)})`);
       }
       dot(ctx, cx + ux * lamp.r * unit, cy + uy * lamp.r * unit, 3.4, held ? ACCENT : INK);
-      label(ctx, lamp.text, Math.min(cx + ux * far * unit + 8, w - 4), cy + uy * far * unit + (uy < 0 ? -12 : 12), { align: 'right', colour: held ? ACCENT : SOFT });
+      label(ctx, lamp.text, Math.min(cx + ux * far * unit + 8, w - 4), cy + uy * far * unit + (uy < 0 ? -12 : 12), { align: 'right', colour: held ? ACCENT : SOFT, plate: true });
     }
     ring(ctx, cx, cy, unit, 'rgba(233,196,138,.6)');
     say('At the edge, space flows in at the speed of light', 'To get back you would have to go faster');

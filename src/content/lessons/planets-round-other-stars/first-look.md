@@ -4,7 +4,7 @@ sources:
 ---
 The Sun is a star, and it has planets. For centuries people wondered whether other stars have planets too. Until the 1990s nobody knew.
 
-Now we know that most of them do. More than 6,000 planets have been found round other stars, and there are probably more planets in our galaxy than there are stars.
+Now we know that most of them do. More than 6,000 planets have been found round other stars, as NASA's list stood on 11 November 2026, and there are probably more planets in our galaxy than there are stars.
 
 They are very hard to see. A planet gives out no light of its own, and it sits right beside a star that is millions or billions of times brighter. Looking for one is like looking for a moth beside a lighthouse from hundreds of kilometres away.
 

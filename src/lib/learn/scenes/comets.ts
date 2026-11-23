@@ -35,7 +35,7 @@ export const lens: Scene = {
     const s = Math.min((roomW * 0.92) / (30.07 + Q_FAR), ((roomX ? 0.4 : 0.2) * h) / 30.07), sx = roomX + roomW * 0.04 + 30.07 * s, sy = h * (roomX ? 0.47 : 0.27);
     for (const [name, au] of PLANETS) {
       ring(ctx, sx, sy, au * s, 'rgba(236,231,220,.22)');
-      if (au > 4 && (roomW > 500 || name === 'Jupiter' || name === 'Neptune')) label(ctx, name, sx, sy - au * s - 8, { align: 'center', colour: FAINT, size: 10 });
+      if (au > 4 && (roomW > 500 || name === 'Jupiter' || name === 'Neptune')) label(ctx, name, sx, sy - au * s - 8, { align: 'center', colour: FAINT, size: 10, plate: true });
     }
     ctx.strokeStyle = 'rgba(233,196,138,.55)'; ctx.lineWidth = 1.2; ctx.beginPath();
     for (let i = 0; i <= 240; i++) { const p = place(i / 240); const x = sx + p.x * s, y = sy + p.y * s; if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
@@ -44,7 +44,12 @@ export const lens: Scene = {
     const years = (t * 5) % PERIOD, p = place(years / PERIOD);
     dot(ctx, sx + p.x * s, sy + p.y * s, 3.2, '#f4efe4');
     label(ctx, `${Math.floor(years)} years after 1986`, roomX + roomW / 2, h * (roomX ? 0.13 : 0.1), { align: 'center', colour: ACCENT });
-    label(ctx, 'Farthest: 35 AU', sx + Q_FAR * s, sy - 16, { align: 'right', colour: SOFT, size: 10 });
+    {
+      // beyond the end of the orbit, where nothing is drawn; where there is no room there, under the orbit's end on a dark patch
+      const endX = sx + Q_FAR * s;
+      if (endX + 8 + 100 <= w) label(ctx, 'Farthest: 35 AU', endX + 8, sy, { align: 'left', colour: SOFT, size: 10 });
+      else { let hb = 0; for (let i = 0; i <= 60; i++) hb = Math.max(hb, Math.abs(place(i / 60).y)); label(ctx, 'Farthest: 35 AU', endX, sy + hb * s + 16, { align: 'right', colour: SOFT, size: 10, plate: true }); }
+    }
     say('A path from inside Venus’s orbit to beyond Neptune’s', 'It takes about 76 years to go round once');
   },
 };
@@ -57,7 +62,7 @@ const distance: Scene = {
     backdrop(ctx, w, h, 0.3);
     const x0 = w * 0.1, x1 = w * 0.94, y0 = h * 0.12, y1 = h * 0.78, X = (f: number) => x0 + f * (x1 - x0), Y = (au: number) => y1 - (au / 36) * (y1 - y0), k = ease(clamp(t / 4, 0, 1));
     line(ctx, [x0, y0, x0, y1, x1, y1], 'rgba(236,231,220,.4)');
-    for (const [name, au] of [['Jupiter', 5.203], ['Neptune', 30.07]] as [string, number][]) { line(ctx, [x0, Y(au), x1, Y(au)], 'rgba(236,231,220,.3)', 1, [4, 6]); label(ctx, name, x1, Y(au) - 9, { align: 'right', size: 10 }); }
+    for (const [name, au] of [['Jupiter', 5.203], ['Neptune', 30.07]] as [string, number][]) { line(ctx, [x0, Y(au), x1, Y(au)], 'rgba(236,231,220,.3)', 1, [4, 6]); label(ctx, name, x1, Y(au) - 9, { align: 'right', size: 10, plate: true }); }
     ctx.strokeStyle = ACCENT; ctx.lineWidth = 1.6; ctx.beginPath();
     const n = Math.floor(240 * k);
     for (let i = 0; i <= n; i++) { const x = X(i / 240), y = Y(CURVE[i]); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
@@ -85,7 +90,7 @@ const tails: Scene = {
       const g = ctx.createLinearGradient(cx, cy, cx + ux * len, cy + uy * len); g.addColorStop(0, 'rgba(190,220,255,.8)'); g.addColorStop(1, 'rgba(190,220,255,0)');
       ctx.strokeStyle = g; ctx.lineWidth = 3 + strength * 4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + ux * len, cy + uy * len); ctx.stroke(); ctx.lineCap = 'butt';
       dot(ctx, cx, cy, 3, '#f4efe4');
-      label(ctx, name, cx, cy - 18, { align: 'center', colour: SOFT, size: 10 });
+      label(ctx, name, cx, cy - 18, { align: 'center', colour: SOFT, size: 10, plate: true });
     }
     say('The tail is pushed away by the Sun', 'It points away even when the comet is heading out');
   },

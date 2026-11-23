@@ -38,12 +38,12 @@ const collapseScene: Scene = {
       const a = core ? 1 : clamp(1 - gone * 1.15);
       if (a <= 0 || r <= 0) return;
       ctx.globalAlpha = a; dot(ctx, cx, cy, r, `rgb(${rgb})`); ctx.globalAlpha = 1;
-      if (x < 4 && w > 520) { line(ctx, [cx + R * (f - 0.09) * 0.72, cy - R * (f - 0.09) * 0.7, cx + R * 1.12, cy - R * (1.05 - i * 0.2)], 'rgba(236,231,220,.35)'); label(ctx, name, cx + R * 1.12 + 6, cy - R * (1.05 - i * 0.2), { colour: core ? INK : SOFT }); }
+      if (x < 4 && w > 520) { line(ctx, [cx + R * (f - 0.09) * 0.72, cy - R * (f - 0.09) * 0.7, cx + R * 1.12, cy - R * (1.05 - i * 0.2)], 'rgba(236,231,220,.35)'); label(ctx, name, cx + R * 1.12 + 6, cy - R * (1.05 - i * 0.2), { colour: core ? INK : SOFT, plate: true }); }
     });
-    if (x < 4 && w <= 520) label(ctx, 'Iron core', cx, cy + R + 16, { align: 'center', colour: SOFT });
+    if (x < 4 && w <= 520) label(ctx, 'Iron core', cx, cy + R + 16, { align: 'center', colour: SOFT, plate: true });
     // the blast: a bright ring leaving the middle
     if (blast > 0 && blast < 1) { ring(ctx, cx, cy, R * (0.1 + blast * 2.6), `rgba(255,240,210,${0.9 * (1 - blast)})`, 3); ring(ctx, cx, cy, R * (0.1 + blast * 2.6) - 5, `rgba(233,196,138,${0.4 * (1 - blast)})`, 6); }
-    if (fall >= 1) { sun(ctx, cx, cy, 3.2, 1, '200,220,255'); if (gone > 0.6) label(ctx, 'What is left: a neutron star', cx + 12, cy - 14, { colour: ACCENT }); }
+    if (fall >= 1) { sun(ctx, cx, cy, 3.2, 1, '200,220,255'); if (gone > 0.6) label(ctx, 'What is left: a neutron star', Math.min(cx + 12, w - 6 - 182), cy - 14, { colour: ACCENT }); }
     say(x < 4 ? 'The core is iron, and iron gives no energy back' : x < 4.7 ? 'The core falls in on itself in less than a second' : 'It bounces, and the rest of the star is blown away', x < 4 ? 'Nothing is left to hold it up' : x < 4.7 ? 'Squeezed until it can be squeezed no further' : 'The blast, not the fall, is what we see');
   },
 };
@@ -74,13 +74,13 @@ const feedScene: Scene = {
       const flash = 1 - clamp(bang * 4);
       if (flash > 0) sun(ctx, wx, wy, s * 0.12 * (1 - flash * 0.5), flash, '255,245,225');
       for (const d of debris) { const r = bang * s * 0.55 * d.v; dot(ctx, wx + Math.cos(d.a) * r, wy + Math.sin(d.a) * r, d.s, `rgba(255,${Math.round(230 - 90 * d.v)},${Math.round(190 - 110 * d.v)},${0.9 * (1 - bang)})`); }
-      if (bang > 0.45) label(ctx, 'Nothing is left behind', wx, wy + 26, { align: 'center', colour: ACCENT });
+      if (bang > 0.45) label(ctx, 'Nothing is left behind', wx, wy + 26, { align: 'center', colour: ACCENT, plate: true });
     }
     // the scales
     const x0 = w * 0.12, x1 = w * 0.88, y = h * 0.9, X = (m: number) => x0 + ((m - 0.9) / 0.6) * (x1 - x0);
     line(ctx, [x0, y, x1, y], 'rgba(236,231,220,.25)');
     for (const m of [1, 1.1, 1.2, 1.3, 1.4]) { line(ctx, [X(m), y - 4, X(m), y + 4], 'rgba(236,231,220,.4)'); label(ctx, nf(m, 1), X(m), y + 15, { align: 'center', colour: m === 1.4 ? ACCENT : FAINT }); }
-    line(ctx, [X(1.4), y - 22, X(1.4), y + 4], 'rgba(233,196,138,.7)', 1, [2, 3]); label(ctx, 'The limit', X(1.4), y - 30, { align: 'center', colour: ACCENT });
+    line(ctx, [X(1.4), y - 22, X(1.4), y + 4], 'rgba(233,196,138,.7)', 1, [2, 3]); label(ctx, 'The limit', X(1.4), y - 30, { align: 'center', colour: ACCENT, plate: true });
     label(ctx, 'Mass, in Suns', x0, y - 14);
     if (bang <= 0) dot(ctx, X(mass), y, 4, INK);
     say(bang > 0 ? 'The whole star burns at once' : `The white dwarf now weighs ${nf(mass, 2)} Suns`, bang > 0 ? 'These explosions are all nearly the same brightness' : 'No white dwarf can be heavier than 1.4');
@@ -121,7 +121,7 @@ const giftScene: Scene = {
       dot(ctx, mix(ox, hx, back), mix(oy, hy, back), m.s, `rgba(${STUFF[m.k][1]},${0.85 * (1 - born * 0.7)})`);
     }
     if (born > 0) { sun(ctx, bx, by, s * 0.03 * born, born); globe(ctx, bx + s * 0.16, by + s * 0.05, 3.2 * born); if (born > 0.8) label(ctx, 'A new star, and a planet', bx, by + s * 0.2, { align: 'center', colour: ACCENT }); }
-    STUFF.forEach(([name, rgb], i) => { const lx = w * 0.06, ly = h * 0.1 + i * 16; dot(ctx, lx, ly, 3, `rgb(${rgb})`); label(ctx, name, lx + 10, ly, { colour: SOFT }); });
+    STUFF.forEach(([name, rgb], i) => { const lx = w * 0.06, ly = h * 0.1 + i * 16; dot(ctx, lx, ly, 3, `rgb(${rgb})`); label(ctx, name, lx + 10, ly, { colour: SOFT, plate: true }); });
     say(back < 0.05 ? 'A supernova throws out what the star has made' : born <= 0 ? 'The gas drifts into a new cloud' : 'New stars and planets form from it', 'The iron in your blood was made in a star');
   },
 };

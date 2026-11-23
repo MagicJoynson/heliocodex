@@ -4,7 +4,7 @@
  * tonnes, and the Crab pulsar turning 30 times a second.
  */
 import { type Scene, INK, SOFT, FAINT, ACCENT, clamp, ease, mix, label, stars, rng, nf } from '../stage';
-import { TAU, photoScene, sun, dot, ring, line } from '../kit';
+import { TAU, photoScene, pairScene, sun, dot, ring, line } from '../kit';
 
 const backdrop = stars(150, 97);
 
@@ -50,7 +50,7 @@ const collapseScene: Scene = {
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r); g.addColorStop(0, '#fff'); g.addColorStop(1, k < 1 ? '#ffb070' : '#bcd6ff');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.fill();
     if (k < 0.05) label(ctx, 'The core, as wide as the Earth', cx, cy + s * 0.3 + 16, { align: 'center' });
-    if (k >= 1) { line(ctx, [cx + 6, cy - 6, cx + 34, cy - 34], 'rgba(236,231,220,.5)'); label(ctx, 'Neutron star, 20 km', cx + 38, cy - 38, { colour: ACCENT }); }
+    if (k >= 1) { line(ctx, [cx + 6, cy - 6, cx + 34, cy - 34], 'rgba(236,231,220,.5)'); label(ctx, 'Neutron star, 20 km', cx + 38, cy - 38, { colour: ACCENT, plate: true }); }
     say(k < 1 ? `Core ${nf(Math.round(km / (km > 1000 ? 100 : 10)) * (km > 1000 ? 100 : 10))} km across` : 'About 20 km across: the size of a city', k < 1 ? 'More than the mass of the Sun, falling in' : 'The rest of the star is blown away: a supernova');
   },
 };
@@ -104,12 +104,10 @@ const lighthouseScene: Scene = {
 };
 
 // ---- 4. the Crab
-const crabHeart = photoScene({
-  src: '/img/learn/crab-pulsar-hubble.jpg',
-  caption: 'A real photograph: the heart of the Crab Nebula by the Hubble Space Telescope. The neutron star is the right-hand one of the two bright stars near the middle. The rings round it are waves driven out by its spin. Credit: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall), CC BY 4.0. The mark was added here.',
-  say: ['What is left of the star that exploded in 1054', 'It turns 30 times every second'],
-  cover: true, zoom: [1, 1.22], focus: [0.6, 0.5],
-  pointers: [{ at: [0.637, 0.48], to: [0.78, 0.3], text: 'The pulsar' }],
+const crabHeart = pairScene({
+  a: '/img/learn/crab-nebula-hubble.jpg', b: '/img/learn/crab-pulsar-hubble.jpg',
+  caption: 'Two real photographs by the Hubble Space Telescope. The first shows the whole Crab Nebula, the cloud of gas thrown out by the explosion seen in 1054. The second shows its heart: the neutron star is the right-hand one of the two bright stars near the middle, with rings round it that are waves driven out by its spin. Credit, first picture: NASA, ESA and Allison Loll/Jeff Hester (Arizona State University). Acknowledgement: Davide De Martin (ESA/Hubble). Credit, second picture: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall). Both CC BY 4.0.',
+  say: ['What is left of the star that exploded in 1054', 'It turns 30 times every second'], tags: ['The Crab Nebula', 'Its heart'],
 });
 
 // ---- 5. heavier still

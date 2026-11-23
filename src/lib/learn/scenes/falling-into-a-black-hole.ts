@@ -20,7 +20,7 @@ const ours = photoScene({
 const approach = photoScene({
   src: '/img/learn/black-hole-disc-simulation-nasa.jpg', caption: SIM, tag: 'Computer simulation',
   say: ['The view on the way in', 'Only the gas shines, and its light is bent right round the hole'], zoom: [0.95, 1.1], focus: [0.42, 0.5],
-  pointers: [{ at: [0.31, 0.44], to: [0.12, 0.1], text: 'Ring of bent light', align: 'left' }, { at: [0.6, 0.62], to: [0.86, 0.9], text: 'Hot gas', align: 'right' }],
+  pointers: [{ at: [0.31, 0.44], to: [0.12, 0.24], text: 'Ring of bent light', align: 'left' }, { at: [0.6, 0.62], to: [0.86, 0.9], text: 'Hot gas', align: 'right' }],
 });
 
 function hole(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
@@ -83,7 +83,7 @@ const stretch: Scene = {
     const ax = mid + len / 2 + 8, bx = mid - len / 2 - 8;
     line(ctx, [ax, cy - 22, ax + 34, cy - 22], ACCENT, 2.2); line(ctx, [ax + 34, cy - 22, ax + 27, cy - 27], ACCENT, 2.2); line(ctx, [ax + 34, cy - 22, ax + 27, cy - 17], ACCENT, 2.2);
     line(ctx, [bx + 8, cy - 22, bx + 22, cy - 22], SOFT, 1.6); line(ctx, [bx + 22, cy - 22, bx + 17, cy - 26], SOFT, 1.6); line(ctx, [bx + 22, cy - 22, bx + 17, cy - 18], SOFT, 1.6);
-    label(ctx, 'Strong pull', ax + 4, cy - 34, { align: 'left', colour: ACCENT }); label(ctx, 'Weaker', bx + 8, cy - 34, { align: 'left', colour: SOFT });
+    label(ctx, 'Strong pull', ax + 4, cy - 34, { align: 'left', colour: ACCENT }); label(ctx, 'Weaker', bx + 22, cy - 34, { align: 'right', colour: SOFT });
     say('Stretched one way, squeezed the other', 'In NASA’s fall, 12.8 seconds after crossing the edge');
   },
 };

@@ -38,7 +38,7 @@ const fog: Scene = {
       if (k < 0.5) { ctx.strokeStyle = 'rgba(255,225,140,.9)'; ctx.lineWidth = 1.4; ctx.beginPath(); let x = w * (0.15 + 0.12 * i), y = y0; ctx.moveTo(x, y); const r = rng(i * 7 + Math.floor(t * 3)); for (let j = 0; j < 5; j++) { x += (r() - 0.5) * 46; y += (r() - 0.5) * 46; ctx.lineTo(x, clamp(y, top + 4, top + hh - 4)); } ctx.stroke(); }
       else { const x = ((c - 5) * 0.2 + i * 0.13) % 1 * w; line(ctx, [x - 30, y0, x, y0], 'rgba(255,225,140,.95)', 1.8); }
     }
-    label(ctx, k < 0.5 ? 'Before: a glowing fog' : 'After: clear, and dark', 10, top + 18, { align: 'left', colour: k < 0.5 ? '#fff' : ACCENT });
+    label(ctx, k < 0.5 ? 'Before: a glowing fog' : 'After: clear, and dark', 10, top + 18, { align: 'left', colour: k < 0.5 ? '#fff' : ACCENT, plate: `rgb(${Math.round(mix(120, 9, k))},${Math.round(mix(52, 10, k))},${Math.round(mix(20, 13, k))})` });
     say('380,000 years after the start, the fog cleared', 'The light set free then is still on its way');
   },
 };
@@ -71,7 +71,7 @@ const shell: Scene = {
     const cx = w / 2, cy = h * 0.4, R = Math.min(w * 0.36, h * 0.34);
     for (let i = 0; i < 90; i++) { const a = (i / 90) * TAU, hot = Math.sin(i * 12.9898) * 43758.5453 % 1; ctx.strokeStyle = hot > 0 ? 'rgba(255,150,90,.75)' : 'rgba(110,170,255,.75)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(cx, cy, R, a, a + TAU / 90 + 0.01); ctx.stroke(); }
     for (let i = 0; i < 12; i++) { const a = (i / 12) * TAU + 0.2, p = ((t * 0.25 + i * 0.37) % 1), r0 = R * (1 - p), r1 = Math.max(8, r0 - 18); line(ctx, [cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1], 'rgba(255,225,140,.8)', 1.4); }
-    dot(ctx, cx, cy, 4, '#5a9bff'); label(ctx, 'Us', cx, cy + 20, { align: 'center' });
+    dot(ctx, cx, cy, 4, '#5a9bff'); label(ctx, 'Us', cx, cy + 20, { align: 'center', plate: true });
     label(ctx, 'Where the fog cleared', cx, cy - R - 12, { align: 'center', colour: ACCENT });
     say('The same glow from every direction', 'It is as far back as light can show');
   },
@@ -85,11 +85,12 @@ const tells: Scene = {
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.4);
     const x0 = w * 0.08, bw = w * 0.84, y = h * 0.28, bh = h * 0.14, k = ease(clamp(t / 2, 0, 1)); let x = x0;
+    let fx = x0; // where each part ends up: the names go there from the start and fade in, so they never cross while the bar grows
     PARTS.forEach(([name, pc, col], i) => {
       const ww = (bw * pc * k) / 100; ctx.fillStyle = col; ctx.fillRect(x, y, ww, bh);
-      const mid = x + ww / 2, up = i === 0;
-      label(ctx, `${name} ${pc}%`, up ? x0 : mid, up ? y - 12 : y + bh + 20, { align: up ? 'left' : 'center', colour: i === 0 ? ACCENT : SOFT });
-      x += ww;
+      const fw = (bw * pc) / 100, up = i === 0;
+      ctx.globalAlpha = k; label(ctx, `${name} ${pc}%`, up ? x0 : fx + fw / 2, up ? y - 12 : y + bh + 20, { align: up ? 'left' : 'center', colour: i === 0 ? ACCENT : SOFT }); ctx.globalAlpha = 1;
+      x += ww; fx += fw;
     });
     label(ctx, 'Age: 13.77 billion years', w / 2, y + bh + 54, { align: 'center' });
     say('The patches fix the numbers', 'Everything made of atoms is about a twentieth of what there is');

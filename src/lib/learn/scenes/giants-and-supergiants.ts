@@ -36,18 +36,18 @@ const swell: Scene = {
 };
 
 // ---- 2. sizes, nested
-const STARS: [string, number, string, string][] = [['Antares', 680, '#ffb07a', '#d9603f'], ['Rigel', 74, '#ffffff', '#bcd3ff'], ['Aldebaran', 45, '#ffd9a8', '#e8935a'], ['Arcturus', 25, '#ffe2b0', '#eda35f'], ['The Sun', 1, '#fff3c9', '#ffd76a']];
+const STARS: [string, number, string, string][] = [['Antares', 760, '#ffb07a', '#d9603f'], ['Rigel', 74, '#ffffff', '#bcd3ff'], ['Aldebaran', 46, '#ffd9a8', '#e8935a'], ['Arcturus', 26, '#ffe2b0', '#eda35f'], ['The Sun', 1, '#fff3c9', '#ffd76a']];
 const parade: Scene = {
   caption: 'A drawing to scale of five stars, each touching the same point on the left so that their widths can be compared. The view pulls back until the supergiant Antares fits. Arcturus and Aldebaran are red giants and Rigel is a blue supergiant. The Sun is the small dot at the left, drawn larger than it should be once the view has pulled back.',
   stillAt: 9,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.2);
-    const wide = w > 560, x0 = w * 0.06, y = h * 0.4, maxR = Math.min((w * 0.88) / 2, h * 0.36), k = ease(clamp((t - 2.5) / 5, 0, 1)), span = 80 * Math.pow(680 / 80, k), px = maxR / span;
+    const wide = w > 560, x0 = w * 0.06, y = h * 0.4, maxR = Math.min((w * 0.88) / 2, h * 0.36), k = ease(clamp((t - 2.5) / 5, 0, 1)), span = 80 * Math.pow(760 / 80, k), px = maxR / span;
     ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, h * 0.77); ctx.clip();
     for (const [, r, inner, outer] of STARS) { const rr = Math.max(1.5, r * px); disc(ctx, x0 + rr, y, rr, inner, outer); }
     ctx.restore();
-    label(ctx, wide ? 'Widths, the Sun = 1:  Arcturus 25,  Aldebaran 45,  Rigel 74 (blue-white),  Antares 680' : 'Arcturus 25, Aldebaran 45, Rigel 74, Antares 680', w / 2, h * 0.86, { align: 'center', colour: SOFT, size: wide ? 11 : 10 });
-    say('Giants, and then supergiants', 'Antares is 680 times as wide as the Sun');
+    label(ctx, wide ? 'Widths, the Sun = 1:  Arcturus 26,  Aldebaran 46,  Rigel 74 (blue-white),  Antares about 760' : 'Arcturus 26, Aldebaran 46, Rigel 74, Antares about 760', w / 2, h * 0.86, { align: 'center', colour: SOFT, size: wide ? 11 : 10 });
+    say('Giants, and then supergiants', 'Antares is about 760 times as wide as the Sun');
   },
 };
 

@@ -24,10 +24,13 @@ export const lens: Scene = {
     ring(ctx, cx, cy, rA, 'rgba(233,196,138,.3)', 1, [3, 5]); ring(ctx, cx, cy, rB, 'rgba(159,192,230,.3)', 1, [3, 5]);
     const ax = cx + Math.cos(a) * rA, ay = cy + Math.sin(a) * rA, bx = cx - Math.cos(a) * rB, by = cy - Math.sin(a) * rB;
     line(ctx, [ax, ay, bx, by], 'rgba(236,231,220,.25)');
-    dot(ctx, cx, cy, 2.4, 'rgba(236,231,220,.8)'); label(ctx, 'Balance point', cx, cy + 14, { align: 'center', colour: FAINT, size: 9 });
+    dot(ctx, cx, cy, 2.4, 'rgba(236,231,220,.8)');
     dot(ctx, ax, ay, 8, '#fff6e0'); dot(ctx, bx, by, 5, '#9fc0e6');
-    const ux = Math.cos(a), uy = Math.sin(a);
-    label(ctx, 'Sirius A, 2.06 Suns', ax + ux * 14, ay + uy * 18, { align: ux > 0 ? 'left' : 'right', colour: SOFT, size: 10 }); label(ctx, 'Sirius B, 1.02 Suns', bx - ux * 14, by - uy * 18, { align: ux > 0 ? 'right' : 'left', colour: SOFT, size: 10 });
+    // the names stand still in a key under the picture, each with its own dot, so nothing a star or the balance point does can run into them
+    const lx = Math.max(14, cx - 80);
+    [['#fff6e0', 8, 'Sirius A, 2.06 Suns', SOFT], ['#9fc0e6', 5, 'Sirius B, 1.02 Suns', SOFT], ['rgba(236,231,220,.8)', 2.4, 'Balance point', FAINT]].forEach(([colour, r, name, ink], k) => {
+      const ky = h - 46 + k * 15; dot(ctx, lx, ky, Math.min(r as number, 5), colour as string); label(ctx, name as string, lx + 14, ky, { colour: ink as string, size: 10 });
+    });
     say('Neither star stands still', `They go round a point between them every ${PERIOD} years`);
   },
 };
@@ -74,12 +77,20 @@ const kepler: Scene = {
   stillAt: 5,
   draw({ ctx, w, h, t, say }) {
     backdrop(ctx, w, h, 0.3);
-    const cx = w / 2, cy = h * 0.45, R = Math.min(w * 0.4, h * 0.34), pa = (t / 229) * 24 * TAU * 0.5, sa = (t / 41) * 24 * TAU * 0.5, r1 = R * 0.12, r2 = R * 0.2;
+    const cx = w / 2, cy = h * 0.45, R = Math.min(w * 0.3, h * 0.34), pa = (t / 229) * 24 * TAU * 0.5, sa = (t / 41) * 24 * TAU * 0.5, r1 = R * 0.12, r2 = R * 0.2;
     ring(ctx, cx, cy, R, 'rgba(159,192,230,.3)', 1, [3, 5]);
     dot(ctx, cx + Math.cos(sa) * r1, cy + Math.sin(sa) * r1, 6, '#ffd9a0'); dot(ctx, cx - Math.cos(sa) * r2 * 0.5, cy - Math.sin(sa) * r2 * 0.5, 4, '#e88f5a');
     dot(ctx, cx + Math.cos(pa) * R, cy + Math.sin(pa) * R, 4.5, '#9fc0e6');
-    label(ctx, 'Kepler-16b', cx + Math.cos(pa) * R, cy + Math.sin(pa) * R - 14, { align: 'center', colour: SOFT, size: 10 });
-    label(ctx, 'Stars: 41 days', cx, cy + r2 + 22, { align: 'center', colour: FAINT, size: 9 }); label(ctx, 'Planet: 229 days', cx, cy + R + 22, { align: 'center', colour: ACCENT, size: 10 });
+    // the planet's name and its 229 days ride together on the outside of its orbit, in the planet's own colour, away from the stars
+    const per = w > 560 ? 'Planet: 229 days' : '229 days', ux = Math.cos(pa), uy = Math.sin(pa), px = cx + ux * R, py = cy + uy * R, PL = '#9fc0e6';
+    if (Math.abs(ux) > 0.5) {
+      const al = ux > 0 ? 'left' : 'right', lx = px + ux * 10;
+      label(ctx, 'Kepler-16b', lx, py + uy * 6 - 5, { align: al, colour: PL, size: 10 }); label(ctx, per, lx, py + uy * 6 + 8, { align: al, colour: PL, size: 10 });
+    } else {
+      const d = uy > 0 ? 14 : -26;
+      label(ctx, 'Kepler-16b', px, py + d, { align: 'center', colour: PL, size: 10 }); label(ctx, per, px, py + d + 13, { align: 'center', colour: PL, size: 10 });
+    }
+    label(ctx, 'Stars: 41 days', cx, cy + r2 + 22, { align: 'center', colour: FAINT, size: 9 });
     say('A planet that has two suns', 'The pair turns about five and a half times for each lap of the planet');
   },
 };

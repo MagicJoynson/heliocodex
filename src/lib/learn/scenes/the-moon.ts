@@ -21,7 +21,7 @@ const near = photoScene({
   caption: `A real photograph: the near side of the Moon, by NASA’s Lunar Reconnaissance Orbiter. ${LRO} The marks were added here.`,
   say: ['The face you can see from your garden', 'Dark seas of old lava, and bright ground crowded with craters'],
   zoom: [0.96, 1.04],
-  pointers: [{ at: [0.3, 0.27], to: [0.14, 0.08], text: 'A sea of old lava', align: 'left' }, { at: [0.52, 0.8], to: [0.8, 0.93], text: 'Older, cratered ground' }],
+  pointers: [{ at: [0.3, 0.27], to: [0.14, 0.22], text: 'A sea of old lava', align: 'left' }, { at: [0.52, 0.8], to: [0.8, 0.93], text: 'Older, cratered ground' }],
 });
 
 // ---- 2. true sizes, true distance
@@ -56,7 +56,7 @@ const hitScene: Scene = {
     // the young Earth, still hot
     const g = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.3, R * 0.1, cx, cy, R); g.addColorStop(0, x > 2.6 && x < 9 ? '#ffb070' : '#c98a5a'); g.addColorStop(1, '#5a2f22');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.fill();
-    if (come < 1) { const tx = mix(w * 1.02, cx + R * 1.3, come * come), ty = mix(h * 0.08, cy - R * 0.5, come * come); dot(ctx, tx, ty, R * 0.53, '#8a5a48'); label(ctx, 'Theia', tx, ty - R * 0.53 - 10, { align: 'center', colour: SOFT }); }
+    if (come < 1) { const tx = mix(w * 1.02, cx + R * 1.3, come * come), ty = mix(h * 0.08, cy - R * 0.5, come * come); dot(ctx, tx, ty, R * 0.53, '#8a5a48'); label(ctx, 'Theia', Math.min(tx, w - 30), ty - R * 0.53 - 10 < 12 ? ty + R * 0.53 + 12 : ty - R * 0.53 - 10, { align: 'center', colour: SOFT }); }
     else {
       const flash = 1 - clamp((x - 2.6) / 1.2); if (flash > 0) sun(ctx, cx + R * 0.9, cy - R * 0.35, R * 1.4, flash, '255,235,200');
       const mx = cx + Math.cos(-t * 0.25) * R * 3, my = cy + Math.sin(-t * 0.25) * R * 3 * 0.45;
@@ -66,7 +66,7 @@ const hitScene: Scene = {
       }
       if (gather > 0.15) { dot(ctx, mx, my, R * 0.27 * gather, '#b9b6ae'); if (gather > 0.8) label(ctx, 'The Moon', mx, my - R * 0.27 - 10, { align: 'center', colour: ACCENT }); }
     }
-    label(ctx, 'The young Earth', cx, cy + R + 16, { align: 'center' });
+    label(ctx, 'The young Earth', cx, cy + R + 16, { align: 'center', plate: true });
     say(come < 1 ? 'About 4.5 billion years ago' : gather <= 0 ? 'The wreckage goes into orbit' : 'It gathers into the Moon', come < 1 ? 'Something perhaps the size of Mars is on its way' : 'Moon rock is a very close match for Earth rock');
   },
 };

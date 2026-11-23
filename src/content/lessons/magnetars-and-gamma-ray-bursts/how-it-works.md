@@ -18,6 +18,11 @@ lastChecked: 2026-11-12
 | An ordinary neutron star | about 100 million |
 | A magnetar | 1 billion to 100 billion |
 
+<figure class="photo">
+  <img src="/img/learn/charts/magnet-strengths.svg" alt="Four bars on a scale where each line is 100 times stronger. The Earth's field is the shortest, a strong magnet is longer, an ordinary neutron star is longer still, and a magnetar's bar reaches almost to the right-hand edge, with a paler stretch for the range of strengths." width="800" height="690" loading="lazy" />
+  <figcaption><b>A chart.</b> The four fields in the table, in tesla. The scale is not even: each line to the right is 100 times stronger than the one before, so the real gaps are far larger than they look. The paler part of the magnetar's bar is the range from 1 billion to 100 billion.</figcaption>
+</figure>
+
 The strongest magnetar field is about two thousand million million times the Earth's. Worked out here. A spoonful of a neutron star would weigh more than 100 million tonnes, and a magnetar turns slowly for a neutron star, once in 2 to 10 seconds.
 
 **Where the idea came from.** In the 1970s and 1980s satellites kept picking up flashes of gamma rays that came again and again from the same few places. On 5 March 1979 one flash was more than 100 times as strong as anything seen from beyond the Solar System before. It swamped the detectors on two Soviet Venus spacecraft, and 11 seconds later reached a third spacecraft elsewhere. In 1992 Robert Duncan and Christopher Thompson proposed that the sources were neutron stars with fields a thousand times stronger than usual. By 2021 astronomers had confirmed 31 magnetars among roughly 3,000 known neutron stars.

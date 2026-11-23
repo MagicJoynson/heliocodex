@@ -102,7 +102,7 @@ const shield: Scene = {
       if (y > 4 && y < h * 0.86) ctx.fillRect(x, y, 5, 1.4);
     }
     ring(ctx, cx, cy, r, '#3f78c9', 'rgba(255,255,255,.6)');
-    label(ctx, 'Earth', cx, cy + r + 16, { align: 'center' }); label(ctx, 'Wind from the Sun', 12, h * 0.06 + 10, { align: 'left', colour: ACCENT });
+    label(ctx, 'Earth', cx, cy + r + 16, { align: 'center', plate: true }); label(ctx, 'Wind from the Sun', 12, h * 0.06 + 10, { align: 'left', colour: ACCENT });
     say('A shield made by moving metal', 'Most of the wind from the Sun is turned aside');
   },
 };

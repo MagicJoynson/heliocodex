@@ -34,7 +34,7 @@ facts:
     about: [cosmic-web, cmb]
     source: { label: "NASA, dark matter and dark energy", url: "https://science.nasa.gov/universe/dark-matter-dark-energy/" }
   - id: exoplanet-count
-    text: "More than 6,000 planets have been confirmed round other stars. The first round a star like the Sun was found in 1995."
+    text: "More than 6,000 planets have been confirmed round other stars, as NASA’s list stood on 11 November 2026. The first round a star like the Sun was found in 1995."
     about: [neighbourhood, milky-way]
     source: { label: "NASA, exoplanets", url: "https://science.nasa.gov/exoplanets/" }
 
