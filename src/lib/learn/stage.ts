@@ -98,7 +98,13 @@ export function label(ctx: CanvasRenderingContext2D, text: string, x: number, y:
     const yy = chosen + q.i * lh;
     r.boxes.push({ x0: q.box.x0, x1: q.box.x1, y0: yy - half + 1, y1: yy + half - 1 });
     // `plate`: a dark patch behind the words, for a label that has to sit among lines (draw it after the lines)
-    if (opts.plate) { ctx.fillStyle = typeof opts.plate === 'string' ? opts.plate : 'rgba(11,11,12,.88)'; ctx.fillRect(q.box.x0 - 3, yy - half, widths[q.i] + 6, half * 2); ctx.fillStyle = opts.colour ?? FAINT; }
+    if (opts.plate) {
+      // soft-edged, so that it reads as a calm patch behind the words and not as a box
+      const pc = typeof opts.plate === 'string' ? opts.plate : 'rgba(11,11,12,.88)', sc = ctx.shadowColor, sb = ctx.shadowBlur;
+      ctx.fillStyle = pc; ctx.shadowColor = pc; ctx.shadowBlur = 9;
+      ctx.fillRect(q.box.x0 - 3, yy - half, widths[q.i] + 6, half * 2);
+      ctx.shadowColor = sc; ctx.shadowBlur = sb; ctx.fillStyle = opts.colour ?? FAINT;
+    }
     ctx.fillText(lines[q.i], q.x, yy);
   });
 }
