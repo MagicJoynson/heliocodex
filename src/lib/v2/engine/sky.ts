@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, uniform, texture, max, pow, smoothstep, atan, asin, vec2, mix } from 'three/tsl';
+import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, uniform, texture, max, pow, smoothstep, atan, asin, vec2, mix, fract, sin } from 'three/tsl';
 import { len, norm, type V3 } from './vec';
 
 /**
@@ -103,7 +103,9 @@ export function createSky(opts: { catalogue?: boolean } = {}) {
     // glare: a warm corona hugging the limb, and a faint wider one, both gone before the sprite's edge
     const out = max(float(0), q.sub(1));
     const corona = exp(out.mul(-3)).mul(1.1).add(exp(out.mul(-0.7)).mul(0.05)).mul(float(1).sub(edge)).mul(float(1).sub(smoothstep(0.55, 1, r)));
-    sunMat.colorNode = vec4(disc.add(vec3(1, 0.74, 0.46).mul(corona)).mul(sunBoost).mul(sunFade), 1);
+    // a trace of noise on the glow, so its slow fade does not show as bands of colour
+    const grain = fract(sin(dot(uv().mul(vec2(917.3, 541.7)), vec2(12.9898, 78.233))).mul(43758.5453)).sub(0.5).mul(2.2 / 255);
+    sunMat.colorNode = vec4(disc.add(vec3(1, 0.74, 0.46).mul(corona)).add(vec3(grain).mul(smoothstep(0, 0.02, corona))).mul(sunBoost).mul(sunFade), 1);
   }
   const sun = new THREE.Sprite(sunMat);
   sun.renderOrder = 5;

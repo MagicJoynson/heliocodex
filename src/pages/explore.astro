@@ -1110,6 +1110,7 @@ import { sections } from '../lib/nav';
       @media (max-width: 600px) { .coach { flex-direction: column; align-items: flex-start; gap: 8px; bottom: calc(var(--dock) + 112px); padding: 14px 18px; } .coach button { align-self: flex-end; padding: 4px 6px; } }
       .map, #step-in, #step-out, #fly-btn, .controls .zoom { display: none !important; }
       /* the place panel is gone: its name is in the readout, its distance in the ribbon; only Back is kept */
+      .deep-labels { clip-path: inset(calc(var(--top) + 100px) 0 0 0); }
       .where { width: auto; top: calc(var(--top) + 52px); }
       @media (max-width: 600px) { .where { top: calc(var(--top) + 108px); } .gen { top: calc(var(--top) + 160px); } }
       .where-h, .where-d { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
