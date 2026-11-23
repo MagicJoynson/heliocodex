@@ -60,13 +60,15 @@ const timeline: Scene = {
     ctx.fillStyle = 'rgba(159,192,230,.22)'; ctx.fillRect(X(1645), y - 18, (X(1715) - X(1645)) * k, 36);
     label(ctx, 'Maunder Minimum', (X(1645) + X(1715)) / 2, y - 30, { align: 'center', colour: SOFT, size: 9 });
     line(ctx, [x0, y, x0 + (x1 - x0) * k, y], 'rgba(236,231,220,.5)', 1.4);
-    for (let yr = 1600; yr <= 2000; yr += 100) { line(ctx, [X(yr), y - 5, X(yr), y + 5], 'rgba(236,231,220,.5)'); label(ctx, String(yr), X(yr), y + 18, { align: 'center', colour: FAINT, size: 9 }); }
+    for (let yr = 1600; yr <= 2000; yr += 100) { line(ctx, [X(yr), y - 5, X(yr), y + 5], 'rgba(236,231,220,.5)'); }
     EVENTS.forEach(([yr, name], i) => {
       if (X(yr) > x0 + (x1 - x0) * k) return;
       const up = i % 2 === 0, level = i < 2 ? 0 : i < 4 ? 1 : 0, ly = up ? y - 58 - level * 0 : y + 50 + (i === 3 ? 22 : 0), edge = X(yr) < x0 + 50 ? 'left' : X(yr) > x1 - 50 ? 'right' : 'center';
       line(ctx, [X(yr), y, X(yr), up ? ly + 8 : ly - 8], 'rgba(233,196,138,.5)'); dot(ctx, X(yr), y, 3.2, ACCENT);
       label(ctx, `${yr}`, X(yr), ly, { align: edge as CanvasTextAlign, colour: ACCENT, size: 10 }); label(ctx, name, X(yr), ly + (up ? -14 : 14), { align: edge as CanvasTextAlign, colour: SOFT, size: 9 });
     });
+    // the year marks go on last, on a dark patch, so that no event's line runs through one
+    for (let yr = 1600; yr <= 2000; yr += 100) label(ctx, String(yr), X(yr), y + 18, { align: 'center', colour: FAINT, size: 9, plate: true });
     say('We have watched the Sun for four hundred years', 'And the eleven-year beat is only an average');
   },
 };

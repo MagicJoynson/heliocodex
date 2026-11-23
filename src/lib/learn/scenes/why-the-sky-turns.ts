@@ -70,9 +70,9 @@ const poleScene: Scene = {
       ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.strokeStyle = 'rgba(233,196,138,.4)'; ctx.lineWidth = 1; ctx.stroke();
       for (const [x, y] of pts) dot(ctx, x, y, 2.2, INK);
       const mx = pts.reduce((n, p) => n + p[0], 0) / pts.length, my = pts.reduce((n, p) => n + p[1], 0) / pts.length;
-      label(ctx, g.name!, mx, my + (my > py ? 22 : -22), { align: 'center', colour: SOFT });
+      label(ctx, g.name!, mx, my + (my > py ? 22 : -22), { align: 'center', colour: SOFT, plate: true });
     }
-    const [qx, qy] = at(POLARIS[0], 90 - POLARIS[1]); sun(ctx, qx, qy, 3.4, 1, '255,240,210'); label(ctx, 'The pole star', qx + 10, qy - 10, { colour: ACCENT });
+    const [qx, qy] = at(POLARIS[0], 90 - POLARIS[1]); sun(ctx, qx, qy, 3.4, 1, '255,240,210'); label(ctx, 'The pole star', qx + 10, qy - 10, { colour: ACCENT, plate: true });
     ctx.restore();
     ctx.fillStyle = '#0b0b0c'; ctx.fillRect(0, hy, w, h - hy); line(ctx, [0, hy, w, hy], 'rgba(236,231,220,.35)');
     label(ctx, 'North', cx, hy + 14, { align: 'center', colour: FAINT }); label(ctx, 'West', w * 0.06, hy + 14, { colour: FAINT }); label(ctx, 'East', w * 0.94, hy + 14, { align: 'right', colour: FAINT });

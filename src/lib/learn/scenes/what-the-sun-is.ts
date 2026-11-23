@@ -104,9 +104,9 @@ const insideScene: Scene = {
     for (let i = 0; i < n; i++) pts.push(cx + walker[i * 2] * R, cy + walker[i * 2 + 1] * R);
     if (pts.length > 3) { line(ctx, pts, 'rgba(60,30,10,.75)', 1); dot(ctx, pts[pts.length - 2], pts[pts.length - 1], 2.6, '#201008'); }
     if (x > 12.5) { const k = clamp((x - 12.5) / 1.2), a = Math.atan2(walker[walker.length - 1], walker[walker.length - 2]); line(ctx, [cx + Math.cos(a) * R, cy + Math.sin(a) * R, cx + Math.cos(a) * (R + k * s * 0.3), cy + Math.sin(a) * (R + k * s * 0.3)], ACCENT, 1.4); }
-    const tag = (text: string, r: number, a: number) => { ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 5; label(ctx, text, cx + Math.cos(a) * r * R, Math.max(cy + Math.sin(a) * r * R, cy - R + 14), { align: 'center', colour: '#1a0d05', size: w < 520 ? 9 : 11 }); ctx.shadowBlur = 0; };
+    const tag = (text: string, r: number, a: number) => { ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 5; label(ctx, text, cx + Math.cos(a) * r * R, Math.max(cy + Math.sin(a) * r * R, cy - R + 14), { align: 'center', colour: '#1a0d05', size: w < 520 ? 9 : 11, plate: r > 0.7 ? '#c96a2a' : '#f2a850' }); ctx.shadowBlur = 0; };
     ctx.shadowColor = 'transparent';
-    label(ctx, 'Core', cx, cy - R * 0.12, { align: 'center', colour: '#3a2408' });
+    label(ctx, 'Core', cx, cy - R * 0.12, { align: 'center', colour: '#3a2408', plate: '#ffd98f' });
     tag('Light struggles out', 0.48, -Math.PI / 2); tag(w < 520 ? 'Boiling gas' : 'Gas boils up and sinks', 0.85, -Math.PI / 2);
     say(x < 12.5 ? 'In the core: 15.7 million degrees' : 'Out at last: 8 minutes 19 seconds to the Earth', x < 12.5 ? 'Light made here takes many thousands of years to get out' : 'after many thousands of years inside the Sun');
   },

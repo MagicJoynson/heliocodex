@@ -43,10 +43,10 @@ const day: Scene = {
       ctx.fillStyle = '#1a2233'; ctx.fillRect(xa + (W / 16) * 0.6, y, (W / 16) * 0.4, bh);
     }
     ctx.fillStyle = 'rgba(11,11,12,.72)'; ctx.fillRect(x0 + W * go, y, W * (1 - go), bh);
-    label(ctx, 'On the ground: one', x0, y2 - 12, { align: 'left', colour: SOFT });
     ctx.fillStyle = '#1a2233'; ctx.fillRect(x0, y2, W, bh); ctx.fillStyle = '#f1dba8'; ctx.fillRect(x0 + W * 0.25, y2, W * 0.5, bh);
     ctx.fillStyle = 'rgba(11,11,12,.72)'; ctx.fillRect(x0 + W * go, y2, W * (1 - go), bh);
     line(ctx, [x0 + W * go, y - 4, x0 + W * go, y2 + bh + 4], '#fff', 1.4);
+    label(ctx, 'On the ground: one', x0, y2 - 12, { align: 'left', colour: SOFT, plate: true }); // after the moving line, on a dark patch
     for (const hr of [0, 6, 12, 18, 24]) label(ctx, hr === 24 ? 'midnight' : hr === 0 ? 'midnight' : hr === 12 ? 'noon' : `${hr}:00`, x0 + (hr / 24) * W, y2 + bh + 18, { align: hr === 0 ? 'left' : hr === 24 ? 'right' : 'center', colour: SOFT, size: 11 });
     label(ctx, `So far: ${Math.min(16, Math.floor(go * 16 + 0.999))}`, x1, y - 12, { align: 'right', colour: SOFT });
     say('A day with sixteen dawns', 'Once round the Earth every 90 minutes');
