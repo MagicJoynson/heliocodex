@@ -21,7 +21,7 @@ const magnets: Scene = {
     MAGNETS.forEach(([name, val, v], i) => {
       const k = ease(clamp((t - 0.3 - i * 1) / 1, 0, 1)), y = top + i * rowH;
       ctx.fillStyle = i === 3 ? '#b9a7ff' : 'rgba(233,196,138,.6)'; ctx.fillRect(x0, y + rowH * 0.55, (X(v) - x0) * k, Math.max(4, rowH * 0.26));
-      if (k > 0.05) { label(ctx, name, x0, y + rowH * 0.32, { align: 'left', colour: '#fff', size: wide ? 12 : 11 }); label(ctx, val, x1, y + rowH * 0.32, { align: 'right', colour: i === 3 ? '#b9a7ff' : SOFT, size: wide ? 12 : 10 }); }
+      if (k > 0.05) { label(ctx, name, x0, y + rowH * 0.32, { align: 'left', colour: '#fff', size: wide ? 12 : 11, plate: true }); label(ctx, val, x1, y + rowH * 0.32, { align: 'right', colour: i === 3 ? '#b9a7ff' : SOFT, size: wide ? 12 : 10, plate: true }); }
     });
     say('The strongest magnets there are', 'A hundred billion times a strong hand magnet');
   },

@@ -48,7 +48,7 @@ function chart(f: Frame, o: { reveal?: number; pick?: Pick; ours?: number } = {}
     for (const [name, days, r, dx, dy, align] of OURS) {
       const x = X(Math.log10(days)), y = Y(Math.log10(r));
       dot(ctx, x, y, 3.2, '#7fb4ff'); ring(ctx, x, y, 5.5, 'rgba(127,180,255,.6)');
-      label(ctx, name, x + dx, y + dy, { align, colour: '#a9cbff', size: 10 });
+      label(ctx, name, x + dx, y + dy, { align, colour: '#a9cbff', size: 10, plate: true });
     }
     ctx.globalAlpha = 1;
   }

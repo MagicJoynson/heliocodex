@@ -110,7 +110,7 @@ export function photoScene(o: PhotoOptions): Scene {
           bx = right ? Math.min(bx, w - tw) : Math.max(bx, tw);
           ctx.strokeStyle = 'rgba(236,231,220,.6)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
           ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 6;
-          label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right', size: w < 520 ? 13 : 11 });
+          label(ctx, q.text, bx + (right ? 6 : -6), by, { colour: INK, align: right ? 'left' : 'right', size: w < 520 ? 13 : 11, plate: true });
           ctx.shadowBlur = 0;
         }
         ctx.globalAlpha = 1;

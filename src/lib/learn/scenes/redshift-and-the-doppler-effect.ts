@@ -76,8 +76,8 @@ const stretch: Scene = {
       ctx.moveTo(xa + (xb - xa) * f0, y + Math.sin(f0 * n * TAU - t * 3) * amp); ctx.lineTo(xa + (xb - xa) * f1, y + Math.sin(f1 * n * TAU - t * 3) * amp); ctx.stroke();
     }
     dot(ctx, xa, y, 5, '#cdb8ff'); dot(ctx, xb, y, 4, '#5f8fc4');
-    label(ctx, 'A far galaxy', Math.min(Math.max(xa, 44), w - 44), h * 0.66, { align: 'center', colour: SOFT, size: 11 }); label(ctx, 'Us', xb, h * 0.66, { align: 'center', colour: SOFT, size: 11 });
-    label(ctx, k < 0.5 ? 'Blue when it set out' : 'Red by the time it arrives', cx, h * 0.12, { align: 'center', colour: hue(430 + 240 * k), size: 12 });
+    label(ctx, 'A far galaxy', Math.min(Math.max(xa, 44), w - 44), h * 0.66, { align: 'center', colour: SOFT, size: 11, plate: true }); label(ctx, 'Us', xb, h * 0.66, { align: 'center', colour: SOFT, size: 11, plate: true });
+    label(ctx, k < 0.5 ? 'Blue when it set out' : 'Red by the time it arrives', cx, h * 0.12, { align: 'center', colour: hue(430 + 240 * k), size: 12, plate: true });
     say('Space grows, and stretches the light', 'The longer the journey, the redder the light');
   },
 };

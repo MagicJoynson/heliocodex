@@ -29,8 +29,8 @@ const ball: Scene = {
   draw({ ctx, w, h, t, say }) {
     const cx = w / 2, cy = h * 0.43, S = Math.max(w, h) * 0.6, Rm = Math.min(w * 0.36, h * 0.34), r = Rm * ease(clamp(t / 5, 0, 1));
     field(ctx, cx, cy, S, w, h, (x, y) => (Math.hypot(x - cx, y - cy) < r ? 1 : 0));
-    ringAt(ctx, cx, cy, r, ACCENT); dot(ctx, cx, cy, 4, '#fff'); label(ctx, 'Us', cx, cy + 18, { align: 'center' });
-    if (r >= Rm) { label(ctx, 'Seen', cx, cy - Rm * 0.55, { align: 'center', colour: ACCENT }); label(ctx, 'Out of sight', cx, cy + Rm + 22, { align: 'center', colour: SOFT }); }
+    ringAt(ctx, cx, cy, r, ACCENT); dot(ctx, cx, cy, 4, '#fff'); label(ctx, 'Us', cx, cy + 18, { align: 'center', plate: true });
+    if (r >= Rm) { label(ctx, 'Seen', cx, cy - Rm * 0.55, { align: 'center', colour: ACCENT, plate: true }); label(ctx, 'Out of sight', cx, cy + Rm + 22, { align: 'center', colour: SOFT, plate: true }); }
     say('A limit to sight', 'Light from further off has not had time to arrive');
   },
 };
@@ -67,8 +67,8 @@ const other: Scene = {
   draw({ ctx, w, h, t, say }) {
     const cy = h * 0.43, r = Math.min(w * 0.27, h * 0.33), ax = w / 2 - r * 0.62, bx = w / 2 + r * 0.62, k = ease(clamp((t - 1) / 3, 0, 1)), S = Math.max(w, h) * 0.6;
     field(ctx, w / 2, cy, S, w, h, (x, y) => Math.max(Math.hypot(x - ax, y - cy) < r ? 1 : 0, Math.hypot(x - bx, y - cy) < r * k ? 0.8 : 0));
-    ringAt(ctx, ax, cy, r, ACCENT); dot(ctx, ax, cy, 4, '#fff'); label(ctx, 'Us', ax, cy + 18, { align: 'center' });
-    if (k > 0) { ringAt(ctx, bx, cy, r * k, 'rgba(140,180,255,.95)', true); dot(ctx, bx, cy, 4, 'rgba(140,180,255,1)'); label(ctx, 'Them', bx, cy + 18, { align: 'center', colour: 'rgba(140,180,255,1)' }); }
+    ringAt(ctx, ax, cy, r, ACCENT); dot(ctx, ax, cy, 4, '#fff'); label(ctx, 'Us', ax, cy + 18, { align: 'center', plate: true });
+    if (k > 0) { ringAt(ctx, bx, cy, r * k, 'rgba(140,180,255,.95)', true); dot(ctx, bx, cy, 4, 'rgba(140,180,255,1)'); label(ctx, 'Them', bx, cy + 18, { align: 'center', colour: 'rgba(140,180,255,1)', plate: true }); }
     say('The same view from somewhere else', 'Every place is the centre of what can be seen from it');
   },
 };
@@ -82,8 +82,8 @@ const beyond: Scene = {
     // more and more galaxies come into view as the circle shrinks
     for (let ring = 0; ring < 3; ring++) field(ctx, cx + (ring - 1) * S * 0.37 * k, cy + (ring - 1) * S * 0.21 * k, S * mix(1, 0.75 + ring * 0.2, k), w, h, (x, y) => (Math.hypot(x - cx, y - cy) < r ? 1 : 0.25 * k));
     ringAt(ctx, cx, cy, r, ACCENT);
-    label(ctx, 'All we can see', cx, cy + r + 20, { align: 'center', colour: ACCENT });
-    if (k > 0.7) label(ctx, 'How far does it go on?', cx, h * 0.1, { align: 'center', colour: SOFT });
+    label(ctx, 'All we can see', cx, cy + r + 20, { align: 'center', colour: ACCENT, plate: true });
+    if (k > 0.7) label(ctx, 'How far does it go on?', cx, h * 0.1, { align: 'center', colour: SOFT, plate: true });
     say('Beyond the edge of sight', 'No middle and no edge have ever been found');
   },
 };

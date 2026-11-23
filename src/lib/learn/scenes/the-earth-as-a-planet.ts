@@ -56,10 +56,10 @@ const insideScene: Scene = {
       if (wide) {
         const a = -TAU / 8 + (i - 1.5) * 0.3, px = cx + Math.cos(a) * mid, py = cy + Math.sin(a) * mid, lx = w * 0.64, ly = h * (0.72 - i * 0.16);
         line(ctx, [px, py, lx - 8, ly], 'rgba(236,231,220,.45)'); dot(ctx, px, py, 2, '#0b0b0c');
-        label(ctx, l.name, lx, ly - 7, { align: 'left', colour: i === 3 ? ACCENT : undefined }); label(ctx, l.note, lx, ly + 9, { align: 'left', colour: SOFT, size: 11 });
+        label(ctx, l.name, lx, ly - 7, { align: 'left', colour: i === 3 ? ACCENT : undefined, plate: true }); label(ctx, l.note, lx, ly + 9, { align: 'left', colour: SOFT, size: 11, plate: true });
       } else {
         const ly = h * 0.62 + i * h * 0.075;
-        dot(ctx, w * 0.1, ly, 5, l.colour); label(ctx, l.name, w * 0.1 + 14, ly, { align: 'left' }); label(ctx, l.note, w * 0.42, ly, { align: 'left', colour: SOFT, size: 11 });
+        dot(ctx, w * 0.1, ly, 5, l.colour); label(ctx, l.name, w * 0.1 + 14, ly, { align: 'left', plate: true }); label(ctx, l.note, w * 0.42, ly, { align: 'left', colour: SOFT, size: 11, plate: true });
       }
       ctx.globalAlpha = 1;
     });
@@ -92,7 +92,7 @@ const seaScene: Scene = {
     label(ctx, 'Air', px + 10, py + 2.5 * km, { align: 'left', colour: SOFT });
     label(ctx, 'The sea: 3.6 km', px + 10, top + sea / 2, { align: 'left', colour: '#fff' });
     label(ctx, 'Rock of the sea floor: about 5 km', px + 10, top + sea + crust / 2, { align: 'left', colour: '#fff' });
-    label(ctx, 'The mantle begins', px + 10, top + sea + crust + (py + ph - top - sea - crust) / 2, { align: 'left', colour: '#fff' });
+    label(ctx, 'The mantle begins', px + 10, top + sea + crust + (py + ph - top - sea - crust) / 2, { align: 'left', colour: '#fff', plate: true });
     // scale bar
     const bx = px + pw - 14; line(ctx, [bx, top, bx, top + 5 * km], '#ece7dc', 1.4); line(ctx, [bx - 4, top, bx + 4, top], '#ece7dc'); line(ctx, [bx - 4, top + 5 * km, bx + 4, top + 5 * km], '#ece7dc');
     label(ctx, '5 km', bx - 8, top + 2.5 * km, { align: 'right', colour: SOFT, size: 11 });

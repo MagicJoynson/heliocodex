@@ -66,7 +66,7 @@ const hitScene: Scene = {
       }
       if (gather > 0.15) { dot(ctx, mx, my, R * 0.27 * gather, '#b9b6ae'); if (gather > 0.8) label(ctx, 'The Moon', mx, my - R * 0.27 - 10, { align: 'center', colour: ACCENT }); }
     }
-    label(ctx, 'The young Earth', cx, cy + R + 16, { align: 'center' });
+    label(ctx, 'The young Earth', cx, cy + R + 16, { align: 'center', plate: true });
     say(come < 1 ? 'About 4.5 billion years ago' : gather <= 0 ? 'The wreckage goes into orbit' : 'It gathers into the Moon', come < 1 ? 'Something perhaps the size of Mars is on its way' : 'Moon rock is a very close match for Earth rock');
   },
 };

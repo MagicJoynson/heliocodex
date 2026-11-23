@@ -173,7 +173,7 @@ const lightScene: Scene = {
     const stage = Math.floor((t % (each * stages)) / each), grow = ease(((t % each) / each) * 1.5);
     ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(cx, cy, unit, 0, TAU); ctx.fill();
     ctx.strokeStyle = 'rgba(233,196,138,.55)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(cx, cy, unit, 0, TAU); ctx.stroke();
-    label(ctx, 'The edge', cx, cy + unit + 14, { align: 'center' });
+    label(ctx, 'The edge', cx, cy + unit + 14, { align: 'center', plate: true });
     if (stage === lamps.length) {
       ctx.fillStyle = ACCENT; ctx.beginPath(); ctx.arc(cx, cy - unit, 3, 0, TAU); ctx.fill();
       say('Lamp at the edge itself', 'No light gets away');
@@ -222,7 +222,7 @@ const s2Scene: Scene = {
     for (let i = 1; i <= 26; i++) { const [x, y] = at(E - i * 0.012); ctx.fillStyle = `rgba(236,231,220,${0.5 * (1 - i / 26)})`; ctx.fillRect(x - 0.6, y - 0.6, 1.2, 1.2); }
     const [sx, sy] = at(E);
     ctx.fillStyle = '#cfe0ff'; ctx.beginPath(); ctx.arc(sx, sy, 3, 0, TAU); ctx.fill();
-    label(ctx, 'S2', sx + 9, sy - 9, { colour: SOFT });
+    label(ctx, 'S2', sx + 9, sy - 9, { colour: SOFT, plate: true });
     ctx.strokeStyle = 'rgba(138,132,120,.8)'; ctx.beginPath(); ctx.arc(fx, fy, Math.max(30 * scale, 2.5), 0, TAU); ctx.stroke();
     ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(fx, fy, 1.6, 0, TAU); ctx.fill();
     ctx.strokeStyle = ACCENT; ctx.beginPath(); ctx.arc(fx, fy, 1.6, 0, TAU); ctx.stroke();

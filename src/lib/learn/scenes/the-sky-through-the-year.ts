@@ -42,7 +42,7 @@ const nightScene = (both: boolean): Scene => ({
     backdrop(ctx, w, h, 0.4);
     const { L, month } = when(t), { cx, cy, R, ex, ey, out } = orbit(ctx, w, h, L), far = Math.min(w * 0.44, h * 0.42);
     const marks: [string, number][] = both ? [['Orion', 84], ['Scorpius', 247]] : [['Orion', 84]];
-    for (const [name, deg] of marks) { const x = cx + Math.cos(deg * RAD) * far, y = cy - Math.sin(deg * RAD) * far; for (let i = 0; i < 5; i++) dot(ctx, x + Math.cos(i * 2.4) * 9, y + Math.sin(i * 1.7) * 9, 1.6, INK); label(ctx, name, x, y + 24, { align: 'center', colour: SOFT }); }
+    for (const [name, deg] of marks) { const x = cx + Math.cos(deg * RAD) * far, y = cy - Math.sin(deg * RAD) * far; for (let i = 0; i < 5; i++) dot(ctx, x + Math.cos(i * 2.4) * 9, y + Math.sin(i * 1.7) * 9, 1.6, INK); label(ctx, name, x, y + 24, { align: 'center', colour: SOFT, plate: true }); }
     line(ctx, [ex, ey, ex + Math.cos(out) * R * 0.9, ey - Math.sin(out) * R * 0.9], ACCENT, 1.5);
     const tx = ex + Math.cos(out) * R * 0.9, ty = ey - Math.sin(out) * R * 0.9; line(ctx, [tx, ty, tx - Math.cos(out - 0.5) * 8, ty + Math.sin(out - 0.5) * 8], ACCENT, 1.5); line(ctx, [tx, ty, tx - Math.cos(out + 0.5) * 8, ty + Math.sin(out + 0.5) * 8], ACCENT, 1.5);
     const facing = (deg: number) => Math.cos((L + 180 - deg) * RAD);
@@ -59,7 +59,7 @@ const zodiacScene: Scene = {
     backdrop(ctx, w, h, 0.35);
     const { L, month } = when(t), { cx, cy, ex, ey } = orbit(ctx, w, h, L), far = Math.min(w * 0.42, h * 0.41), now = nearest(L), narrow = w < 520;
     line(ctx, [ex, ey, cx + Math.cos(L * RAD) * far * 0.9, cy - Math.sin(L * RAD) * far * 0.9], 'rgba(255,214,140,.55)', 1, [3, 4]);
-    for (const [name, deg] of ZODIAC) { const x = cx + Math.cos(deg * RAD) * far, y = cy - Math.sin(deg * RAD) * far, on = name === now; dot(ctx, x, y, on ? 3 : 2, on ? ACCENT : 'rgba(236,231,220,.5)'); label(ctx, narrow && !on ? name.slice(0, 3) : name, x + Math.cos(deg * RAD) * 12, y - Math.sin(deg * RAD) * 12, { align: Math.cos(deg * RAD) > 0.3 ? 'left' : Math.cos(deg * RAD) < -0.3 ? 'right' : 'center', colour: on ? ACCENT : FAINT }); }
+    for (const [name, deg] of ZODIAC) { const x = cx + Math.cos(deg * RAD) * far, y = cy - Math.sin(deg * RAD) * far, on = name === now; dot(ctx, x, y, on ? 3 : 2, on ? ACCENT : 'rgba(236,231,220,.5)'); label(ctx, narrow && !on ? name.slice(0, 3) : name, x + Math.cos(deg * RAD) * 12, y - Math.sin(deg * RAD) * 12, { align: Math.cos(deg * RAD) > 0.3 ? 'left' : Math.cos(deg * RAD) < -0.3 ? 'right' : 'center', colour: on ? ACCENT : FAINT, plate: true }); }
     say(`${month}: the Sun is in front of ${now}`, 'It is up by day, so you cannot see it');
   },
 };

@@ -38,7 +38,7 @@ const fog: Scene = {
       if (k < 0.5) { ctx.strokeStyle = 'rgba(255,225,140,.9)'; ctx.lineWidth = 1.4; ctx.beginPath(); let x = w * (0.15 + 0.12 * i), y = y0; ctx.moveTo(x, y); const r = rng(i * 7 + Math.floor(t * 3)); for (let j = 0; j < 5; j++) { x += (r() - 0.5) * 46; y += (r() - 0.5) * 46; ctx.lineTo(x, clamp(y, top + 4, top + hh - 4)); } ctx.stroke(); }
       else { const x = ((c - 5) * 0.2 + i * 0.13) % 1 * w; line(ctx, [x - 30, y0, x, y0], 'rgba(255,225,140,.95)', 1.8); }
     }
-    label(ctx, k < 0.5 ? 'Before: a glowing fog' : 'After: clear, and dark', 10, top + 18, { align: 'left', colour: k < 0.5 ? '#fff' : ACCENT });
+    label(ctx, k < 0.5 ? 'Before: a glowing fog' : 'After: clear, and dark', 10, top + 18, { align: 'left', colour: k < 0.5 ? '#fff' : ACCENT, plate: `rgb(${Math.round(mix(120, 9, k))},${Math.round(mix(52, 10, k))},${Math.round(mix(20, 13, k))})` });
     say('380,000 years after the start, the fog cleared', 'The light set free then is still on its way');
   },
 };
@@ -71,7 +71,7 @@ const shell: Scene = {
     const cx = w / 2, cy = h * 0.4, R = Math.min(w * 0.36, h * 0.34);
     for (let i = 0; i < 90; i++) { const a = (i / 90) * TAU, hot = Math.sin(i * 12.9898) * 43758.5453 % 1; ctx.strokeStyle = hot > 0 ? 'rgba(255,150,90,.75)' : 'rgba(110,170,255,.75)'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(cx, cy, R, a, a + TAU / 90 + 0.01); ctx.stroke(); }
     for (let i = 0; i < 12; i++) { const a = (i / 12) * TAU + 0.2, p = ((t * 0.25 + i * 0.37) % 1), r0 = R * (1 - p), r1 = Math.max(8, r0 - 18); line(ctx, [cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * r1, cy + Math.sin(a) * r1], 'rgba(255,225,140,.8)', 1.4); }
-    dot(ctx, cx, cy, 4, '#5a9bff'); label(ctx, 'Us', cx, cy + 20, { align: 'center' });
+    dot(ctx, cx, cy, 4, '#5a9bff'); label(ctx, 'Us', cx, cy + 20, { align: 'center', plate: true });
     label(ctx, 'Where the fog cleared', cx, cy - R - 12, { align: 'center', colour: ACCENT });
     say('The same glow from every direction', 'It is as far back as light can show');
   },

@@ -113,7 +113,7 @@ const watchScene: Scene = {
       if (px < 0 || px > w || py < 0 || py > h * 0.9) continue;
       dot(ctx, px, py, 1.1, 'rgba(236,231,220,.7)');
     }
-    label(ctx, 'The Earth’s orbit', cx, cy + au + 14, { align: 'center', colour: SOFT });
+    label(ctx, 'The Earth’s orbit', cx, cy + au + 14, { align: 'center', colour: SOFT, plate: true });
     say(`${Math.round(found * 43238).toLocaleString('en-GB')} found`, 'Each one has a known path that can be worked out years ahead');
   },
 };
@@ -129,8 +129,8 @@ const target = photoScene({
 // ---- 7. the orbit that changed
 /** A name set right beside a dot, on the side pointing along (ux, uy), so it never lies over the dot or across the drawing's middle. */
 function beside(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, ux: number, uy: number, opts: { colour?: string } = {}): void {
-  if (Math.abs(ux) > 0.5) label(ctx, text, x + ux * 18, y + uy * 6, { align: ux > 0 ? 'left' : 'right', ...opts });
-  else label(ctx, text, x, y + uy * 20, { align: 'center', ...opts });
+  if (Math.abs(ux) > 0.5) label(ctx, text, x + ux * 18, y + uy * 6, { align: ux > 0 ? 'left' : 'right', plate: true, ...opts });
+  else label(ctx, text, x, y + uy * 20, { align: 'center', plate: true, ...opts });
 }
 
 const orbitScene: Scene = {

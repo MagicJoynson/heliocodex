@@ -35,7 +35,7 @@ const wheels: Scene = {
     dot(ctx, cx, cy, 5, '#5f8fc4'); dot(ctx, px, py, 3.5, '#fff');
     // the Earth's name stands still in a key at the bottom corner, because the planet's circles take it everywhere else
     dot(ctx, 16, h - 14, 5, '#5f8fc4'); label(ctx, 'The Earth, still', 28, h - 14, { colour: SOFT });
-    label(ctx, 'The planet', px + 10, py - 12, { align: 'left', colour: '#fff' });
+    label(ctx, 'The planet', px + 10, py - 12, { align: 'left', colour: '#fff', plate: true });
     say('Circles upon circles', 'Ptolemy’s answer to the backward loops, about AD 150');
   },
 };

@@ -50,7 +50,7 @@ const collapseScene: Scene = {
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r); g.addColorStop(0, '#fff'); g.addColorStop(1, k < 1 ? '#ffb070' : '#bcd6ff');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.fill();
     if (k < 0.05) label(ctx, 'The core, as wide as the Earth', cx, cy + s * 0.3 + 16, { align: 'center' });
-    if (k >= 1) { line(ctx, [cx + 6, cy - 6, cx + 34, cy - 34], 'rgba(236,231,220,.5)'); label(ctx, 'Neutron star, 20 km', cx + 38, cy - 38, { colour: ACCENT }); }
+    if (k >= 1) { line(ctx, [cx + 6, cy - 6, cx + 34, cy - 34], 'rgba(236,231,220,.5)'); label(ctx, 'Neutron star, 20 km', cx + 38, cy - 38, { colour: ACCENT, plate: true }); }
     say(k < 1 ? `Core ${nf(Math.round(km / (km > 1000 ? 100 : 10)) * (km > 1000 ? 100 : 10))} km across` : 'About 20 km across: the size of a city', k < 1 ? 'More than the mass of the Sun, falling in' : 'The rest of the star is blown away: a supernova');
   },
 };

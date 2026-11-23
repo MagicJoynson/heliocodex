@@ -82,9 +82,9 @@ const far: Scene = {
     for (const [v, name] of [[100, '100'], [1000, '1,000'], [10000, '10,000'], [100000, '100,000']] as [number, string][]) { line(ctx, [X(v), y0 - 26, X(v), y0 + step + 20], 'rgba(236,231,220,.18)'); label(ctx, name, X(v), y0 + step + 36, { align: 'center', colour: FAINT, size: 9 }); }
     DIST.forEach(([name, v, col], i) => {
       const y = y0 + i * step, xv = x0 + (X(v) - x0) * k;
-      label(ctx, name, x0, y - 22, { align: 'left', colour: SOFT, size: 10 });
+      label(ctx, name, x0, y - 22, { align: 'left', colour: SOFT, size: 10, plate: true });
       line(ctx, [x0, y, xv, y], 'rgba(236,231,220,.25)'); dot(ctx, xv, y, 6, col);
-      if (k > 0.95) label(ctx, v.toLocaleString('en-GB'), Math.min(xv + 12, w - 60), y + (xv > w * 0.7 ? 20 : 0), { align: 'left', colour: SOFT, size: 10 });
+      if (k > 0.95) label(ctx, v.toLocaleString('en-GB'), Math.min(xv + 12, w - 60), y + (xv > w * 0.7 ? 20 : 0), { align: 'left', colour: SOFT, size: 10, plate: true });
     });
     label(ctx, 'Light years', x1, y0 + step + 54, { align: 'right', colour: FAINT, size: 9 });
     say('One is a neighbour, the other tens of thousands of light years off', 'M13 is more than fifty times as far as the Pleiades');

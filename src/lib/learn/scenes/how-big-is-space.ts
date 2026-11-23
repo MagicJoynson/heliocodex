@@ -69,8 +69,8 @@ const ballScene: Scene = {
     pitch(ctx, cx, cy, pxPerM);
     const r = (BALL_M / 2) * pxPerM;
     if (r > 6) sun(ctx, cx, cy, r, clamp((r - 6) / 10)); else dot(ctx, cx, cy, Math.max(r, 0.8), '#ffd88c');
-    if (k > 0.9) label(ctx, 'The Sun: a football, 22 cm', cx, cy + r * 2.9 + 14, { align: 'center', colour: ACCENT });
-    else if (k < 0.1) label(ctx, 'The Sun is on the centre spot', cx, cy - 9.15 * pxPerM - 14, { align: 'center', colour: SOFT });
+    if (k > 0.9) label(ctx, 'The Sun: a football, 22 cm', cx, cy + r * 2.9 + 14, { align: 'center', colour: ACCENT, plate: true });
+    else if (k < 0.1) label(ctx, 'The Sun is on the centre spot', cx, cy - 9.15 * pxPerM - 14, { align: 'center', colour: SOFT, plate: true });
     say('The Sun, 1.39 million km wide', 'shrunk to a football 22 cm wide');
   },
 };
@@ -93,7 +93,7 @@ const planetsScene: Scene = {
       const ang = -0.9 - i * 0.5 + t * 0.03 / (i + 1), px = cx + Math.cos(ang) * r, py = cy + Math.sin(ang) * r;
       if (px > 14 && px < w - 14 && py > 22 && py < h - 8) {
         dot(ctx, px, py, 2.4, `rgba(233,196,138,${a})`);
-        ctx.globalAlpha = a; label(ctx, `${name}, ${what}, ${far}`, px + (px > cx ? -8 : 8), py - 11, { colour: SOFT, align: px > cx ? 'right' : 'left' }); ctx.globalAlpha = 1;
+        ctx.globalAlpha = a; label(ctx, `${name}, ${what}, ${far}`, px + (px > cx ? -8 : 8), py - 11, { colour: SOFT, align: px > cx ? 'right' : 'left', plate: true }); ctx.globalAlpha = 1;
       }
     });
     dot(ctx, cx, cy, Math.max((BALL_M / 2) * pxPerM, 1.2), '#ffd88c');
@@ -150,7 +150,7 @@ const emptyScene: Scene = {
       const lx = px + (left ? -6 : 6), ly = py - 8, tw = name.length * (w < 520 ? 9 : 7), box: [number, number, number] = left ? [lx - tw, lx, ly] : [lx, lx + tw, ly];
       if (drawn.some(([a, b, y]) => Math.abs(y - ly) < 14 && box[0] < b + 4 && box[1] > a - 4)) continue;
       drawn.push(box);
-      label(ctx, name, lx, ly, { colour: SOFT, align: left ? 'right' : 'left' });
+      label(ctx, name, lx, ly, { colour: SOFT, align: left ? 'right' : 'left', plate: true });
     }
     const au = (upto / pxPerAu);
     say(`${nf(au * M_PER_AU)} m from the football: ${nf(au * AU_KM / 1e6)} million km`, k >= 1 ? 'All the rest of the line is empty space' : `Last thing passed: ${last}`);
@@ -172,7 +172,7 @@ const nextScene: Scene = {
     const put = (text: string, x: number, y: number, right: boolean, colour?: string): boolean => {
       const wd = wid(text), x0 = Math.min(Math.max(right ? x - wd : x, 4), w - 4 - wd), box = [x0, x0 + wd, y - 5, y + 5]; // where label() will keep it
       if (taken.some((o) => box[0] < o[1] + 3 && o[0] < box[1] + 3 && box[2] < o[3] + 3 && o[2] < box[3] + 3)) return false;
-      taken.push(box); label(ctx, text, x0, y, { align: 'left', colour }); return true;
+      taken.push(box); label(ctx, text, x0, y, { align: 'left', colour, plate: true }); return true;
     };
     const px = cx + PROXIMA_M * pxPerM, pa = px < w + 20 ? clamp((w + 20 - px) / 60) : 0;
     if (pa > 0) { ctx.globalAlpha = pa; put('Proxima Centauri', px, cy - 24, true, ACCENT); put('a ball 3 cm across', px, cy - 10, true); ctx.globalAlpha = 1; }
