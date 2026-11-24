@@ -4,7 +4,12 @@ import '@fontsource/spectral/300.css';
 import '@fontsource/spectral/400.css';
 import '@fontsource/ibm-plex-mono/400.css';
 import { sections } from '../lib/nav';
+import { hasReaderTools } from '../lib/reader';
+import ReaderTools from './ReaderTools.astro';
+interface Props { title?: string; path?: string }
+const { title = '', path = '' } = Astro.props;
 ---
+{title && path && hasReaderTools(path) && <ReaderTools title={title} path={path} />}
 <footer class="site-footer">
   <div class="foot-grid">
     <div class="foot-brand">

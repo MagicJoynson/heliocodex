@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '../styles/phone-floor.css';
+import '../styles/print.css';
 import Analytics from '../components/Analytics.astro';
 import { groups } from '../lib/nav';
 import SiteNav from '../components/SiteNav.astro';
@@ -64,7 +65,7 @@ const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? ti
       </script>
     </header>
     <main id="main" tabindex="-1"><slot /></main>
-    <SiteFooter />
+    <SiteFooter title={title} path={path} />
     <ThreeDReturn />
   </body>
 </html>

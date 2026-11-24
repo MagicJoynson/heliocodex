@@ -1,6 +1,7 @@
 ---
 import Analytics from '../components/Analytics.astro';
 import '../styles/phone-floor.css';
+import '../styles/print.css';
 import { groups } from '../lib/nav';
 import SiteNav from '../components/SiteNav.astro';
 import SiteSearch from '../components/SiteSearch.astro';
@@ -159,7 +160,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
         )}
       </div>
     </section>
-    <SiteFooter />
+    <SiteFooter title={title} path={`/${world}`} />
     <ThreeDReturn />
     <script>
       // the altitude ruler belongs to the fall; it steps aside once the page reaches its ending
