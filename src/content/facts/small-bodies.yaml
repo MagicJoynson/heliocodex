@@ -69,14 +69,14 @@ facts:
     about: [things-that-hit-the-earth]
     source: { label: "NASA, DART mission impact changed asteroid's motion in space", url: "https://www.nasa.gov/news-release/nasa-confirms-dart-mission-impact-changed-asteroids-motion-in-space/" }
   - id: chicxulub
-    text: "About 66 million years ago a rock struck what is now the coast of Mexico and left a crater about 180 km wide. The impact is linked to the loss of more than seven in every ten kinds of living thing on the Earth, the dinosaurs among them."
+    text: "Under the sea off Mexico's Yucatán coast lies the buried Chicxulub crater, 180 km wide and 900 metres deep. Most scientists take it as the sign of the asteroid that wiped out more than 70% of living species, the dinosaurs among them."
     about: [things-that-hit-the-earth]
     source: { label: "NASA, Asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }
   - id: chelyabinsk
-    text: "On 15 February 2013 a rock the size of a house burst in the air over Chelyabinsk in Russia with the force of about 440,000 tonnes of explosive. The blast broke windows over a wide area, and hundreds of people were hurt, mostly by flying glass."
+    text: "The blast over Chelyabinsk, Russia, on 15 February 2013 was as strong as 440,000 tonnes of TNT. The rock was only about the size of a house, yet its shock wave broke windows across roughly 500 square kilometres."
     about: [things-that-hit-the-earth]
     source: { label: "NASA, Asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }
   - id: meteor-crater
-    text: "Meteor Crater in Arizona is 1.2 km wide and 180 metres deep. A lump of rock and metal only 30 to 50 metres across made it, about 50,000 years ago, in a few seconds. What did the damage was its speed."
+    text: "Meteor Crater in Arizona is 1.2 km wide and 180 metres deep. It was made about 50,000 years ago by an asteroid thought to have been only 30 to 50 metres across."
     about: [things-that-hit-the-earth]
     source: { label: "NASA, Asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }

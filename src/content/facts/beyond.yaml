@@ -28,7 +28,7 @@ facts:
   - id: universe-age
     text: "The universe is 13.8 billion years old. The figure comes from the faint glow left over from its first hot stage, mapped across the whole sky by the Planck spacecraft."
     about: [cmb, cosmic-web]
-    source: { label: "ESA, the Planck mission", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck" }
+    source: { label: "ESA, Planck reveals an almost perfect Universe", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_reveals_an_almost_perfect_Universe" }
   - id: universe-ingredients
     text: "Everything made of atoms, every star, planet and person, comes to about 5% of what the universe contains. About 27% is dark matter and 68% is dark energy, and nobody yet knows what either is."
     about: [cosmic-web, cmb]
@@ -173,12 +173,12 @@ facts:
     basis: worked-out
     source: { label: "NASA, Messier 1 (the Crab Nebula)", url: "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-1/" }
   - id: magnetar-flare
-    text: "On 27 December 2004 a magnetar on the far side of our galaxy flared. In about a fifth of a second it gave out as much energy as the Sun does in a quarter of a million years, if it was about 49,000 light years away."
+    text: "A giant flare from the magnetar SGR 1806-20, on the far side of our galaxy, was much brighter than any earlier flare seen from it. In its first fifth of a second it released as much energy as the Sun radiates in a quarter of a million years."
     about: [magnetars-and-gamma-ray-bursts]
     basis: worked-out
     source: { label: "Hurley and others, An exceptionally bright flare from SGR 1806-20 (Nature, 2005)", url: "https://arxiv.org/abs/astro-ph/0502329" }
   - id: supernova-1987a-neutrinos
-    text: "In February 1987 a star blew up in the Large Magellanic Cloud, 168,000 light years away. Deep underground, three detectors caught 25 neutrinos that came straight from its collapsing core. It was the first supernova seen without a telescope since 1604."
+    text: "The nearest supernova seen in hundreds of years blew up in the Large Magellanic Cloud, a neighbouring galaxy, and was first sighted on 23 February 1987. Detectors caught a flash of neutrinos from the star just as it erupted, a sign that a neutron star or black hole formed."
     about: [supernovae]
     source: { label: "NASA, The dawn of a new era for Supernova 1987A", url: "https://science.nasa.gov/missions/hubble/the-dawn-of-a-new-era-for-supernova-1987a/" }
   - id: hawking-glow
@@ -189,7 +189,7 @@ facts:
   - id: black-hole-picture
     text: "The first picture of a black hole, published in 2019, shows a ring of glowing gas round a dark middle. The shadow belongs to a black hole 6.5 billion times as heavy as the Sun, in a galaxy about 55 million light years away."
     about: [the-event-horizon]
-    source: { label: "NASA, Black holes", url: "https://science.nasa.gov/universe/black-holes/" }
+    source: { label: "ESO, Astronomers capture first image of a black hole (10 April 2019)", url: "https://www.eso.org/public/news/eso1907/" }
   - id: space-between-stars
     text: "A cubic centimetre of the air you breathe holds about 25 million million million molecules. The same cube of space in our galaxy, with its gas spread out evenly, holds about one atom."
     about: [the-stuff-between-the-stars, milky-way]

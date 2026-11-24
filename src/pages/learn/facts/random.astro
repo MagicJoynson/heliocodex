@@ -19,7 +19,7 @@ const first = pool.find((f) => f.lead) ?? pool[0];
   <header class="reading-head">
     <p class="label"><a href="/learn">Learn</a> / <a href="/learn/facts">Facts</a> / One at a time</p>
     <h1>A fact at a time</h1>
-    <p class="lead">Each one is measured or worked out from measurements, and links to where it comes from. Press the button for another.</p>
+    <p class="lead">Each one names its source and says whether it was measured, worked out from measurements, or comes from a model. Press the button for another.</p>
   </header>
 
   <section class="draw" data-draw>
@@ -83,7 +83,6 @@ const first = pool.find((f) => f.lead) ?? pool[0];
       };
       angle += turn;
       arm.style.transform = `rotate(${angle}deg)`;
-      history.replaceState(null, '', `#${f.id}`);
       prev.disabled = p === 0;
       if (reduce) return paint();
       fact.style.opacity = '0';
@@ -100,6 +99,12 @@ const first = pool.find((f) => f.lead) ?? pool[0];
       }
       pos = n; show(n, turn);
     }
+    // A link to a fact (#id) opened while the page is already showing: put it next in the deck.
+    addEventListener('hashchange', () => {
+      const w = pool.findIndex((f) => f.id === decodeURIComponent(location.hash.slice(1)));
+      if (w < 0) return;
+      deck.splice(deck.indexOf(w), 1); deck.splice(pos + 1, 0, w); go(1);
+    });
     next.addEventListener('click', () => go(1));
     prev.addEventListener('click', () => go(-1));
     go(1);
@@ -122,12 +127,13 @@ const first = pool.find((f) => f.lead) ?? pool[0];
   .more { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin: 1.1rem 0 0; font: 300 1.05rem/1.5 var(--r-serif); }
   .actions { grid-area: actions; display: flex; align-items: center; gap: 1.4rem; margin: 0; align-self: start; }
   .actions[hidden] { display: none; }
-  .go { white-space: nowrap; font: 400 .8rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: #15110a; background: var(--accent); border: 0; padding: .95rem 1.5rem; min-height: 44px; cursor: pointer; border-radius: 2px; }
+  .go { white-space: nowrap; font: 400 .85rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: #15110a; background: var(--accent); border: 0; padding: .95rem 1.5rem; min-height: 44px; cursor: pointer; border-radius: 2px; }
   .go:hover { background: #f3d6a4; }
-  .back { font: 400 .76rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); background: none; border: 0; padding: .9rem .2rem; min-height: 44px; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(233, 196, 138, .5); text-underline-offset: .25em; }
+  .back { font: 400 .85rem/1 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); background: none; border: 0; padding: .9rem .2rem; min-height: 44px; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(233, 196, 138, .5); text-underline-offset: .25em; }
   .back:hover:not(:disabled) { color: var(--accent); }
   .back:disabled { opacity: .4; cursor: default; text-decoration: none; }
   .go:focus-visible, .back:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .draw .label { font-size: .85rem; }
   .note { color: var(--ink-soft); }
   @media (max-width: 800px) {
     .draw { grid-template-columns: minmax(0, 1fr); grid-template-areas: "hang" "panel" "actions"; grid-template-rows: auto auto auto; row-gap: 1.2rem; }
