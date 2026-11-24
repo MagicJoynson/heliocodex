@@ -233,7 +233,18 @@ const moonR2 = MOON_KM * sk2;
   const svg = fig?.querySelector<SVGSVGElement>('svg');
   // the drawing is 600 units wide and shrinks with the column; tell the words how much, so they stay 13 px on screen at any width
   if (fig && svg && 'ResizeObserver' in window) {
-    const tell = () => { /* a drawing held down by its height shrinks by that instead */ const r = svg.getBoundingClientRect(), w = Math.min(r.width, r.height); if (w > 0) fig.style.setProperty('--u', String(w / 600)); };
+    const tell = () => { /* a drawing held down by its height shrinks by that instead */ const r = svg.getBoundingClientRect(), w = Math.min(r.width, r.height); if (w > 0) { fig.style.setProperty('--u', String(w / 600)); tidy(); } };
+    // once the words are their true size, a ring name that would touch another word or run off the drawing is left out (the caption still names every ring)
+    const tidy = () => {
+      const keep: DOMRect[] = [];
+      const box = (t: SVGGraphicsElement) => { const b = t.getBBox(); return new DOMRect(b.x - 6, b.y - 3, b.width + 12, b.height + 6); };
+      const hit = (a: DOMRect, c: DOMRect) => a.x < c.x + c.width && c.x < a.x + a.width && a.y < c.y + c.height && c.y < a.y + a.height;
+      svg.querySelectorAll<SVGGraphicsElement>('.foc-t, .me-t').forEach((t) => { t.removeAttribute('visibility'); const b = t.getBBox(); const over = Math.max(0, 2 - b.x) - Math.max(0, b.x + b.width - 598); if (over) t.setAttribute('transform', `translate(${over} 0)`); else t.removeAttribute('transform'); keep.push(box(t)); });
+      [...svg.querySelectorAll<SVGGraphicsElement>('.ring-t')].forEach((t) => {
+        t.removeAttribute('visibility'); const b = box(t);
+        if (b.x < 0 || b.x + b.width > 600 || keep.some((k) => hit(b, k))) t.setAttribute('visibility', 'hidden'); else keep.push(b);
+      });
+    };
     new ResizeObserver(tell).observe(svg); tell();
   }
   const path = svg?.querySelector<SVGEllipseElement>('ellipse.path');

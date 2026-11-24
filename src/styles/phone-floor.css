@@ -44,3 +44,10 @@
 .plate figcaption, .site-menu-btn, .wmenu-btn, .moons thead th, .moons .go a, .atlas-toc a, .ruler .more a { font-size: .8125rem !important; }
 .profile svg text, .up-ring .r-alt, .up-ring .r-dir { font-size: 13.6px !important; }
 @media (max-width: 700px) { .profile svg text { font-size: 21px !important; } }
+
+/* Maths in lessons: the small raised and lowered figures are drawn at 0.7 of the line, so the line is made big enough that they stay at 13 px or more on a phone. */
+@media (max-width: 700px) {
+  .katex { font-size: max(1.21em, 18.6px) !important; }
+  /* and the smallest figures (a raised figure on a lowered one) are held at the floor too */
+  .katex .mord, .katex .mbin, .katex .mrel, .katex .mpunct { font-size: max(1em, 13px) !important; }
+}

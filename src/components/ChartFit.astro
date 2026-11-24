@@ -11,10 +11,19 @@
       if (!vb || !vb.width || !w) continue;
       svg.closest('figure')?.classList.toggle('narrow', w < 560 && svg.classList.contains('keyed'));
       const scale = w / vb.width, texts = [...svg.querySelectorAll<SVGTextElement>('text')].filter((t) => !t.closest('.km'));
-      for (const t of texts) if (!t.dataset.fs) t.dataset.fs = String(parseFloat(getComputedStyle(t).fontSize) || 16);
+      const extra = [...svg.querySelectorAll<SVGElement>('.km text, tspan')];
+      for (const t of [...texts, ...extra] as unknown as HTMLElement[]) if (!t.dataset.fs) t.dataset.fs = String(parseFloat(getComputedStyle(t).fontSize) || 16);
       const most = Math.max(...texts.map((t) => +t.dataset.fs!));
       const f = Math.min(1, 17 / (most * scale));
-      for (const t of texts) { const fs = +t.dataset.fs!; t.style.fontSize = `${Math.max(fs * f, 13 / scale).toFixed(1)}px`; }
+      const floor = 13.05 / scale; // a little over 13 so that rounding cannot leave a word at 12.9
+      for (const t of texts) { const fs = +t.dataset.fs!; t.style.fontSize = `${Math.max(fs * f, floor).toFixed(1)}px`; }
+      // words inside the .km groups and sizes set on a span of a word keep their size but never go under the floor
+      for (const t of extra) {
+        const el = t as unknown as HTMLElement;
+        const fs = +el.dataset.fs!;
+        const own = t.tagName === 'tspan' ? fs * f : fs;
+        el.style.fontSize = `${Math.max(own, floor).toFixed(1)}px`;
+      }
     }
   };
   // charts can be hidden at first (a story that opens later) or change width, so each is watched
