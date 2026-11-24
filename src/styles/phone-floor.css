@@ -33,3 +33,11 @@
     content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 24px; transform: translateY(-50%);
   }
 }
+
+/* Desktop floor: the same 13 px for the small mono labels that sat under it at every width. Only labels measured under 13 px on a desktop are listed
+   here, because a rule like this must never make a bigger label smaller. */
+.site-menu .menu-h, .wmenu-h, .rec-crumbs, .rec-crumbs a, .rec-crumbs span, .rec-go a, .rc dt, .rec-sheet dt, .label, .go-see, .go-see a, .d-time,
+.opener figcaption b, .prose figure.photo figcaption b, .prose table th, .alt-label, .wglance dt, .wg-go a, .names dt, .also, .sky-hint, .bar-row button,
+.bar-look button, .bar-look .label, .pop summary .label, .pop summary span, .pop-body button, .more-h3, .ml-strand, .back h2, .plain-list a, .kicker, .profile figcaption, .plates figcaption, .more-btn, .more-link, .plate-world, .worlds li span, .ledger thead th, .ledger .kind, .ledger-kicker, .sheets a, .drawn-list span { font-size: .8125rem !important; }
+.profile svg text, .up-ring .r-alt, .up-ring .r-dir { font-size: 13px !important; }
+@media (max-width: 700px) { .profile svg text { font-size: 21px !important; } }
