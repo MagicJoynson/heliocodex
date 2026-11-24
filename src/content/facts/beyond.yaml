@@ -173,12 +173,12 @@ facts:
     basis: worked-out
     source: { label: "NASA, Messier 1 (the Crab Nebula)", url: "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-1/" }
   - id: magnetar-flare
-    text: "A giant flare from the magnetar SGR 1806-20, on the far side of our galaxy, was much brighter than any earlier flare seen from it. In its first fifth of a second it released as much energy as the Sun radiates in a quarter of a million years."
+    text: "The magnetar SGR 1806-20, in our own galaxy, gave out a flare so bright that in a fifth of a second it matched the energy the Sun puts out over 250,000 years."
     about: [magnetars-and-gamma-ray-bursts]
     basis: worked-out
     source: { label: "Hurley and others, An exceptionally bright flare from SGR 1806-20 (Nature, 2005)", url: "https://arxiv.org/abs/astro-ph/0502329" }
   - id: supernova-1987a-neutrinos
-    text: "The nearest supernova seen in hundreds of years blew up in the Large Magellanic Cloud, a neighbouring galaxy, and was first sighted on 23 February 1987. Detectors caught a flash of neutrinos from the star just as it erupted, a sign that a neutron star or black hole formed."
+    text: "A star in the Large Magellanic Cloud, a small galaxy beside ours, was first seen exploding on 23 February 1987. Detectors recorded a burst of neutrinos as it blew up, so astronomers are fairly sure it left a neutron star or a black hole behind."
     about: [supernovae]
     source: { label: "NASA, The dawn of a new era for Supernova 1987A", url: "https://science.nasa.gov/missions/hubble/the-dawn-of-a-new-era-for-supernova-1987a/" }
   - id: hawking-glow
