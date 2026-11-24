@@ -156,7 +156,7 @@ import { sections } from '../lib/nav';
     <div class="gears throttle" id="gears" role="group" aria-label="Throttle" hidden>
       <div class="tl" aria-hidden="true"><span>Hover</span><span id="gear-name">Local</span><span>Warp</span></div>
       <input type="range" id="throttle" min="0" max="8" step="1" value="0" aria-label="Throttle" />
-      <p class="th" aria-hidden="true"><span class="fine-only">Scroll or hold W · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
+      <p class="th" aria-hidden="true"><span class="fine-only">Scroll one notch, one gear · hold W to go · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
     </div>
     <nav class="scale" id="scale" aria-label="Where you are, from the Sun out to the whole universe. Choose a stop to fly there." inert>
       <div class="scale-line"><i class="scale-you" id="scale-you"></i></div>
@@ -173,11 +173,11 @@ import { sections } from '../lib/nav';
     <div class="coach" id="coach" hidden role="note">
       <p><b>1</b><span class="fine-only">Drag to look around</span><span class="coarse-only">Drag to look around</span></p>
       <p><b>2</b><span class="fine-only">Click a world to fly there</span><span class="coarse-only">Tap a world to fly there</span></p>
-      <p><b>3</b><span class="fine-only">Scroll or hold W for speed</span><span class="coarse-only">Slide the throttle for speed</span></p>
+      <p><b>3</b><span class="fine-only">Scroll: one notch, one gear. Or hold W</span><span class="coarse-only">Slide the throttle for speed</span></p>
       <button type="button" id="coach-ok">Got it</button>
     </div>
     <div class="aim" id="aim" hidden aria-hidden="true"><b id="aim-n"></b><span id="aim-d"></span><i>Click to fly there</i><button type="button" class="aim-go" id="aim-go">Fly here</button></div>
-    <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to look round · Scroll or hold W for speed · Click a world to go there</span><span class="coarse-only">Drag to look round · Slide the throttle for speed · Tap a world to go there</span></p>
+    <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to look round · Scroll one notch, one gear · Click a world to go there</span><span class="coarse-only">Drag to look round · Slide the throttle for speed · Tap a world to go there</span></p>
     <section class="tour" id="tour" aria-label="Guided tour" hidden>
       <p class="tour-k" id="tour-k">Stop 1 of 10</p>
       <h2 class="tour-h" id="tour-h">Home</h2>
@@ -860,8 +860,11 @@ import { sections } from '../lib/nav';
       body.in .threshold::before { opacity: 0; }
       .threshold { position: fixed; inset: 0; z-index: 2; display: grid; place-content: center; justify-items: center; text-align: center; padding: 24px; transition: opacity 1s ease .2s; }
       /* the title and intro sit on a dark backing so the orbit labels under them (Uranus, Jupiter) do not show through the words */
-      .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; position: relative; background: rgba(0,0,0,.94); box-shadow: 0 0 26px 26px rgba(0,0,0,.94); border-radius: 12px; }
-      .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; position: relative; background: rgba(0,0,0,.94); box-shadow: 0 0 26px 26px rgba(0,0,0,.94); border-radius: 12px; }
+      .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; }
+      .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; }
+      /* the planet labels stay off until you are in: they sat under the title, the intro and the Enter ring */
+      .deep-labels { transition: opacity .6s ease; } body:not(.arrived) .deep-labels { opacity: 0; }
+      @media (max-height: 520px) { .threshold { padding-top: 62px; padding-bottom: 12px; } .name { font-size: 2.4rem; margin-bottom: .4rem; } .line { font-size: 1rem; margin-bottom: 12px; max-width: 40em; } .threshold .aperture { width: 112px; } .note { margin-top: 10px; } }
       .aperture { position: relative; width: clamp(150px, 22vmin, 210px); aspect-ratio: 1; display: grid; place-items: center; transition: transform .8s cubic-bezier(.6,0,.3,1), opacity .5s ease .4s; }
       .aperture svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
       .ring { fill: none; stroke: rgba(236,231,220,.55); stroke-width: .8; vector-effect: non-scaling-stroke; transition: stroke .4s, r .8s cubic-bezier(.6,0,.3,1); }
@@ -909,7 +912,7 @@ import { sections } from '../lib/nav';
       .aim b { font: 400 1.4rem/1.1 var(--serif); }
       .aim span { font: 300 .9375rem/1.3 var(--serif); color: var(--soft); }
       .aim i { margin-top: 6px; font: 600 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; font-style: normal; color: var(--warm); }
-      .scale { position: fixed; z-index: 19; left: 50%; top: calc(var(--top) + 52px); transform: translateX(-50%); width: min(720px, calc(100vw - 32px)); opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
+      .scale { position: fixed; z-index: 19; left: 50%; top: calc(var(--top) + 52px); transform: translateX(-50%); width: min(720px, calc(100vw - 32px)); background: rgba(9,9,11,.86); border-radius: 14px; padding: 2px 8px 0; box-sizing: border-box; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .scale { opacity: 1; pointer-events: auto; }
       .scale-line { position: relative; height: 1px; margin: 9px 6% 0; background: rgba(236,231,220,.35); }
       .scale-you { position: absolute; top: -6px; left: 0; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: var(--warm); box-shadow: 0 0 14px rgba(241,201,142,.6); transition: left .25s linear; }
@@ -1021,7 +1024,7 @@ import { sections } from '../lib/nav';
       @media (pointer: coarse) { .coarse-only { display: inline; } .fine-only { display: none; } }
 
       /* the touch pad, only while flying yourself */
-      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 64px; height: 150px; border: 1px solid var(--line); border-radius: 32px; background: rgba(9,9,11,.5); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 64px; height: 150px; border: 1px solid var(--line); border-radius: 32px; background: rgba(9,9,11,.86); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
       .pad span { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
       .pad i { width: 22px; height: 1px; background: rgba(236,231,220,.3); }
       .pad.on { border-color: var(--warm); }
