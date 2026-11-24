@@ -2,7 +2,7 @@
 title: "Licences and credits"
 description: "Who owns what on Heliocodex, the licences behind every picture, map, catalogue, font and tool we use, and how to reuse our work or tell us about a problem."
 lead: "Heliocodex stands on other people's work, most of it given freely to the public by NASA and by astronomers who put their catalogues online. This page says whose each part is, on what terms it is shared and what you may do with it."
-updated: 2026-11-16
+updated: 2026-11-24
 ---
 
 <div class="short-version">
@@ -37,6 +37,8 @@ The photographs on the planet pages are from NASA missions and photographers. Ea
 **How NASA material may be used.** NASA's media guidelines say NASA content is generally not subject to copyright in the United States, and that it may be used for educational or informational purposes, including web pages, as long as NASA is acknowledged as the source. They say it must not be used to suggest that NASA endorses a product, service or organisation, and that NASA's insignia, logotype and seal are not in the public domain and need NASA's approval. JPL's policy asks for a credit such as "Courtesy NASA/JPL-Caltech" unless the caption says otherwise. We follow both: each image carries the credit that came with it, no NASA or JPL logo is used anywhere on the site, and the [terms](/terms) and the foot of every page say that Heliocodex is independent of NASA.
 
 **What we have done to them.** We have resized and compressed the images so that they load quickly. We say in the caption where an image has been computed, coloured or enhanced by someone else, for example the Great Red Spot picture, which is an enhanced colour image made by Gerald Eichstädt from JunoCam data, and the picture of Maat Mons, which is computer-generated from Magellan radar data with the height exaggerated.
+
+**Link previews.** When a link to a lesson, a world or a planet is shared, the picture that appears with it is the page's own opening picture, cut to a wide shape and made smaller, with nothing added. Its credit is the one printed under the picture on the page. Pages whose opening picture we do not reuse in this way, such as the Great Red Spot, show the Heliocodex card instead.
 
 **Images that have an owner besides NASA.** Where NASA has used a third party's picture, or a person has processed NASA's data and credited themselves, that person keeps their rights and their credit, and NASA's permission does not pass on theirs. If you want to reuse a photograph from this site, please go to NASA or the source in the credit, check the terms that come with the original and use their copy, not ours.
 

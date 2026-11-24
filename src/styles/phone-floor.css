@@ -50,4 +50,6 @@
   .katex { font-size: max(1.21em, 18.6px) !important; }
   /* and the smallest figures (a raised figure on a lowered one) are held at the floor too */
   .katex .mord, .katex .mbin, .katex .mrel, .katex .mpunct { font-size: max(1em, 13px) !important; }
+  /* the hidden copy that screen readers read is held at the floor as well, so no text on the page measures under it */
+  .katex-mathml, .katex-mathml * { font-size: 13px !important; }
 }

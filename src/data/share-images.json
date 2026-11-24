@@ -1,0 +1,782 @@
+{
+ "/earth": {
+  "src": "/img/share/earth.jpg",
+  "alt": "The whole Earth against black space, with Africa, white Antarctic ice and swirls of cloud.",
+  "from": "/img/earth-blue-marble.jpg",
+  "mode": "whole"
+ },
+ "/learn/active-galaxies-and-quasars": {
+  "src": "/img/share/learn-active-galaxies-and-quasars.jpg",
+  "alt": "A glowing orange ring round a dark centre",
+  "from": "/img/learn/m87-black-hole-eht.jpg",
+  "mode": "whole"
+ },
+ "/learn/air-and-the-greenhouse": {
+  "src": "/img/share/learn-air-and-the-greenhouse.jpg",
+  "alt": "A smooth cream-white globe with faint tan swirls of cloud, on black.",
+  "from": "/img/learn/venus-mariner-10.jpg",
+  "mode": "whole"
+ },
+ "/learn/are-we-alone": {
+  "src": "/img/share/learn-are-we-alone.jpg",
+  "alt": "A dark grainy picture crossed by pale bands of light, with one tiny pale speck in the right-hand band",
+  "from": "/img/learn/pale-blue-dot-voyager.jpg",
+  "mode": "whole"
+ },
+ "/learn/atoms-and-the-four-forces": {
+  "src": "/img/share/learn-atoms-and-the-four-forces.jpg",
+  "alt": "A golden-brown picture crossed by slanting ridges, each ridge made up of rows of small round bumps.",
+  "from": "/img/learn/gold-atoms-stm.jpg",
+  "mode": "whole"
+ },
+ "/learn/back-to-the-moon-and-on-to-mars": {
+  "src": "/img/share/learn-back-to-the-moon-and-on-to-mars.jpg",
+  "alt": "A grey cratered landscape seen from straight above, with crater floors near the middle filled with black shadow.",
+  "from": "/img/learn/moon-south-pole-clementine.jpg",
+  "mode": "whole"
+ },
+ "/learn/balance-points": {
+  "src": "/img/share/learn-balance-points.jpg",
+  "alt": "The whole sunlit Earth, blue with white cloud, with the grey Moon passing in front of it.",
+  "from": "/img/learn/earth-moon-dscovr-2015.jpg",
+  "mode": "whole"
+ },
+ "/learn/brown-dwarfs": {
+  "src": "/img/share/learn-brown-dwarfs.jpg",
+  "alt": "Six orange and yellow globes in a ring, each with a faint grid and blotchy lighter and darker patches, labelled with times from 0 to 4.1 hours.",
+  "from": "/img/learn/luhman-16b-weather-map.jpg",
+  "mode": "fill"
+ },
+ "/learn/colour-and-brightness": {
+  "src": "/img/share/learn-colour-and-brightness.jpg",
+  "alt": "A sky crowded with stars above three white radio dishes at night. One star in the middle is plainly orange among blue ones.",
+  "from": "/img/learn/orion-over-alma-eso.jpg",
+  "mode": "fill"
+ },
+ "/learn/comets": {
+  "src": "/img/share/learn-comets.jpg",
+  "alt": "A grey, peanut-shaped lump of rock and ice against black, with bright jets spraying from its right-hand end.",
+  "from": "/img/learn/comet-hartley-2-epoxi-2010.jpg",
+  "mode": "whole"
+ },
+ "/learn/constellations": {
+  "src": "/img/share/learn-constellations.jpg",
+  "alt": "A sky crowded with stars above three white radio dishes at night. The pattern of Orion is in the middle, with one orange star among blue ones.",
+  "from": "/img/learn/orion-over-alma-eso.jpg",
+  "mode": "fill"
+ },
+ "/learn/dark-matter-and-dark-energy": {
+  "src": "/img/share/learn-dark-matter-and-dark-energy.jpg",
+  "alt": "A crowd of yellow galaxies with thin blue arcs of light curving among them",
+  "from": "/img/learn/abell-370-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/double-and-multiple-stars": {
+  "src": "/img/share/learn-double-and-multiple-stars.jpg",
+  "alt": "Two brilliant stars side by side on black, each with four long spikes of light.",
+  "from": "/img/learn/alpha-centauri-a-b-hubble.jpg",
+  "mode": "fill"
+ },
+ "/learn/falling-into-a-black-hole": {
+  "src": "/img/share/learn-falling-into-a-black-hole.jpg",
+  "alt": "A glowing orange disc of streaked gas seen at a slant, with a round black hole in the middle outlined by a thin bright ring.",
+  "from": "/img/learn/black-hole-disc-simulation-nasa.jpg",
+  "mode": "fill"
+ },
+ "/learn/falling-rocks": {
+  "src": "/img/share/learn-falling-rocks.jpg",
+  "alt": "A thin bright streak in a sky full of stars and the Milky Way, above the black shapes of fir trees.",
+  "from": "/img/learn/perseid-meteor-2021.jpg",
+  "mode": "fill"
+ },
+ "/learn/finding-neptune": {
+  "src": "/img/share/learn-finding-neptune.jpg",
+  "alt": "Neptune, a deep blue globe with a dark spot and wisps of white cloud",
+  "from": "/img/learn/neptune-voyager-2.jpg",
+  "mode": "whole"
+ },
+ "/learn/from-a-still-earth-to-a-moving-one": {
+  "src": "/img/share/learn-from-a-still-earth-to-a-moving-one.jpg",
+  "alt": "An old printed page with a diagram of circles one inside another. The word Sol is at the centre and Latin labels run round each ring.",
+  "from": "/img/learn/copernicus-sun-centred-diagram-1543.jpg",
+  "mode": "whole"
+ },
+ "/learn/giants-and-supergiants": {
+  "src": "/img/share/learn-giants-and-supergiants.jpg",
+  "alt": "A blurred orange disc with lighter and darker patches, on black.",
+  "from": "/img/learn/antares-surface-vlti.jpg",
+  "mode": "whole"
+ },
+ "/learn/gravity-as-a-lens": {
+  "src": "/img/share/learn-gravity-as-a-lens.jpg",
+  "alt": "Hundreds of galaxies on a black sky. Many are soft yellow ovals. Among them are thin blue arcs and streaks, the longest a bright curved streak in the lower left.",
+  "from": "/img/learn/abell-370-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/how-big-is-space": {
+  "src": "/img/share/learn-how-big-is-space.jpg",
+  "alt": "A dark picture crossed by faint bands of light, with one tiny pale speck in the right-hand band.",
+  "from": "/img/learn/pale-blue-dot-voyager.jpg",
+  "mode": "whole"
+ },
+ "/learn/how-big-is-the-universe": {
+  "src": "/img/share/learn-how-big-is-the-universe.jpg",
+  "alt": "An oval map of the whole sky mottled evenly in blue, green, yellow and red specks.",
+  "from": "/img/learn/cmb-wmap-9-year.jpg",
+  "mode": "fill"
+ },
+ "/learn/how-it-all-ends": {
+  "src": "/img/share/learn-how-it-all-ends.jpg",
+  "alt": "A long, narrow picture of a tilted spiral galaxy: a bright yellow centre, lanes of dark dust and a blue outer rim crowded with stars.",
+  "from": "/img/learn/andromeda-hubble-mosaic.jpg",
+  "mode": "whole"
+ },
+ "/learn/how-planets-are-found": {
+  "src": "/img/share/learn-how-planets-are-found.jpg",
+  "alt": "A large white disc with a blue-green fringe in the middle of a black frame, and a much smaller, fuzzy red dot to its lower left. Labels give a name and a separation.",
+  "from": "/img/learn/2m1207-planet-vlt.jpg",
+  "mode": "whole"
+ },
+ "/learn/how-stars-live-and-die": {
+  "src": "/img/share/learn-how-stars-live-and-die.jpg",
+  "alt": "A great glowing cloud of pink, orange and grey gas with a bright hollow near the middle.",
+  "from": "/img/learn/orion-nebula-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/how-the-planets-formed": {
+  "src": "/img/share/learn-how-the-planets-formed.jpg",
+  "alt": "A glowing orange disc seen at a tilt, made of bright rings with dark gaps between them, round a bright centre.",
+  "from": "/img/learn/hl-tauri-disc-alma.jpg",
+  "mode": "whole"
+ },
+ "/learn/how-the-sun-shines": {
+  "src": "/img/share/learn-how-the-sun-shines.jpg",
+  "alt": "The whole Sun as an orange disc with a cluster of dark spots below the middle.",
+  "from": "/img/learn/sun-sunspots-sdo.jpg",
+  "mode": "whole"
+ },
+ "/learn/inside-planets-and-magnetic-shields": {
+  "src": "/img/share/learn-inside-planets-and-magnetic-shields.jpg",
+  "alt": "The whole of Jupiter, banded cream and rust with the Great Red Spot at lower right, and a bright blue oval of light on its north pole.",
+  "from": "/img/learn/jupiter-aurora-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/keplers-laws": {
+  "src": "/img/share/learn-keplers-laws.jpg",
+  "alt": "Mars as an orange globe with white caps at top and bottom and its markings blurred by dust.",
+  "from": "/img/learn/mars-hubble-2018.jpg",
+  "mode": "whole"
+ },
+ "/learn/kinds-of-galaxy": {
+  "src": "/img/share/learn-kinds-of-galaxy.jpg",
+  "alt": "A spiral galaxy seen face on, with two long arms lined with pink and blue, and a smaller yellow galaxy at the end of one arm.",
+  "from": "/img/learn/whirlpool-m51-hubble.jpg",
+  "mode": "fill"
+ },
+ "/learn/leaving-and-arriving": {
+  "src": "/img/share/learn-leaving-and-arriving.jpg",
+  "alt": "The International Space Station, with its long solar panels spread out, above blue sea and white cloud.",
+  "from": "/img/learn/iss-over-earth.jpg",
+  "mode": "fill"
+ },
+ "/learn/light-the-only-messenger": {
+  "src": "/img/share/learn-light-the-only-messenger.jpg",
+  "alt": "A round metal container with its lid off, with black dust and small stones lying on and around it.",
+  "from": "/img/learn/bennu-sample-canister-2023.jpg",
+  "mode": "whole"
+ },
+ "/learn/listening-for-someone-else": {
+  "src": "/img/share/learn-listening-for-someone-else.jpg",
+  "alt": "A man in white overalls and cap holds a small American flag beside a table on which lie a golden disc and its golden cover. Behind him a spacecraft stands in a white gantry.",
+  "from": "/img/learn/voyager-golden-record-1977.jpg",
+  "mode": "whole"
+ },
+ "/learn/living-in-space": {
+  "src": "/img/share/learn-living-in-space.jpg",
+  "alt": "A man in a dark top floats among windows set in a ring, holding a camera with a long lens. Through the windows are blue sea and white cloud.",
+  "from": "/img/learn/iss-cupola-saint-jacques-2019.jpg",
+  "mode": "fill"
+ },
+ "/learn/looking-for-life-in-the-solar-system": {
+  "src": "/img/share/learn-looking-for-life-in-the-solar-system.jpg",
+  "alt": "Half of a pale blue-white globe criss-crossed by long rust-brown lines and blotches, fading into shadow on the right.",
+  "from": "/img/learn/europa-galileo.jpg",
+  "mode": "whole"
+ },
+ "/learn/magnetars-and-gamma-ray-bursts": {
+  "src": "/img/share/learn-magnetars-and-gamma-ray-bursts.jpg",
+  "alt": "A fuzzy yellow galaxy on black, with a small box marking a dot near it, and three small panels showing the dot fading.",
+  "from": "/img/learn/kilonova-ngc4993-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/measuring-distance": {
+  "src": "/img/share/learn-measuring-distance.jpg",
+  "alt": "A grainy dark picture crossed by pale bands of light, with one tiny pale speck in the right-hand band.",
+  "from": "/img/learn/pale-blue-dot-voyager.jpg",
+  "mode": "whole"
+ },
+ "/learn/messengers-other-than-light": {
+  "src": "/img/share/learn-messengers-other-than-light.jpg",
+  "alt": "A blue two-storey building on stilts between two tall silver towers, standing alone on flat white ice under a deep blue sky, with sledges and a large orange hose reel in front.",
+  "from": "/img/learn/icecube-lab-south-pole.jpg",
+  "mode": "fill"
+ },
+ "/learn/moons-in-step": {
+  "src": "/img/share/learn-moons-in-step.jpg",
+  "alt": "Four moons in a row: yellow-orange Io, pale Europa with brown streaks, large grey-brown Ganymede and dark Callisto speckled with bright craters.",
+  "from": "/img/learn/galilean-moons-galileo.jpg",
+  "mode": "whole"
+ },
+ "/learn/nebulae-and-star-birth": {
+  "src": "/img/share/learn-nebulae-and-star-birth.jpg",
+  "alt": "A great glowing cloud of pink, orange and grey gas with a bright hollow near the middle.",
+  "from": "/img/learn/orion-nebula-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/neutron-stars-and-pulsars": {
+  "src": "/img/share/learn-neutron-stars-and-pulsars.jpg",
+  "alt": "Blue-white wisps and rings of gas round two bright stars close together, with orange threads at the edges.",
+  "from": "/img/learn/crab-pulsar-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/ocean-moons": {
+  "src": "/img/share/learn-ocean-moons.jpg",
+  "alt": "Half of a pale blue-white globe criss-crossed by long rust-brown lines and blotches, fading into shadow on the right.",
+  "from": "/img/learn/europa-galileo.jpg",
+  "mode": "whole"
+ },
+ "/learn/phases-and-eclipses": {
+  "src": "/img/share/learn-phases-and-eclipses.jpg",
+  "alt": "Seven pictures of the Moon in a row: full, then with a curved dark bite growing across it, then wholly dark red.",
+  "from": "/img/learn/lunar-eclipse-sequence-2025.jpg",
+  "mode": "fill"
+ },
+ "/learn/planets-round-other-stars": {
+  "src": "/img/share/learn-planets-round-other-stars.jpg",
+  "alt": "A bright blue-white blob with a small red blob beside it, on black",
+  "from": "/img/learn/2m1207-planet-vlt.jpg",
+  "mode": "whole"
+ },
+ "/learn/reading-starlight": {
+  "src": "/img/share/learn-reading-starlight.jpg",
+  "alt": "Dozens of stacked strips of colour running from red at the top through yellow and green to blue and violet at the bottom, all crossed by short dark marks.",
+  "from": "/img/learn/solar-spectrum-kitt-peak.jpg",
+  "mode": "fill"
+ },
+ "/learn/red-dwarfs": {
+  "src": "/img/share/learn-red-dwarfs.jpg",
+  "alt": "A bright white star with four long spikes of light, on a black sky with a scattering of faint stars.",
+  "from": "/img/learn/proxima-centauri-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/rings": {
+  "src": "/img/share/learn-rings.jpg",
+  "alt": "Saturn in soft yellow and tan, tilted, with its wide rings all the way round and their shadow across the planet.",
+  "from": "/img/learn/saturn-cassini-portrait-2004.jpg",
+  "mode": "fill"
+ },
+ "/learn/robot-explorers": {
+  "src": "/img/share/learn-robot-explorers.jpg",
+  "alt": "A six-wheeled rover with a tall camera mast stands on a slope of broken reddish rock under a dusty pink sky, with a mountain rising behind it.",
+  "from": "/img/learn/curiosity-selfie-vera-rubin-ridge.jpg",
+  "mode": "fill"
+ },
+ "/learn/rubble-and-ice": {
+  "src": "/img/share/learn-rubble-and-ice.jpg",
+  "alt": "A grey, battered, not quite round world covered in craters, with long grooves running round its middle.",
+  "from": "/img/learn/vesta-dawn-2011.jpg",
+  "mode": "whole"
+ },
+ "/learn/spiral-arms": {
+  "src": "/img/share/learn-spiral-arms.jpg",
+  "alt": "A large spiral galaxy seen nearly face-on: a small yellow oval centre and many loose, ragged blue arms dotted with pink, spread across a field of foreground stars.",
+  "from": "/img/learn/ngc-6744-eso.jpg",
+  "mode": "fill"
+ },
+ "/learn/star-clusters": {
+  "src": "/img/share/learn-star-clusters.jpg",
+  "alt": "A dense ball of thousands of stars, mostly white and yellow with some red and blue, thickest in the middle.",
+  "from": "/img/learn/m13-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/stars-that-change": {
+  "src": "/img/share/learn-stars-that-change.jpg",
+  "alt": "A brilliant white star with four spikes of light, wrapped in pale shells and wisps of dust, among smaller blue and orange stars.",
+  "from": "/img/learn/rs-puppis-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/supernovae": {
+  "src": "/img/share/learn-supernovae.jpg",
+  "alt": "A galaxy seen nearly edge on, with a dark lane of dust across it, and one bright star at the lower left.",
+  "from": "/img/learn/supernova-1994d-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/telescopes": {
+  "src": "/img/share/learn-telescopes.jpg",
+  "alt": "A great silver dome under construction on a flattened mountain top in a red desert at sunset, with cranes beside it.",
+  "from": "/img/learn/elt-from-the-air-2026.jpg",
+  "mode": "fill"
+ },
+ "/learn/telescopes-in-space": {
+  "src": "/img/share/learn-telescopes-in-space.jpg",
+  "alt": "A huge mirror made of gold six-sided pieces standing upright in a hall, with two people in white suits on orange lifts in front of it.",
+  "from": "/img/learn/webb-mirror-goddard-2017.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-active-sun": {
+  "src": "/img/share/learn-the-active-sun.jpg",
+  "alt": "The whole Sun as an orange disc with a cluster of dark spots below the middle.",
+  "from": "/img/learn/sun-sunspots-sdo.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-centre-of-the-galaxy": {
+  "src": "/img/share/learn-the-centre-of-the-galaxy.jpg",
+  "alt": "A glowing orange ring round a dark centre",
+  "from": "/img/learn/m87-black-hole-eht.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-cosmic-web": {
+  "src": "/img/share/learn-the-cosmic-web.jpg",
+  "alt": "A map of thousands of pale dots gathered into knots and threads with dark gaps between, marked We are here at the centre, with the Coma Cluster ringed. Large dark wedges are parts of the sky that were not surveyed",
+  "from": "/img/learn/cosmic-web-map-sdss.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-distance-ladder": {
+  "src": "/img/share/learn-the-distance-ladder.jpg",
+  "alt": "A bright star with spikes of light, wrapped in rings and shells of glowing dust",
+  "from": "/img/learn/rs-puppis-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-event-horizon": {
+  "src": "/img/share/learn-the-event-horizon.jpg",
+  "alt": "An orange ring round a dark centre, combed with fine curved lines that sweep round it.",
+  "from": "/img/learn/m87-polarised-eht.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-first-journeys": {
+  "src": "/img/share/learn-the-first-journeys.jpg",
+  "alt": "A small figure in a white spacesuit stands at the left of an enormous split grey boulder. Smooth grey hills rise behind under a black sky.",
+  "from": "/img/learn/apollo-17-schmitt-boulder.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-first-minutes": {
+  "src": "/img/share/learn-the-first-minutes.jpg",
+  "alt": "An oval map of the whole sky, mottled all over in blue, green, yellow and red",
+  "from": "/img/learn/cmb-wmap-9-year.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-habitable-zone": {
+  "src": "/img/share/learn-the-habitable-zone.jpg",
+  "alt": "A smooth cream-white globe with faint tan swirls of cloud, on black.",
+  "from": "/img/learn/venus-mariner-10.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-history-of-the-universe": {
+  "src": "/img/share/learn-the-history-of-the-universe.jpg",
+  "alt": "Thousands of galaxies of every colour, some stretched into arcs, with a few spiked stars in front",
+  "from": "/img/learn/webb-first-deep-field.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-kinds-of-planet-out-there": {
+  "src": "/img/share/learn-the-kinds-of-planet-out-there.jpg",
+  "alt": "Jupiter, banded in cream and brown cloud, with the Great Red Spot",
+  "from": "/img/learn/jupiter-juno-2019.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-milky-way": {
+  "src": "/img/share/learn-the-milky-way.jpg",
+  "alt": "A spiral galaxy seen nearly face on, with a yellow centre and loose blue arms dotted with pink.",
+  "from": "/img/learn/ngc-6744-eso.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-moon": {
+  "src": "/img/share/learn-the-moon.jpg",
+  "alt": "The whole face of the Moon in grey, with large dark smooth patches across the upper half and bright, heavily cratered ground in the lower half.",
+  "from": "/img/learn/moon-near-side-lro.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-nearest-stars": {
+  "src": "/img/share/learn-the-nearest-stars.jpg",
+  "alt": "A rich field of stars and Milky Way with constellation lines drawn on in blue, and labels marking the bright star Alpha Centauri and a faint point beside it, Proxima.",
+  "from": "/img/learn/alpha-centauri-over-vlt-eso.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-oldest-light": {
+  "src": "/img/share/learn-the-oldest-light.jpg",
+  "alt": "A black and white photograph of a huge horn-shaped metal antenna on a turning frame, with a small cabin at its narrow end and two people standing on a platform beneath it.",
+  "from": "/img/learn/holmdel-horn-antenna-1962.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-oort-cloud": {
+  "src": "/img/share/learn-the-oort-cloud.jpg",
+  "alt": "A small bright comet with a short tail among faint stars, above bands of yellow and blue glow along the edge of the Earth.",
+  "from": "/img/learn/comet-tsuchinshan-atlas-iss-2024.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-sky-through-the-year": {
+  "src": "/img/share/learn-the-sky-through-the-year.jpg",
+  "alt": "A starry sky after sunset above a dark mountain landscape. A tall, soft cone of pale light rises from the orange glow on the horizon towards the top of the picture.",
+  "from": "/img/learn/zodiacal-light-la-silla-eso.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-stars-you-can-see": {
+  "src": "/img/share/learn-the-stars-you-can-see.jpg",
+  "alt": "A sky crowded with stars and the band of the Milky Way above the dark shapes of four large telescope buildings, with the stars of Orion at upper left.",
+  "from": "/img/learn/orion-above-vlt-eso.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-stuff-between-the-stars": {
+  "src": "/img/share/learn-the-stuff-between-the-stars.jpg",
+  "alt": "A field crowded with stars, with a large rounded patch in the middle that is completely black.",
+  "from": "/img/learn/barnard-68-visible-vlt.jpg",
+  "mode": "whole"
+ },
+ "/learn/the-suns-reach": {
+  "src": "/img/share/learn-the-suns-reach.jpg",
+  "alt": "Curtains of green light hanging above the dark curve of the Earth, seen from orbit.",
+  "from": "/img/learn/aurora-from-iss.jpg",
+  "mode": "fill"
+ },
+ "/learn/the-whole-spectrum": {
+  "src": "/img/share/learn-the-whole-spectrum.jpg",
+  "alt": "Two pictures of the same tall pillars of cloud side by side: dark and solid on the left, thinner and full of stars on the right.",
+  "from": "/img/learn/pillars-hubble-and-webb.jpg",
+  "mode": "whole"
+ },
+ "/learn/things-that-hit-the-earth": {
+  "src": "/img/share/learn-things-that-hit-the-earth.jpg",
+  "alt": "A grey surface completely covered in sharp-edged boulders and rubble, lit from one side, filling the whole picture.",
+  "from": "/img/learn/dimorphos-dart-2-seconds.jpg",
+  "mode": "whole"
+ },
+ "/learn/three-kinds-of-planet": {
+  "src": "/img/share/learn-three-kinds-of-planet.jpg",
+  "alt": "The red-orange globe of Mars with a long dark canyon across its middle.",
+  "from": "/img/learn/mars-viking-global.jpg",
+  "mode": "whole"
+ },
+ "/learn/trappist-1": {
+  "src": "/img/share/learn-trappist-1.jpg",
+  "alt": "A small telescope dome on a hilltop at dusk, its door open and lit, with a person outside pointing up at the sky",
+  "from": "/img/learn/trappist-south-dome-la-silla.jpg",
+  "mode": "fill"
+ },
+ "/learn/what-a-black-hole-is": {
+  "src": "/img/share/learn-what-a-black-hole-is.jpg",
+  "alt": "A blurred orange ring, brighter along its lower edge, round a dark centre.",
+  "from": "/img/learn/m87-black-hole-eht.jpg",
+  "mode": "whole"
+ },
+ "/learn/what-a-moon-is": {
+  "src": "/img/share/learn-what-a-moon-is.jpg",
+  "alt": "A lumpy, potato-shaped grey-brown moon covered in craters and grooves, with one very large crater at the right.",
+  "from": "/img/learn/phobos-mro-2008.jpg",
+  "mode": "whole"
+ },
+ "/learn/what-a-star-is": {
+  "src": "/img/share/learn-what-a-star-is.jpg",
+  "alt": "A field packed with thousands of stars: many yellow-white, some bright blue, some orange and red.",
+  "from": "/img/learn/omega-centauri-hubble.jpg",
+  "mode": "fill"
+ },
+ "/learn/what-an-orbit-is": {
+  "src": "/img/share/learn-what-an-orbit-is.jpg",
+  "alt": "The International Space Station, with its long solar panels, above the blue and white Earth.",
+  "from": "/img/learn/iss-over-earth.jpg",
+  "mode": "fill"
+ },
+ "/learn/what-counts-as-a-planet": {
+  "src": "/img/share/learn-what-counts-as-a-planet.jpg",
+  "alt": "The globe of Pluto: a large pale, smooth, heart-shaped plain on the right, dark reddish ground at the lower left, and cratered country round the edges.",
+  "from": "/img/learn/pluto-new-horizons.jpg",
+  "mode": "whole"
+ },
+ "/learn/what-gravity-is": {
+  "src": "/img/share/learn-what-gravity-is.jpg",
+  "alt": "An astronaut floating in the middle of a space station laboratory, arms spread, surrounded by equipment.",
+  "from": "/img/learn/astronaut-floating-iss.jpg",
+  "mode": "fill"
+ },
+ "/learn/what-life-needs": {
+  "src": "/img/share/learn-what-life-needs.jpg",
+  "alt": "A plump, eight-legged animal with a wrinkled body and small claws, seen in grey against a pale background.",
+  "from": "/img/learn/tardigrade-sem.jpg",
+  "mode": "fill"
+ },
+ "/learn/what-the-sun-is": {
+  "src": "/img/share/learn-what-the-sun-is.jpg",
+  "alt": "The whole Sun as an orange disc with a cluster of dark spots below the middle.",
+  "from": "/img/learn/sun-sunspots-sdo.jpg",
+  "mode": "whole"
+ },
+ "/learn/when-galaxies-collide": {
+  "src": "/img/share/learn-when-galaxies-collide.jpg",
+  "alt": "Two galaxies side by side, one with a long straight tail of stars stretching away",
+  "from": "/img/learn/mice-galaxies-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/where-the-elements-come-from": {
+  "src": "/img/share/learn-where-the-elements-come-from.jpg",
+  "alt": "A pale, round galaxy with a small boxed orange dot to the upper left of its bright middle. Three small panels below show the dot fading over six days.",
+  "from": "/img/learn/kilonova-ngc4993-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/white-dwarfs": {
+  "src": "/img/share/learn-white-dwarfs.jpg",
+  "alt": "A huge ring of glowing gas, blue-green inside and orange-red at the rim, like an eye, with a tiny white dot at its centre.",
+  "from": "/img/learn/helix-nebula-hubble.jpg",
+  "mode": "whole"
+ },
+ "/learn/why-the-sky-turns": {
+  "src": "/img/share/learn-why-the-sky-turns.jpg",
+  "alt": "The night sky over a low glass dome in the desert. Every star is drawn out into a short curved streak, and the streaks make rings round one point in the sky.",
+  "from": "/img/learn/star-trails-paranal-eso.jpg",
+  "mode": "fill"
+ },
+ "/mercury": {
+  "src": "/img/share/mercury.jpg",
+  "alt": "Mercury's north polar region seen from above, grey and cratered, with shadowed crater floors shaded red.",
+  "from": "/img/mercury/polar-shadows.jpg",
+  "mode": "fill"
+ },
+ "/neptune": {
+  "src": "/img/share/neptune.jpg",
+  "alt": "Neptune as a deep blue globe with a large dark oval storm left of centre.",
+  "from": "/img/neptune/great-dark-spot.jpg",
+  "mode": "whole"
+ },
+ "/saturn": {
+  "src": "/img/share/saturn.jpg",
+  "alt": "Saturn seen from its night side as a dark disc, ringed by glowing bands.",
+  "from": "/img/saturn/earth-smiled.jpg",
+  "mode": "fill"
+ },
+ "/sun": {
+  "src": "/img/share/sun.jpg",
+  "alt": "The Sun as an orange disc with a large cluster of dark sunspots below the middle.",
+  "from": "/img/sun/giant-sunspot-2014.jpg",
+  "mode": "whole"
+ },
+ "/uranus": {
+  "src": "/img/share/uranus.jpg",
+  "alt": "Uranus as a plain, pale blue-green sphere against black space.",
+  "from": "/img/uranus/voyager-1986.jpg",
+  "mode": "whole"
+ },
+ "/venus": {
+  "src": "/img/share/venus.jpg",
+  "alt": "A computer-generated view across orange lava plains toward the volcano Maat Mons.",
+  "from": "/img/venus-maat-mons.jpg",
+  "mode": "fill"
+ },
+ "/worlds/ariel": {
+  "src": "/img/share/worlds-ariel.jpg",
+  "alt": "The curved edge of a pinkish-grey moon, with bright patches, craters and long straight valleys running across it.",
+  "from": "/img/learn/ariel-voyager2-1986.jpg",
+  "mode": "whole"
+ },
+ "/worlds/bennu": {
+  "src": "/img/share/worlds-bennu.jpg",
+  "alt": "A rough grey surface strewn with rocks of every size, with two smaller close-up views at the right, one of rubble and one of a smoother patch.",
+  "from": "/img/learn/bennu-osiris-rex-regolith.jpg",
+  "mode": "fill"
+ },
+ "/worlds/borrelly": {
+  "src": "/img/share/worlds-borrelly.jpg",
+  "alt": "A bright white, elongated, bowling-pin-shaped comet nucleus on black, with faint jets of dust streaming from it to the lower left.",
+  "from": "/img/learn/borrelly-deep-space-1-2001.jpg",
+  "mode": "whole"
+ },
+ "/worlds/callisto": {
+  "src": "/img/share/worlds-callisto.jpg",
+  "alt": "A dark brown globe peppered all over with bright white spots, the scars of craters.",
+  "from": "/img/learn/callisto-galileo.jpg",
+  "mode": "whole"
+ },
+ "/worlds/ceres": {
+  "src": "/img/share/worlds-ceres.jpg",
+  "alt": "A grey, round, heavily cratered world, with a small cluster of brilliant white spots inside one crater near the middle.",
+  "from": "/img/learn/ceres-dawn.jpg",
+  "mode": "whole"
+ },
+ "/worlds/charon": {
+  "src": "/img/share/worlds-charon.jpg",
+  "alt": "A grey globe with a rust-red cap at the top, a broad belt of cracked ground across its middle and craters scattered below.",
+  "from": "/img/learn/charon-new-horizons.jpg",
+  "mode": "whole"
+ },
+ "/worlds/deimos": {
+  "src": "/img/share/worlds-deimos.jpg",
+  "alt": "Two views of the same small, pale, egg-shaped moon on black, with a few craters and a scale bar of 2 kilometres.",
+  "from": "/img/learn/deimos-mro-2009.jpg",
+  "mode": "fill"
+ },
+ "/worlds/didymos": {
+  "src": "/img/share/worlds-didymos.jpg",
+  "alt": "A grey surface completely covered in sharp-edged boulders and rubble, lit from one side, filling the whole picture.",
+  "from": "/img/learn/dimorphos-dart-2-seconds.jpg",
+  "mode": "whole"
+ },
+ "/worlds/dione": {
+  "src": "/img/share/worlds-dione.jpg",
+  "alt": "A close view of the curved edge of a grey, deeply cratered moon, with long straight cliffs and a large crater with a flat floor near the middle.",
+  "from": "/img/learn/dione-cassini-2015.jpg",
+  "mode": "whole"
+ },
+ "/worlds/enceladus": {
+  "src": "/img/share/worlds-enceladus.jpg",
+  "alt": "A bright white moon, cratered at the top and crossed lower down by long cracks and ridges.",
+  "from": "/img/learn/enceladus-cassini-2015.jpg",
+  "mode": "whole"
+ },
+ "/worlds/eros": {
+  "src": "/img/share/worlds-eros.jpg",
+  "alt": "A grey, elongated, cratered rock with a saddle-shaped dip in the middle, lit from the right against black.",
+  "from": "/img/learn/eros-near-2000.jpg",
+  "mode": "whole"
+ },
+ "/worlds/europa": {
+  "src": "/img/share/worlds-europa.jpg",
+  "alt": "Half of a pale blue-white globe criss-crossed by long rust-brown lines and blotches, fading into shadow on the right.",
+  "from": "/img/learn/europa-galileo.jpg",
+  "mode": "whole"
+ },
+ "/worlds/ganymede": {
+  "src": "/img/share/worlds-ganymede.jpg",
+  "alt": "Part of a large grey globe with dark old ground, paler grooved bands and bright craters with rays.",
+  "from": "/img/learn/ganymede-juno-2021.jpg",
+  "mode": "whole"
+ },
+ "/worlds/gaspra": {
+  "src": "/img/share/worlds-gaspra.jpg",
+  "alt": "A grey, angular, lumpy rock with a few craters and flat faces, lit from the left against black.",
+  "from": "/img/learn/gaspra-galileo-1991.jpg",
+  "mode": "whole"
+ },
+ "/worlds/hygiea": {
+  "src": "/img/share/worlds-hygiea.jpg",
+  "alt": "A fuzzy, nearly round grey ball with faint lighter and darker patches against black.",
+  "from": "/img/learn/hygiea-sphere-eso-2019.jpg",
+  "mode": "fill"
+ },
+ "/worlds/hyperion": {
+  "src": "/img/share/worlds-hyperion.jpg",
+  "alt": "A grey, lumpy, crescent-shaped moon pitted all over with deep craters, lit from one side against black.",
+  "from": "/img/learn/hyperion-cassini-2011.jpg",
+  "mode": "whole"
+ },
+ "/worlds/iapetus": {
+  "src": "/img/share/worlds-iapetus.jpg",
+  "alt": "Two round views of the same moon side by side: the left one almost entirely dark brown, the right one pale cream with scattered dark craters.",
+  "from": "/img/learn/iapetus-cassini-2009.jpg",
+  "mode": "fill"
+ },
+ "/worlds/ida": {
+  "src": "/img/share/worlds-ida.jpg",
+  "alt": "A large, elongated, cratered rock in a tawny colour with a tiny round moon to its right, and a small boxed inset showing the same rock in grey.",
+  "from": "/img/learn/ida-dactyl-galileo.jpg",
+  "mode": "whole"
+ },
+ "/worlds/io": {
+  "src": "/img/share/worlds-io.jpg",
+  "alt": "Io as a yellow, orange and pale green globe dotted with black spots and red rings.",
+  "from": "/img/learn/io-galileo-1999.jpg",
+  "mode": "whole"
+ },
+ "/worlds/makemake": {
+  "src": "/img/share/worlds-makemake.jpg",
+  "alt": "A very bright white dot with faint rays across it, and a tiny, much fainter dot just above and to its left.",
+  "from": "/img/learn/makemake-hubble-2015.jpg",
+  "mode": "whole"
+ },
+ "/worlds/mathilde": {
+  "src": "/img/share/worlds-mathilde.jpg",
+  "alt": "Two views of a dark, rounded and craggy rock, the left one partly in shadow and the right one lit from the left.",
+  "from": "/img/learn/mathilde-near-1997.jpg",
+  "mode": "whole"
+ },
+ "/worlds/mimas": {
+  "src": "/img/share/worlds-mimas.jpg",
+  "alt": "A grey, round, heavily cratered moon with one very large crater with a central peak on the right-hand side.",
+  "from": "/img/learn/mimas-cassini-2010.jpg",
+  "mode": "whole"
+ },
+ "/worlds/miranda": {
+  "src": "/img/share/worlds-miranda.jpg",
+  "alt": "A grey, round moon crossed by a patchwork of ridged and grooved ground, with a band of grooved, striped ground on the left, a bright chevron at the bottom and craters scattered over the rest.",
+  "from": "/img/learn/miranda-voyager2-1986.jpg",
+  "mode": "whole"
+ },
+ "/worlds/moon": {
+  "src": "/img/share/worlds-moon.jpg",
+  "alt": "The whole face of the Moon in grey, with large dark smooth patches across the upper half and bright, heavily cratered ground in the lower half.",
+  "from": "/img/learn/moon-near-side-lro.jpg",
+  "mode": "whole"
+ },
+ "/worlds/oberon": {
+  "src": "/img/share/worlds-oberon.jpg",
+  "alt": "A pale, pinkish-grey, round moon thickly covered in craters, some with bright rays spreading from them and some with dark floors.",
+  "from": "/img/learn/oberon-voyager2-1986.jpg",
+  "mode": "whole"
+ },
+ "/worlds/pallas": {
+  "src": "/img/share/worlds-pallas.jpg",
+  "alt": "Two views of a grey, roughly round, dimpled ball against black, with a bright spot near the upper left of the right-hand view.",
+  "from": "/img/learn/pallas-sphere-eso-2020.jpg",
+  "mode": "fill"
+ },
+ "/worlds/phobos": {
+  "src": "/img/share/worlds-phobos.jpg",
+  "alt": "A brown, lumpy, heavily cratered moon cut off by the edge of the frame, with a large crater at the lower right and long shallow grooves running across it.",
+  "from": "/img/learn/phobos-hirise-5800km.jpg",
+  "mode": "whole"
+ },
+ "/worlds/phoebe": {
+  "src": "/img/share/worlds-phoebe.jpg",
+  "alt": "Two grey, heavily cratered crescents of a moon facing each other against black, with bright streaks running down the wall of a large crater at the top of each.",
+  "from": "/img/learn/phoebe-cassini-2004.jpg",
+  "mode": "fill"
+ },
+ "/worlds/pluto": {
+  "src": "/img/share/worlds-pluto.jpg",
+  "alt": "The globe of Pluto: a large pale, smooth, heart-shaped plain on the right, dark reddish ground at the lower left, and cratered country round the rest.",
+  "from": "/img/learn/pluto-new-horizons.jpg",
+  "mode": "whole"
+ },
+ "/worlds/rhea": {
+  "src": "/img/share/worlds-rhea.jpg",
+  "alt": "A large round grey moon, covered in craters of every size, brighter at the bottom than at the top.",
+  "from": "/img/learn/rhea-cassini-2005.jpg",
+  "mode": "whole"
+ },
+ "/worlds/tethys": {
+  "src": "/img/share/worlds-tethys.jpg",
+  "alt": "A round, pale grey, heavily cratered moon lit from the left, with one huge crater with a mountainous middle on its left side.",
+  "from": "/img/learn/tethys-cassini-2017.jpg",
+  "mode": "whole"
+ },
+ "/worlds/titan": {
+  "src": "/img/share/worlds-titan.jpg",
+  "alt": "A smooth, hazy orange ball with a darker cap of haze at the top and a faint blue rim.",
+  "from": "/img/learn/titan-cassini-2012.jpg",
+  "mode": "whole"
+ },
+ "/worlds/titania": {
+  "src": "/img/share/worlds-titania.jpg",
+  "alt": "A pale grey, round moon with bright streaks and many circular craters, and a long curved valley near its right edge.",
+  "from": "/img/learn/titania-voyager2-1986.jpg",
+  "mode": "whole"
+ },
+ "/worlds/triton": {
+  "src": "/img/share/worlds-triton.jpg",
+  "alt": "A lit crescent-shaped part of a globe, pinkish and pale grey, its lower half covered in bright patchy frost and its upper half in a wrinkled texture.",
+  "from": "/img/learn/triton-voyager2-1989.jpg",
+  "mode": "fill"
+ },
+ "/worlds/vesta": {
+  "src": "/img/share/worlds-vesta.jpg",
+  "alt": "A grey, battered, not quite round world covered in craters, with long grooves running round its middle.",
+  "from": "/img/learn/vesta-dawn-2011.jpg",
+  "mode": "whole"
+ }
+}

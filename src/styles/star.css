@@ -31,7 +31,7 @@
 
 /* the star drawn beside the Sun, to one scale */
 .size-face svg { display: block; width: 100%; height: auto; max-height: 26rem; }
-.size-face .sf-t { font: 400 15px 'IBM Plex Mono', monospace; letter-spacing: .1em; }
+.size-face .sf-t { font: 400 16.5px 'IBM Plex Mono', monospace; letter-spacing: .1em; }
 .size-face .sf-halo { transform-box: fill-box; transform-origin: center; animation: sf-breathe 8s ease-in-out infinite alternate; }
 .size-face .sf-halo.two { animation-delay: -4s; }
 @keyframes sf-breathe { from { transform: scale(.985); } to { transform: scale(1.025); } }

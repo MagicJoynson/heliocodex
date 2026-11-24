@@ -217,7 +217,12 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
     const label = (isStar: boolean, r: number, text: string) => {
       const [x, y] = at(isStar);
       return r >= 62 ? `<text x="${x}" y="${y + 5}" text-anchor="middle" fill="#07080d" class="sf-t">${text}</text>`
-        : `<text x="${Math.min(x + r, 396)}" y="${y - r - 10}" text-anchor="end" fill="#a8a296" class="sf-t">${text}</text>`;
+        : (() => {
+          // a small body's name sits above it: where that is over the big disc, it is drawn dark so that it can be read
+          const tx = Math.min(x + r, 396), ty = y - r - 10, over = Math.hypot(tx - 45 - cx, ty - cy) < bigR;
+          const edge = cx + Math.sqrt(Math.max(bigR * bigR - (ty - cy) ** 2, 0));
+          return `<text x="${over ? Math.min(tx, edge - 14) : tx}" y="${ty}" text-anchor="end" fill="${over ? '#07080d' : '#a8a296'}" class="sf-t">${text}</text>`;
+        })();
     };
     const [px, py] = at(true), [ux, uy] = at(false);
     // below a couple of pixels a true-scale Sun would vanish, so it is drawn at that least size and the caption says so

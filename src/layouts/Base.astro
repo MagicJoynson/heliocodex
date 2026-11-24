@@ -7,9 +7,11 @@ import SiteNav from '../components/SiteNav.astro';
 import SiteSearch from '../components/SiteSearch.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThreeDReturn from '../components/ThreeDReturn.astro';
+import { shareFor } from '../lib/share';
 interface Props { title: string; description?: string; path?: string; accent?: string; noindex?: boolean; jsonld?: Record<string, unknown> | Record<string, unknown>[] }
 const { title, description = 'An interactive, data-driven atlas of the Sun and the planets, built on open NASA and JPL data.', path = '/', accent, noindex, jsonld } = Astro.props;
 const url = new URL(path, Astro.site).toString();
+const share = shareFor(path, Astro.site);
 // a search result shows about 60 characters of title: keep the site name only where it fits
 const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? title : `${title} · Heliocodex`;
 ---
@@ -27,10 +29,10 @@ const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? ti
     <meta property="og:type" content="website" />
     <meta property="og:url" content={url} />
     <meta property="og:site_name" content="Heliocodex" />
-    <meta property="og:image" content={new URL('/brand/heliocodex-social-card-1200x630.png', Astro.site).toString()} />
+    <meta property="og:image" content={share.src} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Heliocodex: an amber Sun with a small dark world crossing it" />
+    <meta property="og:image:alt" content={share.alt} />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

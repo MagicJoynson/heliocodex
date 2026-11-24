@@ -15,12 +15,15 @@ import { plates } from '../lib/v2/atlas/plates/index';
 import { fmt, daysToYear, hoursToDay } from '../lib/format';
 import { lessonsAbout } from '../lib/objects';
 import { thumb as lessonThumb } from '../lib/learn/map';
+import { shareFor } from '../lib/share';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
  * driver. Everything you see (type, colour, layout, copy) belongs to the page that uses it.
  */
 interface Props { world: string; title: string; description: string; readout?: string; accent?: string }
 const { world, title, description, readout = 'Altitude' } = Astro.props;
+const fullTitle = `${title} · Heliocodex`.length > 60 ? title : `${title} · Heliocodex`;
+const share = shareFor(`/${world}`, Astro.site);
 // lessons whose camera looks at this world, so the fall leads on into reading
 const all = await allLessons();
 // the same lessons the search results offer: ranked by what they are about, not by where their 3D camera points
@@ -66,6 +69,16 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
     <title>{`${title} · Heliocodex`.length > 60 ? title : `${title} · Heliocodex`}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL(`/${world}`, Astro.site).toString()} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={new URL(`/${world}`, Astro.site).toString()} />
+    <meta property="og:site_name" content="Heliocodex" />
+    <meta property="og:image" content={share.src} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={share.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
