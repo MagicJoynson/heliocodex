@@ -12,6 +12,10 @@ import { add, clamp, cross, dot, len, norm, scale, slerp, smooth, sub, type V3 }
  * - free: flying yourself, for skimming the ground. W A S D, E and Q. Esc goes back to orbit.
  *
  * Anything that would turn the view suddenly (leaving free flight, say) is blended over half a second.
+ *
+ * Comfort: a look turns the view by a small, steady amount for each pixel dragged (about 0.08 degrees at the
+ * default), it stops within a quarter of a second of letting go, the horizon is never rolled by the camera on
+ * its own beyond a slow, constant-rate levelling, and a trip begins by turning to face where it is going.
  */
 
 export interface Focus {
@@ -66,6 +70,11 @@ export function createFlight(canvas: HTMLElement) {
   let lastFloor = 0, lastR = 0, floorOff = 0;
   let wheelAcc = 0, wheelAt = 0;
   let reduced = false; // reduced motion: no drift after a drag, faster settling
+  let lookSens = 1; // the look slider: 1 is about 0.08 degrees of turn for each pixel dragged
+  let lastLookAt = -1e9; // when you last turned the view yourself (levelling waits for a moment of calm)
+  let coastOver = true;
+  let pushPeak = 0; // the fastest you went while pushing, so coasting is judged against it
+  let coasting = false; // in a warp gear, letting go: still gliding
 
   // ---- orbit state
   let focus: Focus = { centre: () => [0, 0, 0], radius: 0 };
@@ -74,7 +83,8 @@ export function createFlight(canvas: HTMLElement) {
   let spin = { az: 0, el: 0 }; // drift after a drag, radians a second
 
   // ---- cruise state
-  let cr: null | { from: Focus; to: Focus; c0: V3; d0: number; d1: number; dir0: V3; dir1: V3; hump: number; secs: number; t: number } = null;
+  // a trip first turns on the spot to face where it is going (turn seconds, 0 if already facing it), then travels (secs)
+  let cr: null | { from: Focus; to: Focus; c0: V3; d0: number; d1: number; dir0: V3; dir1: V3; hump: number; secs: number; turn: number; total: number; p0: V3; q0: THREE.Quaternion | null; q1: THREE.Quaternion | null; t: number } = null;
 
   // ---- blending the view after a jump of mode
   let blendFrom: THREE.Quaternion | null = null, blendT = 0;
@@ -212,18 +222,25 @@ export function createFlight(canvas: HTMLElement) {
     const k = (c: string) => keys.has(c);
     const fast = k('ShiftLeft') || k('ShiftRight') ? 2.5 : 1;
     const gp = readPad();
-    if (gp && (gp.rx || gp.ry) && mode !== 'cruise') { look.dx += gp.rx * 600 * wall; look.dy += gp.ry * 600 * wall; }
+    if (gp && (gp.rx || gp.ry) && mode !== 'cruise') { look.dx += gp.rx * 900 * wall; look.dy += gp.ry * 900 * wall; }
 
     if (mode === 'cruise' && cr) {
-      cr.t = Math.min(cr.secs, cr.t + wall);
-      const u = cr.secs > 0 ? cr.t / cr.secs : 1;
-      const at = cruiseAt(u);
-      const p = add(at.c, scale(at.dir, at.d));
-      if (wall > 1e-4) cruiseVel = [(p[0] - pos[0]) / wall, (p[1] - pos[1]) / wall, (p[2] - pos[2]) / wall];
-      pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
-      lookAlong(scale(at.dir, -1), UP);
-      if (u >= 1) {
-        focus = cr.to; dir = at.dir; dist = distGoal = at.d; cr = null; mode = 'orbit';
+      cr.t = Math.min(cr.total, cr.t + Math.min(wall, 0.05)); // a stall pauses the trip instead of jumping it
+      if (cr.t < cr.turn && cr.q0 && cr.q1) {
+        // turning on the spot, slowly in and out, before going anywhere
+        pos[0] = cr.p0[0]; pos[1] = cr.p0[1]; pos[2] = cr.p0[2];
+        cruiseVel = [0, 0, 0];
+        { const x = Math.min(1, cr.t / cr.turn); q.copy(cr.q0).slerp(cr.q1, x * x * (3 - 2 * x)); }
+      } else {
+        const u = cr.secs > 0 ? (cr.t - cr.turn) / cr.secs : 1;
+        const at = cruiseAt(Math.min(1, Math.max(0, u)));
+        const p = add(at.c, scale(at.dir, at.d));
+        if (wall > 1e-4) cruiseVel = [(p[0] - pos[0]) / wall, (p[1] - pos[1]) / wall, (p[2] - pos[2]) / wall];
+        pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
+        lookAlong(scale(at.dir, -1), UP);
+        if (cr.t >= cr.total || u >= 1) {
+          focus = cr.to; dir = at.dir; dist = distGoal = at.d; cr = null; mode = 'orbit';
+        }
       }
     } else if (mode === 'orbit') {
       // turning: a drag, the arrows, A and D
@@ -232,17 +249,21 @@ export function createFlight(canvas: HTMLElement) {
       let el = (k('ArrowUp') ? 1 : 0) - (k('ArrowDown') ? 1 : 0);
       az *= turnRate; el *= turnRate;
       if (look.dx || look.dy) {
-        const kk = 0.0055;
+        const kk = 0.0014 * lookSens;
         const daz = -look.dx * kk, del = look.dy * kk;
         az += daz; el += del;
         // what is left over after letting go: a short, soft drift (none with reduced motion)
-        if (!reduced && wall > 0) spin = { az: daz / wall * 0.5, el: del / wall * 0.5 };
+        if (!reduced && wall > 0) spin = { az: daz / wall * 0.3, el: del / wall * 0.3 };
         look = { dx: 0, dy: 0 };
-      } else if (!pointers.size && (spin.az || spin.el)) {
+      } else if (pointers.size) {
+        // finger or button still down and not moving: nothing to glide on
+        spin = { az: 0, el: 0 };
+      } else if (spin.az || spin.el) {
         az += spin.az * wall; el += spin.el * wall;
-        const f = Math.exp(-wall * 5);
+        // gone in about half a second at the longest, with no overshoot
+        const f = Math.exp(-wall * 9);
         spin.az *= f; spin.el *= f;
-        if (Math.abs(spin.az) + Math.abs(spin.el) < 0.002) spin = { az: 0, el: 0 };
+        if (Math.abs(spin.az) + Math.abs(spin.el) < 0.01) spin = { az: 0, el: 0 };
       }
       if (az || el) dir = turn(dir, az, el);
       // zooming: the wheel, a pinch, W and S, + and −, Page Up and Down
@@ -276,7 +297,8 @@ export function createFlight(canvas: HTMLElement) {
       const height = dNear - near.radius;
       const ground = 1 - smooth(near.radius * 0.3, near.radius * 2, height);
       if (look.dx || look.dy) {
-        const kk = 0.0032;
+        lastLookAt = performance.now();
+        const kk = 0.0014 * lookSens;
         rotate(norm(add(scale(upv(), 1 - ground), scale(upLocal, ground))), -look.dx * kk);
         const before = q.clone();
         rotate(right(), -look.dy * kk);
@@ -285,6 +307,7 @@ export function createFlight(canvas: HTMLElement) {
       }
       // the arrows turn you, gently
       const ta = ((k('ArrowLeft') ? 1 : 0) - (k('ArrowRight') ? 1 : 0)) * 0.9 * wall;
+      if (ta) lastLookAt = performance.now();
       if (ta) rotate(norm(add(scale(upv(), 1 - ground), scale(upLocal, ground))), ta);
       zoomBy = 1;
       // top speed: about your own height a second; a gear multiplies it in open space and fades out near a body
@@ -310,7 +333,12 @@ export function createFlight(canvas: HTMLElement) {
       // easing: speeding up takes a moment (longer at higher gears), letting go glides to a stop, X brakes at once
       const pushing = !calming && (f !== 0 || s !== 0 || u !== 0);
       if (stopRamp > 0) stopRamp = Math.max(0, stopRamp - wall);
-      const tau = calming ? 0.3 : k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : stopRamp > 0 ? 0.3 : 0.5 + 0.18 * gear;
+      // letting go: in the walking-pace gears (local to Faster) you stop within about half a second; only the warp gears coast on
+      const tau = calming ? 0.3 : k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : stopRamp > 0 ? 0.3 : gear <= 3 ? 0.11 + 0.025 * gear : 0.5 + 0.18 * gear;
+      // coasting: from letting go until the speed is down to 5% of what it was then; it cannot come back on by itself
+      if (pushing) { pushPeak = len(vel); coastOver = false; }
+      else if (pushPeak <= 0 || calming || len(vel) <= Math.max(0.05 * pushPeak, 0.5)) coastOver = true;
+      coasting = !pushing && !coastOver && gear >= 4;
       const kv = 1 - Math.exp(-dt / tau);
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
       // momentum too: the speed you already have is held to the same rule, so a long glide cannot carry you into a body
@@ -344,19 +372,22 @@ export function createFlight(canvas: HTMLElement) {
           if (alt >= 3 * gap) enterOrbit(f2);
         }
       }
-      // level the horizon: take out any roll, gently, when near a body
-      if (ground > 0.01) {
+      // level the horizon: take out any roll at a slow, constant rate (never a per-frame chase), only when near a body and only after a moment of calm
+      if (ground > 0.01 && performance.now() - lastLookAt > 500) {
         const fw = fwd();
         const want2 = cross(fw, upLocal);
         if (len(want2) > 0.05) {
           const wr = norm(want2);
           const r = right();
           const ang = Math.atan2(dot(cross(r, wr), fw), dot(r, wr));
-          rotate(fw, ang * (1 - Math.exp(-dt * 3)) * ground);
+          const calmFor = clamp((performance.now() - lastLookAt - 500) / 600, 0, 1); // eases in over 0.6 s
+          const maxStep = THREE.MathUtils.degToRad(8) * calmFor * calmFor * dt;
+          rotate(fw, clamp(ang, -maxStep, maxStep) * ground);
         }
       }
     } else {
       vel[0] = vel[1] = vel[2] = 0;
+      coasting = false;
     }
 
     // soften any jump of view left by a change of mode
@@ -366,7 +397,7 @@ export function createFlight(canvas: HTMLElement) {
       else { const target = q.clone(); q.copy(blendFrom).slerp(target, smooth(0, 1, blendT)); }
     }
 
-    return { alt, mode, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.secs, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.secs - cr.t) : 0 };
+    return { alt, mode, coasting, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.total, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.total - cr.t) : 0 };
   }
 
   function enterOrbit(f: Focus) {
@@ -396,6 +427,8 @@ export function createFlight(canvas: HTMLElement) {
     get dist() { return dist; },
     setPad(v: number) { pad = v; },
     setReduced(v: boolean) { reduced = v; if (v) spin = { az: 0, el: 0 }; },
+    /** the look slider: 0.25 to 3, 1 is the default */
+    setLookSens(v: number) { lookSens = clamp(v, 0.25, 3); },
     onTap(cb: (x: number, y: number) => void) { onTap = cb; },
     /** + and − on screen: one press is a factor of about 2.5 */
     zoom(steps: number) { zoomBy *= Math.pow(0.4, steps); },
@@ -423,10 +456,35 @@ export function createFlight(canvas: HTMLElement) {
       // a negative time means "as long as the trip needs": two seconds, plus a little for every power of ten
       const decades = (Math.abs(Math.log(d1 / d0)) + 2 * hump) / Math.LN10 + 2 * Math.acos(clamp(dot(dir0, dir1), -1, 1));
       const secs = c.secs >= 0 ? c.secs : clamp(2.4 + 0.45 * decades, 2.4, 9);
-      cr = { from, to: c.to, c0, d0, d1, dir0, dir1, hump, secs, t: 0 };
+      // face the way you are going before you go: a quick, eased turn on the spot, never turning and travelling at once
+      let turn = 0, q0: THREE.Quaternion | null = null, q1: THREE.Quaternion | null = null;
+      let cs = c0, ds = dir0;
+      const toT = sub(c.to.centre(), pos);
+      if (c.secs !== 0 && !reduced && len(toT) > 1) {
+        const vT = norm(toT);
+        const ang = Math.acos(clamp(dot(fwd(), vT), -1, 1));
+        if (ang > THREE.MathUtils.degToRad(12)) {
+          turn = clamp(ang / THREE.MathUtils.degToRad(40), 0.6, 4); // about 40 degrees a second on average, 60 at the peak
+          q0 = q.clone();
+          // the trip itself then runs from straight ahead, so the way in is a straight line to the target
+          // (kept off the poles, so "up" still means something when the trip ends)
+          ds = clampEl(scale(vT, -1));
+          cs = sub(pos, scale(ds, d0));
+          const m = new THREE.Matrix4().lookAt(new THREE.Vector3(0, 0, 0), new THREE.Vector3(...scale(ds, -1)), new THREE.Vector3(...UP));
+          q1 = new THREE.Quaternion().setFromRotationMatrix(m);
+        }
+      }
+      // while travelling, swing toward the wanted side of the target no faster than about 5 degrees a second (the rest is left as it is on arrival)
+      let dirEnd = c.endDir ? dir1 : ds;
+      if (turn > 0 && c.endDir) {
+        const swing = Math.acos(clamp(dot(ds, dir1), -1, 1)), maxSwing = THREE.MathUtils.degToRad(5) * secs;
+        if (swing > maxSwing) { const k2 = maxSwing / swing; dirEnd = clampEl(norm(add(scale(ds, 1 - k2), scale(dir1, k2)))); }
+        else dirEnd = dir1;
+      }
+      cr = { from, to: c.to, c0: cs, d0, d1, dir0: ds, dir1: dirEnd, hump, secs, turn, total: turn + secs, p0: [pos[0], pos[1], pos[2]], q0, q1, t: 0 };
       mode = 'cruise';
     },
-    skipCruise() { if (mode === 'cruise' && cr) cr.t = Math.max(cr.t, cr.secs - 0.6); },
+    skipCruise() { if (mode === 'cruise' && cr) cr.t = Math.max(cr.t, cr.total - 0.6); },
     /** brake at once: a trip in progress ends where the camera is, and you are flying free with no speed */
     stop() { if (mode === 'cruise') { cr = null; mode = 'free'; vel[0] = cruiseVel[0]; vel[1] = cruiseVel[1]; vel[2] = cruiseVel[2]; stopRamp = 1; } },
     /** fly yourself from where you are */
@@ -436,7 +494,7 @@ export function createFlight(canvas: HTMLElement) {
     /** back to orbiting a focus, from wherever free flight left you */
     backToOrbit(f: Focus) { enterOrbit(f); },
     /** the trip so far, 0 to 1, and how long it lasts */
-    get cruise() { return cr ? { u: cr.t / Math.max(cr.secs, 1e-6), secs: cr.secs } : null; },
+    get cruise() { return cr ? { u: cr.t / Math.max(cr.total, 1e-6), secs: cr.total } : null; },
   };
 }
 

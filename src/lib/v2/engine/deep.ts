@@ -392,6 +392,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
 
   // ---- soft clouds of light (galaxy models): surface brightness stays the same with distance once
   // a point is wider than a pixel or two, and falls with the square of the distance once it is not
+  const CROWD_PX = 8;
   function cloudMaterial(pos: Float32Array, col: Float32Array, gain: N1, exposure: number, dark = false) {
     const mat = new THREE.PointsNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, blending: dark ? THREE.NormalBlending : THREE.AdditiveBlending, sizeAttenuation: false });
     const P = attr4(pos);
@@ -412,7 +413,11 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       const op = vary(C.w.mul(k).mul(near).mul(gain));
       mat.colorNode = vec4(C.xyz, op.mul(softFall));
     } else {
-      const lum = vary(C.w.mul(exposure).mul(kk).mul(near).mul(gain));
+      // many wide points overlap when the camera is near a thick part of the model, and added together they would blow the whole screen out to white.
+      // The wider a point is on screen, the more it overlaps its neighbours (as the square of its width), so its own light is shared out the same way
+      // once it is wider than about CROWD_PX: the picture stops getting brighter as you go in, instead of flashing white
+      const crowd = float(1).div(float(1).add(px.div(float(CROWD_PX)).pow(2)));
+      const lum = vary(C.w.mul(exposure).mul(kk).mul(near).mul(gain).mul(crowd));
       mat.colorNode = vec4(C.xyz.mul(lum).mul(softFall), 1);
     }
     return mat;
