@@ -328,14 +328,15 @@ import { sections } from '../lib/nav';
       let football = false;
       // the one Back control. With places behind you it goes to the last place. With none, and a page of the site you
       // came in from, it leaves the 3D view for that page, and says so ("Home", "Back to Mars").
-      let origin: { href: string; name: string; from: Record<string, unknown>; label?: string } | null = null;
+      type Origin = { href: string; name: string; from: Record<string, unknown>; label?: string };
+      let origin = null as Origin | null;
       try {
         const from = JSON.parse(sessionStorage.getItem('hc-from') ?? 'null');
         if (from?.href && from.href !== '/explore') {
           football = String(from.href).split('?')[0].replace(/\/$/, '') === '/learn/how-big-is-space';
           // short enough to read at any width: "Home" or "Back"; the full name is in the tooltip
           const short = String(from.name || '').split(/[:·|,–—]/)[0].trim().slice(0, 40);
-          origin = { href: String(from.href), name: String(from.href).split('?')[0] === '/' ? 'Home' : 'Back', from, label: short } as typeof origin;
+          origin = { href: String(from.href), name: String(from.href).split('?')[0] === '/' ? 'Home' : 'Back', from, label: short } as Origin;
         }
       } catch {}
       const GEAR_NAMES = ['Local', 'Quick', 'Fast', 'Faster', 'Warp 1', 'Warp 2', 'Warp 3', 'Warp 4', 'Warp 5'];
@@ -607,7 +608,7 @@ import { sections } from '../lib/nav';
       }
       // search: type a name, go there. Places and the named stars of the catalogue.
       const find = document.createElement('input');
-      find.type = 'search'; find.id = 'goto-find'; find.autocomplete = 'off'; find.placeholder = 'Search: Mars, Sirius, Andromeda…'; find.setAttribute('aria-label', 'Search for a place or a star'); find.className = 'goto-find';
+      find.type = 'search'; find.id = 'goto-find'; find.autocomplete = 'off'; find.placeholder = 'Search: Mars, Sirius…'; find.setAttribute('aria-label', 'Search for a place or a star'); find.className = 'goto-find';
       const results = document.createElement('div'); results.className = 'goto-results'; results.hidden = true; results.setAttribute('role', 'list');
       const groups = [...list.children] as HTMLElement[];
       const bar = document.createElement('div'); bar.className = 'goto-bar'; bar.appendChild(find); list.prepend(results); list.prepend(bar);
@@ -716,8 +717,8 @@ import { sections } from '../lib/nav';
       const marksWrap = document.createElement('div'); marksWrap.className = 'goto-marks';
       marksWrap.append(marksHead, marksRow);
       list.insertBefore(marksWrap, groups[0]);
-      // Save this place sits in a quiet strip at the foot of the sheet, with the name of the place it saves
-      const foot = document.createElement('div'); foot.className = 'goto-foot'; foot.appendChild(saveBtn); list.appendChild(foot);
+      // Save sits beside the search box, so it never covers the list
+      bar.appendChild(saveBtn);
       function renderMarks() {
         marksRow.replaceChildren();
         const ms = prefs.marks ?? [];
@@ -731,8 +732,7 @@ import { sections } from '../lib/nav';
         }
         const here = world.focus;
         saveBtn.hidden = !here.id || (prefs.marks ?? []).some((m) => m[0] === here.id) || (prefs.marks ?? []).length >= 12 || !world.canFlyTo(here.id);
-        saveBtn.textContent = `Save ${here.name}`;
-        foot.hidden = saveBtn.hidden || !!find.value.trim();
+        saveBtn.textContent = 'Save'; saveBtn.title = `Save ${here.name} to your places`; saveBtn.setAttribute('aria-label', `Save ${here.name} to your places`);
       }
       saveBtn.addEventListener('click', () => {
         const here = world.focus;
@@ -1105,7 +1105,10 @@ import { sections } from '../lib/nav';
       /* Go to: the search stays at the top and Save at the foot, so the answers sit between them */
       .goto-list { padding-top: 0; }
       .goto-bar { position: sticky; top: 0; z-index: 2; margin: 0 -18px 10px; padding: 16px 18px 8px; background: rgba(9,9,11,.97); }
-      .goto-bar .goto-find { margin: 0; }
+      .goto-bar { display: flex; align-items: center; gap: 8px; }
+      .goto-bar .goto-find { margin: 0; flex: 1; min-width: 0; }
+      .goto-bar .save-place { flex: none; margin: 0; padding: 0 14px; min-height: 44px; }
+      .goto-list.searching .save-place { display: none; }
       .goto-results { display: grid; margin: 0 0 10px; }
       .goto-results[hidden] { display: none; }
       .goto-hit { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; width: 100%; min-height: 48px; padding: 8px 0; text-align: left; border-bottom: 1px solid rgba(236,231,220,.08); }
@@ -1114,9 +1117,6 @@ import { sections } from '../lib/nav';
       .goto-hit:first-child .rn, .goto-hit:hover .rn, .goto-hit:focus-visible .rn { color: var(--warm); }
       .goto-hit:focus-visible { outline: 2px solid var(--warm); outline-offset: -2px; }
       .goto-none { margin: 8px 0 14px; font: 300 1rem/1.4 var(--serif); color: var(--soft); }
-      .goto-foot { position: sticky; bottom: 0; z-index: 2; margin: 0 -18px; padding: 8px 18px 12px; background: rgba(9,9,11,.97); border-top: 1px solid rgba(236,231,220,.1); }
-      .goto-foot[hidden], .goto-list.searching .goto-foot { display: none; }
-      .goto-foot .save-place { margin: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
       /* keys and help: a page of its own */
       .help { position: fixed; z-index: 70; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: calc(var(--top) + 36px) var(--gut) 48px; background: rgba(5,6,10,.97); }
       .help[hidden] { display: none; }
