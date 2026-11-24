@@ -22,7 +22,7 @@ const most = Math.max(...PACKS.slice(1).map((p) => packLessons(p).length));
 const packs = PACKS.slice(1).map((p) => ({ ...p, n: packLessons(p).length, d: Math.sqrt(packLessons(p).length / most) }));
 const ticks = TICKS.filter((t) => t.s > 1);
 ---
-<Reading title="Learn" path="/learn" description="Short lessons on how space works, from why there are seasons to what the Sun is made of, set out from the ground under your feet to the oldest light there is.">
+<Reading title="Learn" path="/learn" description="Short lessons on how space works, from why there are seasons to what the Sun is made of, from the ground under your feet to the oldest light there is.">
   <header class="reading-head with-pic" style="--pic: url(/img/learn/orion-nebula-hubble.jpg)">
     <p class="label">Learn</p>
     <h1>How it all works</h1>

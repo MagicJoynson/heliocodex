@@ -52,7 +52,7 @@ const far = worlds.map((w) => {
 });
 import Tonight from '../components/Tonight.astro';
 ---
-<Base title="Heliocodex" path="/" jsonld={{ '@context': 'https://schema.org', ...siteLd, potentialAction: { '@type': 'SearchAction', target: 'https://heliocodex.com/search?q={search_term_string}', 'query-input': 'required name=search_term_string' } }} description="The Sun, its planets and everything beyond, from real photographs and measurements. Explore it in 3D, learn how it works, or find what is above you tonight.">
+<Base title="Heliocodex" path="/" jsonld={{ '@context': 'https://schema.org', ...siteLd, potentialAction: { '@type': 'SearchAction', target: 'https://heliocodex.com/search?q={search_term_string}', 'query-input': 'required name=search_term_string' } }} description="The Sun, its planets and everything beyond, from real photographs and measurements. Explore it in 3D, learn how it works, or see what is above you tonight.">
   <script is:inline>
     // links made before the 3D view moved (/?go=mars and the like) still land in it
     if (/[?&](go|gl)=?/.test(location.search)) location.replace('/explore' + location.search + location.hash);
