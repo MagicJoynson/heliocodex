@@ -87,6 +87,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   }
   let exposureNow = 1;
   let lastSpeed = 0; // m/s, for tests
+  let lastCoasting = false;
 
   // ---- where everything is, on the engine's clock (heliocentric, metres, engine frame).
   // The body list holds every moon, so it is loaded after the first paint, not with the page.
@@ -607,7 +608,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const f = flight.step(dt, wall, onTerrain
       ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d), ahead }
       : { centre: posOf(nearId), radius: radOf(nearId), ground: ellipsoidOf(nearId) ? (u) => surfaceAlong(nearId, u, radOf(nearId)) - radOf(nearId) : () => 0, ahead });
-    lastSpeed = f.speed;
+    lastSpeed = f.speed; lastCoasting = !!f.coasting;
     // a cruise has ended (even one so short it started and finished within this frame)
     nearest(flight.pos); // for next frame
     if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } o.onTripEnd?.(); }
@@ -950,7 +951,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     parentOf(id: string): string | undefined { const b = system.body(id); return b?.kind === 'moon' ? b.parent ?? undefined : undefined; },
     /** for the minimap: the planets and you, seen from above the Sun, in metres in the engine frame */
     /** for tests: the camera's orientation (x, y, z, w), speed in m/s, the gear and the mode, read straight from the flight */
-    debugState() { return { q: flight.q.toArray() as number[], speed: lastSpeed, gear: flight.gear, mode: flight.mode, fov: camera.fov, exposure: exposureNow }; },
+    debugState() { return { q: flight.q.toArray() as number[], speed: lastSpeed, coasting: lastCoasting, gear: flight.gear, mode: flight.mode, fov: camera.fov, exposure: exposureNow }; },
     mapState() {
       const f = fwdOf();
       return { cam: [...flight.pos] as V3, heading: [f[0], f[2]] as [number, number], planets: PLANETS.map((p) => ({ id: p, name: PLANET_NAMES[p], at: [...planetPos[p]] as V3 })), focus: focusKey, place: placeAt(len(flight.pos), nearNow)?.id ?? null };

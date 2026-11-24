@@ -72,6 +72,7 @@ export function createFlight(canvas: HTMLElement) {
   let reduced = false; // reduced motion: no drift after a drag, faster settling
   let lookSens = 1; // the look slider: 1 is about 0.08 degrees of turn for each pixel dragged
   let lastLookAt = -1e9; // when you last turned the view yourself (levelling waits for a moment of calm)
+  let coastOver = true;
   let pushPeak = 0; // the fastest you went while pushing, so coasting is judged against it
   let coasting = false; // in a warp gear, letting go: still gliding
 
@@ -334,9 +335,10 @@ export function createFlight(canvas: HTMLElement) {
       if (stopRamp > 0) stopRamp = Math.max(0, stopRamp - wall);
       // letting go: in the walking-pace gears (local to Faster) you stop within about half a second; only the warp gears coast on
       const tau = calming ? 0.3 : k('KeyX') ? 0.08 : pushing ? 0.28 + 0.12 * gear : stopRamp > 0 ? 0.3 : gear <= 3 ? 0.11 + 0.025 * gear : 0.5 + 0.18 * gear;
-      if (pushing) pushPeak = Math.max(pushPeak, len(vel));
-      coasting = !pushing && !calming && gear >= 4 && len(vel) > Math.max(0.05 * pushPeak, 0.01 * Math.max(h, 2));
-      if (!pushing && !coasting) pushPeak = 0;
+      // coasting: from letting go until the speed is down to 5% of what it was then; it cannot come back on by itself
+      if (pushing) { pushPeak = len(vel); coastOver = false; }
+      else if (pushPeak <= 0 || calming || len(vel) <= Math.max(0.05 * pushPeak, 0.5)) coastOver = true;
+      coasting = !pushing && !coastOver && gear >= 4;
       const kv = 1 - Math.exp(-dt / tau);
       vel[0] += (want[0] - vel[0]) * kv; vel[1] += (want[1] - vel[1]) * kv; vel[2] += (want[2] - vel[2]) * kv;
       // momentum too: the speed you already have is held to the same rule, so a long glide cannot carry you into a body
