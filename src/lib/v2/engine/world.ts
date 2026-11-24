@@ -24,6 +24,8 @@ import type { Context, Engine, Layer, View } from './index';
 export interface Readout {
   alt: number; // metres above the ground
   speed: number; // m/s
+  /** in a warp gear with the keys let go: still gliding (X stops) */
+  coasting?: boolean;
   mode: 'idle' | 'orbit' | 'cruise' | 'free';
   arriving: number; // 0..1 through the cruise
   secsLeft: number; // seconds of the cruise still to go
@@ -84,6 +86,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     try { post = createPost(renderer, { bloom: quality.tier >= 2, msaa: quality.tier >= 3, hdr: quality.tier >= 2 }); } catch (e) { console.warn('the finishing pass could not start', e); post = null; }
   }
   let exposureNow = 1;
+  let lastSpeed = 0; // m/s, for tests
 
   // ---- where everything is, on the engine's clock (heliocentric, metres, engine frame).
   // The body list holds every moon, so it is loaded after the first paint, not with the page.
@@ -604,6 +607,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const f = flight.step(dt, wall, onTerrain
       ? { centre: bodyPos, radius: terrain.radius, ground: (d) => terrain.groundAt(d), ahead }
       : { centre: posOf(nearId), radius: radOf(nearId), ground: ellipsoidOf(nearId) ? (u) => surfaceAlong(nearId, u, radOf(nearId)) - radOf(nearId) : () => 0, ahead });
+    lastSpeed = f.speed;
     // a cruise has ended (even one so short it started and finished within this frame)
     nearest(flight.pos); // for next frame
     if (cruising && f.mode !== 'cruise') { cruising = false; forceCtx = true; o.onFocus?.(focusKey, focusName); if (pendingFly) { pendingFly.resolve(); pendingFly = null; } o.onTripEnd?.(); }
@@ -773,7 +777,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const illustrative = onTerrain && !terrain.source.resolution && f.alt < terrain.radius * 0.5;
     readoutAt = now;
     o.onReadout?.({
-      alt: f.alt, speed: f.speed, gear: flight.gear, mode: f.mode, arriving: f.arriving, secsLeft: f.secsLeft,
+      alt: f.alt, speed: f.speed, coasting: f.coasting, gear: flight.gear, mode: f.mode, arriving: f.arriving, secsLeft: f.secsLeft,
       target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
       far: !!farNow,
@@ -894,7 +898,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
   return {
     ...engine,
-    /** the way in. With a place that can be reached now (a link such as ?go=saturn), go straight there; otherwise the way in ends at Mars. Says whether it went to the place */
+    /** the way in. With a place that can be reached now (a link such as ?go=saturn), go straight there; otherwise you are in at once, circling the Sun at 30 au with the whole Solar System in view, and choose where to go. Says whether it went to a place */
     enter(secs = 7, to?: string): boolean {
       if (pendingFly) { pendingFly.reject(abort('replaced by the way in')); pendingFly = null; }
       entered = true;
@@ -903,9 +907,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         engine.flyTo({ target: to }, { secs: reduced ? 0 : secs }).catch(() => {});
         return true;
       }
-      focusKey = bodySlug; focusName = 'Mars';
-      flight.startCruise({ to: focusOf(bodySlug), endDist: terrain.radius * 3.2, endDir: enterDir, secs: reduced ? 0 : secs });
-      cruising = true;
+      // the overview: the view is already here (held), so it is simply let go of: no trip, nothing to wait for
+      flight.orbitAt(sunFocus, 30 * AU, enterDir);
+      focusKey = 'sun'; focusName = 'the Sun';
       if (reduced) o.onJump?.();
       return false;
     },
@@ -925,6 +929,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     get rate() { return system.rate; },
     /** reduced motion: every trip is a jump hidden by a quick fade, and nothing drifts */
     setReduced(v: boolean) { reduced = v; flight.setReduced(v); },
+    /** the look slider, 0.25 to 3 (1 is about 0.08 degrees a pixel) */
+    setLookSens(v: number) { flight.setLookSens(v); },
     /** brake at once, mid-trip: you stay where you are, flying free, and the place named is the one nearest */
     stop() {
       if (flight.mode !== 'cruise') return;
@@ -943,6 +949,8 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     /** the planet a moon goes round, or undefined for anything else */
     parentOf(id: string): string | undefined { const b = system.body(id); return b?.kind === 'moon' ? b.parent ?? undefined : undefined; },
     /** for the minimap: the planets and you, seen from above the Sun, in metres in the engine frame */
+    /** for tests: the camera's orientation (x, y, z, w), speed in m/s, the gear and the mode, read straight from the flight */
+    debugState() { return { q: flight.q.toArray() as number[], speed: lastSpeed, gear: flight.gear, mode: flight.mode, fov: camera.fov, exposure: exposureNow }; },
     mapState() {
       const f = fwdOf();
       return { cam: [...flight.pos] as V3, heading: [f[0], f[2]] as [number, number], planets: PLANETS.map((p) => ({ id: p, name: PLANET_NAMES[p], at: [...planetPos[p]] as V3 })), focus: focusKey, place: placeAt(len(flight.pos), nearNow)?.id ?? null };
