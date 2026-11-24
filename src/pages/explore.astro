@@ -1024,8 +1024,8 @@ import { sections } from '../lib/nav';
       @media (pointer: coarse) { .coarse-only { display: inline; } .fine-only { display: none; } }
 
       /* the touch pad, only while flying yourself */
-      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 64px; height: 150px; border: 1px solid var(--line); border-radius: 32px; background: rgba(9,9,11,.86); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
-      .pad span { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 72px; height: 150px; border: 1px solid var(--line); border-radius: 36px; background: rgba(9,9,11,.86); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+      .pad span { font: 400 .8125rem/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--soft); }
       .pad i { width: 22px; height: 1px; background: rgba(236,231,220,.3); }
       .pad.on { border-color: var(--warm); }
       @media (pointer: coarse) { body.arrived.free .pad { display: flex; } }
@@ -1071,9 +1071,9 @@ import { sections } from '../lib/nav';
       }
       @media (min-width: 601px) and (max-width: 760px) {
         .gears.throttle { left: auto; right: var(--gut); transform: none; bottom: calc(var(--bot) + 60px); width: min(320px, calc(100vw - 2 * var(--gut))); }
-        body .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 150px); height: 96px; padding: 8px 0; }
+        body .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 150px); height: 96px; padding: 14px 0; }
       }
-      @media (max-height: 520px) { .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 66px); height: 116px; padding: 10px 0; } }
+      @media (max-height: 520px) { .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 66px); height: 116px; padding: 16px 0; } }
       @media (max-width: 600px) {
         .gen { top: calc(var(--top) + 164px); }
         .eta { width: calc(100vw - 96px); }
