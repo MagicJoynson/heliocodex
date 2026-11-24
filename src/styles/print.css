@@ -14,7 +14,7 @@
   body, main { position: static !important; height: auto !important; overflow: visible !important; }
   main, article, section, .reading, .prose { max-width: none !important; width: auto !important; margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
   main *, section { min-height: 0 !important; }
-  main > *, section, article, .story, .step, [data-step] { height: auto !important; padding-top: 4mm !important; padding-bottom: 4mm !important; }
+  main > *, section, article, .story, .step, [data-step] { height: auto !important; padding-top: 2mm !important; padding-bottom: 2mm !important; }
   [style*='opacity: 0'], .reveal, .rise { opacity: 1 !important; transform: none !important; }
   main, main > article, .l-rest, .reading { padding-bottom: 0 !important; margin-bottom: 0 !important; }
   main *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
@@ -36,6 +36,12 @@
   .story { display: block !important; padding: 0 !important; }
   .story-steps, [data-step] { margin: 0 !important; padding: 0 !important; min-height: 0 !important; height: auto !important; list-style: none; }
   .story-steps li, [data-step] { padding: 1mm 0 !important; margin: 0 !important; opacity: 1 !important; }
+  /* a world page's opening scrim sits over the head of the page and printed it blank */
+  main > .beat:first-of-type::before, main .beat::before, main .copy::before { display: none !important; }
+  .small-note, .aside.small-note, .sources + p { break-before: avoid; }
+  .sources li:last-child { break-after: avoid; }
+  /* links on to other lessons and packs mean nothing on paper, and left a last page of a few words */
+  .onward, .packs-in, nav[aria-label='Other lessons'], nav[aria-label='Lesson packs this lesson is part of'] { display: none !important; }
   .l-begin, .story .hang .note { display: none !important; }
   img { max-width: 100% !important; max-height: 120mm !important; width: auto !important; height: auto !important; object-fit: contain; break-inside: avoid; filter: none !important; }
   /* drawings are made for a dark page: turned over so their pale lines print dark, hues kept */
