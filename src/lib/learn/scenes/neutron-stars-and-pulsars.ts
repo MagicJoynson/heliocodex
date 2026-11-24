@@ -106,7 +106,7 @@ const lighthouseScene: Scene = {
 // ---- 4. the Crab
 const crabHeart = pairScene({
   a: '/img/learn/crab-nebula-hubble.jpg', b: '/img/learn/crab-pulsar-hubble.jpg',
-  caption: 'Two real photographs by the Hubble Space Telescope. The first shows the whole Crab Nebula, the cloud of gas thrown out by the explosion seen in 1054. The second shows its heart: the neutron star is the right-hand one of the two bright stars near the middle, with rings round it that are waves driven out by its spin. Credit, first picture: NASA, ESA and Allison Loll/Jeff Hester (Arizona State University). Acknowledgement: Davide De Martin (ESA/Hubble). Credit, second picture: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall). Both CC BY 4.0.',
+  caption: 'Two real photographs by the Hubble Space Telescope. The first shows the whole Crab Nebula, the cloud of gas thrown out by the explosion seen in 1054. The second shows its heart: the neutron star is the right-hand one of the two bright stars near the middle, with rings round it that are waves driven out by its spin. Credit, first picture: NASA, ESA and Allison Loll/Jeff Hester (Arizona State University). Acknowledgement: Davide De Martin (ESA/Hubble). Credit, second picture: NASA and ESA. Acknowledgement: J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall). The first is CC BY 4.0; the second is a NASA picture, used under NASA\'s image use policy.',
   say: ['What is left of the star that exploded in 1054', 'It turns 30 times every second'], tags: ['The Crab Nebula', 'Its heart'],
 });
 
