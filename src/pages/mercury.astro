@@ -111,7 +111,8 @@ const rows: [string, string][] = [
   @media (min-width: 981px) { h1 { font-size: clamp(3.6rem, 5.2vw, 4.8rem); } }
   h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 300; letter-spacing: .03em; line-height: 1.1; }
   .lead { font-size: 1.2em; line-height: 1.5; max-width: 23em; font-weight: 340; }
-  .beat:not(:first-child) .copy { border-left: 1px solid rgba(238,236,231,.38); padding-left: 1.4em; }
+  .beat:not([data-p="0"]) .copy { border-left: 1px solid rgba(238,236,231,.38); padding-left: 1.4em; margin-left: -1.4em; }
+  @media (max-width: 760px) { .beat:not([data-p="0"]) .copy { margin-left: 0; } }
   .copy p { line-height: 1.66; }
   .plate { margin: 0; max-width: 44rem; }
   .plate.tall { max-width: 30rem; }
