@@ -228,7 +228,7 @@ export function createFlight(canvas: HTMLElement) {
         // turning on the spot, slowly in and out, before going anywhere
         pos[0] = cr.p0[0]; pos[1] = cr.p0[1]; pos[2] = cr.p0[2];
         cruiseVel = [0, 0, 0];
-        q.copy(cr.q0).slerp(cr.q1, ease(cr.t / cr.turn));
+        { const x = Math.min(1, cr.t / cr.turn); q.copy(cr.q0).slerp(cr.q1, x * x * (3 - 2 * x)); }
       } else {
         const u = cr.secs > 0 ? (cr.t - cr.turn) / cr.secs : 1;
         const at = cruiseAt(Math.min(1, Math.max(0, u)));
@@ -236,7 +236,7 @@ export function createFlight(canvas: HTMLElement) {
         if (wall > 1e-4) cruiseVel = [(p[0] - pos[0]) / wall, (p[1] - pos[1]) / wall, (p[2] - pos[2]) / wall];
         pos[0] = p[0]; pos[1] = p[1]; pos[2] = p[2];
         lookAlong(scale(at.dir, -1), UP);
-        if (u >= 1) {
+        if (cr.t >= cr.total || u >= 1) {
           focus = cr.to; dir = at.dir; dist = distGoal = at.d; cr = null; mode = 'orbit';
         }
       }
@@ -253,7 +253,10 @@ export function createFlight(canvas: HTMLElement) {
         // what is left over after letting go: a short, soft drift (none with reduced motion)
         if (!reduced && wall > 0) spin = { az: daz / wall * 0.3, el: del / wall * 0.3 };
         look = { dx: 0, dy: 0 };
-      } else if (!pointers.size && (spin.az || spin.el)) {
+      } else if (pointers.size) {
+        // finger or button still down and not moving: nothing to glide on
+        spin = { az: 0, el: 0 };
+      } else if (spin.az || spin.el) {
         az += spin.az * wall; el += spin.el * wall;
         // gone in about half a second at the longest, with no overshoot
         const f = Math.exp(-wall * 9);
@@ -372,7 +375,8 @@ export function createFlight(canvas: HTMLElement) {
           const wr = norm(want2);
           const r = right();
           const ang = Math.atan2(dot(cross(r, wr), fw), dot(r, wr));
-          const maxStep = THREE.MathUtils.degToRad(8) * dt;
+          const calmFor = clamp((performance.now() - lastLookAt - 500) / 600, 0, 1); // eases in over 0.6 s
+          const maxStep = THREE.MathUtils.degToRad(8) * calmFor * calmFor * dt;
           rotate(fw, clamp(ang, -maxStep, maxStep) * ground);
         }
       }
@@ -455,7 +459,7 @@ export function createFlight(canvas: HTMLElement) {
         const vT = norm(toT);
         const ang = Math.acos(clamp(dot(fwd(), vT), -1, 1));
         if (ang > THREE.MathUtils.degToRad(12)) {
-          turn = clamp(ang / THREE.MathUtils.degToRad(80), 0.5, 1.4);
+          turn = clamp(ang / THREE.MathUtils.degToRad(40), 0.6, 2.5); // about 40 degrees a second on average, 60 at the peak
           q0 = q.clone();
           // the trip itself then runs from straight ahead, so the way in is a straight line to the target
           // (kept off the poles, so "up" still means something when the trip ends)
