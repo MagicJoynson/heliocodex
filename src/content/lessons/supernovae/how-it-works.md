@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "NASA, Swift provides the best-ever UV view of the nearest galaxies (3 June 2013)", url: "https://svs.gsfc.nasa.gov/11293" }
   - { label: "NASA Imagine the Universe, Supernovae", url: "https://imagine.gsfc.nasa.gov/science/objects/supernovae2.html" }
   - { label: "NASA, Stars", url: "https://science.nasa.gov/universe/stars/" }
   - { label: "NASA, The dawn of a new era for Supernova 1987A", url: "https://science.nasa.gov/missions/hubble/the-dawn-of-a-new-era-for-supernova-1987a/" }
@@ -36,7 +37,7 @@ A supernova is not one thing. Two quite different stars can end this way, and as
   <figcaption><b>A photograph.</b> What is left of Supernova 1987A, by the Hubble Space Telescope. The bright ring is about one light year across. It is gas the star threw off at least 20,000 years before it exploded, now lit up by the blast. Credit: ESA/Hubble and NASA, CC BY 4.0.</figcaption>
 </figure>
 
-**The one in 1987.** On 24 February 1987, Ian Shelton noticed a new star in the Large Magellanic Cloud, a small galaxy 168,000 light years away. It was the first supernova bright enough to see without a telescope since 1604. At its brightest it shone with the power of 100 million Suns, and it stayed bright for months.
+**The one in 1987.** On 24 February 1987, Ian Shelton noticed a new star in the Large Magellanic Cloud, a small galaxy about 163,000 light years away. It was the first supernova bright enough to see without a telescope since 1604. At its brightest it shone with the power of 100 million Suns, and it stayed bright for months.
 
 The star that blew up was already in the catalogues. It was a blue supergiant about 20 times as heavy as the Sun. That was a surprise, because theory had expected a red supergiant.
 

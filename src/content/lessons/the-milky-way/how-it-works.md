@@ -3,9 +3,10 @@ sources:
   - { label: "NASA, Galaxies", url: "https://science.nasa.gov/universe/galaxies/" }
   - { label: "ESA, Gaia", url: "https://www.esa.int/Science_Exploration/Space_Science/Gaia" }
   - { label: "Nobel Prize in Physics 2020: black holes and the centre of our galaxy", url: "https://www.nobelprize.org/prizes/physics/2020/summary/" }
+  - { label: "NASA, Swift provides the best-ever UV view of the nearest galaxies (3 June 2013)", url: "https://svs.gsfc.nasa.gov/11293" }
   - { label: "NASA, the Andromeda Galaxy", url: "https://science.nasa.gov/universe/galaxies/andromeda/" }
   - { label: "Reid and others 2019, Astrophysical Journal 885, 131", url: "https://arxiv.org/abs/1910.03357" }
-lastChecked: 2026-11-10
+lastChecked: 2026-11-24
 ---
 Working out the shape of the Milky Way is like mapping a forest from one spot inside it. Nearby trees hide the distant ones, and you cannot step outside for a look. Dust between the stars blocks ordinary light across most of the disc, so much of the map comes from infrared light and radio waves, which pass through dust.
 
@@ -31,4 +32,4 @@ The disc is a hundred times wider than it is thick, the same proportions as a CD
 
 **How the map is made.** Between 2014 and 2025 the Gaia spacecraft measured the brightness of about 1.8 billion stars, and the distances and movements of about 1.5 billion of them, using parallax. That is the best map there has ever been, and it still covers only about one star in every hundred, mostly on our side of the galaxy. The far side of the disc is known far less well, and even the number of main spiral arms, two or four, is still argued over.
 
-**Neighbours and the future.** About 60 small galaxies orbit the Milky Way. The two largest, the Magellanic Clouds, are easy to see by eye from the southern half of the Earth and lie about 170,000 and 210,000 light years away. The nearest large galaxy, Andromeda, is 2.5 million light years away and coming towards us at about 110 km/s. For years the two were expected to collide in 4 to 5 billion years. Newer measurements of the sideways movements of the galaxies make that less certain: a near miss is about as likely as a collision in the next 10 billion years. Either way, stars are so far apart that hardly any would ever hit each other.
+**Neighbours and the future.** About 60 small galaxies orbit the Milky Way. The two largest, the Magellanic Clouds, are easy to see by eye from the southern half of the Earth and lie about 163,000 and 200,000 light years away. The nearest large galaxy, Andromeda, is 2.5 million light years away and coming towards us at about 110 km/s. For years the two were expected to collide in 4 to 5 billion years. Newer measurements of the sideways movements of the galaxies make that less certain: a near miss is about as likely as a collision in the next 10 billion years. Either way, stars are so far apart that hardly any would ever hit each other.
