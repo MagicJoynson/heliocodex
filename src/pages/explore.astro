@@ -77,16 +77,8 @@ import { sections } from '../lib/nav';
       <noscript><p class="nope-ns">The 3D view needs JavaScript. <a href="/explore/list">The whole journey is available as a plain list</a>. Everything else is on the <a href="/learn">Learn</a>, <a href="/worlds">Solar System</a>, <a href="/sky">Sky</a> and <a href="/atlas">Atlas</a> pages.</p></noscript>
     </section>
 
-    <!-- where you are: a map of the Solar System from above, and what you are looking at -->
-    <section class="where" id="where" aria-labelledby="where-h" inert>
-      <h2 class="where-h" id="where-h"><span class="where-k" id="where-k">Looking at</span> <span id="where-name">Mars</span></h2>
-      <p class="where-d" id="where-d"></p>
-      <canvas class="map" id="map" width="180" height="180" tabindex="0" role="group" aria-label="A map of the Solar System seen from above, with you marked. Left and right arrow keys choose a place, Enter flies there."></canvas>
-      <div class="stepper" role="group" aria-label="Step along the map">
-        <button type="button" id="step-in" disabled>In</button>
-        <button type="button" id="step-out" disabled>Out</button>
-      </div>
-    </section>
+    <!-- Back: the place you were at before (the only part of the old place panel that is kept) -->
+    <button type="button" class="back-chip" id="step-back" disabled title="Back to the place you were at before (B)" inert>Back</button>
 
     <div class="hud" id="hud">
       <div class="readout" aria-hidden="true">
@@ -99,10 +91,6 @@ import { sections } from '../lib/nav';
 
     <!-- the controls: always in the same place, all reachable by keyboard -->
     <div class="controls" id="controls" inert role="toolbar" aria-label="3D view controls">
-      <div class="zoom">
-        <button type="button" id="z-in" aria-label="Closer" title="Closer (W or +)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg></button>
-        <button type="button" id="z-out" aria-label="Further away" title="Further away (S or −)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12" /></svg></button>
-      </div>
       <button type="button" class="pill" id="tour-btn" aria-controls="tour" aria-expanded="false">Tour</button>
       <div class="pop" id="goto">
         <button type="button" class="pill" id="goto-btn" aria-expanded="false" aria-controls="goto-list">Go to</button>
@@ -129,7 +117,7 @@ import { sections } from '../lib/nav';
         </div>
       </div>
       <div class="pop" id="view">
-        <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet">View</button>
+        <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet" aria-label="Controls and settings" title="Controls and settings">?</button>
         <div class="sheet view-sheet" id="view-sheet" role="group" aria-label="View settings" hidden>
           <fieldset>
             <legend>Planet sizes</legend>
@@ -148,22 +136,48 @@ import { sections } from '../lib/nav';
             <label><input type="radio" name="quality" value="sharp" /> Sharper <small>keeps the picture crisp, and may stutter on a slow device</small></label>
           </fieldset>
           <fieldset>
-            <legend>Map</legend>
-            <label><input type="checkbox" id="show-map" checked /> Show the map</label>
+            <legend>Moons</legend>
+            <label><input type="checkbox" id="moon-orbits" /> Show moon orbit lines <small>the paths moons follow round the planet you are near</small></label>
           </fieldset>
-          <button type="button" class="free-btn" id="free-btn" aria-pressed="false">Fly yourself</button>
           <dl class="keys">
-            <div><dt>Turn round</dt><dd>drag, or the arrow keys, or A and D</dd></div>
-            <div><dt>Closer and further</dt><dd>scroll, pinch, W and S, or + and −</dd></div>
-            <div><dt>Go to a planet</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
-            <div><dt>Fly yourself</dt><dd>F, then W A S D, E and Q. Esc stops</dd></div>
+            <div><dt>Look round</dt><dd>drag, or the left and right arrow keys</dd></div>
+            <div><dt>Move</dt><dd>W or the up arrow ahead, S or the down arrow astern, A and D sideways, E up, Q down</dd></div>
+            <div><dt>Speed</dt><dd>scroll (one gear a notch), the throttle, or . faster and , slower. Shift goes quicker. X brakes at once. Speed always eases off near a world</dd></div>
+            <div><dt>Go to a world</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
+            <div><dt>Circle a world</dt><dd>Esc eases a trip to a stop. In free flight it stops you, and unless you are close to the ground it then circles the nearest world; F sets you flying free again</dd></div>
+            <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
+            <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to circle or fly</dd></div>
             <div><dt>The Codex</dt><dd>M</dd></div>
           </dl>
         </div>
       </div>
     </div>
 
-    <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to turn round · Scroll to zoom · Click a planet to go there</span><span class="coarse-only">Drag to turn · Pinch to zoom · Tap a planet to go there</span></p>
+    <div class="gears throttle" id="gears" role="group" aria-label="Throttle" hidden>
+      <div class="tl" aria-hidden="true"><span>Hover</span><span id="gear-name">Local</span><span>Warp</span></div>
+      <input type="range" id="throttle" min="0" max="8" step="1" value="0" aria-label="Throttle" />
+      <p class="th" aria-hidden="true"><span class="fine-only">Scroll one notch, one gear · hold W to go · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
+    </div>
+    <nav class="scale" id="scale" aria-label="Where you are, from the Sun out to the whole universe. Choose a stop to fly there." inert>
+      <div class="scale-line"><i class="scale-you" id="scale-you"></i></div>
+      <ol>
+        <li><button type="button" data-go="sun">The Sun</button></li>
+        <li><button type="button" data-go="solar-system">Planets</button></li>
+        <li><button type="button" data-go="neighbourhood">Stars</button></li>
+        <li><button type="button" data-go="milky-way">Galaxy</button></li>
+        <li><button type="button" data-go="cosmic-web">Universe</button></li>
+      </ol>
+    </nav>
+    <canvas class="streaks" id="streaks" aria-hidden="true"></canvas>
+    <div class="eta" id="eta" hidden aria-hidden="true"><b id="eta-n"></b><span id="eta-d"></span><div class="eta-bar"><i id="eta-f"></i></div><button type="button" id="eta-stop">Stop here</button></div>
+    <div class="coach" id="coach" hidden role="note">
+      <p><b>1</b><span class="fine-only">Drag to look around</span><span class="coarse-only">Drag to look around</span></p>
+      <p><b>2</b><span class="fine-only">Click a world to fly there</span><span class="coarse-only">Tap a world to fly there</span></p>
+      <p><b>3</b><span class="fine-only">Scroll: one notch, one gear. Or hold W</span><span class="coarse-only">Slide the throttle for speed</span></p>
+      <button type="button" id="coach-ok">Got it</button>
+    </div>
+    <div class="aim" id="aim" hidden aria-hidden="true"><b id="aim-n"></b><span id="aim-d"></span><i>Click to fly there</i><button type="button" class="aim-go" id="aim-go">Fly here</button></div>
+    <p class="hint" id="hint" aria-hidden="true"><span class="fine-only">Drag to look round · Scroll one notch, one gear · Click a world to go there</span><span class="coarse-only">Drag to look round · Slide the throttle for speed · Tap a world to go there</span></p>
     <section class="tour" id="tour" aria-label="Guided tour" hidden>
       <p class="tour-k" id="tour-k">Stop 1 of 10</p>
       <h2 class="tour-h" id="tour-h">Home</h2>
@@ -176,7 +190,7 @@ import { sections } from '../lib/nav';
     </section>
     <p class="sr" id="said" role="status" aria-live="polite"></p>
 
-    <div class="pad" id="pad" aria-hidden="true"><span>Fly</span><i></i><span>Back</span></div>
+    <div class="pad" id="pad" aria-hidden="true"><span>Ahead</span><i></i><span>Astern</span></div>
     <p class="tech" id="tech"></p>
     <p class="gen" id="gen"></p>
     <Margin />
@@ -184,6 +198,7 @@ import { sections } from '../lib/nav';
 
     <script>
       import { createWorld } from '../lib/v2/engine/world';
+      import { GEARS } from '../lib/v2/engine/flight';
       const $ = (id: string) => document.getElementById(id)!;
       const body = document.body;
 
@@ -206,7 +221,7 @@ import { sections } from '../lib/nav';
 
       // ---- settings, kept in this browser only (see the cookies page)
       const KEY = 'heliocodex-view';
-      type Prefs = { big?: boolean; reduced?: boolean; map?: boolean; quality?: 'auto' | 'smooth' | 'sharp' };
+      type Prefs = { big?: boolean; reduced?: boolean; quality?: 'auto' | 'smooth' | 'sharp'; marks?: [string, string][]; coached?: boolean; moonOrbits?: boolean };
       let prefs: Prefs = {};
       try { prefs = JSON.parse(localStorage.getItem(KEY) ?? '{}') ?? {}; } catch {}
       const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
@@ -225,7 +240,7 @@ import { sections } from '../lib/nav';
         if (m > 1000) return `${(m / 1000).toFixed(2)} km`;
         return `${Math.max(0, Math.round(m)).toLocaleString('en-GB')} m`;
       };
-      const fmtSpeed = (v: number) => (v > 3e9 ? `${fmt(v)} a second` : v > 1000 ? `${(v / 1000).toLocaleString('en-GB', { maximumFractionDigits: 1 })} km a second` : `${Math.round(v)} m a second`);
+      const fmtSpeed = (v: number) => (v > 3e9 ? `${(v / 299_792_458).toLocaleString('en-GB', { maximumFractionDigits: v > 3e10 ? 0 : 1 })} × light speed` : v >= 1000 ? `${Math.round(v / 1000).toLocaleString('en-GB')} km/s` : v >= 1 ? `${Math.round(v)} m/s` : '0 km/s');
       // a catalogue star the camera has flown to is shown at the distance its page gives (Gaia for Proxima Centauri),
       // not at where the camera stopped, which is a little short of it
       let focusId = '';
@@ -236,6 +251,7 @@ import { sections } from '../lib/nav';
       const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
       const params = new URLSearchParams(location.search);
+      const linkedTo = params.has('go'); // a link that names a place goes in without the click
       // coming back to the 3D view in the same tab, with nowhere asked for: carry on from where you were
       if (!params.has('go') && !params.has('tour')) { try { const at = sessionStorage.getItem('hc-at'); if (at) params.set('go', at); } catch {} }
       // coming from the lesson on how big space is: show distances again on its scale, the Sun as a football 22 cm across
@@ -252,23 +268,70 @@ import { sections } from '../lib/nav';
           back.addEventListener('click', () => { try { sessionStorage.setItem('hc-from', JSON.stringify({ ...from, back: true })); } catch {} });
         }
       } catch {}
+      const GEAR_NAMES = ['Local', 'Quick', 'Fast', 'Faster', 'Warp 1', 'Warp 2', 'Warp 3', 'Warp 4', 'Warp 5'];
+      const gearName = (g: number) => GEAR_NAMES[g] ?? 'Local';
+      // the places you have been, for Back
+      const trail: [string, string][] = [];
+      let backTarget = '';
+      let prevMode = '';
+      let stoppedHere = false; // Stop here was pressed: say so, instead of claiming to have arrived
+      let tripFrom = 1;
+      let tripK = 0; // 0 to 1 through the middle of a trip: how strong the streaks are
+      // quiet star streaks while travelling: a sense of speed, never on in reduced motion
+      {
+        const cv = $('streaks') as HTMLCanvasElement, cx = cv.getContext('2d');
+        const N = 110, seeds = Array.from({ length: N }, () => [Math.random() * Math.PI * 2, Math.random(), Math.random()]);
+        let on = false;
+        const draw = (t: number) => {
+          const k = tripK;
+          if (!cx || (k < 0.01 && !on)) { requestAnimationFrame(draw); return; }
+          const W = cv.clientWidth, H = cv.clientHeight, dpr = Math.min(devicePixelRatio || 1, 2);
+          if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+          cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
+          on = k >= 0.01;
+          if (on) {
+            const R = Math.hypot(W, H) / 2, c = [W / 2, H * 0.48];
+            cx.lineCap = 'round';
+            for (const [a, rr, ph] of seeds) {
+              const u = ((t / 1800) * (0.5 + ph) + ph * 7) % 1; // how far out this streak has run
+              const r0 = R * (0.12 + 0.88 * u * u), len = R * 0.16 * k * (0.3 + u) ;
+              cx.strokeStyle = `rgba(205,220,255,${(0.1 + 0.28 * k * u * (0.5 + rr * 0.5)).toFixed(3)})`;
+              cx.lineWidth = 0.8 + 1.2 * u;
+              cx.beginPath(); cx.moveTo(c[0] + Math.cos(a) * r0, c[1] + Math.sin(a) * r0); cx.lineTo(c[0] + Math.cos(a) * (r0 + len), c[1] + Math.sin(a) * (r0 + len)); cx.stroke();
+            }
+          }
+          requestAnimationFrame(draw);
+        };
+        requestAnimationFrame(draw);
+      }
       let world: Awaited<ReturnType<typeof createWorld>>;
+      let moonLayer: { setOrbits(on: boolean): void } | null = null;
+      // on a touch screen a tap on a world selects it and a card offers Fly here; with a mouse a click flies at once
+      const coarse = matchMedia('(pointer: coarse)').matches;
+      let picked = '';
+      const lightText = (m: number) => { const sec = m / 299_792_458; return sec < 1 ? '' : sec < 90 ? `Light takes ${Math.round(sec)} s` : sec < 5400 ? `Light takes ${Math.round(sec / 60)} min` : sec < 172800 ? `Light takes ${(sec / 3600).toFixed(1)} h` : ''; };
       const startedAt = performance.now();
       try {
         world = await createWorld({
           canvas: $('space') as HTMLCanvasElement,
+          onSelect: coarse ? (a) => {
+            const card = $('aim');
+            if (!a) { card.hidden = true; picked = ''; body.classList.remove('picking'); return; }
+            body.classList.add('picking');
+            picked = a.id; $('aim-n').textContent = a.name;
+            $('aim-d').textContent = [`${fmt(a.metres)} away`, lightText(a.metres)].filter(Boolean).join(' · ');
+            card.hidden = false;
+          } : undefined,
           forceWebGL: params.has('gl') || (() => { try { return sessionStorage.getItem('hc-gl') === '1'; } catch { return false; } })(),
           onReadout(r) {
-            $('where-k').textContent = r.mode === 'cruise' ? 'Flying to' : 'Looking at';
             if (r.mode === 'cruise') {
-              if (world?.focus.name) $('where-name').textContent = cap(world.focus.name);
               $('r-k').textContent = `On the way to ${world?.focus.name ?? r.target}`;
               $('r-v').textContent = fmt(r.dist);
               $('r-k2').textContent = '';
             } else {
               const name = world?.focus.name ?? r.target;
               // circling: how far from what you are looking at; flying yourself: how high above the ground
-              $('r-k').textContent = r.far ? 'Your distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : `Distance to ${name}`;
+              $('r-k').textContent = r.far ? 'Your distance from the Sun' : r.mode === 'free' ? `Height above ${r.target}` : name === 'the Sun' ? 'Distance to the Sun\u2019s surface' : `Distance to ${name}`;
               $('r-v').textContent = fmt(r.mode === 'free' || r.far ? (r.far ? shown(r.alt) : r.alt) : r.dist);
               $('r-k2').textContent = r.mode === 'free' ? fmtSpeed(r.speed) : football && r.far ? `Sun as a football: ${fmt(shown(r.alt) * (0.22 / 1.3927e9))}` : '';
             }
@@ -277,16 +340,37 @@ import { sections } from '../lib/nav';
             $('gen').classList.toggle('illus', !!r.illustrative);
             body.classList.toggle('far', !!r.far);
             body.classList.toggle('free', r.mode === 'free');
-            $('free-btn').setAttribute('aria-pressed', String(r.mode === 'free'));
+            ($('gears') as HTMLElement).hidden = r.mode !== 'free';
+            $('gear-name').textContent = gearName(r.gear);
+            { const t = $('throttle') as HTMLInputElement; if (document.activeElement !== t) t.value = String(r.gear); t.setAttribute('aria-valuetext', gearName(r.gear)); }
+            // on a trip: where to, how long, and a way to stop
+            { const eta = $('eta'), cr = r.mode === 'cruise' && !body.classList.contains('touring');
+              eta.hidden = !cr;
+              body.classList.toggle('tripping', cr);
+              tripK = cr && !reducedNow() ? Math.sin(Math.PI * Math.min(1, Math.max(0, r.arriving))) : 0;
+              if (cr) { $('aim').hidden = true; picked = ''; body.classList.remove('picking'); }
+              if (cr) {
+                if (prevMode !== 'cruise') { tripFrom = Math.max(r.dist, 1); $('eta-n').textContent = cap(world?.focus.name ?? r.target); }
+                const secs = r.secsLeft;
+                const left = secs < 1 ? 'arriving' : secs < 90 ? `arriving in ${Math.round(secs)} s` : secs < 5400 ? `arriving in ${Math.round(secs / 60)} min` : '';
+                $('eta-d').textContent = [fmt(r.dist) + ' to go', left].filter(Boolean).join(' · ');
+                ($('eta-f') as HTMLElement).style.width = `${Math.max(0, Math.min(100, r.arriving * 100)).toFixed(1)}%`;
+              } }
+            prevMode = r.mode;
           },
           onFocus(id, name) {
             focusId = id;
-            $('where-name').textContent = cap(name);
-            if (!body.classList.contains('touring')) $('said').textContent = `Now at ${name}.`;
+            if (backTarget === id) backTarget = '';
+            else if (trail.at(-1)?.[0] !== id) { trail.push([id, name]); if (trail.length > 40) trail.shift(); }
+            ($('step-back') as HTMLButtonElement).disabled = trail.length < 2;
+            if (stoppedHere) { stoppedHere = false; $('said').textContent = `Stopped, flying free. Nearest: ${name}.`; }
+            else if (!body.classList.contains('touring')) $('said').textContent = `Now at ${name}.`;
             // remember where you are, in the address (so a reload or a shared link comes back here) and for this tab
             try { sessionStorage.setItem('hc-at', id); } catch {}
             const u = new URL(location.href); u.searchParams.set('go', id); u.searchParams.delete('d'); history.replaceState(history.state, '', u);
           },
+          // flying is the way you move: when a trip ends (by arriving, by a jump under reduced motion, or by Stop) you are free to fly on
+          onTripEnd() { if (!body.classList.contains('touring') && world) world.setFree(true); },
           onJump() {
             // reduced motion: the view has jumped; let it come up out of black instead
             const v = $('veil');
@@ -294,13 +378,15 @@ import { sections } from '../lib/nav';
           },
           onArrive() {
             body.classList.add('in', 'arrived');
+            if (!body.classList.contains('touring')) world.setFree(true);
             $('controls').removeAttribute('inert');
-            $('where').removeAttribute('inert');
+            $('step-back').removeAttribute('inert');
+            $('scale').removeAttribute('inert');
             $('threshold').setAttribute('inert', '');
             $('skip').hidden = true;
             $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
-            $('hint').classList.add('show');
-            setTimeout(() => $('hint').classList.remove('show'), 9000);
+            if (!prefs.coached) { $('coach').hidden = false; body.classList.add('coaching'); }
+            else { $('hint').classList.add('show'); setTimeout(() => $('hint').classList.remove('show'), 9000); }
             // ?go=<id>&d=<km>: carry on to a place once the way in has arrived (the atlas links here)
             const go = params.get('go');
             // a star waits for the catalogue to load, for up to 15 seconds
@@ -327,7 +413,7 @@ import { sections } from '../lib/nav';
             $('status').textContent = 'The graphics stopped. Reload the page to carry on.';
             body.classList.remove('in', 'arrived');
             $('controls').setAttribute('inert', '');
-            $('where').setAttribute('inert', '');
+            $('step-back').setAttribute('inert', '');
             $('threshold').removeAttribute('inert');
             $('skip').hidden = false;
           },
@@ -339,7 +425,10 @@ import { sections } from '../lib/nav';
         // every moon, where it really is; loaded after the engine is running
         import('../lib/v2/layers/moons').then(async ({ createMoonsLayer }) => {
           const { allBodies } = await import('../data/bodies/index');
-          world.registerLayer(createMoonsLayer(allBodies));
+          const ml = createMoonsLayer(allBodies);
+          ml.setOrbits(!!prefs.moonOrbits); // the paths moons follow only show when asked for
+          moonLayer = ml;
+          world.registerLayer(ml);
         });
         // the guide: lessons, facts, glossary and atlas for wherever you are
         import('../lib/v2/margin/panel').then(({ mountMargin }) => mountMargin(world));
@@ -356,7 +445,34 @@ import { sections } from '../lib/nav';
       }
 
       // ---- pop-up sheets: Go to and View. One open at a time; Esc or a click elsewhere shuts them.
+      const tourEl = $('tour');
       const pops = ['goto', 'time', 'view'].map((id) => ({ wrap: $(id), btn: $(`${id}-btn`), sheet: $(id === 'goto' ? 'goto-list' : `${id}-sheet`) }));
+      // an open sheet hides only what it would sit on top of
+      const coverable = () => ['.readout', '#pad', '#gears', '#margin-tab', '.back-chip', '.gen', '#hint', '#scale', '#eta'].map((s) => document.querySelector(s) as HTMLElement | null).filter((e): e is HTMLElement => !!e);
+      const syncSheet = () => {
+        const open = pops.find((p) => !p.sheet.hidden);
+        body.classList.toggle('sheet-open', !!open);
+        const m = document.getElementById('margin');
+        // what is open on top of the view: a sheet or the Codex, and the tour card
+        const covers: DOMRect[] = [];
+        if (open) covers.push(open.sheet.getBoundingClientRect());
+        else if (body.classList.contains('margin-open') && m) covers.push(m.getBoundingClientRect());
+        if (!tourEl.hidden) covers.push(tourEl.getBoundingClientRect());
+        const coachEl = document.getElementById('coach');
+        if (coachEl && !coachEl.hidden) covers.push(coachEl.getBoundingClientRect());
+        for (const e of coverable()) {
+          const b = e.getBoundingClientRect();
+          e.classList.toggle('under-sheet', b.width > 0 && covers.some((r) => b.left < r.right && r.left < b.right && b.top < r.bottom && r.top < b.bottom));
+        }
+      };
+      addEventListener('resize', syncSheet);
+      // the Codex slides in: measure it once it has arrived
+      document.getElementById('margin')?.addEventListener('transitionend', syncSheet);
+      new MutationObserver(() => { setTimeout(syncSheet, 420); setTimeout(syncSheet, 900); syncSheet(); }).observe(body, { attributes: true, attributeFilter: ['class'] });
+      for (const p of pops) new MutationObserver(syncSheet).observe(p.sheet, { attributes: true, attributeFilter: ['hidden'] });
+      new MutationObserver(syncSheet).observe(tourEl, { attributes: true, attributeFilter: ['hidden'] });
+      { const c = document.getElementById('coach'); if (c) { new MutationObserver(syncSheet).observe(c, { attributes: true, attributeFilter: ['hidden'] }); new ResizeObserver(syncSheet).observe(c); } }
+      new ResizeObserver(syncSheet).observe(tourEl);
       const shutPops = (except?: HTMLElement) => { for (const p of pops) if (p.sheet !== except) { p.sheet.hidden = true; p.btn.setAttribute('aria-expanded', 'false'); } };
       for (const p of pops) p.btn.addEventListener('click', () => {
         const open = p.sheet.hidden;
@@ -403,7 +519,23 @@ import { sections } from '../lib/nav';
       fetch('/data/deep/stars.json').then((r) => r.json()).then((j: [number, string][]) => { stars = j; }).catch(() => {});
       const FAMOUS = ['Sirius', 'Proxima Centauri', 'Rigil Kentaurus', 'Betelgeuse', 'Rigel', 'Vega', 'Polaris', 'Arcturus', 'Canopus', 'Antares', 'Aldebaran'];
       const ALIASES: [string, string][] = [['pleiades', 'Seven Sisters'], ['pleiades', 'M45'], ['orion-nebula', 'M42'], ['orion-nebula', 'Orion'], ['local-group', 'Andromeda'], ['local-group', 'Triangulum'], ['local-group', 'Magellanic Clouds'], ['milky-way', 'Galactic Centre'], ['cosmic-web', 'Virgo Cluster'], ['cosmic-web', 'Great Attractor']];
-      const all = () => [...ALIASES.filter(([id]) => world.canFlyTo(id)), ...PLACES.flatMap(([, ps]) => ps).filter(([id]) => world.canFlyTo(id)), ...stars.map(([i, n]) => [`star:${i}`, n] as [string, string])];
+      // every body we hold an orbit for (moons, dwarf planets, asteroids, comets), and every catalogue star by name, Bayer name, HD or HIP number
+      let bodyList: [string, string][] = [];
+      import('../data/bodies/index').then(({ allBodies }) => { bodyList = allBodies.filter((b) => b.id && b.name).map((b) => [b.id, b.name] as [string, string]); }).catch(() => {});
+      let catalogue: [string, string, string][] = []; // id, shown name, text searched
+      let catalogueAsked = false;
+      const loadCatalogue = () => {
+        if (catalogueAsked) return; catalogueAsked = true;
+        fetch('/data/deep/stars-meta.json').then((r) => r.json()).then((j: { stars: [number, string, string, number, number, string][] }) => {
+          catalogue = j.stars.filter((r) => r[1] || r[2] || r[4]).map((r) => [`star:${r[0]}`, r[1] || r[2] || `HD ${r[4]}`, `${r[1] ?? ''} ${r[2] ?? ''} ${r[4] ? `hd ${r[4]} hd${r[4]}` : ''} ${r[3] ? `hip ${r[3]} hip${r[3]}` : ''}`] as [string, string, string]);
+        }).catch((e) => console.error('catalogue failed', e));
+      };
+      const all = (): [string, string, string?][] => {
+        const seen = new Set<string>();
+        const out: [string, string, string?][] = [];
+        for (const e of [...ALIASES, ...PLACES.flatMap(([, ps]) => ps), ...bodyList, ...(catalogue.length ? [] : stars.map(([i, n]) => [`star:${i}`, n] as [string, string]))]) if (!seen.has(e[0] + e[1]) && world.canFlyTo(e[0])) { seen.add(e[0] + e[1]); out.push(e); }
+        return [...out, ...catalogue];
+      };
       const showStars = () => {
         // a short group of famous stars, always one tap away
         if (list.querySelector('.goto-famous') || !stars.length) return;
@@ -412,16 +544,17 @@ import { sections } from '../lib/nav';
         for (const n of FAMOUS) { const st = stars.find(([, nm]) => nm === n); if (!st) continue; const b = document.createElement('button'); b.type = 'button'; b.textContent = n === 'Rigil Kentaurus' ? 'Alpha Centauri' : n; b.addEventListener('click', () => { shutPops(); goTo(`star:${st[0]}`); }); row.appendChild(b); }
         if (row.children.length) { list.appendChild(h); list.appendChild(row); }
       };
-      $('goto-btn').addEventListener('click', () => { showStars(); });
+      $('goto-btn').addEventListener('click', () => { showStars(); loadCatalogue(); renderMarks(); });
+      find.addEventListener('focus', loadCatalogue);
       find.addEventListener('input', () => {
-        const norm = (t: string) => t.toLowerCase().replace(/['‘’]/g, '’');
-        const q = find.value.trim().toLowerCase().replace(/['‘’]/g, '’');
+        const norm = (t: string) => t.toLowerCase().replace(/['‘’]/g, '’').replace(/-/g, ' ');
+        const q = norm(find.value.trim());
         results.replaceChildren();
         for (const g of groups) g.hidden = !!q;
         list.querySelectorAll<HTMLElement>('.goto-famous, .goto-famous + .goto-row').forEach((e) => { e.hidden = !!q; });
         results.hidden = !q;
         if (!q) return;
-        const hits = all().filter(([, n]) => norm(n).includes(q)).sort((a, b) => Number(!norm(a[1]).startsWith(q)) - Number(!norm(b[1]).startsWith(q))).slice(0, 12);
+        const hits = all().filter(([, n, hay]) => norm(hay ?? n).includes(q)).sort((a, b) => Number(!norm(a[1]).startsWith(q)) - Number(!norm(b[1]).startsWith(q))).slice(0, 12);
         for (const [id, n] of hits) { const b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.addEventListener('click', () => { shutPops(); find.value = ''; find.dispatchEvent(new Event('input')); goTo(id); }); results.appendChild(b); }
         $('said').textContent = hits.length ? `${hits.length} ${hits.length === 1 ? 'place' : 'places'} found.` : 'Nothing found.';
         if (!hits.length) { const m = document.createElement('p'); m.className = 'goto-h'; m.textContent = 'Nothing by that name.'; results.appendChild(m); }
@@ -438,6 +571,42 @@ import { sections } from '../lib/nav';
         go();
       }
 
+      // Back: the place before this one. Saved places: kept in this browser only (see the cookies page)
+      const goBack = () => {
+        if (trail.length < 2 || !body.classList.contains('in')) return;
+        trail.pop();
+        const prev = trail.at(-1)!;
+        backTarget = prev[0];
+        ($('step-back') as HTMLButtonElement).disabled = trail.length < 2;
+        goTo(prev[0]);
+      };
+      $('step-back').addEventListener('click', goBack);
+      const marksHead = document.createElement('p'); marksHead.className = 'goto-h'; marksHead.textContent = 'Saved places';
+      const marksRow = document.createElement('div'); marksRow.className = 'goto-row marks';
+      const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'save-place'; saveBtn.textContent = 'Save this place';
+      const marksWrap = document.createElement('div'); marksWrap.className = 'goto-marks';
+      marksWrap.append(marksHead, marksRow, saveBtn);
+      list.insertBefore(marksWrap, groups[0]);
+      function renderMarks() {
+        marksRow.replaceChildren();
+        const ms = prefs.marks ?? [];
+        marksHead.hidden = marksRow.hidden = !ms.length;
+        for (const [id, name] of ms) {
+          const w = document.createElement('div'); w.className = 'mark';
+          const go = document.createElement('button'); go.type = 'button'; go.textContent = name; go.addEventListener('click', () => { shutPops(); goTo(id); });
+          const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = '×'; rm.setAttribute('aria-label', `Forget ${name}`);
+          rm.addEventListener('click', () => { prefs.marks = (prefs.marks ?? []).filter((m) => m[0] !== id); if (!prefs.marks.length) delete prefs.marks; save(); renderMarks(); $('said').textContent = `${name} forgotten.`; });
+          w.append(go, rm); marksRow.appendChild(w);
+        }
+        const here = world.focus;
+        saveBtn.hidden = !here.id || (prefs.marks ?? []).some((m) => m[0] === here.id) || (prefs.marks ?? []).length >= 12 || !world.canFlyTo(here.id);
+      }
+      saveBtn.addEventListener('click', () => {
+        const here = world.focus;
+        prefs.marks = [...(prefs.marks ?? []), [here.id, cap(here.name)] as [string, string]].slice(-12); save(); renderMarks(); $('said').textContent = `${cap(here.name)} saved.`;
+      });
+      renderMarks();
+
       // The guided tour: one stop for each step of ten or so in distance, from the Earth out to the oldest light
       const STOPS: [string, string, string][] = [
         ['earth', 'Home', 'The Earth is about 12,700 km across. Everything on this tour starts from here, and every stop is much further than the one before.'],
@@ -452,7 +621,7 @@ import { sections } from '../lib/nav';
         ['cmb', 'The oldest light', 'The edge of what can be seen: light that left when the universe was about 380,000 years old, and has been travelling for about 13.8 billion years. It started about 46 billion light years from here, because space has stretched since.'],
       ];
       let tourAt = -1;
-      const tourEl = $('tour'), tourBtn = $('tour-btn');
+      const tourBtn = $('tour-btn');
       function tourShow(i: number) {
         tourAt = Math.max(0, Math.min(STOPS.length - 1, i));
         const [id, h, p] = STOPS[tourAt];
@@ -489,14 +658,11 @@ import { sections } from '../lib/nav';
       for (const i of sizeIn) { i.checked = (i.value === 'big') === !!prefs.big; i.addEventListener('change', () => { prefs.big = i.value === 'big'; world.setBigger(prefs.big); save(); }); }
       for (const i of motionIn) { i.checked = (i.value === 'reduced') === reducedNow(); i.addEventListener('change', () => { prefs.reduced = i.value === 'reduced'; world.setReduced(prefs.reduced); body.classList.toggle('calm', prefs.reduced); save(); }); }
       body.classList.toggle('calm', reducedNow());
+      { const mo = $('moon-orbits') as HTMLInputElement; mo.checked = !!prefs.moonOrbits; mo.addEventListener('change', () => { prefs.moonOrbits = mo.checked; moonLayer?.setOrbits(mo.checked); save(); }); }
       for (const i of document.querySelectorAll<HTMLInputElement>('input[name="quality"]')) {
         i.checked = i.value === (prefs.quality ?? 'auto');
         i.addEventListener('change', () => { prefs.quality = i.value as 'auto' | 'smooth' | 'sharp'; world.setQuality(prefs.quality); save(); $('said').textContent = `Picture quality: ${i.value === 'auto' ? 'automatic' : i.value === 'smooth' ? 'smoother' : 'sharper'}.`; });
       }
-      const showMap = $('show-map') as HTMLInputElement;
-      showMap.checked = prefs.map !== false;
-      body.classList.toggle('no-map', !showMap.checked);
-      showMap.addEventListener('change', () => { prefs.map = showMap.checked; body.classList.toggle('no-map', !showMap.checked); save(); });
       // ---- Time: a date, a scrubber and a speed. Nothing is stored, and it is back to now on reload.
       {
         const dateIn = $('time-date') as HTMLInputElement, slide = $('time-slide') as HTMLInputElement, nowP = $('time-now');
@@ -538,26 +704,52 @@ import { sections } from '../lib/nav';
         }).observe($('time-sheet'), { attributes: true, attributeFilter: ['hidden'] });
         refresh();
       }
-      $('free-btn').addEventListener('click', () => { world.setFree(world.mode !== 'free'); shutPops(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
-
-      // zoom buttons: a press is one step; holding keeps going
-      for (const [id, dir] of [['z-in', 1], ['z-out', -1]] as const) {
-        const b = $(id);
-        let hold = 0;
-        const stop = () => { clearInterval(hold); hold = 0; };
-        b.addEventListener('pointerdown', (e) => { e.preventDefault(); world.zoom(dir); stop(); hold = window.setInterval(() => world.zoom(dir * 0.35), 120); });
-        b.addEventListener('pointerup', stop); b.addEventListener('pointerleave', stop); b.addEventListener('pointercancel', stop);
-        b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); world.zoom(dir); } });
+      const flyHint = () => {
+        const h = $('hint');
+        h.querySelector('.fine-only')!.textContent = 'W A S D to move · drag to look · E and Q up and down · scroll or . and , for speed · X brakes · Esc stops you, then circles a world (not near the ground), F flies free again';
+        h.querySelector('.coarse-only')!.textContent = 'Drag to look · press the pad for ahead or astern · slide the throttle for speed';
+        h.classList.add('show'); clearTimeout(flyHintT); flyHintT = window.setTimeout(() => h.classList.remove('show'), 8000);
+      };
+      let flyHintT = 0;
+      const toggleFly = () => { const on = world.mode !== 'free'; world.setFree(on); if (on) flyHint(); else $('hint').classList.remove('show'); };
+      world.onPadFree(() => { if (body.classList.contains('arrived')) toggleFly(); });
+      world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; });
+      { const done = () => { const c = $('coach'); if (!c.hidden) { c.hidden = true; body.classList.remove('coaching'); prefs.coached = true; save(); } };
+        $('coach-ok').addEventListener('click', done);
+        ($('space') as HTMLElement).addEventListener('pointerdown', () => setTimeout(done, 4000)); }
+      $('aim-go').addEventListener('click', () => { if (picked) world.flyTo({ target: picked }).catch(() => {}); $('aim').hidden = true; picked = ''; body.classList.remove('picking'); });
+      $('eta-stop').addEventListener('click', () => { stoppedHere = true; world.stop(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
+      $('throttle').addEventListener('input', (e) => world.setGear(Number((e.target as HTMLInputElement).value)));
+      // the world under the pointer gets a card saying what a click will do
+      {
+        const card = $('aim'), cv = $('space') as HTMLCanvasElement;
+        let last = 0, on = '';
+        const km = (m: number) => fmt(m);
+        const light = (m: number) => { const sec = m / 299_792_458; return sec < 1 ? '' : sec < 90 ? `Light takes ${Math.round(sec)} s` : sec < 5400 ? `Light takes ${Math.round(sec / 60)} min` : sec < 172800 ? `Light takes ${(sec / 3600).toFixed(1)} h` : ''; };
+        cv.addEventListener('pointermove', (e) => {
+          if (e.pointerType !== 'mouse' || e.buttons || !body.classList.contains('arrived')) return;
+          const t = performance.now(); if (t - last < 90) return; last = t;
+          const a = world.aim(e.clientX, e.clientY);
+          if (!a) { if (on) { card.hidden = true; on = ''; cv.style.cursor = ''; } return; }
+          if (a.id !== on) { on = a.id; $('aim-n').textContent = a.name; }
+          $('aim-d').textContent = [`${km(a.metres)} away`, light(a.metres)].filter(Boolean).join(' · ');
+          card.hidden = false; cv.style.cursor = 'pointer';
+          card.style.transform = `translate(${Math.min(e.clientX + 18, innerWidth - 260)}px, ${Math.min(e.clientY + 14, innerHeight - 120)}px)`;
+        });
+        cv.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { card.hidden = true; on = ''; } });
+        cv.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse') { card.hidden = true; on = ''; } });
       }
 
-      // keys of the page's own: F to fly yourself, Esc to stop, [ and ] for the planet before and after
+      // keys of the page's own: Esc to circle the nearest world, [ and ] for the planet before and after
       const ORDER = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
       addEventListener('keydown', (e) => {
         if (!body.classList.contains('arrived') || e.metaKey || e.ctrlKey || e.altKey) return;
         const t = e.target as HTMLElement;
         if (t?.closest?.('input, textarea, select, .margin')) return;
-        if (e.code === 'KeyF') world.setFree(world.mode !== 'free');
+        if (e.code === 'KeyB' && !e.shiftKey) goBack();
+        else if (e.key === 'Escape' && world.mode === 'cruise') { stoppedHere = true; world.stop(); }
         else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
+        else if (e.code === 'KeyF' && world.mode === 'orbit') { world.setFree(true); flyHint(); }
         else if (e.key === '[' || e.key === ']') {
           const i = ORDER.indexOf(world.focus.id);
           const n = i < 0 ? (e.key === ']' ? 0 : ORDER.length - 1) : (i + (e.key === ']' ? 1 : ORDER.length - 1)) % ORDER.length;
@@ -565,175 +757,20 @@ import { sections } from '../lib/nav';
         }
       });
 
-      // ---- the map: the Solar System from above, on a stretched scale so Mercury and Neptune both fit
-      const map = $('map') as HTMLCanvasElement;
-      const mctx = map.getContext('2d')!;
-      const COL: Record<string, string> = { mercury: '#a8a29a', venus: '#e6cf9c', earth: '#7aa9da', mars: '#d4714a', jupiter: '#d9b48c', saturn: '#e2cf98', uranus: '#9fd5db', neptune: '#7190e2' };
-      const EDGE = 34; // au at the rim
-      const rr = (au: number) => Math.log10(1 + au / 0.22) / Math.log10(1 + EDGE / 0.22);
-      let hits: { id: string; x: number; y: number }[] = [];
-      // beyond Neptune the map changes with the scale: rings for each stop out to the oldest light, on a scale where every step is a thousand times further
-      const RUNGS: [string, string, number][] = [
-        ['solar-system', 'The whole Solar System', EDGE], ['oort-cloud', 'The Oort cloud', 1e5], ['neighbourhood', 'Our neighbour stars', 30 * 63_241],
-        ['pleiades', 'The Pleiades', 444 * 63_241], ['orion-nebula', 'The Orion Nebula', 1266 * 63_241], ['night-sky', 'Every star you can see', 1500 * 63_241], ['milky-way', 'The Milky Way', 150_000 * 63_241], ['local-group', 'The Local Group', 3e6 * 63_241],
-        ['cosmic-web', 'The cosmic web', 1e9 * 63_241], ['cmb', 'The oldest light', 46e9 * 63_241],
-      ];
-      // the rings are evenly spaced, one step per stop, so that no two are crowded on a small screen; between two rings you sit by how far along the way you are
-      const rungR = (au: number) => {
-        const n = RUNGS.length - 1;
-        if (au <= RUNGS[0][2]) return 0;
-        for (let i = 0; i < n; i++) {
-          const a = RUNGS[i][2], b = RUNGS[i + 1][2];
-          if (au <= b) return (i + (Math.log10(au) - Math.log10(a)) / (Math.log10(b) - Math.log10(a))) / n;
-        }
-        return 1;
-      };
-      const ringOf = (i: number) => i / (RUNGS.length - 1);
-      // In and Out: the same journey as the map, one stop at a time, for the keyboard, a screen reader and a thumb
-      const PLANET_LABEL: Record<string, string> = { sun: 'The Sun', mercury: 'Mercury', venus: 'Venus', earth: 'Earth', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn', uranus: 'Uranus', neptune: 'Neptune' };
-      let stepIn: [string, string] | null = null, stepOut: [string, string] | null = null;
-      const stepInB = $('step-in') as HTMLButtonElement, stepOutB = $('step-out') as HTMLButtonElement;
-      function setSteppers(i: [string, string] | null, o: [string, string] | null) {
-        stepIn = i; stepOut = o;
-        for (const [b, t, w] of [[stepInB, i, 'In'], [stepOutB, o, 'Out']] as const) {
-          const was = b.disabled, now = !t;
-          b.disabled = now;
-          b.setAttribute('aria-label', t ? `${w}: go to ${t[1]}` : `${w}: nowhere further`);
-          b.title = t ? t[1] : '';
-          void was;
-        }
+      // ---- the scale ribbon: where you are between the Sun and the whole universe (and a way to travel along it)
+      {
+        const ANCHORS = [8.8, 12, 16.5, 21, 26.5]; // log10 metres from the Sun at each stop
+        const you = $('scale-you'), btns = [...document.querySelectorAll<HTMLButtonElement>('#scale button')];
+        const pos = (m: number) => { const L = Math.log10(Math.max(m, 1)); let i = 0; while (i < ANCHORS.length - 2 && L > ANCHORS[i + 1]) i++; return Math.min(1, Math.max(0, (i + (L - ANCHORS[i]) / (ANCHORS[i + 1] - ANCHORS[i])) / (ANCHORS.length - 1))); };
+        btns.forEach((b) => b.addEventListener('click', () => { goTo(b.dataset.go!); ($('space') as HTMLElement).focus({ preventScroll: true }); }));
+        setInterval(() => {
+          if (document.hidden || !world || !body.classList.contains('arrived')) return;
+          const t = pos(Math.hypot(...world.mapState().cam));
+          you.style.left = `${t * 100}%`;
+          const near = Math.min(btns.length - 1, Math.round(t * (btns.length - 1)));
+          btns.forEach((b, i) => b.classList.toggle('here', i === near));
+        }, 150);
       }
-      function planetSteps(focus: string) {
-        const i = ORDER.indexOf(focus);
-        // a moon: out is the planet it goes round, so no scale is skipped
-        const parent = i < 0 ? world.parentOf(focus) : undefined;
-        if (parent) return setSteppers(null, [parent, PLANET_LABEL[parent] ?? cap(parent)]);
-        if (i < 0) return setSteppers(['sun', PLANET_LABEL.sun], ['oort-cloud', RUNGS[1][1]]);
-        setSteppers(i > 0 ? [ORDER[i - 1], PLANET_LABEL[ORDER[i - 1]]] : null, i < ORDER.length - 1 ? [ORDER[i + 1], PLANET_LABEL[ORDER[i + 1]]] : ['oort-cloud', RUNGS[1][1]]);
-      }
-      // from a stop, the next one out and the one before it; between stops (flying yourself), the nearest each side
-      function ladderSteps(distAu: number, focus: string) {
-        const i = RUNGS.findIndex((q) => q[0] === focus);
-        const out = i >= 0 ? RUNGS[i + 1] : RUNGS.find(([, , au]) => au > distAu * 1.1);
-        const ins = i >= 0 ? RUNGS[i - 1] : [...RUNGS].reverse().find(([, , au]) => au < distAu / 1.1);
-        setSteppers(ins && ins[0] !== 'solar-system' ? [ins[0], ins[1]] : ['neptune', PLANET_LABEL.neptune], out ? [out[0], out[1]] : null);
-        return out;
-      }
-      stepInB.addEventListener('click', () => { if (stepIn) goTo(stepIn[0]); });
-      stepOutB.addEventListener('click', () => { if (stepOut) goTo(stepOut[0]); });
-      const phone = matchMedia('(max-width: 600px)');
-      // on a phone the innermost ring stands well off the Sun, so that the Sun and the first stops are each a thumb apart
-      const ringRadius = (k: number, R: number) => phone.matches ? R * (0.32 + 0.68 * k) : R * (0.08 + 0.92 * k);
-      function drawLadder(c: number, R: number, dpr: number, cam: number[], distAu: number) {
-        hits = [{ id: 'sun', x: c / dpr, y: c / dpr }];
-        const here = rungR(distAu);
-        mctx.lineWidth = 1 * dpr;
-        for (const [id, , au] of RUNGS) {
-          const r = ringRadius(ringOf(RUNGS.findIndex((q) => q[0] === id)), R);
-          const near = Math.abs(ringOf(RUNGS.findIndex((q) => q[0] === id)) - here) < 0.05;
-          mctx.strokeStyle = near ? 'rgba(241,201,142,0.55)' : 'rgba(236,231,220,0.16)';
-          mctx.beginPath(); mctx.arc(c, c, r, 0, Math.PI * 2); mctx.stroke();
-          mctx.fillStyle = near ? '#f1c98e' : 'rgba(236,231,220,0.5)';
-          // on a phone the stops are spread round the map, a golden angle apart, so each has room for a thumb; on a wide screen they stand in a line
-          const i = RUNGS.findIndex((q) => q[0] === id), ang = phone.matches ? -Math.PI / 2 + i * 2.39996 : -Math.PI / 2;
-          const px = c + Math.cos(ang) * r, py = c + Math.sin(ang) * r;
-          mctx.beginPath(); mctx.arc(px, py, (phone.matches ? 3.6 : 2.4) * dpr, 0, Math.PI * 2); mctx.fill();
-          hits.push({ id, x: px / dpr, y: py / dpr });
-        }
-        mctx.fillStyle = '#ffcf7a'; mctx.beginPath(); mctx.arc(c, c, 3 * dpr, 0, Math.PI * 2); mctx.fill();
-        const a = Math.atan2(cam[2], cam[0]), ry = ringRadius(here, R);
-        const x = c + Math.cos(a) * ry, y = c + Math.sin(a) * ry;
-        mctx.fillStyle = '#fff'; mctx.strokeStyle = '#000'; mctx.lineWidth = 2 * dpr;
-        mctx.beginPath(); mctx.arc(x, y, 3.4 * dpr, 0, Math.PI * 2); mctx.stroke(); mctx.fill();
-      }
-      function drawMap() {
-        if (body.classList.contains('no-map') || !body.classList.contains('in')) return;
-        const css = map.clientWidth || 160, dpr = Math.min(devicePixelRatio || 1, 2);
-        if (map.width !== Math.round(css * dpr)) { map.width = map.height = Math.round(css * dpr); }
-        const S = map.width, R = S / 2 - 8 * dpr, c = S / 2;
-        mctx.setTransform(1, 0, 0, 1, 0, 0);
-        mctx.clearRect(0, 0, S, S);
-        const st = world.mapState();
-        const at = (p: number[]) => { const au = Math.hypot(p[0], p[2]) / AU; const k = au > 0 ? (rr(Math.min(au, EDGE)) * R) / au : 0; return [c + (p[0] / AU) * k, c + (p[2] / AU) * k, au] as const; };
-        // orbits, faint
-        mctx.lineWidth = 1 * dpr;
-        for (const p of st.planets) {
-          const r = rr(Math.hypot(p.at[0], p.at[2]) / AU) * R;
-          mctx.strokeStyle = 'rgba(236,231,220,0.13)';
-          mctx.beginPath(); mctx.arc(c, c, r, 0, Math.PI * 2); mctx.stroke();
-        }
-        // the Sun
-        mctx.fillStyle = '#ffcf7a'; mctx.beginPath(); mctx.arc(c, c, 3.2 * dpr, 0, Math.PI * 2); mctx.fill();
-        hits = [{ id: 'sun', x: c / dpr, y: c / dpr }];
-        // the planets
-        for (const p of st.planets) {
-          const [x, y] = at(p.at);
-          const isF = p.id === st.focus;
-          mctx.fillStyle = COL[p.id];
-          mctx.beginPath(); mctx.arc(x, y, (isF ? 3.4 : 2.6) * dpr, 0, Math.PI * 2); mctx.fill();
-          if (isF) { mctx.strokeStyle = '#f1c98e'; mctx.lineWidth = 1.2 * dpr; mctx.beginPath(); mctx.arc(x, y, 6.5 * dpr, 0, Math.PI * 2); mctx.stroke(); }
-          hits.push({ id: p.id, x: x / dpr, y: y / dpr });
-        }
-        // you, and which way you are facing
-        const [yx, yy, yau] = at(st.cam);
-        if (yau > 100) {
-          const distAu = Math.hypot(st.cam[0], st.cam[1], st.cam[2]) / AU;
-          mctx.clearRect(0, 0, S, S);
-          drawLadder(c, R, dpr, st.cam, distAu);
-          const next = ladderSteps(distAu, st.focus);
-          // the place itself is at its measured distance; where the camera stands to look at it is a different number
-          const here = RUNGS.find((q) => q[0] === st.focus && q[0] !== 'solar-system');
-          $('where-d').textContent = here
-            ? `It reaches about ${fmt(here[2] * AU)} out. You are ${fmt(shown(distAu * AU))} from the Sun.`
-            : `You are ${fmt(shown(distAu * AU))} from the Sun.${next ? ` Next out: ${next[1]}.` : ''}`;
-          map.setAttribute('aria-label', `A map of the scales of the universe, one ring for each stop from the Solar System out to the oldest light. You are ${fmt(shown(distAu * AU))} from the Sun${next ? `, between ${RUNGS[RUNGS.indexOf(next) - 1]?.[1] ?? 'the Sun'} and ${next[1]}` : ''}.`);
-          map.classList.add('beyond');
-          return;
-        }
-        planetSteps(st.focus);
-        const hl = Math.hypot(st.heading[0], st.heading[1]);
-        mctx.save();
-        mctx.translate(yx, yy);
-        if (hl > 0.15) {
-          const a = Math.atan2(st.heading[1], st.heading[0]);
-          mctx.rotate(a);
-          mctx.fillStyle = 'rgba(241,201,142,0.28)';
-          mctx.beginPath(); mctx.moveTo(0, 0); mctx.arc(0, 0, 16 * dpr, -0.45, 0.45); mctx.closePath(); mctx.fill();
-        }
-        mctx.restore();
-        mctx.fillStyle = '#fff'; mctx.strokeStyle = '#000'; mctx.lineWidth = 2 * dpr;
-        mctx.beginPath(); mctx.arc(yx, yy, 3 * dpr, 0, Math.PI * 2); mctx.stroke(); mctx.fill();
-        // beyond the rim: say how far
-        const far = yau > EDGE;
-        $('where-d').textContent = far ? `You are ${fmt(Math.hypot(...st.cam))} from the Sun, off this map` : `${fmt(Math.hypot(...st.cam))} from the Sun`;
-        map.classList.toggle('beyond', far);
-        if (document.activeElement === map && hits.length) {
-          const h = hits[kbAt()];
-          mctx.strokeStyle = '#f1c98e'; mctx.lineWidth = 2 * dpr; mctx.beginPath(); mctx.arc(h.x * dpr, h.y * dpr, 8 * dpr, 0, Math.PI * 2); mctx.stroke();
-        }
-      }
-      setInterval(() => { if (!document.hidden) drawMap(); }, 120);
-      // keyboard: the arrow keys walk along the places on the map, Enter flies to the one ringed
-      let kbId = 'sun';
-      const KB_NAMES: Record<string, string> = { sun: 'The Sun', 'solar-system': 'The whole Solar System', 'oort-cloud': 'The Oort cloud', neighbourhood: 'Our neighbour stars', 'night-sky': 'Every star you can see', pleiades: 'The Pleiades', 'orion-nebula': 'The Orion Nebula', 'milky-way': 'The Milky Way', 'local-group': 'The Local Group', 'cosmic-web': 'The cosmic web', cmb: 'The oldest light' };
-      const kbName = (id: string) => KB_NAMES[id] ?? id.replace(/-/g, ' ').replace(/^./, (m) => m.toUpperCase());
-      // the ringed place is held by name, so it stays right when the map changes between the planets and the wider views
-      const kbAt = () => { const i = hits.findIndex((h) => h.id === kbId); return i < 0 ? 0 : i; };
-      const kbMove = (d: number) => { if (!hits.length) return; kbId = hits[((kbAt() + d) % hits.length + hits.length) % hits.length].id; $('said').textContent = kbName(kbId); drawMap(); };
-      map.addEventListener('keydown', (e) => {
-        if (!hits.length) return;
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); e.stopPropagation(); kbMove(1); }
-        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); e.stopPropagation(); kbMove(-1); }
-        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); const h = hits[kbAt()]; if (h) goTo(h.id); }
-      });
-      map.addEventListener('focus', () => { const h = hits[kbAt()]; $('said').textContent = `Map. ${h ? kbName(h.id) : ''}.`; });
-      map.addEventListener('click', (e) => {
-        const r = map.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        let best = '', bd = phone.matches ? 20 : 14; // a phone's targets are at least 24 px across, and the nearest wins
-        for (const h of hits) { const d = Math.hypot(h.x - x, h.y - y); if (d < bd) { bd = d; best = h.id; } }
-        if (best) goTo(best);
-      });
 
       // ---- going in
       let wentDirect = false;
@@ -749,6 +786,7 @@ import { sections } from '../lib/nav';
         setTimeout(() => { const g = params.get('go'); wentDirect = world.enter(5, g && !g.startsWith('star:') && !params.has('d') ? g : undefined); }, reducedNow() ? 300 : 700);
       }
       ap.addEventListener('click', go);
+      if (linkedTo) setTimeout(go, 250);
       addEventListener('keydown', (e) => { if (e.key === 'Enter' && !body.classList.contains('in') && !(e.target as HTMLElement)?.closest?.('a, button')) go(); });
       $('skip').addEventListener('click', () => world.skip());
       // any press of a key (Space, Escape, an arrow) or a tap on the view also ends the way in early
@@ -767,7 +805,7 @@ import { sections } from '../lib/nav';
       pad.addEventListener('pointerup', off);
       pad.addEventListener('pointercancel', off);
 
-      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('where').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); $('skip').hidden = true; }
+      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('step-back').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); $('skip').hidden = true; }
     </script>
 
     <style is:global>
@@ -790,7 +828,7 @@ import { sections } from '../lib/nav';
       /* ---- the header: the way to every other part of the site, always there */
       .top { position: fixed; z-index: 40; left: 0; right: 0; top: 0; display: flex; align-items: center; gap: 16px; height: 56px; padding: 0 max(clamp(16px, 4vw, 48px), calc((100% - 1180px) / 2 + clamp(16px, 4vw, 48px))); background: rgba(7,8,13,.88); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(236,231,220,.14); pointer-events: none; }
       .top > * { pointer-events: auto; }
-      .mark { display: block; flex: none; }
+      .mark { display: flex; align-items: center; min-height: 44px; flex: none; }
       .mark img { display: block; height: 28px; width: auto; }
       body:not(.in) .mark { opacity: 0; pointer-events: none; }
       .mark { transition: opacity 1s ease .6s; }
@@ -801,7 +839,7 @@ import { sections } from '../lib/nav';
       .menu { max-height: calc(100dvh - var(--top) - 70px); overflow-y: auto; overscroll-behavior: contain; }
       .top { --hd-h: 56px; }
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
-      .pages a, .menu-btn { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
+      .pages a, .menu-btn { display: inline-flex; align-items: center; min-height: 44px; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
       .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
       .back-to { pointer-events: auto; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--glass); white-space: nowrap; max-width: 40vw; overflow: hidden; text-overflow: ellipsis; }
       .back-to:hover, .back-to:focus-visible { color: var(--warm); border-color: var(--warm); outline: none; }
@@ -816,15 +854,17 @@ import { sections } from '../lib/nav';
       .menu a:hover, .menu a:focus-visible { background: rgba(241,201,142,.08); outline: none; }
       .menu a:hover b, .menu a:focus-visible b { color: var(--warm); }
       @media (max-width: 980px) { .menu-btn { display: block; } }
-      body.margin-open .top { z-index: 28; }
-      body.margin-open .site-nav, body.margin-open .menu-btn { visibility: hidden; }
 
       /* ---- threshold */
       .threshold::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 46% 40% at 50% 46%, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%); transition: opacity 1s ease; }
       body.in .threshold::before { opacity: 0; }
       .threshold { position: fixed; inset: 0; z-index: 2; display: grid; place-content: center; justify-items: center; text-align: center; padding: 24px; transition: opacity 1s ease .2s; }
+      /* the title and intro sit on a dark backing so the orbit labels under them (Uranus, Jupiter) do not show through the words */
       .name { font: 200 clamp(2.8rem, 9vw, 6.4rem)/1 var(--serif); letter-spacing: .02em; margin: 0 0 .9rem; }
       .line { font: italic 300 clamp(1rem, .9rem + .5vw, 1.25rem)/1.5 var(--serif); color: var(--soft); margin: 0 0 clamp(36px, 7vh, 64px); max-width: 26em; }
+      /* the planet labels stay off until you are in: they sat under the title, the intro and the Enter ring */
+      .deep-labels { transition: opacity .6s ease; } body:not(.arrived) .deep-labels { opacity: 0; }
+      @media (max-height: 520px) { .threshold { padding-top: 62px; padding-bottom: 12px; } .name { font-size: 2.4rem; margin-bottom: .4rem; } .line { font-size: 1rem; margin-bottom: 12px; max-width: 40em; } .threshold .aperture { width: 112px; } .note { margin-top: 10px; } }
       .aperture { position: relative; width: clamp(150px, 22vmin, 210px); aspect-ratio: 1; display: grid; place-items: center; transition: transform .8s cubic-bezier(.6,0,.3,1), opacity .5s ease .4s; }
       .aperture svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
       .ring { fill: none; stroke: rgba(236,231,220,.55); stroke-width: .8; vector-effect: non-scaling-stroke; transition: stroke .4s, r .8s cubic-bezier(.6,0,.3,1); }
@@ -835,7 +875,7 @@ import { sections } from '../lib/nav';
       .aperture:hover .word, .aperture:focus-visible .word { color: var(--warm); }
       .aperture:focus-visible { outline: none; }
       .aperture::after { content: ''; position: absolute; inset: 47%; border-radius: 50%; background: radial-gradient(circle, #fff6e6 0%, rgba(255,214,150,.6) 35%, rgba(255,180,90,0) 70%); opacity: 0; transition: opacity .5s ease .3s, inset .8s cubic-bezier(.6,0,.3,1); }
-      .note.alt { margin-top: 14px; opacity: .9; } .note.alt a { color: var(--soft); }
+      .note.alt { margin-top: 14px; opacity: .9; } .note.alt a { color: var(--soft); display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; }
       .note { margin: clamp(28px, 5vh, 48px) 0 0; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .08em; color: var(--faint); text-transform: uppercase; }
       .nope { max-width: 26em; margin-top: 8px; }
       .nope p, .nope-ns { font: 300 1.05rem/1.55 var(--serif); color: var(--soft); margin: 0 0 1rem; }
@@ -852,79 +892,119 @@ import { sections } from '../lib/nav';
       body.calm .aperture, body.calm .ring, body.calm .aperture::after { transition-duration: .01s !important; }
       body.calm.in .aperture { transform: none; }
 
-      /* ---- where you are */
-      .where { display: flex; flex-direction: column; position: fixed; z-index: 20; left: var(--gut); top: calc(var(--top) + 54px); width: 178px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
-      body.arrived .where { opacity: 1; pointer-events: auto; }
-      .where-h { margin: 0; font: 300 1.25rem/1.2 var(--serif); text-shadow: 0 1px 10px #000; }
-      .where-k { display: block; font: 400 .8125rem/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
-      .where-d { order: 3; margin: 8px 0 0; max-width: 178px; font: 300 .9rem/1.35 var(--serif); color: var(--soft); text-shadow: 0 1px 10px #000; min-height: 1.2em; }
-      .stepper { display: flex; gap: 6px; margin-top: 8px; width: 160px; }
-      .stepper button { flex: 1; min-height: 44px; font: 400 .875rem/1 var(--sans, system-ui, sans-serif); color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
-      .stepper button:disabled { opacity: .35; cursor: default; }
-      .stepper button:focus-visible { outline: 2px solid #f1c98e; outline-offset: 2px; }
-      body.no-map .stepper { display: none; }
-      .map:focus-visible { outline: 2px solid #f1c98e; outline-offset: 3px; }
-      .map { display: block; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle, rgba(16,16,20,.88), rgba(8,8,10,.88)); border: 1px solid var(--line); cursor: pointer; }
-      body.no-map .map { display: none; }
-      @media (max-width: 600px) { .where { width: 176px; } .where-h { font-size: 1.05rem; } .where-d { font-size: .8125rem; } .map { width: 176px; height: 176px; } .stepper { width: 176px; } }
+      .gears { position: fixed; z-index: 21; left: var(--gut); bottom: calc(var(--bot) + 104px); display: flex; align-items: center; gap: 4px; padding: 4px; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; }
+      .gears[hidden] { display: none; }
+      .gears button { width: 44px; height: 44px; border-radius: 50%; font: 300 1.3rem/1 var(--serif); color: var(--ink); }
+      .gears button:disabled { opacity: .35; }
+      .gears button:hover:not(:disabled), .gears button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
+      .back-chip { position: fixed; z-index: 20; left: var(--gut); top: calc(var(--top) + 112px); min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: var(--ink); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
+      body.arrived .back-chip { opacity: 1; pointer-events: auto; }
+      .back-chip:disabled { display: none; }
+      .back-chip:hover { color: var(--warm); border-color: rgba(241,201,142,.6); }
+      .gears.throttle { left: 50%; transform: translateX(-50%); bottom: calc(var(--bot) + 6px); flex-direction: column; align-items: stretch; gap: 6px; width: min(380px, calc(100vw - 32px)); padding: 12px 18px 10px; border-radius: 14px; }
+      .gears[hidden] { display: none; }
+      .throttle .tl { display: flex; justify-content: space-between; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
+      .throttle .tl span:nth-child(2) { color: var(--warm); }
+      .throttle input[type="range"] { width: 100%; height: 44px; margin: 0; accent-color: #f1c98e; }
+      .throttle .th { margin: 0; text-align: center; font: 300 .875rem/1.3 var(--serif); color: var(--faint); }
+      .aim { position: fixed; z-index: 16; left: 0; top: 0; pointer-events: none; display: flex; flex-direction: column; gap: 3px; min-width: 190px; padding: 12px 16px; background: var(--glass); border: 1px solid rgba(241,201,142,.55); border-radius: 10px; }
+      .aim[hidden] { display: none; }
+      .aim b { font: 400 1.4rem/1.1 var(--serif); }
+      .aim span { font: 300 .9375rem/1.3 var(--serif); color: var(--soft); }
+      .aim i { margin-top: 6px; font: 600 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; font-style: normal; color: var(--warm); }
+      .scale { position: fixed; z-index: 19; left: 50%; top: calc(var(--top) + 52px); transform: translateX(-50%); width: min(720px, calc(100vw - 32px)); background: rgba(9,9,11,.86); border-radius: 14px; padding: 2px 8px 0; box-sizing: border-box; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
+      body.arrived .scale { opacity: 1; pointer-events: auto; }
+      .scale-line { position: relative; height: 1px; margin: 9px 6% 0; background: rgba(236,231,220,.35); }
+      .scale-you { position: absolute; top: -6px; left: 0; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: var(--warm); box-shadow: 0 0 14px rgba(241,201,142,.6); transition: left .25s linear; }
+      .scale ol { display: flex; justify-content: space-between; margin: 0; padding: 0; list-style: none; }
+      .scale button { background: none; border: 0; color: var(--soft); font: 300 .8125rem/1 var(--serif); letter-spacing: .02em; padding: 12px 6px 10px; min-width: 44px; min-height: 44px; text-shadow: 0 1px 8px #000; cursor: pointer; }
+      .scale button:hover, .scale button:focus-visible { color: var(--warm); outline: none; }
+      .scale button.here { color: var(--warm); }
+      .streaks { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+      .eta { position: fixed; z-index: 18; left: 50%; top: 36%; transform: translateX(-50%); width: min(520px, calc(100vw - 32px)); text-align: center; pointer-events: none; }
+      .eta[hidden] { display: none; }
+      .eta b { display: block; font: 400 clamp(1.8rem, 5vw, 2.6rem)/1.1 var(--serif); text-shadow: 0 2px 20px #000; }
+      .eta span { display: block; margin-top: 6px; font: 300 1.125rem/1.3 var(--serif); color: var(--ink); text-shadow: 0 2px 14px #000; }
+      .eta-bar { width: min(360px, 80%); height: 4px; margin: 16px auto 0; background: rgba(236,231,220,.22); border-radius: 2px; }
+      .eta-bar i { display: block; height: 4px; width: 0; background: var(--warm); border-radius: 2px; }
+      .eta button { pointer-events: auto; margin-top: 18px; padding: 14px 22px; min-height: 48px; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
+      .eta button:hover, .eta button:focus-visible { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
+      body.touring .eta { opacity: 0; pointer-events: none; }
+      .coach { position: fixed; z-index: 17; left: 50%; bottom: calc(var(--bot) + 132px); transform: translateX(-50%); display: flex; align-items: center; gap: 18px; padding: 14px 20px; max-width: calc(100vw - 32px); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; }
+      .coach[hidden] { display: none; }
+      .coach p { margin: 0; display: flex; align-items: center; gap: 9px; font: 300 1.0625rem/1.3 var(--serif); color: var(--ink); }
+      .coach b { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--warm); color: #111; font: 600 .8125rem/24px var(--mono); text-align: center; }
+      .coach button { flex: none; background: none; border: 0; color: var(--warm); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; padding: 14px 6px; min-height: 44px; cursor: pointer; }
+      @media (max-width: 600px) { .coach { flex-direction: column; align-items: flex-start; gap: 8px; bottom: calc(var(--dock) + 112px); padding: 14px 18px; } .coach button { align-self: flex-end; padding: 4px 6px; } }
+      .deep-labels { clip-path: inset(calc(var(--top) + 100px) 52px 0 0); }
+      .aim .aim-go { display: none; }
+      @media (pointer: coarse) { .aim { z-index: 30; background: rgba(9,9,11,.94); left: 0; right: 0; bottom: calc(var(--dock, 0px) + 8px); top: auto; width: auto; margin: 0 var(--gut); pointer-events: auto; transform: none !important; padding: 16px 18px; } .aim i { display: none; } .aim .aim-go { display: block; margin-top: 12px; padding: 16px; min-height: 52px; border: 0; border-radius: 999px; background: var(--warm); color: #111; font: 600 .875rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; cursor: pointer; } }
+      .gear-name { margin: 0; min-width: 9.5rem; text-align: center; font: 400 .8125rem/1.25 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+      .pill[aria-pressed="true"], .pill[aria-pressed="true"]:hover, .pill[aria-pressed="true"]:focus-visible { color: #111; background: var(--warm); border-color: var(--warm); }
+      .goto-marks { margin-bottom: 4px; }
+      .goto-row.marks { grid-template-columns: 1fr; margin-bottom: 8px; }
+      .mark { display: flex; border-bottom: 1px solid rgba(236,231,220,.08); }
+      .mark button:first-child { flex: 1; border-bottom: 0; }
+      .mark .rm { width: 44px; text-align: center; color: var(--faint); font-size: 1.2rem; border-bottom: 0; }
+      .save-place { font: 400 .8125rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--warm); border: 1px solid var(--line); border-radius: 999px; padding: 12px 16px; min-height: 44px; margin: 0 0 14px; }
+      .save-place[hidden] { display: none; }
 
       /* ---- readout */
       .hud { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; padding: 0 var(--gut) var(--bot); display: flex; justify-content: space-between; align-items: end; opacity: 0; transition: opacity 1s ease .8s; pointer-events: none; }
       body.in .hud { opacity: 1; }
-      .readout { display: grid; gap: .3rem; text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
+      /* a near-solid dark backing, so the figures stay readable over bright ground (the Sun, Saturn's tan cloud tops close up) */
+      .readout { display: grid; gap: .3rem; width: fit-content; padding: 12px 16px; margin: -12px -14px; border-radius: 14px; background: rgba(9,9,11,.94); backdrop-filter: blur(6px); text-shadow: 0 1px 10px rgba(0,0,0,.85), 0 0 2px rgba(0,0,0,.9); }
       .readout .k, .readout .k2 { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+      .readout .k2 { text-transform: none; }
       .readout .v { font: 200 clamp(1.8rem, 4.4vw, 3rem)/1 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
       .skip { pointer-events: auto; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); border-bottom: 1px solid rgba(236,231,220,.3); padding: 10px 0 3px; margin-bottom: 70px; }
       body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
 
       /* ---- controls */
-      @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } body.touring .readout { opacity: 0; } .readout { max-width: none; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .75rem; } .zoom button { width: 44px; } }
+      @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } .readout { max-width: none; padding-bottom: 2px; margin-bottom: 0; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .8125rem; } .zoom button { width: 44px; } }
       .controls { position: fixed; z-index: 31; right: var(--gut); bottom: var(--bot); display: flex; align-items: flex-end; gap: 10px; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .controls { opacity: 1; pointer-events: auto; }
-      .zoom { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 26px; background: var(--glass); overflow: hidden; }
-      .zoom button { width: 48px; height: 48px; display: grid; place-items: center; color: var(--ink); }
-      .zoom button + button { border-top: 1px solid rgba(236,231,220,.14); }
-      .zoom svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.6; fill: none; stroke-linecap: round; }
-      .zoom button:hover, .zoom button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
       .pop { position: relative; }
       .pill { white-space: nowrap; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 15px 18px; min-height: 48px; }
       .pill:hover, .pill:focus-visible, .pill[aria-expanded="true"] { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
       .sheet { position: absolute; right: 0; bottom: calc(100% + 62px); width: min(22rem, calc(100vw - 2 * var(--gut))); max-height: min(66vh, 36rem); overflow-y: auto; padding: 16px 18px 8px; background: rgba(9,9,11,.96); border: 1px solid var(--line); }
       .sheet[hidden] { display: none; }
       @media (max-width: 600px) { .sheet { position: fixed; left: var(--gut); right: var(--gut); width: auto; bottom: calc(var(--bot) + 66px); max-height: 60vh; } }
-      .goto-find { width: 100%; margin: 0 0 10px; padding: 10px 12px; font: 400 1rem/1.2 var(--serif); color: var(--ink); background: rgba(236,231,220,.06); border: 1px solid var(--line); border-radius: 8px; }
+      .goto-find { width: 100%; min-height: 44px; margin: 0 0 10px; padding: 10px 12px; font: 400 1rem/1.2 var(--serif); color: var(--ink); background: rgba(236,231,220,.06); border: 1px solid var(--line); border-radius: 8px; }
       .goto-find::placeholder { color: var(--faint); }
       .goto-results[hidden], .goto-list [hidden] { display: none; }
       .goto-h { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin: 0 0 6px; }
       .goto-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; margin-bottom: 14px; }
-      .goto-row button { text-align: left; font: 300 1.02rem/1.25 var(--serif); color: var(--soft); padding: 8px 0; border-bottom: 1px solid rgba(236,231,220,.08); }
+      .goto-row button { text-align: left; display: flex; align-items: center; min-height: 44px; font: 300 1.02rem/1.25 var(--serif); color: var(--soft); padding: 4px 0; border-bottom: 1px solid rgba(236,231,220,.08); }
       .goto-row button:hover, .goto-row button:focus-visible { color: var(--warm); outline: none; }
       .view-sheet fieldset { border: 0; margin: 0 0 14px; padding: 0; }
       .view-sheet legend { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; padding: 0; }
-      .view-sheet label { display: block; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 6px 0 6px 28px; position: relative; cursor: pointer; }
+      .view-sheet label { display: block; min-height: 44px; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 10px 0 6px 50px; position: relative; cursor: pointer; }
       .view-sheet label small { display: block; font-size: .85rem; color: var(--faint); }
-      .view-sheet input { position: absolute; left: 0; top: 9px; accent-color: #f1c98e; width: 16px; height: 16px; margin: 0; }
+      .view-sheet input, .time-sheet fieldset input { position: absolute; left: 0; top: 0; width: 44px; height: 44px; margin: 0; cursor: pointer; appearance: none; -webkit-appearance: none; background-color: transparent; background-repeat: no-repeat; background-position: center; }
+      /* the drawn control is about 22 px; the whole 44 px square around it takes the tap */
+      input[type="radio"] { background-image: radial-gradient(circle, transparent 0 9px, rgba(236,231,220,.7) 9.5px 11px, transparent 11.5px); }
+      input[type="radio"]:checked { background-image: radial-gradient(circle, var(--warm) 0 5.5px, transparent 6px 9px, var(--warm) 9.5px 11px, transparent 11.5px); }
+      input[type="checkbox"] { background-image: linear-gradient(rgba(9,9,11,.96), rgba(9,9,11,.96)), linear-gradient(rgba(236,231,220,.7), rgba(236,231,220,.7)); background-size: 19px 19px, 22px 22px; }
+      input[type="checkbox"]:checked { background-image: linear-gradient(var(--warm), var(--warm)), linear-gradient(var(--warm), var(--warm)); }
       .time-sheet { padding-bottom: 12px; }
       .time-now { font: 300 1.1rem/1.3 var(--serif); color: var(--ink); margin: 0 0 12px; }
       .time-f { margin: 0 0 14px; }
       .time-f label { display: block; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; }
       .time-f input[type="date"] { width: 100%; padding: 10px 12px; font: 400 1rem/1.2 var(--serif); color: var(--ink); background: rgba(236,231,220,.06); border: 1px solid var(--line); border-radius: 8px; color-scheme: dark; min-height: 44px; }
-      .time-f input[type="range"] { width: 100%; accent-color: #f1c98e; height: 32px; margin: 0; }
+      .time-f input[type="range"] { width: 100%; accent-color: #f1c98e; height: 44px; margin: 0; }
       .time-sheet fieldset { border: 0; margin: 0 0 12px; padding: 0; }
       .time-sheet legend { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); margin-bottom: 4px; padding: 0; }
-      .time-sheet fieldset label { display: block; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 6px 0 6px 28px; position: relative; cursor: pointer; }
-      .time-sheet fieldset input { position: absolute; left: 0; top: 9px; accent-color: #f1c98e; width: 16px; height: 16px; margin: 0; }
-      @media (pointer: coarse) { .time-sheet fieldset label { padding-top: 11px; padding-bottom: 11px; } .time-sheet fieldset input { top: 14px; } }
+      .time-sheet fieldset label { display: block; min-height: 44px; font: 300 1rem/1.3 var(--serif); color: var(--ink); padding: 12px 0 6px 50px; position: relative; cursor: pointer; }
       .time-back { margin-top: 4px; border-top: 1px solid rgba(236,231,220,.08); }
       .time-note { font: 300 .85rem/1.4 var(--serif); color: var(--faint); margin: 0; }
-      .free-btn { width: 100%; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 13px 16px; margin: 2px 0 14px; }
-      .free-btn[aria-pressed="true"] { color: #111; background: var(--warm); border-color: var(--warm); }
+      .free-btn { width: 100%; min-height: 44px; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 13px 16px; margin: 2px 0 14px; }
       .keys { margin: 0 0 8px; border-top: 1px solid rgba(236,231,220,.1); padding-top: 10px; }
       .keys div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 10px; padding: 4px 0; }
       .keys dt { font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--faint); }
       .keys dd { margin: 0; font: 300 .9rem/1.35 var(--serif); color: var(--soft); }
       @media (pointer: coarse) { .keys { display: none; } }
-      @media (max-width: 760px) { body.margin-open .controls { opacity: 0; pointer-events: none; } }
+      @media (min-width: 601px) and (max-width: 760px) { body.margin-open .controls { opacity: 0; pointer-events: none; } }
 
       /* a hint, once, after arriving */
       .hint { position: fixed; z-index: 15; left: 50%; bottom: calc(var(--bot) + 124px); transform: translateX(-50%); margin: 0; padding: 10px 16px; max-width: calc(100vw - 32px); text-align: center; font: 300 1rem/1.4 var(--serif); color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; opacity: 0; pointer-events: none; transition: opacity .8s ease; width: max-content; }
@@ -939,14 +1019,13 @@ import { sections } from '../lib/nav';
       .tour-b .tour-go { border-color: rgba(241,201,142,.6); color: var(--warm); }
       .tour-b button:hover, .tour-b button:focus-visible { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
       .tour-b button:disabled { opacity: .4; }
-      body.touring .where, body.touring .hint { opacity: 0; pointer-events: none; }
       @media (max-width: 600px) { .tour { bottom: calc(var(--bot) + 112px); padding: 12px 14px; } .tour-h { font-size: 1.2rem; } .tour-p { font-size: .9375rem; } .tour-b { flex-wrap: nowrap; } .tour-b button { flex: 1 1 auto; padding: 14px 8px; letter-spacing: .06em; } }
       .coarse-only { display: none; }
       @media (pointer: coarse) { .coarse-only { display: inline; } .fine-only { display: none; } }
 
       /* the touch pad, only while flying yourself */
-      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 64px; height: 150px; border: 1px solid var(--line); border-radius: 32px; background: rgba(9,9,11,.5); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 14px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
-      .pad span { font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); }
+      .pad { position: fixed; z-index: 12; right: var(--gut); bottom: calc(var(--bot) + 150px); width: 72px; height: 150px; border: 1px solid var(--line); border-radius: 36px; background: rgba(9,9,11,.86); display: none; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px 0; touch-action: none; user-select: none; -webkit-user-select: none; }
+      .pad span { font: 400 .8125rem/1 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--soft); }
       .pad i { width: 22px; height: 1px; background: rgba(236,231,220,.3); }
       .pad.on { border-color: var(--warm); }
       @media (pointer: coarse) { body.arrived.free .pad { display: flex; } }
@@ -955,27 +1034,65 @@ import { sections } from '../lib/nav';
       @media (max-width: 600px) {
         :root { --dock: calc(56px + env(safe-area-inset-bottom, 0px)); }
         .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
-        .controls .zoom { display: none; }
         .controls .pop { display: block; min-width: 0; }
-        .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .75rem; letter-spacing: .12em; display: grid; place-items: center; }
-        .controls > #tour-btn { order: 4; }
-        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 3; }
+        .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .8125rem; letter-spacing: .12em; display: grid; place-items: center; }
+        .controls > #tour-btn { order: 3; }
+        .gears.throttle { left: var(--gut); transform: none; bottom: calc(var(--dock) + 10px); width: calc(100vw - 2 * var(--gut) - 76px); padding: 10px 14px 6px; }
+        .throttle .th { display: none; }
+        .scale { top: calc(var(--top) + 50px); }
+        .coach { left: var(--gut); right: var(--gut); width: auto; transform: none; bottom: calc(var(--dock) + 10px); padding: 12px 16px; gap: 6px; }
+        .coach p { font-size: 1rem; }
+        body.picking .gears.throttle, body.picking .pad { visibility: hidden; }
+        body.coaching .hud, body.picking .hud { padding-bottom: calc(var(--dock) + 170px); }
+        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 4; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
+        .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }
         .sheet { bottom: calc(var(--dock) + 8px); }
-        .hud { padding-bottom: calc(var(--dock) + 10px); }
+        /* the Codex leaves the header and the dock free, so Menu and the pills stay usable */
+        body .margin { top: 56px; bottom: var(--dock); }
+        .hud { padding-bottom: calc(var(--dock) + 92px); }
         .tour { bottom: calc(var(--dock) + 10px); }
         .hint { bottom: calc(var(--dock) + 20px); }
-        .pad { bottom: calc(var(--dock) + 40px); }
+        .pad { bottom: calc(var(--dock) + 10px); }
       }
+
+      /* ---- keeping things apart: the caption under the ribbon, the throttle clear of the pills, the pad clear of the Codex tab */
+      body:has(.back-chip:not(:disabled)) .gen { left: calc(var(--gut) + 104px); }
+      @media (min-width: 601px) { .coach { width: max-content; max-width: calc(100vw - 112px); } }
+      body.tripping .coach, body.tripping .readout, body.tripping .hint { opacity: 0; pointer-events: none; }
+      /* one thing at a time: the Fly here sheet, or the first-visit prompts, not both; and a sheet hides what it would cover */
+      body.picking .coach { visibility: hidden; }
+      .under-sheet { visibility: hidden !important; }
+      @media (max-height: 520px) { .sheet { bottom: calc(100% + 12px); max-height: calc(100dvh - var(--bot) - 48px - 12px - 64px); } }
+      @media (min-width: 601px) and (max-width: 1180px) {
+        .gears.throttle { left: calc(var(--gut) + 190px); transform: none; width: clamp(220px, calc(100vw - 2 * var(--gut) - 560px), 340px); }
+        .throttle .th { display: none; }
+        .readout { max-width: 180px; }
+      }
+      @media (min-width: 601px) and (max-width: 760px) {
+        .gears.throttle { left: auto; right: var(--gut); transform: none; bottom: calc(var(--bot) + 60px); width: min(320px, calc(100vw - 2 * var(--gut))); }
+        body .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 150px); height: 96px; padding: 14px 0; }
+      }
+      @media (max-height: 520px) { .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 66px); height: 116px; padding: 16px 0; } }
+      @media (max-width: 600px) {
+        .gen { top: calc(var(--top) + 164px); }
+        .eta { width: calc(100vw - 96px); }
+        body:has(.back-chip:not(:disabled)) .gen { left: var(--gut); top: calc(var(--top) + 164px); }
+        .controls .pill:focus-visible { outline-offset: -4px; }
+      }
+
+      /* a ring that shows where the keyboard is, whatever the colours do */
+      .pill:focus-visible, .back-chip:focus-visible, .eta button:focus-visible, .tour-b button:focus-visible, .goto-row button:focus-visible, .coach button:focus-visible, .free-btn:focus-visible, .save-place:focus-visible, .aim-go:focus-visible, .scale button:focus-visible, .pages a:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+      .scale button:focus-visible { outline-offset: -4px; border-radius: 8px; }
+      .view-sheet input:focus-visible, .time-sheet input:focus-visible, .throttle input:focus-visible, .goto-find:focus-visible { outline: 2px solid var(--warm); outline-offset: 0; }
 
       /* testing only */
       .tech { display: none; } body.debug .tech { display: block; }
       .tech { position: fixed; z-index: 5; right: var(--gut); top: calc(var(--top) + 48px); margin: 0; max-width: 60vw; text-align: right; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .06em; color: rgba(236,231,220,.38); pointer-events: none; }
       /* what is drawn from a model, and what was measured, for wherever you are: always shown, beside the map */
-      .gen { position: fixed; z-index: 5; top: calc(var(--top) + 58px); left: 214px; right: var(--gut); max-width: 26rem; margin: 0; font: 400 .9375rem/1.45 var(--serif); font-style: normal; color: var(--ink); background: rgba(8, 8, 10, .62); border-left: 2px solid rgba(241, 201, 142, .6); padding: .4rem .7rem; text-shadow: 0 1px 8px #000; pointer-events: none; }
+      .gen { position: fixed; z-index: 5; top: calc(var(--top) + 112px); left: var(--gut); right: var(--gut); max-width: min(26rem, calc(100vw - 2 * var(--gut) - 48px)); margin: 0; font: 400 .9375rem/1.45 var(--serif); font-style: normal; color: var(--ink); background: rgba(8, 8, 10, .62); border-left: 2px solid rgba(241, 201, 142, .6); padding: .4rem .7rem; text-shadow: 0 1px 8px #000; pointer-events: none; }
       .gen:empty { display: none; }
       .gen.illus { font: 500 .8125rem/1.4 var(--sans, system-ui, sans-serif); font-style: normal; color: var(--ink, #f4efe4); background: rgba(8, 6, 4, .78); border: 1px solid rgba(241, 201, 142, .55); border-radius: 6px; padding: .45rem .65rem; text-shadow: none; }
-      @media (max-width: 600px) { .gen { left: 204px; } }
       body:not(.in) .gen, body.margin-open .gen { visibility: hidden; }
 
       @media (prefers-reduced-motion: reduce) {

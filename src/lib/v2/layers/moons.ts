@@ -141,8 +141,8 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
   const lineOpacity = uniform(0);
   const mkLine = (strong: boolean) => {
     const m = new THREE.LineBasicNodeMaterial({ transparent: true, depthTest: true, depthWrite: false });
-    m.colorNode = vec3(0.72, 0.74, 0.8);
-    m.opacityNode = lineOpacity.mul(strong ? 0.3 : 0.045);
+    m.colorNode = vec3(0.62, 0.64, 0.72);
+    m.opacityNode = lineOpacity.mul(strong ? 0.15 : 0.03);
     return m;
   };
   const strongLine = mkLine(true), faintLine = mkLine(false);
