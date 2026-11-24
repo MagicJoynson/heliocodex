@@ -961,8 +961,8 @@ import { sections } from '../lib/nav';
       /* fast travel: the edge of the screen darkens, which gives the eye a calm middle to rest on (no streaks unless asked for) */
       .vignette { position: fixed; inset: 0; z-index: 3; pointer-events: none; opacity: 0; transition: opacity .4s ease; background: radial-gradient(ellipse 75% 70% at 50% 48%, rgba(0,0,0,0) 58%, rgba(0,0,0,.72) 100%); }
       .look-f { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; padding: 10px 0 4px; }
-      .look-f label { grid-column: 1 / -1; font: 300 1rem/1.3 var(--serif); color: var(--ink); }
-      .look-f input[type='range'] { width: 100%; min-height: 44px; }
+      .view-sheet .look-f label { grid-column: 1 / -1; display: block; min-height: 0; padding: 0; cursor: default; font: 300 1rem/1.3 var(--serif); color: var(--ink); }
+      .view-sheet .look-f input[type='range'] { position: static; appearance: auto; -webkit-appearance: auto; width: 100%; height: 44px; min-height: 44px; margin: 0; accent-color: #f1c98e; color-scheme: dark; }
       .look-f output { font: 400 .8125rem/1 var(--mono); letter-spacing: .06em; color: var(--soft); min-width: 3.2rem; text-align: right; }
       /* no second Enter for someone coming in from the site, or who has been in before */
       html.quick .threshold { opacity: 0; visibility: hidden; pointer-events: none; transition: none; }
