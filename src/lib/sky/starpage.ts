@@ -25,6 +25,8 @@ export function enliven(page: HTMLElement): void {
     now.textContent = top < 0 ? `${name} never rises above the horizon from ${from}. You would have to travel ${saved.lat > 0 ? 'south' : 'north'} to see it.`
       : s.altDeg > 0 ? `${name} is up now from ${from}: ${heightOf(s.altDeg)} in the ${wayOf(s.azDeg)}, ${Math.round(s.altDeg)}° above the horizon.${low > 0 ? ' From there it never sets.' : ''}`
       : `${name} is below the horizon from ${from} at this moment. At its highest it stands ${Math.round(top)}° up.`;
+    const topLine = page.querySelector<HTMLElement>('[data-now-top]');
+    if (topLine) topLine.textContent = now.textContent!.split('. ')[0].replace(/\.$/, '') + '.';
     const more = document.createElement('p');
     more.innerHTML = 'The place is the one you last chose on <a href="/sky">the sky map</a>, or a guess from your device\'s clock.';
     now.after(more);

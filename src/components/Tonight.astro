@@ -1,0 +1,64 @@
+---
+// "Tonight" strip for the home page. Filled in by the visitor's own device from the sky sums
+// (src/lib/sky/tonight.ts), for the place saved on the sky map or London. Nothing is sent anywhere.
+---
+<section class="tonight" aria-labelledby="tn-h" data-tonight>
+  <noscript><style>.tonight .tn-where, .tonight .tn-moon svg { display: none; }</style></noscript>
+  <div class="tn-where"><h2 id="tn-h">Tonight</h2><span data-tn-place>London</span></div>
+  <div class="tn-item tn-moon">
+    <svg width="60" height="60" viewBox="-30 -30 60 60" aria-hidden="true" focusable="false"><circle r="26" class="dark" /><path class="lit" d="" /></svg>
+    <div><b data-tn-moon>The Moon</b><span data-tn-moon-sub>Its phase tonight is on the sky map</span></div>
+  </div>
+  <div class="tn-item"><div><b data-tn-planets>The planets</b><span data-tn-planets-sub>Which are up tonight is on the sky map</span></div></div>
+  <a class="tn-go" href="/sky">Open tonight’s sky</a>
+</section>
+
+<script>
+  import { tonight } from '../lib/sky/tonight';
+  import { readPlace } from '../lib/sky/remember';
+
+  const root = document.querySelector<HTMLElement>('[data-tonight]');
+  const text = (k: string, t: string) => { const e = root?.querySelector(`[data-${k}]`); if (e) e.textContent = t; };
+  const list = (a: string[]) => a.length < 2 ? a[0] ?? '' : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`;
+
+  function fill(): void {
+    if (!root) return;
+    const p = readPlace() ?? { name: 'London', lat: 51.51, lon: -0.13 };
+    const t = tonight(new Date(), p.lat, p.lon);
+    text('tn-place', p.name);
+    const pct = Math.round(t.moon.lit * 100);
+    text('tn-moon', t.moon.name);
+    text('tn-moon-sub', `${pct} per cent lit, ${t.moon.up ? t.moon.where : 'below the horizon'}`);
+    if (t.noDark) { text('tn-planets', 'It does not get fully dark here tonight'); text('tn-planets-sub', 'The Sun stays too close to the horizon'); }
+    else if (t.planets.length) {
+      text('tn-planets', `${list(t.planets.map((k) => k.name))} ${t.planets.length > 1 ? 'are' : 'is'} up tonight`);
+      text('tn-planets-sub', t.planets.map((k) => `${k.name}: ${k.where}`).join('; '));
+    } else { text('tn-planets', 'No bright planet is up tonight'); text('tn-planets-sub', 'Planets you can see by eye'); }
+    // the lit part of the face: right-hand side while the Moon grows (left in the southern hemisphere), the other way as it shrinks
+    const r = 26, k = 1 - 2 * t.moon.lit;
+    const d = `M0 ${-r} A${r} ${r} 0 0 1 0 ${r} A${Math.abs(k) * r} ${r} 0 0 ${k > 0 ? 0 : 1} 0 ${-r}Z`;
+    const path = root.querySelector('path.lit');
+    if (path) {
+      path.setAttribute('d', d);
+      const flip = t.moon.waxing === (p.lat >= 0);
+      path.setAttribute('transform', flip ? '' : 'scale(-1 1)');
+    }
+    root.setAttribute('data-ready', '');
+  }
+  fill();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) fill(); });
+</script>
+
+<style>
+  .tonight { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg); padding: 22px var(--gutter); display: flex; flex-wrap: wrap; gap: 18px 44px; align-items: center; min-height: 108px; justify-content: center; }
+  .tn-where { min-width: 7.5rem; }
+  .tn-where h2 { font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
+  .tn-where span { display: block; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+  .tn-item { display: flex; gap: 16px; align-items: center; }
+  .tn-item b { display: block; font: 400 1.25rem/1.3 var(--serif); color: var(--ink); }
+  .tn-item span { display: block; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); max-width: 34rem; }
+  .tn-moon svg .dark { fill: #14161f; stroke: #2c3145; }
+  .tn-moon svg .lit { fill: var(--ink); }
+  .tn-go { font: 400 .8125rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid rgba(255, 179, 71, .5); text-decoration: none; padding-bottom: 3px; }
+  @media (max-width: 700px) { .tonight { min-height: 250px; flex-direction: column; align-items: flex-start; } }
+</style>

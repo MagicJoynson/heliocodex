@@ -13,3 +13,14 @@ const { title, description, path, jsonld } = Astro.props;
   <VideoEmbeds />
   <ChartFit />
 </Base>
+
+<script>
+  // A short amber rule is drawn under each section heading as it arrives on screen. Reduced motion: the rules are simply there.
+  const heads = document.querySelectorAll<HTMLElement>('.reading h2');
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('rule-in'); io.unobserve(e.target); }
+    }, { threshold: 0.6 });
+    heads.forEach((h) => { if (h.getBoundingClientRect().top < innerHeight * 0.9) h.classList.add('rule-in'); else io.observe(h); });
+  } else heads.forEach((h) => h.classList.add('rule-in'));
+</script>

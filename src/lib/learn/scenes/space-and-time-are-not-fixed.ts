@@ -112,7 +112,7 @@ const massScene: Scene = {
     for (let k = 0; k < 36; k++) { const a = (k / 36) * TAU + 0.05, d = R * 1.15 + ((t * 0.5 + k * 0.37) % 1) * s * 0.3, al = 1 - ((t * 0.5 + k * 0.37) % 1); dot(ctx, cx + Math.cos(a) * d, cy + Math.sin(a) * d, 1.6, `rgba(255,226,170,${0.8 * al})`); }
     sun(ctx, cx, cy, R, 1);
     ring(ctx, cx, cy, R * 1.02, 'rgba(255,226,170,.25)');
-    ctx.fillStyle = ACCENT; ctx.font = 'italic 400 26px "Fraunces Variable", Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('E = mc²', cx, cy + R + s * 0.16);
+    ctx.fillStyle = ACCENT; ctx.font = 'italic 300 26px Spectral, Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('E = mc²', cx, cy + R + s * 0.16);
     say(`${nf(Math.floor(t) * 4)} million tonnes lighter since you started watching`, 'Mass is a very concentrated form of energy');
   },
 };

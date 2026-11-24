@@ -3,7 +3,6 @@
 @import '@fontsource/spectral/300.css';
 @import '@fontsource/spectral/300-italic.css';
 @import '@fontsource/spectral/400.css';
-@import '@fontsource/spectral/500.css';
 @import '@fontsource/ibm-plex-mono/400.css';
 
 .reading {
@@ -114,3 +113,13 @@ body:has(.reading) { background: #0b0b0c; }
   & .chart-key li { counter-increment: k; padding: 0; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: .5rem; margin: 0 0 .35rem; }
   & .chart-key li::before { position: static; left: auto; top: auto; content: counter(k); display: grid; place-items: center; width: 1.35rem; height: 1.35rem; border-radius: 50%; background: #e9c48a; color: #0b0b0c; font: 500 .74rem/1 var(--r-mono); margin-top: .1rem; }
 }
+
+/* Small touches: a rule drawn under each section heading, warmer links and sheet cells on hover. */
+.reading h2 { position: relative; }
+.reading h2::after { content: ''; position: absolute; left: 0; bottom: -.45em; width: 2.2rem; height: 1px; background: var(--accent); opacity: .7; transform: scaleX(0); transform-origin: left; transition: transform .8s cubic-bezier(.3, .6, .2, 1); pointer-events: none; }
+.reading h2.rule-in::after { transform: scaleX(1); }
+.reading a { transition: text-decoration-color .2s ease, color .2s ease; }
+.reading a:hover { text-decoration-color: var(--accent); }
+.rec-sheet .rc { transition: background-color .25s ease; }
+.rec-sheet .rc:hover { background-color: rgba(255, 179, 71, .05); }
+@media (prefers-reduced-motion: reduce) { .reading h2::after, .reading a, .rec-sheet .rc { transition: none; } }

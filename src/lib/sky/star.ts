@@ -207,6 +207,27 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const reach = (au: number) => au > 5.2 ? 'beyond Jupiter' : au > 1.52 ? 'beyond Mars' : au > 1 ? 'beyond the Earth' : au > 0.72 ? 'beyond Venus' : au > 0.39 ? 'beyond Mercury' : `${Math.round((au / 0.387) * 100)} per cent of the way to Mercury`;
   const sizeWord = (x: number) => x >= 100 ? nf(Math.round(x / 10) * 10) : x >= 10 ? nf(Math.round(x)) : x.toFixed(1);
   const sizeCell: Cell | null = ang ? { key: 'size', label: 'Size', value: sizeWord(suns), unit: (suns >= 0.95 && suns < 1.05 ? 'Sun across' : 'Suns across') + (ang[1] === 'e' ? ', roughly' : ''), note: `${ang[1] === 'm' ? 'From its measured' : 'From its estimated'} size in our sky and its distance.${suns >= 100 ? ` Put in place of the Sun, its surface would reach ${reach(suns / 2 * 0.00465)}.` : ''}` } : null;
+  // beside the Sun, to one scale, when the star's size is known; otherwise the plain glow (drawn on a canvas by starpage.ts)
+  const sizeFace = (): string => {
+    if (!(suns > 0) || !hasColour) return '';
+    const R = 140, bigIsStar = suns >= 1, rStar = bigIsStar ? R : Math.max(R * suns, 2.5), rSun = bigIsStar ? Math.max(R / suns, 2.5) : R;
+    const cx = 190, cy = 180, bigR = Math.max(rStar, rSun), sm = Math.min(rStar, rSun);
+    const sx = Math.min(400 - sm - 4, cx + bigR * 0.78), sy = Math.min(360 - sm - 4, cy + bigR * 0.78);
+    const at = (isStar: boolean) => (isStar === bigIsStar ? [cx, cy] : [sx, sy]);
+    const label = (isStar: boolean, r: number, text: string) => {
+      const [x, y] = at(isStar);
+      return r >= 62 ? `<text x="${x}" y="${y + 5}" text-anchor="middle" fill="#07080d" class="sf-t">${text}</text>`
+        : `<text x="${Math.min(x + r, 396)}" y="${y - r - 10}" text-anchor="end" fill="#a8a296" class="sf-t">${text}</text>`;
+    };
+    const [px, py] = at(true), [ux, uy] = at(false);
+    // below a couple of pixels a true-scale Sun would vanish, so it is drawn at that least size and the caption says so
+    const trueR = bigIsStar ? R / suns : R * suns, notTrue = (bigIsStar ? rSun : rStar) > trueR * 1.05;
+    const caveat = notTrue ? ` The ${bigIsStar ? 'Sun' : n} is drawn bigger than true here, as a dot: to one scale it would be too small to see.` : '';
+    const ratio = suns >= 1.05 ? `about ${sizeWord(suns)} times as wide as the Sun` : suns > 0.95 ? 'about the same width as the Sun' : `about ${Math.round(suns * 100)} per cent as wide as the Sun`;
+    const draw = (x: number, y: number, r: number, fill: string, halo: boolean) => (halo ? `<circle class="sf-halo" cx="${x}" cy="${y}" r="${r + 14}" fill="none" stroke="rgb(${rgb})" stroke-opacity=".3"/><circle class="sf-halo two" cx="${x}" cy="${y}" r="${r + 32}" fill="none" stroke="rgb(${rgb})" stroke-opacity=".16"/>` : '') + `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="#07080d" stroke-width="3"/>`;
+    const order = bigIsStar ? [draw(px, py, rStar, `rgb(${rgb})`, true), draw(ux, uy, rSun, 'rgb(255,236,214)', false)] : [draw(ux, uy, rSun, 'rgb(255,236,214)', false), draw(px, py, rStar, `rgb(${rgb})`, true)];
+    return `<figure class="rec-pic star-face size-face"><svg viewBox="0 0 400 360" role="img" aria-label="${n} drawn beside the Sun${notTrue ? ', with the smaller one drawn bigger than true so that it can be seen' : ' to one scale'}: ${ratio}.">${order.join('')}${label(true, rStar, n.toUpperCase())}${label(false, rSun, 'THE SUN')}</svg><figcaption>${n} beside the Sun, ${notTrue ? 'not quite to scale' : 'drawn to one scale'}: ${ratio}.${caveat} ${ang && ang[1] === 'm' ? 'Its width is measured.' : 'Its width is a rough estimate.'} The colour comes from its measured colour index.</figcaption></figure>`;
+  };
   const cells: Cell[] = [
     { key: 'distance', label: 'From the Earth', value: `<span data-ly="${star.distPc < 60 ? ly : ''}">${lyText}</span>`, unit: 'light years', note: `Its light set off <span data-left>about ${lyText} years ago</span>.` },
     ...(sizeCell ? [sizeCell] : []),
@@ -218,8 +239,9 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
   const crumbs: [string, string][] = [['Sky', '/sky'], ['Stars', '/stars'], ...(star.constellation ? [[star.constellation, `/stars/in/${slugOf(star.constellation)}`] as [string, string]] : [])];
   const html = [
     head({ crumbs, name: star.name, kind: colour ? `${colour.charAt(0).toUpperCase()}${colour.slice(1)}` : 'A star', lead: `${stage}${mate ? ` It is listed as a companion of ${mate}, right beside it in the sky.` : ''}`.trim() || undefined }),
+    byEye ? '<p class="rec-now" data-now-top></p>' : '',
     `<section class="rec-top">
-      <figure class="rec-pic star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure>
+      ${sizeFace() || `<figure class="rec-pic star-face"><canvas aria-hidden="true"></canvas><figcaption>${hasColour ? 'A drawing in the star\'s own colour, worked out from its measured colour index. It is not a photograph.' : 'A drawing, not a photograph. This star\'s colour is not in the catalogue, so it is drawn plain white.'}</figcaption></figure>`}
       <div>${sheet(cells)}<p class="rec-go"><a href="/explore?go=star:${star.index}">Fly to it in 3D</a>${onChart ? `<a href="/sky?star=${star.index}">Find it on the sky map</a>` : ''}</p></div>
     </section>`,
     story ? row('Its story', `${story.paras.map((p) => `<p>${esc(p)}</p>`).join('')}<p class="src">Read more: ${story.sources.map(([l, u]) => `<a href="${u}" rel="noopener">${esc(l)}</a>`).join('; ')}.</p>`) : '',

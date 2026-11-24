@@ -13,7 +13,15 @@
   .alt-label, .kicker, .more-btn, .more-link, .more-h3, .ml-strand, .wglance dt, .wg-go a, .profile figcaption, .plates figcaption,
   /* Sky, Atlas, Stars, Discovery */
   .sky-hint, .sky-bar button, .pop summary span, .pop-body button, .go3d, .unit, .val, .ruler .more a, .tag, .src, .print-button, .moons th, .moons .go a, .fit,
-  .age label, .age button, .letter h3, .soon li span, .also, .m-item small, .p-years, .names dt, .along a.a-map { font-size: .8125rem !important; }
+  .age label, .age button, .letter h3, .soon li span, .also, .m-item small, .p-years, .names dt, .along a.a-map,
+  /* lessons, sources, cookies, world records (found in the type audit) */
+  .go-see, .go-see a, .d-time, .depths-nav a, .depths-nav .absent, figcaption b, .prose table th, .facts-table thead th, .count-switch button,
+  .ledger-kicker, .sheets a, .drawn-list span, .plate-world, .plate figcaption, .wo-badge span, .wo-facts dt, .plate-holder::after { font-size: .8125rem !important; }
+  /* words inside drawings that are drawn at roughly one pixel to the unit */
+  .wm-vs text, .up-ring .r-alt, .up-ring .r-dir, .narrow .t-sub { font-size: 13px !important; }
+  /* drawings shown at about 0.6 of their own size (600-unit viewBox in a 358 px column) */
+  .wo-size .s-t { font-size: 22px !important; }
+  .profile svg text { font-size: 21px !important; }
 }
 
 /* Tap floor: small links in dense lists and charts get a hit area of at least 24 px high without moving anything. */
@@ -24,4 +32,22 @@
   .more-link::after, .onward a::after, .start-link::after, .family figcaption a::after, .ledger th a::after, .ledger-go a::after, .moon-charts li a::after, .reach-list li a::after, .ruler .more a::after, .landmarks dd a::after {
     content: ''; position: absolute; left: -4px; right: -4px; top: 50%; height: 24px; transform: translateY(-50%);
   }
+}
+
+/* Desktop floor: the same 13 px for the small mono labels that sat under it at every width. Only labels measured under 13 px on a desktop are listed
+   here, because a rule like this must never make a bigger label smaller. */
+.site-menu .menu-h, .wmenu-h, .rec-crumbs, .rec-crumbs a, .rec-crumbs span, .rec-go a, .rc dt, .rec-sheet dt, .label, .go-see, .go-see a, .d-time,
+.opener figcaption b, .prose figure.photo figcaption b, .prose table th, .alt-label, .wglance dt, .wg-go a, .names dt, .also, .sky-hint, .bar-row button,
+.bar-look button, .bar-look .label, .pop summary .label, .pop summary span, .pop-body button, .more-h3, .ml-strand, .back h2, .plain-list a, .kicker, .profile figcaption, .plates figcaption, .more-btn, .more-link, .plate-world, .worlds li span, .ledger thead th, .ledger .kind, .ledger-kicker, .sheets a, .drawn-list span { font-size: .8125rem !important; }
+/* more labels found by the audit at 960 and 1440 */
+.a-map, .along a.a-map, .reading .along a, .p-years, .m-item small, .m-line b, .p-chart b, .w-track b, .w-ends span, .c-first, .c-levels, .later h2 span, .fit, .print-button, .count-switch button,
+.plate figcaption, .site-menu-btn, .wmenu-btn, .moons thead th, .moons .go a, .atlas-toc a, .ruler .more a { font-size: .8125rem !important; }
+.profile svg text, .up-ring .r-alt, .up-ring .r-dir { font-size: 13.6px !important; }
+@media (max-width: 700px) { .profile svg text { font-size: 21px !important; } }
+
+/* Maths in lessons: the small raised and lowered figures are drawn at 0.7 of the line, so the line is made big enough that they stay at 13 px or more on a phone. */
+@media (max-width: 700px) {
+  .katex { font-size: max(1.21em, 18.6px) !important; }
+  /* and the smallest figures (a raised figure on a lowered one) are held at the floor too */
+  .katex .mord, .katex .mbin, .katex .mrel, .katex .mpunct { font-size: max(1em, 13px) !important; }
 }
