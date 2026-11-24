@@ -1,10 +1,12 @@
 ---
 import '../styles/global.css';
 import '../styles/phone-floor.css';
+import '../styles/print.css';
 import Analytics from '../components/Analytics.astro';
 import { groups } from '../lib/nav';
 import SiteNav from '../components/SiteNav.astro';
 import SiteSearch from '../components/SiteSearch.astro';
+import PrintFrom from '../components/PrintFrom.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThreeDReturn from '../components/ThreeDReturn.astro';
 import { shareFor } from '../lib/share';
@@ -63,8 +65,8 @@ const full = title === 'Heliocodex' || `${title} · Heliocodex`.length > 60 ? ti
         document.addEventListener('click', (e) => { if (!menu.hidden && !menu.contains(e.target as Node) && e.target !== btn) set(false); });
       </script>
     </header>
-    <main id="main" tabindex="-1"><slot /></main>
-    <SiteFooter />
+    <main id="main" tabindex="-1"><PrintFrom path={path} /><slot /></main>
+    <SiteFooter title={title} path={path} />
     <ThreeDReturn />
   </body>
 </html>

@@ -1,0 +1,9 @@
+---
+// The line at the head of a printed reading page: where it came from and where the credits are. Seen only on paper.
+import { hasReaderTools } from '../lib/reader';
+interface Props { path: string }
+const { path } = Astro.props;
+const url = new URL(path, Astro.site).toString();
+---
+{hasReaderTools(path) && <p class="print-from">Printed from {url}. Heliocodex is independent of NASA, ESA and every mission named here. Picture credits are beside each picture; the full list is at https://heliocodex.com/sources and https://heliocodex.com/licences.</p>}
+<style>.print-from { display: none; }</style>

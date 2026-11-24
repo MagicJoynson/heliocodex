@@ -1,0 +1,60 @@
+/* Print and save as PDF, for every layout except the 3D view. A lesson, world, planet or star page prints as plain black text on white,
+   with its photographs and their credits, and with the address of every outside link written out. The menu, the 3D picture, the motion,
+   the videos and the buttons are left off. */
+@media print {
+  @page { margin: 14mm; }
+  html { color-scheme: light !important; }
+  html, body { background: #fff !important; color: #000 !important; }
+  /* left off: furniture, canvases, motion, controls */
+  .skip-to, .site-header, header.top, .site-menu, .wmenu, .site-footer, .altitude, #journey, #haze, #shade, #topfade, #arrive,
+  .story-stage, .tonight, .go3d, .go-see, .more-btn, .sky-hint, .sky-bar, .print-hide, 
+  button, canvas, iframe, video, nav[aria-label='Main'], .play, figure.video .play { display: none !important; }
+  /* the story figures that need the canvas have a still caption; keep the words */
+  *, *::before, *::after { animation: none !important; transition: none !important; text-shadow: none !important; box-shadow: none !important; }
+  body *:not(img):not(svg):not(svg *):not(picture) { background: transparent !important; color: #000 !important; border-color: #999 !important; }
+  body, main { position: static !important; height: auto !important; overflow: visible !important; }
+  main, article, section, .reading, .prose { max-width: none !important; width: auto !important; margin-left: 0 !important; margin-right: 0 !important; padding-left: 0 !important; padding-right: 0 !important; }
+  main *, section { min-height: 0 !important; }
+  main > *, section, article, .story, .step, [data-step] { height: auto !important; padding-top: 2mm !important; padding-bottom: 2mm !important; }
+  [style*='opacity: 0'], .reveal, .rise { opacity: 1 !important; transform: none !important; }
+  main, main > article, .l-rest, .reading { padding-bottom: 0 !important; margin-bottom: 0 !important; }
+  main *:last-child { margin-bottom: 0 !important; padding-bottom: 0 !important; }
+  html, body { height: auto !important; min-height: 0 !important; }
+  h1, h2, h3, h4, .hang, .label, .more-h3, .kicker, p[class*='-h'], p[class*='h3'] { break-after: avoid; }
+  a img, li img { max-height: 60mm !important; }
+  p, li { orphans: 3; widows: 3; }
+  /* photographs and their credits stay together; so do list items and cards with a picture */
+  .onward, .l-rest > section:last-child, figure, .photo, .plate, svg.chart, li, .card, .cards > *, .more li, a:has(img), dl > div, tr { break-inside: avoid; }
+  /* the lesson's story photographs, drawn from the canvas by the page (LessonStory.astro) */
+  .print-figs { display: block !important; margin: 0 0 5mm; }
+  .print-figs:empty { display: none !important; }
+  .print-figs figure { margin: 0 0 6mm; }
+  .print-figs img { display: block; width: 140mm !important; max-width: 100% !important; max-height: 85mm !important; object-fit: contain; }
+  .print-figs figcaption { margin-top: 2mm; line-height: 1.35; }
+  /* the hero's caption describes a canvas drawing that is not printed */
+  .l-hero .cap, .l-hero canvas { display: none !important; }
+  .l-hero, .l-hero-words, header.l-hero { min-height: 0 !important; height: auto !important; padding: 0 0 4mm !important; margin: 0 !important; display: block !important; }
+  .story { display: block !important; padding: 0 !important; }
+  .story-steps, [data-step] { margin: 0 !important; padding: 0 !important; min-height: 0 !important; height: auto !important; list-style: none; }
+  .story-steps li, [data-step] { padding: 1mm 0 !important; margin: 0 !important; opacity: 1 !important; }
+  /* a world page's opening scrim sits over the head of the page and printed it blank */
+  main > .beat:first-of-type::before, main .beat::before, main .copy::before, .l-hero::before, .l-hero::after, [class*='hero']::before, [class*='hero']::after { display: none !important; }
+  .l-hero { background: none !important; }
+  .small-note, .aside.small-note, .sources + p { break-before: avoid; }
+  .sources li:last-child { break-after: avoid; }
+  /* links on to other lessons and packs mean nothing on paper, and left a last page of a few words */
+  .onward, .packs-in, nav[aria-label='Other lessons'], nav[aria-label='Lesson packs this lesson is part of'] { display: none !important; }
+  .l-begin, .story .hang .note { display: none !important; }
+  img { max-width: 100% !important; max-height: 120mm !important; width: auto !important; height: auto !important; object-fit: contain; break-inside: avoid; filter: none !important; }
+  /* drawings are made for a dark page: turned over so their pale lines print dark, hues kept */
+  svg { filter: invert(1) hue-rotate(180deg); }
+  svg:has(image) { filter: none; }
+  figcaption { font-size: 9pt !important; }
+  /* the address of each outside link, so a printed page can still be followed */
+  main a[href^='http']::after, .reader-tools a[href^='http']::after { content: ' (' attr(href) ')'; font-size: .85em; word-break: break-all; font-weight: 400; font-style: normal; }
+  main a[href^='http'] { text-decoration: underline; }
+  a[href^='http']:has(img)::after, nav a::after { content: none !important; }
+  /* the line that says where it was printed from, at the head of the page so it is never left alone on a last page */
+  .reader-tools { display: none !important; }
+  .print-from { display: block !important; font: 8.5pt/1.4 Georgia, serif; margin: 0 0 4mm !important; padding-bottom: 2mm; border-bottom: .5pt solid #999; }
+}
