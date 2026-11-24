@@ -29,7 +29,7 @@ const { data } = Astro.props;
       <p class="predict-plain"><b>{data.answer.label}</b>, {data.answer.like}. <a href="#first-look">Read on</a> to see why.</p>
     </noscript>
     <div class="predict-result" hidden>
-      <h2 class="verdict" tabindex="-1" data-verdict></h2>
+      <h2 class="verdict" tabindex="-1" data-verdict>The answer</h2>
       <p class="predict-line" data-line></p>
       <ol class="bars" data-bars aria-label="The choices and the answer, shortest to longest"></ol>
       <div class="ticks" aria-hidden="true" data-ticks></div>

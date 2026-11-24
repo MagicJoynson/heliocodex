@@ -22,5 +22,10 @@ export function guess(): number {
   const parts = zone.split('/'), last = parts[parts.length - 1] ?? '';
   const name = ALSO[last] ?? ALSO[parts[1] ?? ''] ?? last.replace(/_/g, ' ');
   const found = CITIES.findIndex((c) => c[0] === name);
-  return found < 0 ? 0 : found;
+  if (found >= 0) return found;
+  // a zone with no city of its own (Detroit, Seoul, Perth): take the listed city whose longitude sits nearest the clock's offset from UTC
+  const lon = (-new Date().getTimezoneOffset() / 60) * 15;
+  let best = 0, gap = Infinity;
+  CITIES.forEach((c, i) => { const g = Math.abs(c[2] - lon); if (g < gap) { gap = g; best = i; } });
+  return best;
 }

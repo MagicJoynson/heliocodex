@@ -1,6 +1,6 @@
 /* Phone floor: no text under 13 px (.8125rem) on a phone. Page styles are scoped, so this one list of the small labels, counts and captions
    uses !important. Loaded by every layout except the 3D page. Add a selector here when a new small label turns up on a phone. */
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   /* header, menu, footer */
   .site-menu .menu-h, .site-menu-btn, .wmenu-h, .wmenu-btn, .foot-h,
   /* home, Learn, subjects, lessons */
@@ -25,7 +25,7 @@
 }
 
 /* Tap floor: small links in dense lists and charts get a hit area of at least 24 px high without moving anything. */
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .wm-vl li > a, .wm-v li > a, .vl-moons a, .wp-moons a, .atlas-toc a, .go3d, .moons .go a,
   .more-link, .onward a, .start-link, .family figcaption a, .ledger th a, .ledger-go a, .moon-charts li a, .reach-list li a, .ruler .more a, .landmarks dd a { position: relative; }
   .wm-vl li > a::after, .wm-v li > a::after, .vl-moons a::after, .wp-moons a::after, .atlas-toc a::after, .go3d::after, .moons .go a::after,
@@ -43,10 +43,14 @@
 .a-map, .along a.a-map, .reading .along a, .p-years, .m-item small, .m-line b, .p-chart b, .w-track b, .w-ends span, .c-first, .c-levels, .later h2 span, .fit, .print-button, .count-switch button,
 .plate figcaption, .site-menu-btn, .wmenu-btn, .moons thead th, .moons .go a, .atlas-toc a, .ruler .more a { font-size: .8125rem !important; }
 .profile svg text, .up-ring .r-alt, .up-ring .r-dir { font-size: 13.6px !important; }
-@media (max-width: 700px) { .profile svg text { font-size: 21px !important; } }
+@media (max-width: 760px) { .profile svg text { font-size: 21px !important; } }
+
+/* and the rest found at 1440 in the layout pass: Learn, Atlas, Stars, Sky and Worlds labels, buttons and counts */
+.start-btn, .start-link, .scale-here, .scale-track b, .p-count, .i-count, .d-count, .go3d, .unit, .val, .tag, .lane-h, .l-begin, .cap, .age label, .age button, .letter h3,
+.sky-bar button, .soon li span, .src, .tn-item span, .tonight .tn-where span { font-size: .8125rem !important; }
 
 /* Maths in lessons: the small raised and lowered figures are drawn at 0.7 of the line, so the line is made big enough that they stay at 13 px or more on a phone. */
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .katex { font-size: max(1.21em, 18.6px) !important; }
   /* and the smallest figures (a raised figure on a lowered one) are held at the floor too */
   .katex .mord, .katex .mbin, .katex .mrel, .katex .mpunct { font-size: max(1em, 13px) !important; }

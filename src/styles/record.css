@@ -36,9 +36,9 @@
 .rec .closeup { margin: 0 0 1.6rem; max-width: 68ch; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1.4rem; align-items: end; }
 .rec .closeup img { display: block; max-width: 100%; max-height: 28rem; width: auto; height: auto; border-radius: 2px; }
 .rec .closeup figcaption { font: 300 .95rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0; }
-@media (max-width: 640px) { .rec .closeup { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 560px) { .rec .closeup { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 1100px) { .rec-top.no-pic .rec-sheet { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rec-top.no-pic .rec-sheet .rc:nth-child(4n+1) { padding-left: 1.2rem; border-left: 1px solid var(--rule); } .rec-top.no-pic .rec-sheet .rc:nth-child(odd) { padding-left: 0; border-left: 0; } .rec-top.no-pic .rec-sheet .rc:last-child:nth-child(odd) { grid-column: 1 / -1; } }
-@media (max-width: 860px) {
+@media (max-width: 760px) {
   .rec-top { grid-template-columns: minmax(0, 1fr); }
   /* on a phone the numbers come first, then the picture and its caption */
   .rec-top > .rec-pic { order: 2; }
@@ -47,6 +47,6 @@
   .rec-pic img { width: 100%; height: auto; max-height: 20rem; object-fit: contain; object-position: center; }
   .rec-pic.tall img { width: auto; }
 }
-@media (max-width: 420px) {
+@media (max-width: 560px) {
   .rec-sheet .rc { padding-right: .7rem; } .rec-sheet .rc:nth-child(even) { padding-left: .8rem; }
 }

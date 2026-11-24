@@ -15,11 +15,14 @@ const { title = '', path = '' } = Astro.props;
     <div class="foot-brand">
       <a href="/" class="foot-mark">Heliocodex</a>
       <p>The Sun, its worlds and everything beyond, in real photographs and real measurements.</p>
+      <a class="foot-mail" href="mailto:hello@fallinghippo.com">hello@fallinghippo.com</a>
     </div>
     <nav class="foot-col" aria-label="Sections">
       <p class="foot-h">Explore</p>
-      <a href="/">Home</a>
-      {sections.filter((s) => s.href !== "/sources").map((s) => <a href={s.href}>{s.label}</a>)}
+      <div class="foot-links">
+        <a href="/">Home</a>
+        {sections.filter((s) => s.href !== "/sources").map((s) => <a href={s.href}>{s.label}</a>)}
+      </div>
     </nav>
     <nav class="foot-col" aria-label="Legal">
       <p class="foot-h">About</p>
@@ -31,23 +34,25 @@ const { title = '', path = '' } = Astro.props;
       <a href="/cookies">Cookies and storage</a>
       <a href="/terms">Terms</a>
       <a href="/accessibility">Accessibility</a>
-      <a href="mailto:hello@fallinghippo.com">hello@fallinghippo.com</a>
     </nav>
   </div>
   <p class="foot-small">Heliocodex is run by FALLINGHIPPO LIMITED, company number 17415391, registered in England and Wales. Registered office: 71-75 Shelton Street, London, England, WC2H 9JQ. It is independent of NASA, ESA and every mission named here, and none of them endorses it. Physical data comes from NASA NSSDC planetary fact sheets, orbits from NASA/JPL Solar System Dynamics, and planet maps from Solar System Scope (CC BY 4.0). See <a href="/sources">Sources</a> for everything we use and how.</p>
 </footer>
 
 <style>
-.site-footer { border-top: 1px solid rgba(236,231,220,.12); padding: 56px max(clamp(16px, 4vw, 48px), calc((100% - 1180px) / 2 + clamp(16px, 4vw, 48px))) 48px; color: #a8a296; background: #08080a; font: 300 1rem/1.55 'Spectral', Georgia, serif; }
-.foot-grid {  display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr)); gap: 2rem 3rem; }
+.site-footer { border-top: 1px solid rgba(236,231,220,.12); padding: 40px var(--edge) 32px; color: #a8a296; background: #08080a; font: 300 1rem/1.55 'Spectral', Georgia, serif; }
+.foot-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.6rem 3rem; }
+.foot-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem 2rem; }
 .foot-mark { font: 400 1.5rem/1 'Spectral', Georgia, serif; color: #ece7dc; text-decoration: none; }
 .foot-brand p { margin: .8rem 0 0; max-width: 24rem; }
+.foot-brand .foot-mail { display: inline-block; margin-top: .8rem; color: #d8d2c5; }
 .foot-col { display: grid; gap: .45rem; align-content: start; }
 .foot-h { font: 400 .8125rem/1.4 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .12em; text-transform: uppercase; margin: 0 0 .3rem; color: #a8a296; }
 .foot-col a { color: #d8d2c5; text-decoration: none; }
 .foot-col a:hover { color: #e9c48a; }
-.foot-small { margin: 2.6rem 0 0; padding-top: 1.4rem; border-top: 1px solid rgba(236,231,220,.12); font-size: .86rem; }
+.foot-small { margin: 1.8rem 0 0; max-width: none; padding-top: 1.2rem; border-top: 1px solid rgba(236,231,220,.12); font-size: .86rem; }
 .foot-small a { color: inherit; }
-@media (max-width: 760px) { .foot-grid { grid-template-columns: 1fr 1fr; } .foot-brand { grid-column: 1 / -1; } }
+@media (max-width: 980px) { .foot-grid { grid-template-columns: 1fr 1fr; } .foot-brand { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .foot-grid { grid-template-columns: 1fr; } }
   .site-footer { position: relative; z-index: 5; }
 </style>

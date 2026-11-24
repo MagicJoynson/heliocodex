@@ -309,7 +309,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .ml-lead { display: grid; gap: 1rem; text-decoration: none; color: #ece7dc; }
       .ml-lead .ml-pic { aspect-ratio: 16 / 10; }
       .ml-about:not(:has(.ml-rest)) .ml-lead { grid-column: 1 / -1; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 3rem; align-items: center; }
-      @media (max-width: 700px) { .ml-about:not(:has(.ml-rest)) .ml-lead { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
+      @media (max-width: 760px) { .ml-about:not(:has(.ml-rest)) .ml-lead { grid-template-columns: minmax(0, 1fr); gap: 1rem; } }
       .ml-lead .name { font: 400 1.6rem/1.2 'Spectral', Georgia, serif; }
       .ml-words { display: grid; gap: .4rem; }
       .ml-lead .line, .ml-rest .line { font: 300 1rem/1.5 'Spectral', Georgia, serif; color: #a9a396; }
@@ -325,8 +325,8 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       .ml-pic { position: relative; display: block; overflow: hidden; border-radius: 3px; background: #000; }
       .ml-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
       .ml-pic img.face { object-fit: contain; transform: scale(.85); }
-      @media (max-width: 1000px) { .glance { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .g-facts { grid-column: 1 / -1; } }
-      @media (max-width: 700px) {
+      @media (max-width: 980px) { .glance { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .g-facts { grid-column: 1 / -1; } }
+      @media (max-width: 760px) {
         .glance { grid-template-columns: minmax(0, 1fr); }
         .g-facts div { grid-template-columns: 8.5rem minmax(0, 1fr); }
         .ml-about { grid-template-columns: minmax(0, 1fr); }
