@@ -14,7 +14,6 @@ const url = new URL(path, Astro.site).toString();
     <a class="rt-btn" href={mistakeLink(title, url)}>Report a mistake</a>
   </div>
   <p class="rt-note">Spotted something wrong? The link opens an email to <a href="mailto:support@fallinghippo.com">support@fallinghippo.com</a> with this page filled in. Please leave out names, ages and schools.</p>
-  <p class="rt-print">Printed from {url}. Heliocodex is independent of NASA, ESA and every mission named here. Picture credits are beside each picture; the full list is at https://heliocodex.com/sources and https://heliocodex.com/licences.</p>
 </section>
 
 <style>
@@ -27,7 +26,6 @@ const url = new URL(path, Astro.site).toString();
 .rt-say { font: 300 .9375rem/1.3 'Spectral', Georgia, serif; color: #e9c48a; min-height: 1.3em; }
 .rt-note { margin: .9rem 0 0; font-size: .9375rem; max-width: 46rem; }
 .rt-note a { color: #d8d2c5; }
-.rt-print { display: none; }
 </style>
 
 <script>

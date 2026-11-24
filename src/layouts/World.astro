@@ -5,6 +5,7 @@ import '../styles/print.css';
 import { groups } from '../lib/nav';
 import SiteNav from '../components/SiteNav.astro';
 import SiteSearch from '../components/SiteSearch.astro';
+import PrintFrom from '../components/PrintFrom.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ThreeDReturn from '../components/ThreeDReturn.astro';
 import { allLessons, allFacts, STRAND_NAMES } from '../lib/v2/margin/content';
@@ -114,7 +115,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
       <span class="ruler"><i id="tick"></i></span>
     </aside>
 
-    <main id="main" tabindex="-1"><slot /></main>
+    <main id="main" tabindex="-1"><PrintFrom path={`/${world}`} /><slot /></main>
     <section class="more" aria-labelledby="more-h">
       <div class="more-in">
         <h2 id="more-h">Keep exploring</h2>
