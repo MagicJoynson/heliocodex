@@ -257,7 +257,7 @@ import { sections } from '../lib/nav';
       const fmtSpeed = (v: number) => {
         if (v < 0.5) return 'Still';
         if (v >= 0.05 * LY) return `${(v / LY).toLocaleString('en-GB', { maximumFractionDigits: v / LY >= 100 ? 0 : v / LY >= 1 ? 1 : 2 })} ly/s`;
-        if (v >= 3e10) return `${(v / AU).toLocaleString('en-GB', { maximumFractionDigits: 0 })} au/s`;
+        if (v >= 3e10) return `${(v / AU).toLocaleString('en-GB', { maximumFractionDigits: v / AU >= 10 ? 0 : 1 })} au/s`;
         if (v > 3e9) return `${(v / 299_792_458).toLocaleString('en-GB', { maximumFractionDigits: 0 })} × light speed`;
         if (v >= 1000) return `${Math.round(v / 1000).toLocaleString('en-GB')} km/s`;
         return `${Math.round(v)} m/s`;
@@ -284,9 +284,8 @@ import { sections } from '../lib/nav';
           football = String(from.href).split('?')[0].replace(/\/$/, '') === '/learn/how-big-is-space';
           const back = $('back-to') as HTMLAnchorElement;
           back.href = from.href;
-          // short enough to read in full: "Home", or the first part of the page's name
-          const short = String(from.name || '').split(/[:·|,–—]/)[0].trim().slice(0, 28);
-          $('back-name').textContent = String(from.href).split('?')[0] === '/' ? 'Home' : short ? `Back to ${short}` : 'Back';
+          // short enough to read in full at any width: "Home" or "Back" (the single Back control comes later)
+          $('back-name').textContent = String(from.href).split('?')[0] === '/' ? 'Home' : 'Back';
           back.hidden = false;
           back.addEventListener('click', () => { try { sessionStorage.setItem('hc-from', JSON.stringify({ ...from, back: true })); } catch {} });
         }
@@ -878,7 +877,8 @@ import { sections } from '../lib/nav';
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
       .pages a, .menu-btn { display: inline-flex; align-items: center; min-height: 44px; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
       .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
-      .back-to { pointer-events: auto; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--glass); white-space: nowrap; max-width: 40vw; overflow: hidden; text-overflow: ellipsis; }
+      .back-to { flex: none; pointer-events: auto; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--glass); white-space: nowrap; }
+      @media (max-width: 420px) { .back-to { padding: 10px 11px; letter-spacing: .04em; } .back-to [aria-hidden] { display: none; } }
       .back-to:hover, .back-to:focus-visible { color: var(--warm); border-color: var(--warm); outline: none; }
       .back-to[hidden] { display: none; }
       .menu-btn { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; background: var(--glass); }
