@@ -124,7 +124,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
   const pos = new THREE.Vector3(), dir = new THREE.Vector3(), fwd = new THREE.Vector3(), look = new THREE.Vector3(), q = new THREE.Quaternion();
   const endAlt = o.handoverAlt;
   // the worlds whose opening words sit on the left: the planet starts a little right of centre so the name is not printed across it
-  const SHIFTED = new Set(['mars', 'earth']);
+  const SHIFTED: Record<string, number> = { mars: 0.11, earth: 0.11, jupiter: 0.13, mercury: 0.22 };
   let clock = performance.now(), tSim = 0, shifted = 0;
   function frame(now: number) {
     const dt = Math.min((now - clock) / 1000, 0.1);
@@ -216,7 +216,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       // on a wide screen the planet starts right of centre, clear of the title on the left, and eases back to the middle as the fall begins
       {
         const W = innerWidth, H = innerHeight;
-        const sh = SHIFTED.has(document.body.dataset.world ?? '') && !o.wide && !small && W >= 900 && W > H * 1.2 ? W * 0.11 * (1 - ease(clamp01(p / 0.12))) : 0;
+        const sh = SHIFTED[document.body.dataset.world ?? ''] && !small && W >= 900 && W > H * 1.2 ? W * SHIFTED[document.body.dataset.world ?? ''] * (1 - ease(clamp01(p / 0.12))) : 0;
         if (Math.abs(sh - shifted) > 0.25) { shifted = sh; if (sh === 0) camA.clearViewOffset(); else camA.setViewOffset(W, H, -sh, 0, W, H); }
       }
       renderer.render(A, camA);

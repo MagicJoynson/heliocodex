@@ -108,6 +108,7 @@ const rows: [string, string][] = [
   body { font-stretch: 100%; font-weight: 380; letter-spacing: .005em; }
   h1, h2 { font-stretch: 125%; text-transform: uppercase; }
   h1 { font-size: clamp(3.6rem, 13.5vw, 10rem); font-weight: 200; letter-spacing: .02em; line-height: .92; margin-bottom: .16em; }
+  @media (min-width: 981px) { h1 { font-size: clamp(3.6rem, 6vw, 5.4rem); } }
   h2 { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 300; letter-spacing: .03em; line-height: 1.1; }
   .lead { font-size: 1.2em; line-height: 1.5; max-width: 23em; font-weight: 340; }
   .beat:not(:first-child) .copy { border-left: 1px solid rgba(238,236,231,.38); padding-left: 1.4em; }
