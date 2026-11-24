@@ -37,7 +37,7 @@ facts:
     source: { label: "NASA, Halley's Comet", url: "https://science.nasa.gov/solar-system/comets/1p-halley/" }
   - id: comet-tails-point-away
     text: "A comet's tail does not trail behind it. It always points away from the Sun, so a comet heading outward travels tail first."
-    about: [halley, solar-system]
+    about: [comets, halley]
     source: { label: "NASA, comets", url: "https://science.nasa.gov/solar-system/comets/" }
   - id: comet-landing
     text: "The first landing on a comet was in November 2014, when the European probe Philae came down on comet 67P/Churyumov-Gerasimenko. It bounced twice before it settled."
@@ -64,3 +64,19 @@ facts:
     about: [oort-cloud, solar-system]
     basis: theory
     source: { label: "NASA, the Oort cloud", url: "https://science.nasa.gov/solar-system/oort-cloud/" }
+  - id: dart-moved-asteroid
+    text: "On 26 September 2022 the DART spacecraft hit the small asteroid Dimorphos at about 22,500 km/h. It had taken 11 hours 55 minutes to circle its larger companion. Afterwards it took 11 hours 23 minutes: the first time people changed the path of a body in space."
+    about: [things-that-hit-the-earth]
+    source: { label: "NASA, DART mission impact changed asteroid's motion in space", url: "https://www.nasa.gov/news-release/nasa-confirms-dart-mission-impact-changed-asteroids-motion-in-space/" }
+  - id: chicxulub
+    text: "Under the sea off Mexico's Yucatán coast lies the buried Chicxulub crater, 180 km wide and 900 metres deep. Most scientists take it as the sign of the asteroid that wiped out more than 70% of living species, the dinosaurs among them."
+    about: [things-that-hit-the-earth]
+    source: { label: "NASA, Asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }
+  - id: chelyabinsk
+    text: "The blast over Chelyabinsk, Russia, on 15 February 2013 was as strong as 440,000 tonnes of TNT. The rock was only about the size of a house, yet its shock wave broke windows across roughly 500 square kilometres."
+    about: [things-that-hit-the-earth]
+    source: { label: "NASA, Asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }
+  - id: meteor-crater
+    text: "Meteor Crater in Arizona is 1.2 km wide and 180 metres deep. It was made about 50,000 years ago by an asteroid thought to have been only 30 to 50 metres across."
+    about: [things-that-hit-the-earth]
+    source: { label: "NASA, Asteroid facts", url: "https://science.nasa.gov/solar-system/asteroids/facts/" }

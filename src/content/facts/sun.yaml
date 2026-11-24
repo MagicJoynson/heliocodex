@@ -49,3 +49,8 @@ facts:
     text: "Voyager 1 left the bubble blown by the solar wind in August 2012, about 121 au from the Sun, after 35 years of travel."
     about: [sun, solar-system, voyager-1]
     source: { label: "NASA, the Voyager mission", url: "https://science.nasa.gov/mission/voyager/" }
+  - id: sun-not-burning
+    text: "If the Sun were a ball of coal burning fast enough to shine as it does, it would be used up in about 5,000 years. It has been shining for about 4.6 billion."
+    about: [sun, how-the-sun-shines]
+    basis: worked-out
+    source: { label: "NASA, Sun facts", url: "https://science.nasa.gov/sun/facts/" }

@@ -40,6 +40,7 @@ export const GET: APIRoute = async () => {
   const facts = factList;
   for (const l of lessonList) out.push([l.data.title, 'Lesson', `/learn/${l.id}`, undefined, `${l.data.asks.join('|')}||${[l.data.summary, ...facts.filter((f) => f.about.includes(l.id)).map((f) => f.text)].join(' ')}`]);
   for (const s of sections) out.push([s.label, 'Page', s.href]);
+  out.push(['A fact at a time', 'Page', '/learn/facts/random', 'random fact surprising']);
   for (const s of pageStars()) {
     const also = [s.catalogue, s.hip ? `HIP ${s.hip}` : '', s.hd ? `HD ${s.hd}` : ''].filter((x) => x && x !== s.name).join(' ');
     out.push([s.name, s.proper ? 'Star' : 'Star (catalogue)', `/stars/${s.slug}`, also || undefined, undefined, goStar(s.index)]);

@@ -28,7 +28,7 @@ facts:
   - id: universe-age
     text: "The universe is 13.8 billion years old. The figure comes from the faint glow left over from its first hot stage, mapped across the whole sky by the Planck spacecraft."
     about: [cmb, cosmic-web]
-    source: { label: "ESA, the Planck mission", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck" }
+    source: { label: "ESA, Planck reveals an almost perfect Universe", url: "https://www.esa.int/Science_Exploration/Space_Science/Planck/Planck_reveals_an_almost_perfect_Universe" }
   - id: universe-ingredients
     text: "Everything made of atoms, every star, planet and person, comes to about 5% of what the universe contains. About 27% is dark matter and 68% is dark energy, and nobody yet knows what either is."
     about: [cosmic-web, cmb]
@@ -162,3 +162,58 @@ facts:
     text: "The oldest light was found by accident in 1964, as a microwave signal stronger than anyone expected. Arno Penzias and Robert Wilson shared a Nobel Prize for it in 1978."
     about: [cmb]
     source: { label: "Nobel Prize in Physics 1978, Arno Penzias", url: "https://www.nobelprize.org/prizes/physics/1978/penzias/facts/" }
+  - id: neutron-star-teaspoon
+    text: "A neutron star is a ball about 20 km across, the size of a city, that weighs more than the Sun. A teaspoonful of it would weigh more than a billion tonnes."
+    about: [neutron-stars-and-pulsars, what-a-black-hole-is]
+    basis: worked-out
+    source: { label: "NASA Imagine the Universe, Neutron stars", url: "https://imagine.gsfc.nasa.gov/science/objects/neutron_stars1.html" }
+  - id: crab-pulsar-spin
+    text: "The Crab Pulsar is what is left of a star that Chinese astronomers saw explode in 1054. It turns 30 times a second, so a point on its equator moves at nearly 1,900 km every second."
+    about: [neutron-stars-and-pulsars]
+    basis: worked-out
+    source: { label: "NASA, Messier 1 (the Crab Nebula)", url: "https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-1/" }
+  - id: magnetar-flare
+    text: "The magnetar SGR 1806-20, in our own galaxy, gave out a flare so bright that in a fifth of a second it matched the energy the Sun puts out over 250,000 years."
+    about: [magnetars-and-gamma-ray-bursts]
+    basis: worked-out
+    source: { label: "Hurley and others, An exceptionally bright flare from SGR 1806-20 (Nature, 2005)", url: "https://arxiv.org/abs/astro-ph/0502329" }
+  - id: supernova-1987a-neutrinos
+    text: "A star in the Large Magellanic Cloud, a small galaxy beside ours, was first seen exploding on 23 February 1987. Detectors recorded a burst of neutrinos as it blew up, so astronomers are fairly sure it left a neutron star or a black hole behind."
+    about: [supernovae]
+    source: { label: "NASA, The dawn of a new era for Supernova 1987A", url: "https://science.nasa.gov/missions/hubble/the-dawn-of-a-new-era-for-supernova-1987a/" }
+  - id: hawking-glow
+    text: "A black hole with the mass of the Sun should glow like something 60 billionths of a degree above absolute zero. Space is warmer than that, so every known black hole is still growing. One that size would take about 2 followed by 67 noughts of years to fade away."
+    about: [do-black-holes-last-for-ever]
+    basis: theory
+    source: { label: "S. W. Hawking, Black hole explosions? (Nature, 1974)", url: "https://www.nature.com/articles/248030a0" }
+  - id: black-hole-picture
+    text: "The first picture of a black hole, published in 2019, shows a ring of glowing gas round a dark middle. The shadow belongs to a black hole 6.5 billion times as heavy as the Sun, in a galaxy about 55 million light years away."
+    about: [the-event-horizon]
+    source: { label: "ESO, Astronomers capture first image of a black hole (10 April 2019)", url: "https://www.eso.org/public/news/eso1907/" }
+  - id: space-between-stars
+    text: "A cubic centimetre of the air you breathe holds about 25 million million million molecules. The same cube of space in our galaxy, with its gas spread out evenly, holds about one atom."
+    about: [the-stuff-between-the-stars, milky-way]
+    basis: worked-out
+    source: { label: "OpenStax Astronomy 2e, 20.1 The interstellar medium", url: "https://openstax.org/books/astronomy-2e/pages/20-1-the-interstellar-medium" }
+  - id: hydrogen-21-cm
+    text: "Cold hydrogen gas gives out no light, but now and then an atom lets go of a radio wave about 21 centimetres long. Radio telescopes tuned to it have mapped the gas across the whole galaxy, through dust that hides the stars."
+    about: [the-stuff-between-the-stars]
+    source: { label: "OpenStax Astronomy 2e, 20.2 Interstellar gas", url: "https://openstax.org/books/astronomy-2e/pages/20-2-interstellar-gas" }
+  - id: barnard-68
+    text: "Barnard 68, 410 light years away, is a cloud of cold gas and dust with about twice the mass of the Sun. It looks like a hole in the sky, because it hides every star behind it. Infrared light slips through, and about 3,700 stars show."
+    about: [the-stuff-between-the-stars]
+    source: { label: "ESO, How to become a star: the dark cloud Barnard 68", url: "https://www.eso.org/public/news/eso0102/" }
+  - id: trappist-1-packed
+    text: "Seven planets go round the star TRAPPIST-1, 40 light years away. The nearest takes a day and a half to go round and the furthest under 19 days. All seven orbits would fit inside the orbit of Mercury."
+    about: [trappist-1, planets-round-other-stars]
+    source: { label: "NASA, TRAPPIST-1", url: "https://science.nasa.gov/exoplanets/trappist1/" }
+  - id: sirius-b-dwarf
+    text: "Sirius B, the white dwarf beside Sirius, has 1.018 times the mass of the Sun packed into a ball a little smaller than the Earth: about 11,260 km across, against the Earth's 12,742."
+    about: [white-dwarfs]
+    basis: worked-out
+    source: { label: "Bond and others, The Sirius system and its astrophysical puzzles (2017)", url: "https://arxiv.org/abs/1703.10625" }
+  - id: red-dwarf-lifetime
+    text: "The Sun will shine for about 10 billion years. A red dwarf with a tenth of the Sun's mass will shine for about 10 trillion. The universe is 13.8 billion years old, so no red dwarf has yet died of old age, anywhere."
+    about: [red-dwarfs]
+    basis: theory
+    source: { label: "Adams and Laughlin, A dying universe (Reviews of Modern Physics, 1997): main-sequence lifetime of a star of 0.1 solar masses", url: "https://arxiv.org/abs/astro-ph/9701131" }

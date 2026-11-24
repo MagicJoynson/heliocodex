@@ -1,5 +1,6 @@
 ---
 sources:
+  - { label: "Adams and Laughlin, A dying universe (Reviews of Modern Physics, 1997): main-sequence lifetime of a star of 0.1 solar masses", url: "https://arxiv.org/abs/astro-ph/9701131" }
   - { label: "Wikipedia, Red dwarf", url: "https://en.wikipedia.org/wiki/Red_dwarf" }
   - { label: "Wikipedia, Proxima Centauri", url: "https://en.wikipedia.org/wiki/Proxima_Centauri" }
   - { label: "Wikipedia, Barnard's Star", url: "https://en.wikipedia.org/wiki/Barnard%27s_Star" }
