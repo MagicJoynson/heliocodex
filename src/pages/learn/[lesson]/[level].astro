@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 const { lesson, level } = Astro.props as { lesson: Lesson; level: string };
 const entry = lesson.levels.find((e) => levelOf(e) === level)!;
 const pageTitle = `${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`.length > 60 ? `${lesson.data.title.split(': ')[0]}: ${LEVEL_NAMES[level].name.toLowerCase()}` : `${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`;
-const pageDescription = `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`.length > 160 ? lesson.data.summary : `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`;
+const pageDescription = `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`.length > 155 ? lesson.data.summary : `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`;
 await render(entry);
 // a two-column table of facts has an empty header row: give each header a name that only a screen reader hears
 let hdr = false;
