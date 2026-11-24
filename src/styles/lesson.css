@@ -21,7 +21,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .l-hero .lead { font: 300 clamp(1.15rem, 1rem + .6vw, 1.5rem)/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 2rem; max-width: 38rem; }
 .l-begin { display: inline-block; font: 400 .76rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: .2rem 0 .7rem; border-bottom: 1px solid var(--accent); }
 .l-begin:hover { color: var(--accent); }
-.l-hero > .cap { position: absolute; z-index: 1; right: var(--gutter); bottom: 1.1rem; max-width: 22rem; text-align: right; font-size: .78rem; }
+.l-hero > .cap { position: absolute; z-index: 1; right: var(--edge); bottom: 1.1rem; max-width: 22rem; text-align: right; font-size: .78rem; }
 
 /* ---- the story: words on the left, the picture held still on the right */
 .story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: 'hang stage' 'steps stage'; column-gap: clamp(24px, 4vw, 72px); padding: 0 var(--edge); border-top: 1px solid var(--rule); scroll-margin-top: var(--header-h); }
