@@ -223,7 +223,7 @@ export function createFlight(canvas: HTMLElement) {
     if (gp && (gp.rx || gp.ry) && mode !== 'cruise') { look.dx += gp.rx * 900 * wall; look.dy += gp.ry * 900 * wall; }
 
     if (mode === 'cruise' && cr) {
-      cr.t = Math.min(cr.total, cr.t + wall);
+      cr.t = Math.min(cr.total, cr.t + Math.min(wall, 0.05)); // a stall pauses the trip instead of jumping it
       if (cr.t < cr.turn && cr.q0 && cr.q1) {
         // turning on the spot, slowly in and out, before going anywhere
         pos[0] = cr.p0[0]; pos[1] = cr.p0[1]; pos[2] = cr.p0[2];
@@ -459,7 +459,7 @@ export function createFlight(canvas: HTMLElement) {
         const vT = norm(toT);
         const ang = Math.acos(clamp(dot(fwd(), vT), -1, 1));
         if (ang > THREE.MathUtils.degToRad(12)) {
-          turn = clamp(ang / THREE.MathUtils.degToRad(40), 0.6, 2.5); // about 40 degrees a second on average, 60 at the peak
+          turn = clamp(ang / THREE.MathUtils.degToRad(40), 0.6, 4); // about 40 degrees a second on average, 60 at the peak
           q0 = q.clone();
           // the trip itself then runs from straight ahead, so the way in is a straight line to the target
           // (kept off the poles, so "up" still means something when the trip ends)
@@ -469,7 +469,14 @@ export function createFlight(canvas: HTMLElement) {
           q1 = new THREE.Quaternion().setFromRotationMatrix(m);
         }
       }
-      cr = { from, to: c.to, c0: cs, d0, d1, dir0: ds, dir1: c.endDir ? dir1 : ds, hump, secs, turn, total: turn + secs, p0: [pos[0], pos[1], pos[2]], q0, q1, t: 0 };
+      // while travelling, swing toward the wanted side of the target no faster than about 5 degrees a second (the rest is left as it is on arrival)
+      let dirEnd = c.endDir ? dir1 : ds;
+      if (turn > 0 && c.endDir) {
+        const swing = Math.acos(clamp(dot(ds, dir1), -1, 1)), maxSwing = THREE.MathUtils.degToRad(5) * secs;
+        if (swing > maxSwing) { const k2 = maxSwing / swing; dirEnd = clampEl(norm(add(scale(ds, 1 - k2), scale(dir1, k2)))); }
+        else dirEnd = dir1;
+      }
+      cr = { from, to: c.to, c0: cs, d0, d1, dir0: ds, dir1: dirEnd, hump, secs, turn, total: turn + secs, p0: [pos[0], pos[1], pos[2]], q0, q1, t: 0 };
       mode = 'cruise';
     },
     skipCruise() { if (mode === 'cruise' && cr) cr.t = Math.max(cr.t, cr.total - 0.6); },
