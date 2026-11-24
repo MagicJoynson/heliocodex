@@ -90,7 +90,7 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       tag = document.createElement('div');
       tag.textContent = m.name;
       tag.setAttribute('aria-hidden', 'true');
-      tag.style.cssText = 'position:fixed;left:0;top:0;z-index:3;pointer-events:none;opacity:0;font:500 12px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;color:#efe6d4;text-shadow:0 0 6px #000,0 0 2px #000;white-space:nowrap;will-change:transform,opacity';
+      tag.style.cssText = 'position:fixed;left:0;top:0;z-index:3;pointer-events:none;opacity:0;font:500 13px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;color:#efe6d4;text-shadow:0 0 6px #000,0 0 2px #000;white-space:nowrap;will-change:transform,opacity';
       document.body.appendChild(tag);
     }
     return { m, mesh, ring, tag };

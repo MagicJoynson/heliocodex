@@ -159,7 +159,7 @@ const moonR2 = MOON_KM * sk2;
           {!round && <text x={fx} y={fy + Math.max(3, pDraw) + 26} class="foc-t" text-anchor="middle">{nameOf(b.parent).replace(/^the /, 'The ')}</text>}
           <circle cx={ecx + erx} cy={fy} r="5" class="me" />
         </svg>
-        <figcaption>The path of {midName} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale, with the white dot at its nearest point.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
+        <figcaption>The path of {midName} round {round ? 'the Sun' : nameOf(b.parent)}, seen from above and drawn to scale. The white dot is {midName} itself, moving round once every 24 seconds; it starts at the nearest point, and if you have asked your device for less motion it stays there.{round && rings.length > 0 && (crossed.length > 0 ? <> It crosses the {crossed.length === 1 ? 'path' : 'paths'} of {and(crossed)}, drawn as dashed rings{uncrossed.length > 0 && <>; the plain {uncrossed.length === 1 ? 'ring is' : 'rings are'} {and(uncrossed)}</>}.</> : <> The faint rings are the paths of {and(rings.map((g) => g.name))}.</>)} Orbit from {b.sources[0]?.label}.</figcaption>
       </figure>
         {isMoon && (
           <figure class="wo-size">
@@ -231,6 +231,11 @@ const moonR2 = MOON_KM * sk2;
   // in 24 seconds, with a plain statement of how fast time is running. Reduced motion: the path is simply there, with the world at its nearest point.
   const fig = document.querySelector<HTMLElement>('.wo-orbit');
   const svg = fig?.querySelector<SVGSVGElement>('svg');
+  // the drawing is 600 units wide and shrinks with the column; tell the words how much, so they stay 13 px on screen at any width
+  if (fig && svg && 'ResizeObserver' in window) {
+    const tell = () => { /* a drawing held down by its height shrinks by that instead */ const r = svg.getBoundingClientRect(), w = Math.min(r.width, r.height); if (w > 0) fig.style.setProperty('--u', String(w / 600)); };
+    new ResizeObserver(tell).observe(svg); tell();
+  }
   const path = svg?.querySelector<SVGEllipseElement>('ellipse.path');
   const me = svg?.querySelector<SVGCircleElement>('circle.me');
   if (fig && svg && path && me && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
@@ -285,8 +290,9 @@ const moonR2 = MOON_KM * sk2;
   .wo-orbit svg { width: 100%; height: auto; display: block; }
   .wo-orbit .ring { fill: none; stroke: rgba(142,174,255,.18); }
   .wo-orbit .ring.crossed { stroke: rgba(142,174,255,.38); stroke-dasharray: 2 5; }
-  .wo-orbit .ring-t { font: 400 12px var(--r-mono); fill: rgba(142,174,255,.8); text-anchor: middle; paint-order: stroke; stroke: #0b0b0c; stroke-width: 4px; }
-  .wo-orbit .foc-t, .wo-orbit .me-t { font: 400 20px var(--r-mono); fill: var(--ink-soft); }
+  .wo-orbit { --u: .5; }
+  .wo-orbit .ring-t { font: 400 max(12px, calc(13px / var(--u))) var(--r-mono); fill: rgba(142,174,255,.8); text-anchor: middle; paint-order: stroke; stroke: #0b0b0c; stroke-width: 4px; }
+  .wo-orbit .foc-t, .wo-orbit .me-t { font: 400 max(20px, calc(13px / var(--u))) var(--r-mono); fill: var(--ink-soft); }
   .wo-orbit .centre { fill: #c4bdaf; } .wo-orbit .centre.sun { fill: #f6d38e; filter: drop-shadow(0 0 6px rgba(246,211,142,.8)); }
   .wo-orbit .path { fill: none; stroke: var(--accent); stroke-width: 1.5; }
   .wo-orbit .me { fill: #ece7dc; }

@@ -22,6 +22,8 @@
 
 /* Headings follow the wordmark: Fraunces. Body text stays Spectral. The world pages (World layout) keep their own display faces. */
 h1, h2, h3 { font-family: 'Fraunces Variable', Georgia, serif !important; }
+/* ...except the small mono labels that happen to be headings. */
+.tn-where h2, .margin h3, .side h3, .wo-todo h2, .back h2, .letter h3 { font-family: var(--r-mono, var(--mono)) !important; }
 
 * { box-sizing: border-box; }
 html { color-scheme: dark; }

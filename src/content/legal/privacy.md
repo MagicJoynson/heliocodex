@@ -92,7 +92,7 @@ The sky map at /sky works out which stars, planets and constellations are above 
 
 In every case the position is used inside your browser. We don't receive it, we can't see it and it is not added to any server log, because the star data the page needs is the same for everyone and is downloaded as ordinary files.
 
-When you choose a place yourself, the page remembers it in your browser's local storage, so that the star pages and the birthday-star finder can use it too and so that the sky map is ready next time. What is kept is the name of the place and its latitude and longitude. If you used your device's position, we round it to about 11 km before keeping it, which is more than precise enough for the sky. It stays on your device until you tap **Forget my place** on the sky map, clear this site's data in your browser, or your browser clears it. It is never sent to us. Our [cookies and storage page](/cookies) has the details and the legal basis.
+When you choose a place yourself, the page remembers it in your browser's local storage, so that the star pages, the birthday-star finder and the "Tonight" strip on the home page can use it too and so that the sky map is ready next time (the home page only reads it; it never saves a place of its own, and uses London if you have not chosen one). What is kept is the name of the place and its latitude and longitude. If you used your device's position, we round it to about 11 km before keeping it, which is more than precise enough for the sky. It stays on your device until you tap **Forget my place** on the sky map, clear this site's data in your browser, or your browser clears it. It is never sent to us. Our [cookies and storage page](/cookies) has the details and the legal basis.
 
 If you type your age into the birthday-star finder on the stars page, it is used by the page to pick a star and is thrown away. It isn't sent anywhere and it isn't kept.
 
@@ -145,7 +145,7 @@ Cookies are small files a website saves on your device. Similar technologies inc
 
 Heliocodex sets no cookies. It keeps up to six small things in your browser, all described in full on the [cookies and storage page](/cookies):
 
-- the place you chose on the sky map, in local storage, so that the sky map and star pages can show your sky;
+- the place you chose on the sky map, in local storage, so that the sky map, the star pages and the "Tonight" strip on the home page can show your sky;
 - your choices in the 3D view's ? panel (planet sizes, motion, picture quality and moon orbit lines) and any places you save in the 3D view, in local storage, but only once you change one;
 - a one-word note in session storage, kept only until you close the tab, if the 3D view's graphics fail on your device and the page has to restart on a different graphics method;
 - two notes in session storage, also kept only until you close the tab: the page you were reading when you stepped into the 3D view, with how far down it you were, so the 3D view can offer a way back, and the place you were last looking at in the 3D view, so that going back in the same tab carries on from there; and

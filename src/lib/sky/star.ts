@@ -220,10 +220,13 @@ export function starPage(star: PageStar): { html: string; title: string; descrip
         : `<text x="${Math.min(x + r, 396)}" y="${y - r - 10}" text-anchor="end" fill="#a8a296" class="sf-t">${text}</text>`;
     };
     const [px, py] = at(true), [ux, uy] = at(false);
+    // below a couple of pixels a true-scale Sun would vanish, so it is drawn at that least size and the caption says so
+    const trueR = bigIsStar ? R / suns : R * suns, notTrue = (bigIsStar ? rSun : rStar) > trueR * 1.05;
+    const caveat = notTrue ? ` The ${bigIsStar ? 'Sun' : n} is drawn bigger than true here, as a dot: to one scale it would be too small to see.` : '';
     const ratio = suns >= 1.05 ? `about ${sizeWord(suns)} times as wide as the Sun` : suns > 0.95 ? 'about the same width as the Sun' : `about ${Math.round(suns * 100)} per cent as wide as the Sun`;
     const draw = (x: number, y: number, r: number, fill: string, halo: boolean) => (halo ? `<circle class="sf-halo" cx="${x}" cy="${y}" r="${r + 14}" fill="none" stroke="rgb(${rgb})" stroke-opacity=".3"/><circle class="sf-halo two" cx="${x}" cy="${y}" r="${r + 32}" fill="none" stroke="rgb(${rgb})" stroke-opacity=".16"/>` : '') + `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" stroke="#07080d" stroke-width="3"/>`;
     const order = bigIsStar ? [draw(px, py, rStar, `rgb(${rgb})`, true), draw(ux, uy, rSun, 'rgb(255,236,214)', false)] : [draw(ux, uy, rSun, 'rgb(255,236,214)', false), draw(px, py, rStar, `rgb(${rgb})`, true)];
-    return `<figure class="rec-pic star-face size-face"><svg viewBox="0 0 400 360" role="img" aria-label="${n} drawn beside the Sun to one scale: ${ratio}.">${order.join('')}${label(true, rStar, n.toUpperCase())}${label(false, rSun, 'THE SUN')}</svg><figcaption>${n} beside the Sun, drawn to one scale: ${ratio}. ${ang && ang[1] === 'm' ? 'Its width is measured.' : 'Its width is a rough estimate.'} The colour comes from its measured colour index.</figcaption></figure>`;
+    return `<figure class="rec-pic star-face size-face"><svg viewBox="0 0 400 360" role="img" aria-label="${n} drawn beside the Sun${notTrue ? ', with the smaller one drawn bigger than true so that it can be seen' : ' to one scale'}: ${ratio}.">${order.join('')}${label(true, rStar, n.toUpperCase())}${label(false, rSun, 'THE SUN')}</svg><figcaption>${n} beside the Sun, ${notTrue ? 'not quite to scale' : 'drawn to one scale'}: ${ratio}.${caveat} ${ang && ang[1] === 'm' ? 'Its width is measured.' : 'Its width is a rough estimate.'} The colour comes from its measured colour index.</figcaption></figure>`;
   };
   const cells: Cell[] = [
     { key: 'distance', label: 'From the Earth', value: `<span data-ly="${star.distPc < 60 ? ly : ''}">${lyText}</span>`, unit: 'light years', note: `Its light set off <span data-left>about ${lyText} years ago</span>.` },

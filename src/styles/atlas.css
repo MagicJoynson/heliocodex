@@ -188,3 +188,8 @@ table.moons { width: 100%; border-collapse: collapse; font: 300 1rem/1.4 var(--r
 .deep .arm.bar-line { opacity: .5; }
 .deep .disc.strong { opacity: .3; }
 .deep .here .eye { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+
+/* The plates are drawn on a 1000-unit sheet and shown about 740 px wide, so words written at 15 units came out near 11 px; these are written larger so they land at 13 px or more. */
+@media screen and (min-width: 761px) {
+  .plate .inset-mark text, .plate .numeral, .plate .sunward text, .deep .when, .deep .rings text, .deep .stamp { font-size: 18px; }
+}
