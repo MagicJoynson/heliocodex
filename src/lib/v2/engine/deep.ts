@@ -577,6 +577,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   const tagStyle = 'position:absolute;left:0;top:0;white-space:nowrap;font:400 .8125rem/1 var(--mono, monospace);letter-spacing:.08em;color:rgba(236,231,220,.72);padding-left:12px;will-change:transform;text-shadow:0 0 3px #000,0 0 6px #000;background:radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px) no-repeat;';
 
   const ringBg = 'radial-gradient(circle at 4px 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px)';
+  const ringBgR = 'radial-gradient(circle at calc(100% - 4px) 50%,transparent 2.4px,rgba(236,231,220,.55) 2.9px,transparent 3.6px)';
   const v = new THREE.Vector3();
   const invQ = new THREE.Quaternion();
   let shown = 0;
@@ -592,36 +593,42 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     let x = (v.x / -v.z / (t * (view.widthPx / view.heightPx)) + 1) / 2 * view.widthPx;
     const y = (1 - v.y / -v.z / t) / 2 * view.heightPx;
     if (x < -50 || x > view.widthPx + 10 || y < -10 || y > view.heightPx + 10) return;
-    // never let two names touch: the earlier (more important) one wins
-    const w = text.length * (kind === 'constellation' ? 7.6 : 6.4) + 14;
-    if (kind === 'constellation') x -= w / 2;
-    for (const r of placed) if (x < r[0] + r[2] && x + w > r[0] && Math.abs(y - r[1]) < 13) return;
+    // how wide the name is drawn (a mono face: 13 px letters plus spacing), so two names never touch and none runs off the edge
+    const fig = kind === 'constellation';
+    const w = text.length * (fig ? 10.7 : 8.9) + (fig ? 0 : 14);
+    const limit = view.widthPx - 56; // the Codex tab covers the right edge
+    if (fig) x -= w / 2;
+    // a name that would run past the right edge sits to the left of its dot instead; one that cannot fit either way is left out
+    const flip = !fig && x + w > limit;
+    const bx = flip ? x - w + 8 : x;
+    if (bx < 6 || (fig && bx + w > limit)) return;
+    // the earlier (more important) one wins
+    for (const r of placed) if (bx < r[0] + r[2] + 4 && bx + w + 4 > r[0] && Math.abs(y - r[1]) < 17) return;
     // and keep clear of the panels and captions drawn over the view
-    for (const r of avoid) if (x < r.right && x + w > r.left && y + 8 > r.top && y - 8 < r.bottom) return;
-    placed.push([x, y, w]);
+    for (const r of avoid) if (bx < r.right && bx + w > r.left && y + 8 > r.top && y - 8 < r.bottom) return;
+    placed.push([bx, y, w]);
     let el = pool[shown];
     if (!el) { el = document.createElement('span'); el.style.cssText = tagStyle; labels.appendChild(el); pool.push(el); }
     if (el.textContent !== text) el.textContent = text;
     el.style.opacity = String(Math.min(1, alpha));
-    el.style.transform = `translate(${(x - 4).toFixed(1)}px, ${(y - (go ? 12 : 5)).toFixed(1)}px)`;
+    el.style.transform = flip ? `translate(${(x + 4).toFixed(1)}px, ${(y - (go ? 12 : 5)).toFixed(1)}px) translateX(-100%)` : `translate(${(x - 4).toFixed(1)}px, ${(y - (go ? 12 : 5)).toFixed(1)}px)`;
     el.dataset.go = go;
     el.style.pointerEvents = go && alpha > 0.35 ? 'auto' : 'none';
     el.style.cursor = go ? 'pointer' : '';
-    el.style.padding = go ? '7px 8px 7px 12px' : '0 0 0 12px';
+    el.style.padding = fig ? (go ? '7px 8px' : '0') : flip ? (go ? '7px 12px 7px 8px' : '0 12px 0 0') : (go ? '7px 8px 7px 12px' : '0 0 0 12px');
     el.style.display = '';
-    if (el.dataset.kind !== kind) {
+    const sig = `${kind}|${flip ? 1 : 0}`;
+    if (el.dataset.sig !== sig) {
       // a constellation is an area, not a point: no ring, and a cooler, spaced-out name
-      const fig = kind === 'constellation';
-      el.style.backgroundImage = fig ? 'none' : ringBg;
+      el.style.backgroundImage = fig ? 'none' : flip ? ringBgR : ringBg;
       el.style.color = fig ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)';
       el.style.letterSpacing = fig ? '.22em' : '.08em';
       el.style.textTransform = fig ? 'uppercase' : 'none';
-      el.style.paddingLeft = fig ? '0' : '12px';
+      el.dataset.sig = sig;
     }
     // the one being flown to is amber, the single accent
     if (hot) { el.style.color = '#f1c98e'; el.dataset.hot = '1'; }
-    else if (el.dataset.hot) { el.style.color = el.dataset.kind === 'constellation' ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)'; delete el.dataset.hot; }
-    el.dataset.kind = kind;
+    else if (el.dataset.hot) { el.style.color = fig ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)'; delete el.dataset.hot; }
     shown++;
   }
 
@@ -666,7 +673,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     // ---- names
     if (performance.now() - avoidAt > 400) {
       avoidAt = performance.now();
-      avoid = ['.gen', '.where', '.readout'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
+      avoid = ['.gen', '.where', '.readout', '.gear-pill', '.back-chip', '.centre'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
     }
     shown = 0;
     placed.length = 0;
