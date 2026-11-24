@@ -2,7 +2,7 @@
 title: "Privacy policy"
 description: "What personal data Heliocodex handles, why, who sees it, how long it is kept and what your rights are. In short, almost none."
 lead: "Heliocodex is built so that it does not need to know who you are. This page says exactly what does reach us, what stays on your own device, and what you can do about either."
-updated: 2026-11-12
+updated: 2026-11-24
 ---
 
 <div class="short-version">
@@ -31,6 +31,7 @@ Heliocodex, at heliocodex.com, is run by FALLINGHIPPO LIMITED, which trades as F
 | Registered office | 71-75 Shelton Street, London, England, WC2H 9JQ |
 | Privacy contact | privacy@fallinghippo.com |
 | General contact | hello@fallinghippo.com |
+| Mistakes and help with the site | support@fallinghippo.com (the "Report a mistake" link on a page opens an email to this address) |
 | Data protection fee | Paid. Registration reference ZC264249 on the Information Commission's register of fee payers |
 
 We haven't appointed a data protection officer. The law only requires one for public bodies and for organisations whose core work involves large-scale monitoring of people or large-scale use of sensitive data, and we do neither. Privacy questions sent to the address above are read and answered by a person.

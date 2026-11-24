@@ -53,6 +53,8 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
       </ol>
     </section>
 
+    <div class="print-figs" data-print-figs hidden></div>
+
     <div class="reading l-rest">
       {predict && <Evidence data={predict} />}
 
@@ -107,7 +109,6 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
             {first.data.sources.map((s) => <li><a href={s.url} rel="noopener">{s.label}</a></li>)}
           </ul>
           <p class="aside small-note">The words are written for this site. The pictures are drawn by the page from the figures in the lesson, and each one says underneath what it is based on.</p>
-          <p class="aside small-note">Think something here is wrong? <a href={`mailto:hello@fallinghippo.com?subject=${encodeURIComponent(`Correction: ${lesson.data.title}`)}&body=${encodeURIComponent(`Page: https://heliocodex.com${Astro.url.pathname.replace(/\.html$/, '')}\n\nWhat looks wrong, and where the right figure is published:\n`)}`}>Email us the page and what you found</a>.</p>
         </div>
       </section>
 
@@ -129,9 +130,31 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
 </Base>
 
 <script>
-  import { mount, story } from '../../lib/learn/stage';
+  import { mount, story, type Scene } from '../../lib/learn/stage';
   import { loadScenes } from '../../lib/learn/stories';
   import { wirePredict } from '../../lib/learn/predict';
+
+  // The moving picture is drawn on a canvas, which paper cannot show. So each photograph scene is drawn once, still, into a picture
+  // and kept beside its credit in a block that only a printed page shows (see styles/print.css).
+  async function printPhotos(page: HTMLElement, scenes: Scene[]) {
+    const box = page.querySelector<HTMLElement>('[data-print-figs]');
+    if (!box) return;
+    for (const scene of scenes) {
+      if (!scene.ready) continue; // only the scenes that fetch photographs
+      try {
+        await scene.ready;
+        const w = 960, h = 560, c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d')!;
+        ctx.fillStyle = '#0b0b0c'; ctx.fillRect(0, 0, w, h);
+        scene.draw({ ctx, w, h, t: scene.stillAt ?? 4, still: true, pointer: null, say() {} });
+        const fig = document.createElement('figure'), img = document.createElement('img'), cap = document.createElement('figcaption');
+        img.src = c.toDataURL('image/jpeg', 0.9); img.alt = ''; img.width = w; img.height = h;
+        cap.textContent = scene.caption;
+        fig.append(img, cap); box.append(fig);
+      } catch { /* a picture that will not draw is left out of the print */ }
+    }
+  }
 
   const page = document.querySelector<HTMLElement>('.lesson[data-lesson]');
   const ask = page?.querySelector<HTMLElement>('[data-predict]');
@@ -142,6 +165,7 @@ const basisNote = { measured: '', 'worked-out': 'Worked out from measurements', 
       mount(page.querySelector<HTMLElement>('.l-hero')!, lens);
       story(page.querySelector<HTMLElement>('[data-story]')!, scenes);
       page.classList.add('is-live');
+      printPhotos(page, scenes);
     });
   }
 </script>

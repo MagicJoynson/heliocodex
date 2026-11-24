@@ -9,9 +9,9 @@ const url = new URL(path, Astro.site).toString();
 <section class="reader-tools" aria-label="This page" data-title={title} data-url={url}>
   <div class="rt-row">
     <button type="button" class="rt-btn" data-share hidden>Share this page</button>
+    <span class="rt-say" role="status" aria-live="polite" data-rt-say></span>
     <button type="button" class="rt-btn" data-print hidden>Print or save as PDF</button>
     <a class="rt-btn" href={mistakeLink(title, url)}>Report a mistake</a>
-    <span class="rt-say" role="status" aria-live="polite" data-rt-say></span>
   </div>
   <p class="rt-note">Spotted something wrong? The link opens an email to <a href="mailto:support@fallinghippo.com">support@fallinghippo.com</a> with this page filled in. Please leave out names, ages and schools.</p>
   <p class="rt-print">Printed from {url}. Heliocodex is independent of NASA, ESA and every mission named here. Picture credits are beside each picture; the full list is at https://heliocodex.com/sources and https://heliocodex.com/licences.</p>
@@ -23,6 +23,7 @@ const url = new URL(path, Astro.site).toString();
 .rt-btn { font: 400 .8125rem/1 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: #d8d2c5; background: none; border: 1px solid rgba(236,231,220,.28); border-radius: 2px; padding: .85rem 1.05rem; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center; text-decoration: none; cursor: pointer; }
 .rt-btn:hover, .rt-btn:focus-visible { border-color: #e9c48a; color: #e9c48a; }
 .rt-btn[hidden] { display: none; }
+.rt-say:empty { display: none; }
 .rt-say { font: 300 .9375rem/1.3 'Spectral', Georgia, serif; color: #e9c48a; min-height: 1.3em; }
 .rt-note { margin: .9rem 0 0; font-size: .9375rem; max-width: 46rem; }
 .rt-note a { color: #d8d2c5; }
@@ -39,8 +40,9 @@ const url = new URL(path, Astro.site).toString();
     if (typeof navigator.share === 'function' || navigator.clipboard) share.hidden = false;
     share.addEventListener('click', async () => {
       if (typeof navigator.share === 'function') {
-        try { await navigator.share({ title, url }); } catch (e) { /* closed without sharing */ }
-        return;
+        try { await navigator.share({ title, url }); return; } catch (e) {
+          if ((e as DOMException)?.name === 'AbortError') return; // the reader closed the menu
+        }
       }
       try { await navigator.clipboard.writeText(url); note('Link copied'); } catch (e) { note('Could not copy. The address is ' + url); }
     });

@@ -32,6 +32,8 @@ const about = lessonsAbout(all, world, title, 3, await allFacts());
 const leadPic = about[0] ? lessonThumb(about[0]) : null;
 const who = world === 'sun' ? 'the Sun' : world === 'earth' ? 'the Earth' : title;
 const face = portraits.find((p) => p.slug === world);
+// the short "Credit: …" part of a portrait's own credit line
+const creditOf = (slug: string) => (portraits.find((p) => p.slug === slug)?.credit.split('Credit: ')[1] ?? 'NASA').replace(/\.$/, '');
 const order = bodies.map((b) => b.slug);
 const i = order.indexOf(world);
 const near = [order[i - 1], order[i + 1]].filter(Boolean).map((slug) => bodies.find((b) => b.slug === slug)!);
@@ -127,7 +129,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
               {face && <img class="g-me" src={face.src} alt="" style={`--px:${Math.round(discMe / face.disc)}px;--ar:${(face.width / face.height).toFixed(3)}`} loading="lazy" />}
               {world !== 'earth' && <span class="g-earth" style={`--px:${discEarth}px`}><img src={portraits.find((p) => p.slug === 'earth')!.src} alt="" loading="lazy" /></span>}
             </div>
-            <figcaption>{world === 'earth' ? 'The Earth, 12,742 km across.' : `${title} and the Earth, to scale.`}</figcaption>
+            <figcaption>{world === 'earth' ? `The Earth, 12,742 km across. Credit: ${creditOf('earth')}.` : `${title} and the Earth, to scale. Credit, ${title}: ${creditOf(world)}. Credit, Earth: ${creditOf('earth')}.`}</figcaption>
           </figure>
           {world !== 'sun' && (
             <figure class="g-where">

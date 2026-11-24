@@ -16,10 +16,24 @@
   main *, section { min-height: 0 !important; }
   main > *, section, article, .story, .step, [data-step] { height: auto !important; padding-top: 4mm !important; padding-bottom: 4mm !important; }
   [style*='opacity: 0'], .reveal, .rise { opacity: 1 !important; transform: none !important; }
-  h1, h2, h3, h4 { break-after: avoid; }
+  h1, h2, h3, h4, .hang, .label { break-after: avoid; }
+  a img, li img { max-height: 60mm !important; }
   p, li { orphans: 3; widows: 3; }
-  /* photographs and their credits stay together */
-  figure, .photo, .plate, svg.chart { break-inside: avoid; }
+  /* photographs and their credits stay together; so do list items and cards with a picture */
+  figure, .photo, .plate, svg.chart, li, .card, .cards > *, .more li, a:has(img), dl > div, tr { break-inside: avoid; }
+  /* the lesson's story photographs, drawn from the canvas by the page (LessonStory.astro) */
+  .print-figs { display: block !important; margin: 0 0 5mm; }
+  .print-figs:empty { display: none !important; }
+  .print-figs figure { margin: 0 0 6mm; }
+  .print-figs img { display: block; width: 140mm !important; max-width: 100% !important; max-height: 85mm !important; object-fit: contain; }
+  .print-figs figcaption { margin-top: 2mm; line-height: 1.35; }
+  /* the hero's caption describes a canvas drawing that is not printed */
+  .l-hero .cap, .l-hero canvas { display: none !important; }
+  .l-hero, .l-hero-words, header.l-hero { min-height: 0 !important; height: auto !important; padding: 0 0 4mm !important; margin: 0 !important; display: block !important; }
+  .story { display: block !important; padding: 0 !important; }
+  .story-steps, [data-step] { margin: 0 !important; padding: 0 !important; min-height: 0 !important; height: auto !important; list-style: none; }
+  .story-steps li, [data-step] { padding: 1mm 0 !important; margin: 0 !important; opacity: 1 !important; }
+  .l-begin, .story .hang .note { display: none !important; }
   img { max-width: 100% !important; max-height: 120mm !important; width: auto !important; height: auto !important; object-fit: contain; break-inside: avoid; filter: none !important; }
   /* drawings are made for a dark page: turned over so their pale lines print dark, hues kept */
   svg { filter: invert(1) hue-rotate(180deg); }
@@ -30,6 +44,6 @@
   main a[href^='http'] { text-decoration: underline; }
   a[href^='http']:has(img)::after, nav a::after { content: none !important; }
   /* the line that says where it was printed from */
-  .reader-tools { display: block !important; padding: 8mm 0 0 !important; margin-top: 8mm; border-top: .5pt solid #999 !important; }
+  .reader-tools { display: block !important; padding: 4mm 0 0 !important; margin-top: 4mm; border-top: .5pt solid #999 !important; }
   .reader-tools .rt-print { display: block !important; break-inside: avoid; font: 8.5pt/1.4 Georgia, serif; margin: 0; }
 }
