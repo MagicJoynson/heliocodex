@@ -7,4 +7,4 @@ view: { target: earth, distanceKm: 3000000, highlight: [webb, hubble] }
 terms: [aperture, wavelength, infrared, ultraviolet, x-rays, gamma-rays, lagrange-point, look-back-time]
 needs: [telescopes, the-whole-spectrum]
 next: [balance-points, messengers-other-than-light]
-asks: ["hubble", "james webb", "jwst", "space telescope"]
+asks: ["hubble", "james webb", "jwst", "space telescope", "tess"]

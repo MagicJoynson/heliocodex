@@ -7,4 +7,4 @@ view: { target: earth }
 terms: [asteroid, near-earth-object, impact-crater, meteor, meteorite, orbital-period, comet]
 needs: [falling-rocks]
 next: [rubble-and-ice, comets]
-asks: ["asteroid impact", "did an asteroid kill the dinosaurs", "could an asteroid hit the earth", "dart mission"]
+asks: ["asteroid impact", "did an asteroid kill the dinosaurs", "could an asteroid hit the earth", "dart mission", "tunguska", "chicxulub"]

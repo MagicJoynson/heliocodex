@@ -13,7 +13,7 @@ import { goFor, goStar, lessonsAbout } from '../lib/objects';
 
 // What people call a world instead of its name. Each is plain description that is true of that world.
 const NICKNAME: Record<string, string> = {
-  mars: 'red planet', venus: 'morning star evening star', mercury: 'smallest planet', jupiter: 'largest planet gas giant', saturn: 'ringed planet gas giant',
+  mars: 'red planet valles marineris', venus: 'morning star evening star', mercury: 'smallest planet', jupiter: 'largest planet gas giant', saturn: 'ringed planet gas giant',
   uranus: 'ice giant tilted sideways', neptune: 'ice giant', earth: 'home planet blue planet our world', sun: 'our star',
   ganymede: 'biggest moon largest moon', titan: 'hazy moon thick atmosphere', io: 'volcanic moon', europa: 'ocean moon icy moon', enceladus: 'geysers icy moon', pluto: 'former planet',
 };

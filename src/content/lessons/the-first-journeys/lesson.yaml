@@ -7,4 +7,4 @@ view: { target: moon }
 terms: [orbit, orbital-period, moon, regolith, free-fall]
 needs: [how-a-rocket-works, what-an-orbit-is]
 next: [robot-explorers, the-moon]
-asks: ["first man on the moon", "apollo", "sputnik", "space race", "who walked on the moon"]
+asks: ["first man on the moon", "apollo", "sputnik", "space race", "who walked on the moon", "apollo 11", "sea of tranquility"]
