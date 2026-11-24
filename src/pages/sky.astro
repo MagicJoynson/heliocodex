@@ -553,21 +553,21 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
 
   .sky-share-note:empty { margin: 0; }
   .sky-share-note { pointer-events: auto; overflow-wrap: anywhere; user-select: text; }
-  .sky-head { position: absolute; left: var(--gutter); top: clamp(16px, 3vh, 32px); max-width: min(19.5rem, 100% - 2 * var(--gutter)); pointer-events: none; text-shadow: 0 0 18px #06070b, 0 0 6px #06070b; }
+  .sky-head { position: absolute; left: var(--edge); top: clamp(16px, 3vh, 32px); max-width: min(19.5rem, 100% - 2 * var(--gutter)); pointer-events: none; text-shadow: 0 0 18px #06070b, 0 0 6px #06070b; }
   .sky-head h1 { font: 300 clamp(2.2rem, 4.4vw, 3.4rem)/1 var(--r-serif); letter-spacing: -.02em; margin: .5rem 0 .6rem; }
   .sky-line { font: 300 1.06rem/1.4 var(--r-serif); color: var(--ink-soft); margin: 0; font-variant-numeric: tabular-nums lining-nums; }
   .sky-note { font: italic 300 .95rem/1.45 var(--r-serif); color: var(--accent); margin: .5rem 0 0; max-width: 24rem; }
   .sky-hint { margin: .9rem 0 0; font: 400 .7rem/1.5 var(--r-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); transition: opacity .6s ease; }
   .sky-hint:global(.gone) { opacity: 0; }
 
-  .sky-card { position: absolute; right: var(--gutter); top: clamp(16px, 3vh, 32px); width: min(21rem, calc(100% - 2 * var(--gutter))); background: rgba(9, 10, 14, .94); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1.1rem 1.2rem 1.2rem; }
+  .sky-card { position: absolute; right: var(--edge); top: clamp(16px, 3vh, 32px); width: min(21rem, calc(100% - 2 * var(--gutter))); background: rgba(9, 10, 14, .94); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1.1rem 1.2rem 1.2rem; }
   .sky-card :global(h2) { font: italic 300 clamp(1.6rem, 3vw, 2.1rem)/1.1 var(--r-serif); margin: .5rem 0 .7rem; padding-right: 3.4rem; }
   .sky-card :global(.sky-card-text) { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 .5rem; max-width: none; }
   .sky-card :global(.sky-card-links) { display: flex; flex-wrap: wrap; gap: .3rem 1.4rem; margin: .8rem 0 0; font: 400 .72rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; }
   .sky-card :global(.sky-card-links a) { color: var(--ink); text-decoration: none; padding: .45rem 0; border-bottom: 1px solid var(--accent); }
   .sky-card :global(.sky-card-shut) { position: absolute; right: .9rem; top: .35rem; }
 
-  .sky-bar { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) auto auto; align-items: end; gap: .4rem clamp(20px, 3vw, 48px); padding: 2.2rem var(--gutter) .7rem; background: linear-gradient(to top, rgba(6, 7, 11, .96) 55%, rgba(6, 7, 11, 0)); pointer-events: none; }
+  .sky-bar { position: absolute; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: minmax(0, 1.25fr) auto auto; align-items: end; gap: .4rem clamp(20px, 3vw, 48px); padding: 2.2rem var(--edge) .7rem; background: linear-gradient(to top, rgba(6, 7, 11, .96) 55%, rgba(6, 7, 11, 0)); pointer-events: none; }
   .sky-bar > * { pointer-events: auto; }
   .sky :global(button), .pop summary { font: 400 .8125rem/1 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); background: rgba(236, 231, 220, .05); border: 1px solid rgba(236, 231, 220, .22); border-radius: 999px; padding: 0 1rem; display: inline-flex; align-items: center; cursor: pointer; min-height: 40px; white-space: nowrap; }
   .sky :global(button:hover), .pop summary:hover, .pop[open] summary { color: var(--accent); border-color: var(--accent); background: rgba(233, 196, 138, .08); }
@@ -590,7 +590,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   .tick input { accent-color: #e9c48a; width: 18px; height: 18px; }
 
   /* below the sky: what is up, as words beside the horizon unrolled, then a two-column colophon */
-  .sky-rest { max-width: 1240px; margin: 0 auto; padding: clamp(40px, 6vw, 80px) var(--gutter, 24px) clamp(48px, 7vw, 96px); }
+  .sky-rest { max-width: var(--page); margin: 0 auto; padding: clamp(40px, 6vw, 80px) var(--gutter, 24px) clamp(48px, 7vw, 96px); }
   .up { display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center; }
   .sky-rest { --r-serif: 'Spectral', Georgia, serif; --r-mono: 'IBM Plex Mono', ui-monospace, monospace; }
   .sky-rest .up-list :global(p) { font: 300 1.12rem/1.55 var(--r-serif); color: var(--ink-soft); margin: 0 0 .8rem; }

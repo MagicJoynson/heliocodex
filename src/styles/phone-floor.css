@@ -47,7 +47,8 @@
 
 /* and the rest found at 1440 in the layout pass: Learn, Atlas, Stars, Sky and Worlds labels, buttons and counts */
 .start-btn, .start-link, .scale-here, .scale-track b, .p-count, .i-count, .d-count, .go3d, .unit, .val, .tag, .lane-h, .l-begin, .cap, .age label, .age button, .letter h3,
-.sky-bar button, .soon li span, .src, .tn-item span, .tonight .tn-where span { font-size: .8125rem !important; }
+.sky-bar button, .soon li span, .src, .tn-item span, .tonight .tn-where span,
+.pack-head figcaption b, .depths a, .depths span, .depths-nav a, .depths-nav .absent, .moon-charts span, .lessons .tag, .lessons .num, .reach-list .go3d, .landmarks dt .val { font-size: .8125rem !important; }
 
 /* Maths in lessons: the small raised and lowered figures are drawn at 0.7 of the line, so the line is made big enough that they stay at 13 px or more on a phone. */
 @media (max-width: 760px) {
