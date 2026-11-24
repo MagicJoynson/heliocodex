@@ -38,7 +38,7 @@ Nothing as big as an ordinary star could flash that fast: light takes 1.3 second
 
 <figure class="photo">
   <img src="/img/learn/crab-pulsar-hubble.jpg" alt="Blue-white wisps and rings of gas round two bright stars close together, with orange threads at the edges." width="1100" height="1075" loading="lazy" />
-  <figcaption><b>A photograph.</b> The heart of the Crab Nebula, by the Hubble Space Telescope. The pulsar is the right-hand one of the two bright stars near the middle. Credit: NASA and ESA; J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall), CC BY 4.0.</figcaption>
+  <figcaption><b>A photograph.</b> The heart of the Crab Nebula, by the Hubble Space Telescope. The pulsar is the right-hand one of the two bright stars near the middle. Credit: NASA and ESA. Acknowledgement: J. Hester (Arizona State University) and M. Weisskopf (NASA Marshall). A NASA picture, used under NASA's image use policy.</figcaption>
 </figure>
 
 In 2018 Bell, by then Jocelyn Bell Burnell, was given a Special Breakthrough Prize of 3 million dollars. She gave all of it to a fund, run by the Institute of Physics, that helps women, students from minority ethnic groups and refugees to train as physics researchers.
