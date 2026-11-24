@@ -3,6 +3,7 @@
    the videos and the buttons are left off. */
 @media print {
   @page { margin: 14mm; }
+  html { color-scheme: light !important; }
   html, body { background: #fff !important; color: #000 !important; }
   /* left off: furniture, canvases, motion, controls */
   .skip-to, .site-header, header.top, .site-menu, .wmenu, .site-footer, .altitude, #journey, #haze, #shade, #topfade, #arrive,
@@ -37,7 +38,8 @@
   .story-steps, [data-step] { margin: 0 !important; padding: 0 !important; min-height: 0 !important; height: auto !important; list-style: none; }
   .story-steps li, [data-step] { padding: 1mm 0 !important; margin: 0 !important; opacity: 1 !important; }
   /* a world page's opening scrim sits over the head of the page and printed it blank */
-  main > .beat:first-of-type::before, main .beat::before, main .copy::before { display: none !important; }
+  main > .beat:first-of-type::before, main .beat::before, main .copy::before, .l-hero::before, .l-hero::after, [class*='hero']::before, [class*='hero']::after { display: none !important; }
+  .l-hero { background: none !important; }
   .small-note, .aside.small-note, .sources + p { break-before: avoid; }
   .sources li:last-child { break-after: avoid; }
   /* links on to other lessons and packs mean nothing on paper, and left a last page of a few words */
