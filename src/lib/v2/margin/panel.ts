@@ -198,7 +198,7 @@ export function mountMargin(engine: Engine): void {
     pane('atlas').replaceChildren(
       el('p', { class: 'm-kicker' }, 'How far out you are'),
       ruler,
-      el('p', null, el('a', { href: '/atlas#ruler', target: '_blank', rel: 'noopener' }, 'The full ruler, with everything marked on it')),
+      el('p', { class: 'm-links' }, el('a', { href: '/atlas#ruler', target: '_blank', rel: 'noopener' }, 'The full ruler, with everything marked on it')),
       el('h3', null, 'Fly to'),
       el('div', { class: 'm-fly' }, flyButton('sun', 'The Sun', undefined, '')),
       ...sunRound.filter((b) => b.kind === 'planet').map(group),
@@ -207,7 +207,7 @@ export function mountMargin(engine: Engine): void {
       el('h3', null, 'Further out'),
       el('div', { class: 'm-fly' }, ...places.map((pl) => flyButton(pl.id, pl.name, undefined, ''))),
       el('h3', null, 'Charts'),
-      el('p', null, el('a', { href: '/atlas/solar-system', target: '_blank', rel: 'noopener' }, 'The Solar System from above'), ', ', el('a', { href: '/atlas/stars', target: '_blank', rel: 'noopener' }, 'the stars round the Sun'), ', ', el('a', { href: '/atlas/galaxies', target: '_blank', rel: 'noopener' }, 'our galaxy and the others'), ' and ', el('a', { href: '/atlas', target: '_blank', rel: 'noopener' }, 'all the charts'), '.'));
+      el('p', { class: 'm-links' }, ...([['/atlas/solar-system', 'The Solar System from above'], ['/atlas/stars', 'The stars round the Sun'], ['/atlas/galaxies', 'Our galaxy and the others'], ['/atlas', 'All the charts']] as const).map(([href, text]) => el('a', { href, target: '_blank', rel: 'noopener' }, text))));
     placeYou();
   }
 

@@ -829,8 +829,6 @@ import { sections } from '../lib/nav';
       .top > * { pointer-events: auto; }
       .mark { display: flex; align-items: center; min-height: 44px; flex: none; }
       .mark img { display: block; height: 28px; width: auto; }
-      body:not(.in) .mark { opacity: 0; pointer-events: none; }
-      .mark { transition: opacity 1s ease .6s; }
       main:focus { outline: none; }
       .top .site-nav { height: 100%; }
       .top .nav-item:nth-child(n+2) .nav-panel { left: auto; right: 0; }
@@ -1072,6 +1070,8 @@ import { sections } from '../lib/nav';
         .gears.throttle { left: auto; right: var(--gut); transform: none; bottom: calc(var(--bot) + 60px); width: min(320px, calc(100vw - 2 * var(--gut))); }
         body .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 150px); height: 96px; padding: 14px 0; }
       }
+      /* the Codex tab sits at the right edge, so on a mid-sized touch screen the pad stands clear of it */
+      @media (min-width: 761px) and (max-width: 1180px) { .pad { right: calc(var(--gut) + 44px); } }
       @media (max-height: 520px) { .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 66px); height: 116px; padding: 16px 0; } }
       @media (max-width: 600px) {
         .gen { top: calc(var(--top) + 164px); }

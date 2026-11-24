@@ -50,7 +50,7 @@ For the Sun, with ${L = 3.828 \times 10^{26}}$ W, that is 10.4 billion years. Th
 
 **Step five: heavier stars burn out faster.** Brightness rises very steeply with mass. Eker and colleagues, in 2018, measured the masses and brightnesses of 509 stars in eclipsing pairs and fitted ${L \propto M^\alpha}$ in six mass ranges. The exponent $\alpha$ is not one number. For the five ranges above 0.45 Suns:
 
-| Mass, in Suns | $\alpha$ | Lifetime goes as |
+| Mass, in Suns | Brightness exponent, $\alpha$ | Lifetime goes as |
 | --- | --- | --- |
 | 0.45 to 0.72 | 4.57 | $M^{-3.57}$ |
 | 0.72 to 1.05 | 5.74 | $M^{-4.74}$ |
