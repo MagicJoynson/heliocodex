@@ -6,6 +6,7 @@ import Reading from '../../../layouts/Reading.astro';
 import BlackHoleSizes from '../../../components/learn/BlackHoleSizes.astro';
 import '../../../styles/lesson.css';
 import { allLessons, STRAND_NAMES, LEVEL_NAMES, LEVEL_ORDER, levelOf, type Lesson } from '../../../lib/v2/margin/content';
+import { lessonLd } from '../../../lib/site';
 import { STORY_LESSONS, LEVEL_FIGURES } from '../../../lib/learn/stories';
 import equationStyles from 'katex/dist/katex.min.css?url';
 
@@ -16,6 +17,8 @@ export async function getStaticPaths() {
 
 const { lesson, level } = Astro.props as { lesson: Lesson; level: string };
 const entry = lesson.levels.find((e) => levelOf(e) === level)!;
+const pageTitle = `${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`.length > 60 ? `${lesson.data.title.split(': ')[0]}: ${LEVEL_NAMES[level].name.toLowerCase()}` : `${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`;
+const pageDescription = `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`.length > 160 ? lesson.data.summary : `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`;
 await render(entry);
 // a two-column table of facts has an empty header row: give each header a name that only a screen reader hears
 let hdr = false;
@@ -28,7 +31,7 @@ const figure = LEVEL_FIGURES[`${lesson.id}/${level}`];
 const lessons = await allLessons();
 const title = (id: string) => lessons.find((l) => l.id === id)!.data.title;
 ---
-<Reading title={`${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`.length > 60 ? `${lesson.data.title.split(': ')[0]}: ${LEVEL_NAMES[level].name.toLowerCase()}` : `${lesson.data.title}: ${LEVEL_NAMES[level].name.toLowerCase()}`} path={href(level)} description={`${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`.length > 160 ? lesson.data.summary : `${LEVEL_NAMES[level].reader}. ${lesson.data.summary}`}>
+<Reading title={pageTitle} path={href(level)} description={pageDescription} jsonld={lessonLd(href(level).replace(/^\/learn\//, ''), pageTitle, pageDescription)}>
   {hasEquations && <link rel="stylesheet" href={equationStyles} data-equations />}
   <div class="level">
     <header class="reading-head">

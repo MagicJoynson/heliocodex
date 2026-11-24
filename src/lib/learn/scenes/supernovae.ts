@@ -91,7 +91,7 @@ const feedScene: Scene = {
 const sn1987a = photoScene({
   src: '/img/learn/supernova-1987a-hubble.jpg',
   caption: 'A real photograph: what is left of Supernova 1987A, in the Large Magellanic Cloud, by the Hubble Space Telescope. The rings are gas the star threw off long before it exploded, lit up by the blast. Credit: ESA/Hubble and NASA, CC BY 4.0. The mark was added here.',
-  say: ['168,000 light years away, and seen without a telescope', '25 neutrinos from its core were caught on the Earth'],
+  say: ['163,000 light years away, and seen without a telescope', '25 neutrinos from its core were caught on the Earth'],
   zoom: [1, 1.5], focus: [0.5, 0.5],
   pointers: [{ at: [0.53, 0.5], to: [0.7, 0.72], text: 'This ring is one light year across' }],
 });

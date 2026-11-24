@@ -468,7 +468,7 @@ test('the Milky Way model: the main arms leave the ends of the bar and the Local
 test('the galaxies: Andromeda, the Magellanic Clouds and Virgo are where they should be', () => {
   const g = (n: string) => groupGalaxies.find((x) => x.name === n)!;
   near((g('Andromeda').kpc * 1000 * LY_PER_PC) / 1e6, 2.55, 0.1);
-  near(g('LMC').kpc, 50, 3); near(g('SMC').kpc, 62, 5);
+  near(g('LMC').kpc, 50, 3); near(g('SMC').kpc, 61, 3);
   assert.ok(g('LMC').p[2] < 0 && g('SMC').p[2] < 0, 'the Magellanic Clouds are south of the disc');
   assert.equal(groupGalaxies.length, 26);
   // the Coma Cluster is a real crowd in the data: several times more galaxies within 4 Mpc of it than in an average patch that near

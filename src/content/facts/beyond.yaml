@@ -122,9 +122,9 @@ facts:
     basis: worked-out
     source: { label: "McConnachie 2012, Astronomical Journal 144, 4", url: "https://doi.org/10.1088/0004-6256/144/1/4" }
   - id: magellanic-clouds
-    text: "The Large and Small Magellanic Clouds are two small galaxies about 170,000 and 210,000 light years away. Both can be seen by eye from the southern half of the Earth."
+    text: "The Large and Small Magellanic Clouds are two small galaxies about 163,000 and 200,000 light years away. Both can be seen by eye from the southern half of the Earth."
     about: [local-group, milky-way]
-    source: { label: "McConnachie 2012, Astronomical Journal 144, 4", url: "https://doi.org/10.1088/0004-6256/144/1/4" }
+    source: { label: "NASA, Swift provides the best-ever UV view of the nearest galaxies (3 June 2013)", url: "https://svs.gsfc.nasa.gov/11293" }
 
   # ---- the cosmic web
   - id: laniakea

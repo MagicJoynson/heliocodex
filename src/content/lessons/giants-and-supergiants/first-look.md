@@ -8,6 +8,7 @@ sources:
   - { label: "Wikipedia, List of largest stars", url: "https://en.wikipedia.org/wiki/List_of_largest_stars" }
   - { label: "ESO, First close-up picture of a star outside our galaxy", url: "https://www.eso.org/public/news/eso2417/" }
   - { label: "Muñoz-Sánchez and others, The dramatic transition of the extreme red supergiant WOH G64 to a yellow hypergiant (Nature Astronomy, 2026; first posted on arXiv, 2024)", url: "https://arxiv.org/abs/2411.19329" }
+  - { label: "NASA, Swift provides the best-ever UV view of the nearest galaxies (3 June 2013)", url: "https://svs.gsfc.nasa.gov/11293" }
   - { label: "JMMC catalogues of stellar angular diameters, used with the HYG distances", url: "https://www.jmmc.fr/" }
 ---
 What will happen to the Sun when it runs low on fuel? You might expect it to shrink and go dim. It will do the opposite. In about 5 billion years the hydrogen at its centre will be used up. The centre will shrink and grow hotter, the burning will move outward into a shell round it, and the rest of the Sun will swell to more than 200 times its present width. It will be a red giant: huge, cool at the surface, and thousands of times brighter than it is now. Mercury and Venus will be swallowed, and probably the Earth as well.
@@ -18,6 +19,6 @@ Heavier stars go further. A star born with more than about eight times the Sun's
 
 The most famous supergiant is Betelgeuse, the red shoulder of Orion. It is about 760 times as wide as the Sun, though measurements differ, and it is never quite the same from month to month. Late in 2019 it faded to about a third of its usual brightness, and people wondered if it was about to explode. It had only coughed out a cloud of gas, which cooled into dust and hid part of its face.
 
-How big can a star get? The record holders are quoted at 1,500 to 2,000 times as wide as the Sun. One of them, WOH G64, is not even in our galaxy. It lies 160,000 light years away, and in 2024 it became the first star outside the Milky Way to have its picture taken close up. In the Sun's place it would reach past Jupiter. Yet all these monsters are mostly empty. The outer parts of a supergiant are thousands of times thinner than air.
+How big can a star get? The record holders are quoted at 1,500 to 2,000 times as wide as the Sun. One of them, WOH G64, is not even in our galaxy. It lies about 163,000 light years away, and in 2024 it became the first star outside the Milky Way to have its picture taken close up. In the Sun's place it would reach past Jupiter. Yet all these monsters are mostly empty. The outer parts of a supergiant are thousands of times thinner than air.
 
 Supergiants do not last. The Sun will have shone for 10 billion years before it swells. Betelgeuse is about 10 million years old and already near its end. Some time in the next 100,000 years it will blow up as a supernova and shine in our sky as brightly as a half Moon for months. What is left is a spreading cloud and, at its centre, a neutron star or a black hole.

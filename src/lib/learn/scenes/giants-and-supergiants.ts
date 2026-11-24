@@ -61,7 +61,7 @@ const dimming = photoScene({
 
 const woh = photoScene({
   src: '/img/learn/woh-g64-vlti.jpg',
-  caption: 'A real picture, built up from telescopes working as one at the European Southern Observatory and published on 21 November 2024: the red supergiant WOH G64, 160,000 light years away in the Large Magellanic Cloud. The bright oval is the star wrapped in a cocoon of its own dust, and the faint ring is more dust further out. The colour was chosen. Credit: ESO/K. Ohnaka et al., CC BY 4.0.',
+  caption: 'A real picture, built up from telescopes working as one at the European Southern Observatory and published on 21 November 2024: the red supergiant WOH G64, about 163,000 light years away in the Large Magellanic Cloud. The bright oval is the star wrapped in a cocoon of its own dust, and the faint ring is more dust further out. The colour was chosen. Credit: ESO/K. Ohnaka et al., CC BY 4.0.',
   say: ['One of the biggest stars known', 'The first star in another galaxy to be seen close up'], zoom: [0.95, 1.08], focus: [0.5, 0.5], tag: 'Real picture',
 });
 

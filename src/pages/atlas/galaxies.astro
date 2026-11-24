@@ -59,7 +59,7 @@ const offSlab = clusters.filter((c) => !c.inSlab);
 
 // ---- the list
 // two decimals below 10 million, so Andromeda's 783 kpc reads 2.55 million and sits with the "about 2.5 million" used in the facts
-const millions = (ly: number) => (ly >= 1e6 && ly < 1e7 ? `${(Math.round(ly / 1e4) / 100).toLocaleString('en-GB', { minimumFractionDigits: 2 })} million light years` : fmtLy(ly));
+const millions = (ly: number) => (ly >= 1e6 && ly < 1e7 ? `${(Math.round(ly / 1e4) / 100).toLocaleString('en-GB', { minimumFractionDigits: 2 })} million light years` : ly >= 1e4 && ly < 1e6 ? `${(Math.round(ly / 1000) * 1000).toLocaleString('en-GB')} light years` : fmtLy(ly));
 const kpcText = (kpc: number) => `${Math.round(kpc).toLocaleString('en-GB')} kpc`;
 const sunLight = (absMag: number) => Math.pow(10, 0.4 * (4.83 - absMag));
 const light = (m: number | null) => { if (m === null) return null; const v = sunLight(m); return v >= 1e9 ? `${(v / 1e9).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} billion Suns` : `${(v / 1e6).toLocaleString('en-GB', { maximumSignificantDigits: 2 })} million Suns`; };

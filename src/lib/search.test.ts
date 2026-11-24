@@ -27,6 +27,9 @@ for (const q of ['europa', 'mars', 'uranus', 'nebula', 'eclipse']) test(`"${q}" 
 });
 for (const [q, want] of [['red planet', 'Mars'], ['biggest moon', 'Ganymede'], ['largest moon', 'Ganymede'], ['iss', 'Space Station'], ['smallest planet', 'Mercury'], ['why is the sky blue', 'Rayleigh scattering'], ['morning star', 'Venus'], ['sunset colour', 'Rayleigh scattering']] as const)
   test(`what people call it: "${q}" finds ${want} in the first three`, () => assert.ok(top(q, 3).includes(want), `got ${top(q, 3).join(', ')}`));
+// famous named things a lesson or page covers, found by the name people type
+for (const [q, want] of [['valles marineris', 'Mars'], ['cassini division', 'Rings'], ['tycho', 'The Moon'], ['sea of tranquility', 'first journeys'], ['pillars of creation', 'Nebulae'], ['crab nebula', 'Neutron stars'], ['eagle nebula', 'Nebulae'], ['ring nebula', 'Nebulae'], ['whirlpool galaxy', 'Spiral arms'], ['chicxulub', 'Things that hit'], ['tunguska', 'Things that hit'], ['tess', 'Telescopes in space'], ['supermoon', 'Phases'], ['perseids', 'Falling rocks'], ['geminids', 'Falling rocks'], ['leonids', 'Falling rocks'], ['apollo 11', 'first journeys']] as const)
+  test(`named feature: "${q}" finds ${want} first`, () => assert.ok(top(q, 1)[0].includes(want), `got ${top(q, 3).join(', ')}`));
 test('short words are not guessed at', () => assert.equal(rank(all, 'xyq').length, 0));
 test('catalogue numbers are matched as typed only', () => assert.ok(rank(all, 'HD 99999999').length === 0));
 test('empty query gives nothing', () => assert.equal(rank(all, '   ').length, 0));

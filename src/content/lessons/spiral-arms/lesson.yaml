@@ -7,3 +7,4 @@ view: { target: milky-way }
 terms: [spiral-galaxy, milky-way, galaxy, nebula, star-cluster, molecular-cloud, orbital-period]
 needs: [the-milky-way, the-stuff-between-the-stars]
 next: [kinds-of-galaxy, when-galaxies-collide]
+asks: ["whirlpool galaxy", "m51"]

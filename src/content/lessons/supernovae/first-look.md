@@ -11,7 +11,7 @@ There are two ways to make one. The first needs a heavy star, more than about ei
 
 The second way needs a white dwarf with a partner star close by. The white dwarf pulls gas across from its partner and grows heavier. No white dwarf can be heavier than 1.4 Suns. As it nears that weight the whole star catches light at once and blows itself to pieces.
 
-In February 1987 a star blew up in the Large Magellanic Cloud, a small galaxy next door to ours, 168,000 light years away. It was the first supernova anyone had seen without a telescope since 1604. Deep underground, three detectors caught 25 tiny particles called neutrinos, which had come straight from its collapsing core.
+In February 1987 a star blew up in the Large Magellanic Cloud, a small galaxy next door to ours, about 163,000 light years away. It was the first supernova anyone had seen without a telescope since 1604. Deep underground, three detectors caught 25 tiny particles called neutrinos, which had come straight from its collapsing core.
 
 A supernova leaves a cloud of wreckage that goes on spreading for thousands of years. The Crab Nebula is the wreck of one that people saw in the year 1054.
 
