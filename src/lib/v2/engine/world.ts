@@ -875,15 +875,43 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         let endDir: V3 = now;
         // arrive on a slant, towards the lit side and a little above the planet's plane, not square on
         if (id !== 'sun' && len(toS) > 0) {
-          // about 65 degrees off the Sun's line, so the terminator and the night side are in view when you arrive, not a full face
-          const lit0 = norm(add(add(scale(toS, 0.38), scale(norm(cross(toS, north)), 0.8)), scale(north, 0.42)));
-          endDir = norm(slerp(now, lit0, 0.92));
+          // between 45 and 65 degrees off the Sun's line, so the terminator and the night side are in view when you arrive, not a full face
+          // and not the night side. Keep the direction you came in on if it already lies in that band; otherwise swing the shortest way into it,
+          // straight towards or away from the Sun (the flight limits how fast it swings, so a short hop gets as far as it can)
+          const a0 = Math.acos(Math.max(-1, Math.min(1, vdot(now, toS)))) * 180 / Math.PI;
+          if (a0 < 45 || a0 > 65) {
+            const goal = (a0 < 45 ? 50 : 62) * Math.PI / 180;
+            let w = sub(now, scale(toS, vdot(now, toS)));
+            // coming in along the Sun's line: slip to the side the old slant used, a little above the plane
+            if (len(w) < 1e-3) w = norm(add(scale(norm(cross(toS, north)), 0.8), scale(north, 0.42)));
+            w = norm(w);
+            endDir = norm(add(scale(toS, Math.cos(goal)), scale(w, Math.sin(goal))));
+          }
         }
         if (id !== 'sun' && len(toS) > 0 && vdot(endDir, toS) < 0.3) {
           const lit = norm(add(add(scale(toS, 0.7), scale(norm(cross(toS, north)), 0.55)), scale(north, 0.45)));
           let lo = 0, hi = 1;
           for (let i = 0; i < 20; i++) { const m = (lo + hi) / 2; if (vdot(norm(slerp(now, lit, m)), toS) < 0.3) lo = m; else hi = m; }
           endDir = norm(slerp(now, lit, hi));
+        }
+        // Saturn: arrive on the face of the rings the Sun lights (it changes with the date), at least about ten degrees clear of their plane.
+        // Turn round the Sun's line, the smallest turn that gets there, so the angle off the Sun stays as it was.
+        if (id === 'saturn' && saturnShadows && len(toS) > 0) {
+          const pq = new THREE.Vector3(0, 1, 0).applyQuaternion(saturnShadows.holder.getWorldQuaternion(new THREE.Quaternion()));
+          const sgn = pq.x * toS[0] + pq.y * toS[1] + pq.z * toS[2] >= 0 ? 1 : -1;
+          const lift = (d: THREE.Vector3) => (d.x * pq.x + d.y * pq.y + d.z * pq.z) * sgn;
+          const axis = new THREE.Vector3(toS[0], toS[1], toS[2]);
+          const e0 = new THREE.Vector3(endDir[0], endDir[1], endDir[2]);
+          if (lift(e0) < 0.17) {
+            let best: THREE.Vector3 | null = null;
+            for (let deg = 2; deg <= 180 && !best; deg += 2) {
+              for (const sg of [1, -1]) {
+                const c = e0.clone().applyAxisAngle(axis, sg * deg * Math.PI / 180);
+                if (lift(c) >= 0.17) { best = c; break; }
+              }
+            }
+            if (best) endDir = norm([best.x, best.y, best.z] as V3);
+          }
         }
         flight.startCruise({ to: id === bodySlug ? focusOf(id) : { centre: target, radius: measured ? r : 0, ...(measured && ellipsoidOf(id) ? { ground: (d: V3) => surfaceAlong(id, d, r) - r, flat: true } : {}) }, endDist, endDir, secs });
       }
@@ -966,6 +994,25 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       return { cam: [...flight.pos] as V3, heading: [f[0], f[2]] as [number, number], planets: PLANETS.map((p) => ({ id: p, name: PLANET_NAMES[p], at: [...planetPos[p]] as V3 })), focus: focusKey, place: placeAt(len(flight.pos), nearNow)?.id ?? null };
     },
     skip() { flight.skipCruise(); },
+    /** for tests (?debug): how far the camera is above (positive) the face of Saturn's rings that the Sun lights, as a share of its distance; negative is the unlit face */
+    debugRingLift(): number | null {
+      if (!saturnShadows) return null;
+      const pq = new THREE.Vector3(0, 1, 0).applyQuaternion(saturnShadows.holder.getWorldQuaternion(new THREE.Quaternion()));
+      const tg = posOf('saturn'), toS = norm(sub(sunPos, tg)), c = norm(sub(flight.pos, tg));
+      const sgn = pq.x * toS[0] + pq.y * toS[1] + pq.z * toS[2] >= 0 ? 1 : -1;
+      return (pq.x * c[0] + pq.y * c[1] + pq.z * c[2]) * sgn;
+    },
+    /** for tests (?debug): stand at a latitude over a world, measured from the plane of its equator (the rings' plane for Saturn), on the side facing the Sun, at so many radii; negative latitudes are below the plane */
+    debugOrbit(id: string, latDeg: number, radii = 4.6) {
+      const tg = posOf(id);
+      const pole: V3 = id === 'saturn' && saturnShadows ? (() => { const v = new THREE.Vector3(0, 1, 0).applyQuaternion(saturnShadows.holder.getWorldQuaternion(new THREE.Quaternion())); return [v.x, v.y, v.z] as V3; })() : north;
+      const toS = norm(sub(sunPos, tg));
+      const flat = norm(sub(toS, scale(pole, vdot(toS, pole))));
+      const l = latDeg * Math.PI / 180;
+      const d = add(scale(flat, Math.cos(l)), scale(pole, Math.sin(l)));
+      focusId = PLANETS.includes(id) ? '' : id; focusKey = id; focusName = PLANET_NAMES[id] ?? id;
+      flight.orbitAt(focusOf(id), radOf(id) * radii, d);
+    },
     setPad: flight.setPad,
     /** free flight speed steps: 0 local, then fixed speeds up to warp (see GEARS in flight.ts) */
     get gear() { return flight.gear; },

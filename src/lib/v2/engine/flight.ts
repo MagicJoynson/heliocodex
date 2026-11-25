@@ -455,7 +455,7 @@ export function createFlight(canvas: HTMLElement) {
       const hump = Math.max(0, Math.log(sep * 0.9) - Math.max(Math.log(d0), Math.log(d1)));
       // a negative time means "as long as the trip needs": two seconds, plus a little for every power of ten
       const decades = (Math.abs(Math.log(d1 / d0)) + 2 * hump) / Math.LN10 + 2 * Math.acos(clamp(dot(dir0, dir1), -1, 1));
-      const secs = c.secs >= 0 ? c.secs : clamp(2.4 + 0.45 * decades, 2.4, 9);
+      let secs = c.secs >= 0 ? c.secs : clamp(2.4 + 0.45 * decades, 2.4, 9);
       // face the way you are going before you go: a quick, eased turn on the spot, never turning and travelling at once
       let turn = 0, q0: THREE.Quaternion | null = null, q1: THREE.Quaternion | null = null;
       let cs = c0, ds = dir0;
@@ -474,10 +474,14 @@ export function createFlight(canvas: HTMLElement) {
           q1 = new THREE.Quaternion().setFromRotationMatrix(m);
         }
       }
-      // while travelling, swing toward the wanted side of the target no faster than about 5 degrees a second (the rest is left as it is on arrival)
+      // while travelling, swing toward the wanted side of the target no faster than about 4.4 degrees a second (the rest is left as it is on arrival)
       let dirEnd = c.endDir ? dir1 : ds;
       if (turn > 0 && c.endDir) {
-        const swing = Math.acos(clamp(dot(ds, dir1), -1, 1)), maxSwing = THREE.MathUtils.degToRad(5) * secs;
+        const swing = Math.acos(clamp(dot(ds, dir1), -1, 1));
+        // the whole trip, turn on the spot included, stays near ten seconds, so the swing gets the rest at a gentle 4.4 degrees a second;
+        // a short hop turns less and arrives at a smaller angle rather than moving faster
+        if (c.secs < 0) secs = clamp(secs, 2.4, Math.max(5, 10.2 - turn));
+        const maxSwing = THREE.MathUtils.degToRad(4.4) * secs;
         if (swing > maxSwing) { const k2 = maxSwing / swing; dirEnd = clampEl(norm(add(scale(ds, 1 - k2), scale(dir1, k2)))); }
         else dirEnd = dir1;
       }
