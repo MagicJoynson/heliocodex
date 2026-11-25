@@ -53,7 +53,6 @@ import { sections } from '../lib/nav';
 
     <header class="top">
       <a class="mark" href="/" aria-label="Heliocodex, home"><img src="/brand/heliocodex-lockup.svg" alt="" width="660" height="133" /></a>
-      <a class="back-to" id="back-to" href="/" hidden><span aria-hidden="true">←</span> <span id="back-name">Back</span></a>
       <SiteNav path="/explore" />
       <SiteSearch />
       <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
@@ -88,13 +87,24 @@ import { sections } from '../lib/nav';
     </section>
 
     <!-- Back: the place you were at before (the only part of the old place panel that is kept) -->
-    <button type="button" class="back-chip" id="step-back" disabled title="Back to the place you were at before (B)" inert>Back</button>
+    <button type="button" class="back-chip" id="step-back" disabled title="Back to the place you were at before (B)" inert><span aria-hidden="true">←</span> <span id="back-name">Back</span></button>
 
     <div class="hud" id="hud">
-      <div class="readout" aria-hidden="true">
-        <span class="k" id="r-k">Height above Mars</span>
-        <span class="v" id="r-v">—</span>
-        <span class="k2" id="r-k2"></span>
+      <div class="hud-l">
+        <div class="readout" aria-hidden="true">
+          <span class="k" id="r-k">Height above Mars</span>
+          <span class="v" id="r-v">—</span>
+          <span class="k2" id="r-k2"></span>
+        </div>
+        <!-- speed: a small pill beside the readout; the full throttle opens only while you change gear -->
+        <div class="gears" id="gears" hidden>
+          <button type="button" class="gear-pill" id="gear-pill" aria-expanded="false" aria-controls="gear-panel"><span class="gp-k">Speed</span><span class="gp-v" id="gear-name">Local</span></button>
+          <div class="gear-panel throttle" id="gear-panel" role="group" aria-label="Throttle" hidden>
+            <div class="tl" aria-hidden="true"><span>Local</span><span id="gear-name-big"></span><span>Warp 5</span></div>
+            <input type="range" id="throttle" min="0" max="8" step="1" value="0" aria-label="Throttle" />
+            <p class="th" aria-hidden="true"><span class="fine-only">Scroll one notch, one gear · hold W to go · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
+          </div>
+        </div>
       </div>
       <button type="button" class="skip" id="skip">Skip ahead</button>
     </div>
@@ -113,7 +123,7 @@ import { sections } from '../lib/nav';
           <div class="time-f"><label for="time-date">Go to a date</label><input type="date" id="time-date" min="1800-01-01" max="2199-12-31" /></div>
           <div class="time-f"><label for="time-slide">Scrub, 1950 to 2050</label><input type="range" id="time-slide" min="0" max="36889" step="1" /></div>
           <fieldset>
-            <legend>Speed</legend>
+            <legend>Clock speed</legend>
             <label><input type="radio" name="speed" value="0" /> Paused</label>
             <label><input type="radio" name="speed" value="1" checked /> Normal speed</label>
             <label><input type="radio" name="speed" value="86400" /> A day a second</label>
@@ -127,7 +137,7 @@ import { sections } from '../lib/nav';
         </div>
       </div>
       <div class="pop" id="view">
-        <button type="button" class="pill" id="view-btn" aria-expanded="false" aria-controls="view-sheet" aria-label="Controls and settings" title="Controls and settings">?</button>
+        <button type="button" class="pill icon" id="view-btn" aria-expanded="false" aria-controls="view-sheet" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h10M17 7h4M3 17h4M11 17h10" /><circle cx="15" cy="7" r="2.2" /><circle cx="9" cy="17" r="2.2" /></svg><span class="lbl">Settings</span></button>
         <div class="sheet view-sheet" id="view-sheet" role="group" aria-label="View settings" hidden>
           <fieldset>
             <legend>Planet sizes</legend>
@@ -151,25 +161,64 @@ import { sections } from '../lib/nav';
             <legend>Moons</legend>
             <label><input type="checkbox" id="moon-orbits" /> Show moon orbit lines <small>the paths moons follow round the planet you are near</small></label>
           </fieldset>
-          <dl class="keys">
-            <div><dt>Look round</dt><dd>drag, or the left and right arrow keys</dd></div>
-            <div><dt>Move</dt><dd>W or the up arrow ahead, S or the down arrow astern, A and D sideways, E up, Q down</dd></div>
-            <div><dt>Speed</dt><dd>scroll (one gear a notch), the throttle, or . faster and , slower. Shift goes quicker. X brakes at once. Speed always eases off near a world</dd></div>
-            <div><dt>Go to a world</dt><dd>click or tap it or its name, or [ and ] for the next</dd></div>
-            <div><dt>Circle a world</dt><dd>Esc eases a trip to a stop. In free flight it stops you, and unless you are close to the ground it then circles the nearest world; F sets you flying free again</dd></div>
-            <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
-            <div><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to circle or fly</dd></div>
-            <div><dt>The Codex</dt><dd>M</dd></div>
-          </dl>
+          <fieldset>
+            <legend>On screen</legend>
+            <label><input type="checkbox" id="centre-mark" checked /> Centre mark <small>a faint ring in the middle of the view while you fly, to keep your bearings</small></label>
+            <button type="button" class="free-btn" id="hide-ui-btn">Hide the controls <span class="kbd">H</span></button>
+            <button type="button" class="free-btn" id="help-open-2">Keys and help <span class="kbd">?</span></button>
+          </fieldset>
+        </div>
+      </div>
+      <button type="button" class="pill icon" id="help-btn" aria-haspopup="dialog" aria-label="Keys and help" title="Keys and help (?)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" /><path d="M9.6 9.4a2.5 2.5 0 1 1 3.6 2.2c-.8.5-1.2 1-1.2 2" /><circle class="dot" cx="12" cy="16.9" r=".6" /></svg><span class="lbl">Help</span></button>
+    </div>
+
+    <!-- keys and help: its own full-screen page, opened by ? or the Help button -->
+    <div class="help" id="help" role="dialog" aria-modal="true" aria-labelledby="help-h" hidden>
+      <div class="help-in">
+        <button type="button" class="help-x" id="help-x">Close <span class="kbd">Esc</span></button>
+        <h2 id="help-h">Keys and help</h2>
+        <p class="help-lead fine-only">You steer like a small ship. Drag to look, W A S D to move, scroll to change gear.</p>
+        <p class="help-lead coarse-only">You steer like a small ship. Drag to look, press the pad to move, slide the throttle for speed.</p>
+        <div class="help-grid">
+          <section>
+            <h3>Look and move</h3>
+            <dl>
+              <div><dt>Look round</dt><dd>drag, or the left and right arrow keys</dd></div>
+              <div><dt>Move</dt><dd>W or the up arrow ahead, S or the down arrow astern, A and D sideways, E up, Q down</dd></div>
+              <div><dt>Brake</dt><dd>X stops you at once. Speed always eases off near a world</dd></div>
+            </dl>
+          </section>
+          <section>
+            <h3>Speed</h3>
+            <dl>
+              <div><dt>Change gear</dt><dd>scroll (one gear a notch), the throttle, or . faster and , slower</dd></div>
+              <div><dt>Quicker</dt><dd>hold Shift</dd></div>
+              <div><dt>Gears</dt><dd>Local, Quick, Fast, Faster, then Warp 1 to 5. Warp gears coast when you let go</dd></div>
+            </dl>
+          </section>
+          <section>
+            <h3>Places</h3>
+            <dl>
+              <div><dt>Go to a world</dt><dd>click or tap it or its name, or [ and ] for the next planet</dd></div>
+              <div><dt>Circle a world</dt><dd>Esc eases a trip to a stop. In free flight it stops you, and unless you are close to the ground it then circles the nearest world. F sets you flying free again</dd></div>
+              <div><dt>Back</dt><dd>B goes back to the last place</dd></div>
+            </dl>
+          </section>
+          <section>
+            <h3>The screen</h3>
+            <dl>
+              <div><dt>Hide the controls</dt><dd>H hides everything but the view, and brings it back</dd></div>
+              <div><dt>The Codex</dt><dd>M opens the notes on where you are</dd></div>
+              <div><dt>Help</dt><dd>? opens this page</dd></div>
+              <div class="pad-only"><dt>Game controller</dt><dd>sticks to move and look, triggers up and down, bumpers for speed, Y to circle or fly</dd></div>
+            </dl>
+          </section>
         </div>
       </div>
     </div>
+    <button type="button" class="ui-show" id="ui-show" hidden aria-label="Show the controls">Show controls <span class="kbd">H</span></button>
+    <div class="centre" id="centre" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" /><path d="M20 2v6M20 32v6M2 20h6M32 20h6" /></svg></div>
 
-    <div class="gears throttle" id="gears" role="group" aria-label="Throttle" hidden>
-      <div class="tl" aria-hidden="true"><span>Local</span><span id="gear-name"></span><span>Warp 5</span></div>
-      <input type="range" id="throttle" min="0" max="8" step="1" value="0" aria-label="Throttle" />
-      <p class="th" aria-hidden="true"><span class="fine-only">Scroll one notch, one gear · hold W to go · speed eases off near a world</span><span class="coarse-only">Slide to go faster · it eases off near a world</span></p>
-    </div>
     <nav class="scale" id="scale" aria-label="Where you are, from the Sun out to the whole universe. Choose a stop to fly there." inert>
       <div class="scale-line"><i class="scale-you" id="scale-you"></i></div>
       <ol>
@@ -234,7 +283,7 @@ import { sections } from '../lib/nav';
 
       // ---- settings, kept in this browser only (see the cookies page)
       const KEY = 'heliocodex-view';
-      type Prefs = { big?: boolean; reduced?: boolean; quality?: 'auto' | 'smooth' | 'sharp'; marks?: [string, string][]; coached?: boolean; moonOrbits?: boolean; look?: number; streaks?: boolean; entered?: boolean };
+      type Prefs = { big?: boolean; reduced?: boolean; quality?: 'auto' | 'smooth' | 'sharp'; marks?: [string, string][]; coached?: boolean; moonOrbits?: boolean; look?: number; streaks?: boolean; entered?: boolean; centre?: boolean };
       let prefs: Prefs = {};
       try { prefs = JSON.parse(localStorage.getItem(KEY) ?? '{}') ?? {}; } catch {}
       const save = () => { try { localStorage.setItem(KEY, JSON.stringify(prefs)); } catch {} };
@@ -277,23 +326,41 @@ import { sections } from '../lib/nav';
       if (!params.has('go') && !params.has('tour')) { try { const at = sessionStorage.getItem('hc-at'); if (at) params.set('go', at); } catch {} }
       // coming from the lesson on how big space is: show distances again on its scale, the Sun as a football 22 cm across
       let football = false;
-      // the way back to the page you came in from, where you were on it
+      // the one Back control. With places behind you it goes to the last place. With none, and a page of the site you
+      // came in from, it leaves the 3D view for that page, and says so ("Home", "Back to Mars").
+      type Origin = { href: string; name: string; from: Record<string, unknown>; label?: string };
+      let origin = null as Origin | null;
       try {
         const from = JSON.parse(sessionStorage.getItem('hc-from') ?? 'null');
         if (from?.href && from.href !== '/explore') {
           football = String(from.href).split('?')[0].replace(/\/$/, '') === '/learn/how-big-is-space';
-          const back = $('back-to') as HTMLAnchorElement;
-          back.href = from.href;
-          // short enough to read in full at any width: "Home" or "Back" (the single Back control comes later)
-          $('back-name').textContent = String(from.href).split('?')[0] === '/' ? 'Home' : 'Back';
-          back.hidden = false;
-          back.addEventListener('click', () => { try { sessionStorage.setItem('hc-from', JSON.stringify({ ...from, back: true })); } catch {} });
+          // short enough to read at any width: "Home" or "Back"; the full name is in the tooltip
+          const short = String(from.name || '').split(/[:·|,–—]/)[0].trim().slice(0, 40);
+          origin = { href: String(from.href), name: String(from.href).split('?')[0] === '/' ? 'Home' : 'Back', from, label: short } as Origin;
         }
       } catch {}
       const GEAR_NAMES = ['Local', 'Quick', 'Fast', 'Faster', 'Warp 1', 'Warp 2', 'Warp 3', 'Warp 4', 'Warp 5'];
       const gearName = (g: number) => GEAR_NAMES[g] ?? 'Local';
       // the places you have been, for Back
       const trail: [string, string][] = [];
+      // speed: the pill always shows the gear; the full throttle opens when you press the pill or change gear, then tucks away
+      const gearPanel = () => $('gear-panel'), gearPill = () => $('gear-pill');
+      let gearT = 0, gearPinned = false;
+      function openGear(pin = false) {
+        const p = gearPanel(); if (!p) return;
+        p.hidden = false; gearPill().setAttribute('aria-expanded', 'true'); body.classList.add('gear-open');
+        if (pin) gearPinned = true;
+        clearTimeout(gearT);
+        if (!gearPinned) gearT = window.setTimeout(() => { if (!p.contains(document.activeElement) && !p.matches(':hover')) shutGear(); else openGear(); }, 2600);
+      }
+      function shutGear() { clearTimeout(gearT); gearPinned = false; const p = gearPanel(); if (!p) return; p.hidden = true; gearPill().setAttribute('aria-expanded', 'false'); body.classList.remove('gear-open'); }
+      function refreshBack() {
+        const chip = $('step-back') as HTMLButtonElement, place = trail.length >= 2;
+        chip.disabled = !place && !origin;
+        $('back-name').textContent = place ? 'Back' : origin?.name ?? 'Back';
+        chip.title = place ? `Back to ${trail.at(-2)?.[1] ?? 'the last place'} (B)` : origin ? `Leave the 3D view${origin.label ? `: back to ${origin.label}` : ''}` : '';
+        chip.setAttribute('aria-label', place ? `Back to ${trail.at(-2)?.[1] ?? 'the last place'}` : origin ? (origin.name === 'Home' ? 'Back to the home page' : origin.name) : 'Back');
+      }
       let backTarget = '';
       let prevMode = '';
       let stoppedHere = false; // Stop here was pressed: say so, instead of claiming to have arrived
@@ -362,8 +429,10 @@ import { sections } from '../lib/nav';
             $('gen').classList.toggle('illus', !!r.illustrative);
             body.classList.toggle('far', !!r.far);
             body.classList.toggle('free', r.mode === 'free');
-            ($('gears') as HTMLElement).hidden = r.mode !== 'free';
-            $('gear-name').textContent = r.gear > 0 && r.gear < 8 ? gearName(r.gear) : '';
+            { const gh = r.mode !== 'free'; if (($('gears') as HTMLElement).hidden !== gh) { ($('gears') as HTMLElement).hidden = gh; if (gh) shutGear(); } }
+            $('gear-name').textContent = gearName(r.gear);
+            $('gear-name-big').textContent = r.gear > 0 && r.gear < 8 ? gearName(r.gear) : '';
+            body.classList.toggle('warp', r.gear >= 4);
             { const t = $('throttle') as HTMLInputElement; if (document.activeElement !== t) t.value = String(r.gear); t.setAttribute('aria-valuetext', gearName(r.gear)); }
             // on a trip: where to, how long, and a way to stop
             { const eta = $('eta'), cr = r.mode === 'cruise' && !body.classList.contains('touring');
@@ -387,7 +456,7 @@ import { sections } from '../lib/nav';
             focusId = id;
             if (backTarget === id) backTarget = '';
             else if (trail.at(-1)?.[0] !== id) { trail.push([id, name]); if (trail.length > 40) trail.shift(); }
-            ($('step-back') as HTMLButtonElement).disabled = trail.length < 2;
+            refreshBack();
             if (stoppedHere) { stoppedHere = false; $('said').textContent = `Stopped, flying free. Nearest: ${name}.`; }
             else if (!body.classList.contains('touring')) $('said').textContent = `Now at ${name}.`;
             // remember where you are, in the address (so a reload or a shared link comes back here) and for this tab
@@ -406,7 +475,7 @@ import { sections } from '../lib/nav';
             // the way in with nowhere named leaves you circling the Sun with the whole Solar System in view; going anywhere else puts you at the controls
             if (!body.classList.contains('touring') && wentDirect) world.setFree(true);
             $('controls').removeAttribute('inert');
-            $('step-back').removeAttribute('inert');
+            $('step-back').removeAttribute('inert'); refreshBack();
             $('scale').removeAttribute('inert');
             $('threshold').setAttribute('inert', '');
             $('skip').hidden = true;
@@ -539,17 +608,23 @@ import { sections } from '../lib/nav';
       }
       // search: type a name, go there. Places and the named stars of the catalogue.
       const find = document.createElement('input');
-      find.type = 'search'; find.id = 'goto-find'; find.autocomplete = 'off'; find.placeholder = 'Search: Mars, Sirius, Andromeda…'; find.setAttribute('aria-label', 'Search for a place or a star'); find.className = 'goto-find';
-      const results = document.createElement('div'); results.className = 'goto-row goto-results'; results.hidden = true;
+      find.type = 'search'; find.id = 'goto-find'; find.autocomplete = 'off'; find.placeholder = 'Search: Mars, Sirius…'; find.setAttribute('aria-label', 'Search for a place or a star'); find.className = 'goto-find';
+      const results = document.createElement('div'); results.className = 'goto-results'; results.hidden = true; results.setAttribute('role', 'list');
       const groups = [...list.children] as HTMLElement[];
-      list.prepend(results); list.prepend(find);
+      const bar = document.createElement('div'); bar.className = 'goto-bar'; bar.appendChild(find); list.prepend(results); list.prepend(bar);
       let stars: [number, string][] = [];
       fetch('/data/deep/stars.json').then((r) => r.json()).then((j: [number, string][]) => { stars = j; }).catch(() => {});
       const FAMOUS = ['Sirius', 'Proxima Centauri', 'Rigil Kentaurus', 'Betelgeuse', 'Rigel', 'Vega', 'Polaris', 'Arcturus', 'Canopus', 'Antares', 'Aldebaran'];
       const ALIASES: [string, string][] = [['pleiades', 'Seven Sisters'], ['pleiades', 'M45'], ['orion-nebula', 'M42'], ['orion-nebula', 'Orion'], ['local-group', 'Andromeda'], ['local-group', 'Triangulum'], ['local-group', 'Magellanic Clouds'], ['milky-way', 'Galactic Centre'], ['cosmic-web', 'Virgo Cluster'], ['cosmic-web', 'Great Attractor']];
       // every body we hold an orbit for (moons, dwarf planets, asteroids, comets), and every catalogue star by name, Bayer name, HD or HIP number
       let bodyList: [string, string][] = [];
-      import('../data/bodies/index').then(({ allBodies }) => { bodyList = allBodies.filter((b) => b.id && b.name).map((b) => [b.id, b.name] as [string, string]); }).catch(() => {});
+      const kinds: Record<string, string> = {}; // what each result is, shown beside its name
+      PLACES.forEach(([head, ps], gi) => { for (const [id] of ps) kinds[id] = gi === 0 ? (id === 'sun' ? 'Star' : 'Planet') : gi === 7 ? 'Place' : gi === 6 ? 'Small body' : gi === 5 ? 'Dwarf planet or moon' : /moons/.test(head) ? 'Moon' : 'Place'; });
+      import('../data/bodies/index').then(({ allBodies }) => {
+        bodyList = allBodies.filter((b) => b.id && b.name).map((b) => [b.id, b.name] as [string, string]);
+        const nameOf = new Map(allBodies.map((b) => [b.id, b.name]));
+        for (const b of allBodies) kinds[b.id] = b.kind === 'moon' ? `Moon of ${nameOf.get(b.parent ?? '') ?? 'a planet'}` : b.kind === 'dwarf' ? 'Dwarf planet' : b.kind === 'asteroid' ? 'Asteroid' : b.kind === 'comet' ? 'Comet' : b.kind === 'planet' ? 'Planet' : b.kind === 'star' ? 'Star' : kinds[b.id] ?? 'Place';
+      }).catch(() => {});
       let catalogue: [string, string, string][] = []; // id, shown name, text searched
       let catalogueAsked = false;
       const loadCatalogue = () => {
@@ -570,7 +645,7 @@ import { sections } from '../lib/nav';
         const h = document.createElement('p'); h.className = 'goto-h goto-famous'; h.textContent = 'Famous stars';
         const row = document.createElement('div'); row.className = 'goto-row';
         for (const n of FAMOUS) { const st = stars.find(([, nm]) => nm === n); if (!st) continue; const b = document.createElement('button'); b.type = 'button'; b.textContent = n === 'Rigil Kentaurus' ? 'Alpha Centauri' : n; b.addEventListener('click', () => { shutPops(); goTo(`star:${st[0]}`); }); row.appendChild(b); }
-        if (row.children.length) { list.appendChild(h); list.appendChild(row); }
+        if (row.children.length) { const f = list.querySelector('.goto-foot'); list.insertBefore(h, f); list.insertBefore(row, f); }
       };
       $('goto-btn').addEventListener('click', () => { showStars(); loadCatalogue(); renderMarks(); });
       find.addEventListener('focus', loadCatalogue);
@@ -580,14 +655,33 @@ import { sections } from '../lib/nav';
         const norm = (t: string) => t.toLowerCase().replace(/['‘’]/g, '’').replace(/-/g, ' ');
         const q = norm(find.value.trim());
         results.replaceChildren();
+        // while you type, only the answers show: no groups, no saved places, no Save button in the way
         for (const g of groups) g.hidden = !!q;
         list.querySelectorAll<HTMLElement>('.goto-famous, .goto-famous + .goto-row').forEach((e) => { e.hidden = !!q; });
+        list.classList.toggle('searching', !!q);
         results.hidden = !q;
-        if (!q) return;
+        if (!q) { renderMarks(); return; }
         const hits = all().filter(([, n, hay]) => norm(hay ?? n).includes(q)).sort((a, b) => Number(!norm(a[1]).startsWith(q)) - Number(!norm(b[1]).startsWith(q))).slice(0, 12);
-        for (const [id, n] of hits) { const b = document.createElement('button'); b.type = 'button'; b.textContent = n; b.addEventListener('click', () => { shutPops(); find.value = ''; find.dispatchEvent(new Event('input')); goTo(id); }); results.appendChild(b); }
+        for (const [id, n] of hits) {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'goto-hit'; b.setAttribute('role', 'listitem');
+          const nm = document.createElement('span'); nm.className = 'rn'; nm.textContent = n;
+          const kd = document.createElement('span'); kd.className = 'rk'; kd.textContent = id.startsWith('star:') ? 'Star' : kinds[id] ?? 'Place';
+          b.append(nm, kd);
+          b.addEventListener('click', () => { shutPops(); find.value = ''; find.dispatchEvent(new Event('input')); goTo(id); });
+          results.appendChild(b);
+        }
         $('said').textContent = hits.length ? `${hits.length} ${hits.length === 1 ? 'place' : 'places'} found.` : 'Nothing found.';
-        if (!hits.length) { const m = document.createElement('p'); m.className = 'goto-h'; m.textContent = 'Nothing by that name.'; results.appendChild(m); }
+        if (!hits.length) { const m = document.createElement('p'); m.className = 'goto-none'; m.textContent = 'Nothing by that name. Try a planet, a moon or a star.'; results.appendChild(m); }
+      });
+      // arrow keys walk the answers; Esc clears the search first
+      list.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        const items = [...list.querySelectorAll<HTMLElement>(find.value.trim() ? '.goto-hit' : '.goto-row button:not([hidden]), .save-place:not([hidden])')];
+        if (!items.length) return;
+        const at = items.indexOf(document.activeElement as HTMLElement);
+        e.preventDefault();
+        (items[e.key === 'ArrowDown' ? Math.min(items.length - 1, at + 1) : at <= 0 ? -1 : at - 1] ?? find).focus();
+        if (e.key === 'ArrowUp' && at <= 0) find.focus();
       });
       function goTo(id: string) {
         if (!body.classList.contains('in')) return;
@@ -607,16 +701,24 @@ import { sections } from '../lib/nav';
         trail.pop();
         const prev = trail.at(-1)!;
         backTarget = prev[0];
-        ($('step-back') as HTMLButtonElement).disabled = trail.length < 2;
+        refreshBack();
         goTo(prev[0]);
       };
-      $('step-back').addEventListener('click', goBack);
+      // the one Back: the last place if there is one, else out to the page you came from
+      $('step-back').addEventListener('click', () => {
+        if (trail.length >= 2) { goBack(); return; }
+        if (!origin) return;
+        try { sessionStorage.setItem('hc-from', JSON.stringify({ ...origin.from, back: true })); } catch {}
+        location.href = origin.href;
+      });
       const marksHead = document.createElement('p'); marksHead.className = 'goto-h'; marksHead.textContent = 'Saved places';
       const marksRow = document.createElement('div'); marksRow.className = 'goto-row marks';
       const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'save-place'; saveBtn.textContent = 'Save this place';
       const marksWrap = document.createElement('div'); marksWrap.className = 'goto-marks';
-      marksWrap.append(marksHead, marksRow, saveBtn);
+      marksWrap.append(marksHead, marksRow);
       list.insertBefore(marksWrap, groups[0]);
+      // Save sits beside the search box, so it never covers the list
+      bar.appendChild(saveBtn);
       function renderMarks() {
         marksRow.replaceChildren();
         const ms = prefs.marks ?? [];
@@ -630,12 +732,14 @@ import { sections } from '../lib/nav';
         }
         const here = world.focus;
         saveBtn.hidden = !here.id || (prefs.marks ?? []).some((m) => m[0] === here.id) || (prefs.marks ?? []).length >= 12 || !world.canFlyTo(here.id);
+        saveBtn.textContent = 'Save'; saveBtn.title = `Save ${here.name} to your places`; saveBtn.setAttribute('aria-label', `Save ${here.name} to your places`);
       }
       saveBtn.addEventListener('click', () => {
         const here = world.focus;
         prefs.marks = [...(prefs.marks ?? []), [here.id, cap(here.name)] as [string, string]].slice(-12); save(); renderMarks(); $('said').textContent = `${cap(here.name)} saved.`;
       });
       renderMarks();
+      find.addEventListener('input', () => { marksWrap.hidden = !!find.value.trim(); });
 
       // The guided tour: one stop for each step of ten or so in distance, from the Earth out to the oldest light
       const STOPS: [string, string, string][] = [
@@ -750,7 +854,12 @@ import { sections } from '../lib/nav';
       let flyHintT = 0;
       const toggleFly = () => { const on = world.mode !== 'free'; world.setFree(on); if (on) flyHint(); else $('hint').classList.remove('show'); };
       world.onPadFree(() => { if (body.classList.contains('arrived')) toggleFly(); });
-      world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; });
+      world.onGear((g) => { $('said').textContent = `Speed: ${gearName(g)}.`; if (!$('gears').hidden && !gearPanel().contains(document.activeElement)) openGear(); });
+      gearPill().addEventListener('click', () => { if (gearPanel().hidden) { openGear(true); ($('throttle') as HTMLElement).focus({ preventScroll: true }); } else { shutGear(); } });
+      gearPanel().addEventListener('pointerup', () => { clearTimeout(gearT); if (!gearPinned) gearT = window.setTimeout(shutGear, 2600); });
+      gearPanel().addEventListener('focusout', (e) => { if (!gearPinned && !gearPanel().contains((e as FocusEvent).relatedTarget as Node)) gearT = window.setTimeout(shutGear, 600); });
+      addEventListener('keydown', (e) => { if (e.key === 'Escape' && !gearPanel().hidden) { const had = gearPanel().contains(document.activeElement); shutGear(); if (had) gearPill().focus(); } });
+      addEventListener('pointerdown', (e) => { if (!gearPanel().hidden && !$('gears').contains(e.target as Node)) shutGear(); });
       { const done = () => { const c = $('coach'); if (!c.hidden) { c.hidden = true; body.classList.remove('coaching'); prefs.coached = true; save(); } };
         $('coach-ok').addEventListener('click', done);
         ($('space') as HTMLElement).addEventListener('pointerdown', () => setTimeout(done, 4000)); }
@@ -777,12 +886,58 @@ import { sections } from '../lib/nav';
         cv.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse') { card.hidden = true; on = ''; } });
       }
 
+      // ---- keys and help: a full page of its own, opened by ? or the Help button
+      const helpEl = $('help'), helpBtn = $('help-btn');
+      let helpFrom: HTMLElement | null = null;
+      const helpOpen = () => !helpEl.hidden;
+      function openHelp() {
+        if (helpOpen()) return;
+        shutPops(); shutGear(); helpFrom = document.activeElement as HTMLElement | null;
+        helpEl.hidden = false; body.classList.add('help-open');
+        ($('help-x') as HTMLElement).focus({ preventScroll: true });
+      }
+      function closeHelp() {
+        if (!helpOpen()) return;
+        helpEl.hidden = true; body.classList.remove('help-open');
+        (helpFrom && document.contains(helpFrom) && !helpFrom.closest('[inert]') ? helpFrom : helpBtn).focus({ preventScroll: true });
+      }
+      helpBtn.addEventListener('click', openHelp);
+      $('help-open-2').addEventListener('click', openHelp);
+      $('help-x').addEventListener('click', closeHelp);
+      helpEl.addEventListener('pointerdown', (e) => { if (e.target === helpEl) closeHelp(); });
+      // the page behind it stays out of reach: Tab goes round inside, Esc closes
+      addEventListener('keydown', (e) => {
+        if (!helpOpen()) return;
+        if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeHelp(); return; }
+        if (e.key === 'Tab') { const f = [...helpEl.querySelectorAll<HTMLElement>('button, a[href]')]; if (!f.length) return; const first = f[0], last = f[f.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } }
+      }, true);
+
+      // ---- hide the controls (H): everything but the view goes, for a clean look or a screenshot; H or the small chip brings it back
+      const uiShow = $('ui-show');
+      function setUiHidden(on: boolean) {
+        if (on === body.classList.contains('ui-hidden')) return;
+        shutPops(); shutGear(); tourStop();
+        body.classList.toggle('ui-hidden', on);
+        uiShow.hidden = !on;
+        if (on) { $('said').textContent = 'Controls hidden. Press H, or the Show controls button, to bring them back.'; uiShow.classList.add('first'); setTimeout(() => uiShow.classList.remove('first'), 4000); }
+        else { $('said').textContent = 'Controls shown.'; ($('space') as HTMLElement).focus({ preventScroll: true }); }
+      }
+      $('hide-ui-btn').addEventListener('click', () => setUiHidden(true));
+      uiShow.addEventListener('click', () => setUiHidden(false));
+      // a faint ring in the middle of the view while you fly: a fixed point to judge turning against
+      { const cm = $('centre-mark') as HTMLInputElement; cm.checked = prefs.centre !== false;
+        const sync = () => body.classList.toggle('no-centre', !cm.checked);
+        sync(); cm.addEventListener('change', () => { if (cm.checked) delete prefs.centre; else prefs.centre = false; sync(); save(); }); }
+
       // keys of the page's own: Esc to circle the nearest world, [ and ] for the planet before and after
       const ORDER = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
       addEventListener('keydown', (e) => {
         if (!body.classList.contains('arrived') || e.metaKey || e.ctrlKey || e.altKey) return;
         const t = e.target as HTMLElement;
         if (t?.closest?.('input, textarea, select, .margin')) return;
+        if (e.key === '?') { e.preventDefault(); openHelp(); return; }
+        if (body.classList.contains('help-open')) return;
+        if (e.code === 'KeyH' && !e.shiftKey) { setUiHidden(!body.classList.contains('ui-hidden')); return; }
         if (e.code === 'KeyB' && !e.shiftKey) goBack();
         else if (e.key === 'Escape' && world.mode === 'cruise') { stoppedHere = true; world.stop(); }
         else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
@@ -877,10 +1032,6 @@ import { sections } from '../lib/nav';
       .pages { display: flex; gap: clamp(14px, 2vw, 26px); margin-left: auto; }
       .pages a, .menu-btn { display: inline-flex; align-items: center; min-height: 44px; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 1px solid transparent; text-shadow: 0 1px 8px #000; }
       .pages a:hover, .pages a:focus-visible { color: var(--warm); border-bottom-color: rgba(241,201,142,.5); outline: none; }
-      .back-to { flex: none; pointer-events: auto; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; background: var(--glass); white-space: nowrap; }
-      @media (max-width: 420px) { .back-to { padding: 10px 11px; letter-spacing: .04em; } .back-to [aria-hidden] { display: none; } }
-      .back-to:hover, .back-to:focus-visible { color: var(--warm); border-color: var(--warm); outline: none; }
-      .back-to[hidden] { display: none; }
       .menu-btn { display: none; margin-left: auto; border: 1px solid var(--line); border-radius: 999px; padding: 10px 16px; background: var(--glass); }
       .menu { position: fixed; z-index: 41; top: 54px; right: clamp(16px, 4vw, 48px); width: min(22rem, calc(100vw - 2 * 16px)); background: rgba(9,9,11,.96); border: 1px solid var(--line); padding: 6px 0; }
       .menu[hidden] { display: none; }
@@ -929,17 +1080,77 @@ import { sections } from '../lib/nav';
       body.calm .aperture, body.calm .ring, body.calm .aperture::after { transition-duration: .01s !important; }
       body.calm.in .aperture { transform: none; }
 
-      .gears { position: fixed; z-index: 21; left: var(--gut); bottom: calc(var(--bot) + 104px); display: flex; align-items: center; gap: 4px; padding: 4px; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; }
+      /* ---- the readout and the speed pill, side by side. The full throttle opens above the pill only while you change gear */
+      .hud-l { display: flex; align-items: flex-end; gap: 14px; min-width: 0; pointer-events: none; }
+      .gears { position: relative; flex: none; pointer-events: auto; }
       .gears[hidden] { display: none; }
-      .gears button { width: 44px; height: 44px; border-radius: 50%; font: 300 1.3rem/1 var(--serif); color: var(--ink); }
-      .gears button:disabled { opacity: .35; }
-      .gears button:hover:not(:disabled), .gears button:focus-visible { color: var(--warm); background: rgba(241,201,142,.08); outline: none; }
+      .gear-pill { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 18px; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+      .gear-pill .gp-k { color: var(--faint); }
+      .gear-pill .gp-v { color: var(--ink); min-width: 4.4em; text-align: left; }
+      body.warp .gear-pill .gp-v { color: var(--warm); }
+      .gear-pill:hover, .gear-pill:focus-visible, .gear-pill[aria-expanded="true"] { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
+      .gear-pill:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+      .gear-panel { position: absolute; left: 0; bottom: calc(100% + 10px); width: min(20rem, calc(100vw - 2 * var(--gut))); display: flex; flex-direction: column; gap: 6px; padding: 12px 18px 10px; background: rgba(9,9,11,.96); border: 1px solid var(--line); border-radius: 14px; }
+      .gear-panel[hidden] { display: none; }
+      body.gear-open .hint { opacity: 0; }
+      .back-chip { max-width: min(62vw, 17rem); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      /* one-glyph buttons in the row: settings and help */
+      .pill.icon { display: inline-grid; place-items: center; width: 48px; padding: 0; }
+      .pill.icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+      .pill.icon .dot { fill: currentColor; stroke: none; }
+      .pill.icon .lbl { display: none; }
+      .kbd { display: inline-block; margin-left: 8px; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; font: 400 .8125rem/1 var(--mono); letter-spacing: .04em; color: var(--soft); }
+      @media (pointer: coarse) { .kbd { display: none; } }
+      .free-btn { display: flex; justify-content: center; align-items: center; }
+      /* Go to: the search stays at the top and Save at the foot, so the answers sit between them */
+      .goto-list { padding-top: 0; }
+      .goto-bar { position: sticky; top: 0; z-index: 2; margin: 0 -18px 10px; padding: 16px 18px 8px; background: rgba(9,9,11,.97); }
+      .goto-bar { display: flex; align-items: center; gap: 8px; }
+      .goto-bar .goto-find { margin: 0; flex: 1; min-width: 0; }
+      .goto-bar .save-place { flex: none; margin: 0; padding: 0 14px; min-height: 44px; }
+      .goto-list.searching .save-place { display: none; }
+      .goto-results { display: grid; margin: 0 0 10px; }
+      .goto-results[hidden] { display: none; }
+      .goto-hit { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; width: 100%; min-height: 48px; padding: 8px 0; text-align: left; border-bottom: 1px solid rgba(236,231,220,.08); }
+      .goto-hit .rn { font: 300 1.125rem/1.25 var(--serif); color: var(--ink); }
+      .goto-hit .rk { font: 400 .8125rem/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--faint); text-align: right; }
+      .goto-hit:first-child .rn, .goto-hit:hover .rn, .goto-hit:focus-visible .rn { color: var(--warm); }
+      .goto-hit:focus-visible { outline: 2px solid var(--warm); outline-offset: -2px; }
+      .goto-none { margin: 8px 0 14px; font: 300 1rem/1.4 var(--serif); color: var(--soft); }
+      /* keys and help: a page of its own */
+      .help { position: fixed; z-index: 70; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: calc(var(--top) + 36px) var(--gut) 48px; background: rgba(5,6,10,.97); }
+      .help[hidden] { display: none; }
+      .help-in { max-width: 62rem; margin: 0 auto; }
+      .help-x { position: fixed; z-index: 71; top: var(--top); right: var(--gut); display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+      .help-x:hover, .help-x:focus-visible { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
+      .help-x:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+      .help h2 { margin: 0 0 .5rem; font: 200 clamp(2rem, 5vw, 3.2rem)/1.1 var(--serif); }
+      .help-lead { margin: 0 0 clamp(24px, 5vh, 44px); font: italic 300 1.2rem/1.5 var(--serif); color: var(--soft); max-width: 34em; }
+      .help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: 8px clamp(24px, 5vw, 64px); }
+      .help h3 { margin: 18px 0 8px; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+      .help dl { margin: 0; }
+      .help dl div { display: grid; grid-template-columns: 8.5rem 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(236,231,220,.1); }
+      .help dt { font: 400 .8125rem/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink); }
+      .help dd { margin: 0; font: 300 1.0625rem/1.45 var(--serif); color: var(--soft); }
+      @media (max-width: 520px) { .help dl div { grid-template-columns: 1fr; gap: 2px; } }
+      /* hide the controls (H): only the view is left */
+      body.ui-hidden .top, body.ui-hidden .menu, body.ui-hidden .controls, body.ui-hidden .hud, body.ui-hidden .scale, body.ui-hidden .back-chip, body.ui-hidden .gen, body.ui-hidden .hint, body.ui-hidden .pad,
+      body.ui-hidden .coach, body.ui-hidden .tour, body.ui-hidden .aim, body.ui-hidden .eta, body.ui-hidden .margin, body.ui-hidden #margin-tab, body.ui-hidden .deep-labels, body.ui-hidden .tech { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      .ui-show { position: fixed; z-index: 50; right: var(--gut); bottom: var(--bot); min-height: 44px; padding: 0 16px; border: 1px solid rgba(236,231,220,.2); border-radius: 999px; background: transparent; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--soft); opacity: .4; transition: opacity .4s ease; }
+      .ui-show[hidden] { display: none; }
+      .ui-show:hover, .ui-show:focus-visible, .ui-show.first { opacity: 1; }
+      .ui-show:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
+      /* a faint ring in the middle of the view, only while you fly yourself */
+      .centre { position: fixed; z-index: 4; left: 50%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+      .centre svg { display: block; width: 100%; height: 100%; fill: none; stroke: rgba(236,231,220,.7); stroke-width: 1; stroke-linecap: round; }
+      body.arrived.free .centre { opacity: .38; }
+      body.no-centre .centre, body.tripping .centre, body.ui-hidden .centre, body.help-open .centre { opacity: 0; }
+      .hint { position: fixed; z-index: 15; left: 50%; bottom: calc(var(--bot) + 66px); transform: translateX(-50%); margin: 0; padding: 10px 16px; width: max-content; max-width: min(44rem, calc(100vw - 2 * var(--gut))); text-align: center; font: 300 1rem/1.4 var(--serif); color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; opacity: 0; pointer-events: none; transition: opacity .8s ease; }
+
       .back-chip { position: fixed; z-index: 20; left: var(--gut); top: calc(var(--top) + 112px); min-width: 44px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); color: var(--ink); font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; opacity: 0; pointer-events: none; transition: opacity .8s ease .4s; }
       body.arrived .back-chip { opacity: 1; pointer-events: auto; }
       .back-chip:disabled { display: none; }
       .back-chip:hover { color: var(--warm); border-color: rgba(241,201,142,.6); }
-      .gears.throttle { left: 50%; transform: translateX(-50%); bottom: calc(var(--bot) + 6px); flex-direction: column; align-items: stretch; gap: 6px; width: min(380px, calc(100vw - 32px)); padding: 12px 18px 10px; border-radius: 14px; }
-      .gears[hidden] { display: none; }
       .throttle .tl { display: flex; justify-content: space-between; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--soft); }
       .throttle .tl span:nth-child(2) { color: var(--warm); }
       .throttle input[type="range"] { width: 100%; height: 44px; margin: 0; accent-color: #f1c98e; }
@@ -1052,7 +1263,6 @@ import { sections } from '../lib/nav';
       @media (min-width: 601px) and (max-width: 760px) { body.margin-open .controls { opacity: 0; pointer-events: none; } }
 
       /* a hint, once, after arriving */
-      .hint { position: fixed; z-index: 15; left: 50%; bottom: calc(var(--bot) + 124px); transform: translateX(-50%); margin: 0; padding: 10px 16px; max-width: calc(100vw - 32px); text-align: center; font: 300 1rem/1.4 var(--serif); color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; opacity: 0; pointer-events: none; transition: opacity .8s ease; width: max-content; }
       .hint.show { opacity: 1; }
       .tour { position: fixed; z-index: 30; left: 50%; bottom: calc(var(--bot) + 76px); transform: translateX(-50%); width: min(30rem, calc(100vw - 32px)); padding: 16px 18px 14px; background: var(--glass); border: 1px solid var(--line); border-radius: 14px; text-shadow: 0 1px 10px #000; }
       .tour[hidden] { display: none; }
@@ -1078,26 +1288,27 @@ import { sections } from '../lib/nav';
       /* ---- phone dock: four big slots along the bottom, in place of the floating pills */
       @media (max-width: 600px) {
         :root { --dock: calc(56px + env(safe-area-inset-bottom, 0px)); }
-        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
+        .controls { box-sizing: border-box; left: 0; right: 0; bottom: 0; gap: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: stretch; height: var(--dock); padding-bottom: env(safe-area-inset-bottom, 0px); background: rgba(7,8,13,.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--line); }
         .controls .pop { display: block; min-width: 0; }
         .controls .pop > .pill, .controls > .pill { width: 100%; height: 100%; min-height: 55px; border: 0; border-radius: 0; background: transparent; padding: 0 4px; font-size: .8125rem; letter-spacing: .12em; display: grid; place-items: center; }
         .controls > #tour-btn { order: 3; }
-        .gears.throttle { left: var(--gut); transform: none; bottom: calc(var(--dock) + 10px); width: calc(100vw - 2 * var(--gut) - 76px); padding: 10px 14px 6px; }
         .throttle .th { display: none; }
         .scale { top: calc(var(--top) + 50px); }
         .coach { left: var(--gut); right: var(--gut); width: auto; transform: none; bottom: calc(var(--dock) + 10px); padding: 12px 16px; gap: 6px; }
         .coach p { font-size: 1rem; }
-        body.picking .gears.throttle, body.picking .pad { visibility: hidden; }
+        body.picking .gears, body.picking .pad { visibility: hidden; }
         body.coaching .hud, body.picking .hud { padding-bottom: calc(var(--dock) + 170px); }
-        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 4; }
+        .controls > #goto { order: 1; } .controls > #time { order: 2; } .controls > #view { order: 4; } .controls > #help-btn { order: 5; }
         .controls .pill[aria-expanded="true"] { box-shadow: inset 0 2px 0 var(--warm); }
         .controls > .pill[aria-pressed="true"] { color: var(--warm); background: transparent; box-shadow: inset 0 2px 0 var(--warm); }
         .sheet { bottom: calc(var(--dock) + 8px); }
         /* the Codex leaves the header and the dock free, so Menu and the pills stay usable */
         body .margin { top: 56px; bottom: var(--dock); }
-        .hud { padding-bottom: calc(var(--dock) + 92px); }
+        .hud { padding-bottom: calc(var(--dock) + 14px); }
+        .gears { position: static; }
+        .gear-panel { position: fixed; left: var(--gut); bottom: calc(var(--dock) + 10px); width: calc(100vw - 2 * var(--gut) - 88px); }
         .tour { bottom: calc(var(--dock) + 10px); }
-        .hint { bottom: calc(var(--dock) + 20px); }
+        .hint { bottom: calc(var(--dock) + 176px); width: auto; }
         .pad { bottom: calc(var(--dock) + 10px); }
       }
 
@@ -1110,12 +1321,10 @@ import { sections } from '../lib/nav';
       .under-sheet { visibility: hidden !important; }
       @media (max-height: 520px) { .sheet { bottom: calc(100% + 12px); max-height: calc(100dvh - var(--bot) - 48px - 12px - 64px); } }
       @media (min-width: 601px) and (max-width: 1180px) {
-        .gears.throttle { left: calc(var(--gut) + 190px); transform: none; width: clamp(220px, calc(100vw - 2 * var(--gut) - 560px), 340px); }
         .throttle .th { display: none; }
         .readout { max-width: 180px; }
       }
       @media (min-width: 601px) and (max-width: 760px) {
-        .gears.throttle { left: auto; right: var(--gut); transform: none; bottom: calc(var(--bot) + 60px); width: min(320px, calc(100vw - 2 * var(--gut))); }
         body .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 150px); height: 96px; padding: 14px 0; }
       }
       /* the Codex tab sits at the right edge, so on a mid-sized touch screen the pad stands clear of it */
@@ -1128,6 +1337,12 @@ import { sections } from '../lib/nav';
         .controls .pill:focus-visible { outline-offset: -4px; }
       }
 
+
+      /* when the row is crowded (a phone, a small tablet) the speed pill stacks over the readout instead of beside it */
+      @media (max-width: 900px) { .hud-l { flex-direction: column-reverse; align-items: flex-start; gap: 8px; } .gears { margin-bottom: 12px; } }
+      /* a short landscape screen has no room for the passing hint: Help and the first-visit card cover it */
+      @media (max-height: 520px) { .hint { display: none; } }
+      @media (pointer: coarse) { body.free .hud-l { max-width: calc(100vw - 2 * var(--gut) - 88px); } }
       /* a ring that shows where the keyboard is, whatever the colours do */
       .pill:focus-visible, .back-chip:focus-visible, .eta button:focus-visible, .tour-b button:focus-visible, .goto-row button:focus-visible, .coach button:focus-visible, .free-btn:focus-visible, .save-place:focus-visible, .aim-go:focus-visible, .scale button:focus-visible, .pages a:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
       .scale button:focus-visible { outline-offset: -4px; border-radius: 8px; }

@@ -237,7 +237,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   }
   let farLoaded = false;
   const loadFar = () => { if (farLoaded) return; farLoaded = true; deep.load(); };
-  let saturnShadows: { holder: THREE.Group; ball: THREE.Mesh; sunH: { value: THREE.Vector3 }; sunL: { value: THREE.Vector3 } } | null = null;
+  let saturnShadows: { holder: THREE.Group; ball: THREE.Mesh; sunH: { value: THREE.Vector3 }; sunL: { value: THREE.Vector3 }; face: { value: number } } | null = null;
   // Saturn's rings, from the inner C ring to the F ring, mapped by distance from the centre
   {
     const IN = 74_500_000, OUT = 140_220_000;
@@ -259,7 +259,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       // the way to the Sun, in the holder's frame (y the pole) and in the globe's own unit-sphere frame
       const sunH = uniform(new THREE.Vector3(0, 1, 0)) as any;
       const sunL = uniform(new THREE.Vector3(0, 1, 0)) as any;
-      saturnShadows = { holder, ball, sunH, sunL };
+      // 1 when you look at the face of the rings the Sun shines on; down to 0.3 from the other side, where they are seen by the light that comes through
+      const face = uniform(1) as any;
+      saturnShadows = { holder, ball, sunH, sunL, face };
       // a point of the rings, in the holder's frame, squashed so the planet becomes a sphere of radius A
       const pl = positionLocal as any;
       const P = vec3(pl.x, float(0), pl.y.negate()).mul(vec3(1, A / C, 1));
@@ -268,7 +270,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const miss = length(P.sub(sq.mul(along)));
       // lit unless the ray to the Sun passes through the planet, with a soft edge for the penumbra
       const litR = select(along.lessThan(0), smoothstep(A * 0.93, A * 1.07, miss), float(1));
-      ringMat.colorNode = (texture(tex) as any).mul(vec4(vec3(litR.mul(0.9).add(0.1)), 1));
+      ringMat.colorNode = (texture(tex) as any).mul(vec4(vec3(litR.mul(0.9).add(0.1).mul(face)), 1));
       // a point of the globe (unit sphere, before its scale), followed towards the Sun to the ring plane
       const gp = positionLocal as any;
       const t = gp.y.negate().div(select((sunL as any).y.abs().lessThan(1e-6), float(1e-6), (sunL as any).y));
@@ -707,6 +709,12 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const b = saturnShadows.ball;
       const l = saturnShadows.sunH.value.clone().applyEuler(new THREE.Euler(0, -b.rotation.y, 0));
       saturnShadows.sunL.value.set(l.x / b.scale.x, l.y / b.scale.y, l.z / b.scale.z);
+      // which side of the ring plane the camera is on, against the side the Sun is on
+      const hp = saturnShadows.holder.position;
+      const camH = new THREE.Vector3(-hp.x, -hp.y, -hp.z).applyQuaternion(saturnShadows.holder.quaternion.clone().invert());
+      const cd = camH.length() || 1;
+      const same = Math.sign(saturnShadows.sunH.value.y || 1) * (camH.y / cd); // +1 same side, -1 opposite
+      saturnShadows.face.value = 0.3 + 0.7 * smooth(-0.05, 0.05, same);
     }
     for (let i = mapFades.length - 1; i >= 0; i--) {
       const f = mapFades[i], k = Math.min(1, (performance.now() - f.t0) / 900);
@@ -867,8 +875,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         let endDir: V3 = now;
         // arrive on a slant, towards the lit side and a little above the planet's plane, not square on
         if (id !== 'sun' && len(toS) > 0) {
-          const lit0 = norm(add(add(scale(toS, 0.7), scale(norm(cross(toS, north)), 0.55)), scale(north, 0.45)));
-          endDir = norm(slerp(now, lit0, 0.6));
+          // about 65 degrees off the Sun's line, so the terminator and the night side are in view when you arrive, not a full face
+          const lit0 = norm(add(add(scale(toS, 0.38), scale(norm(cross(toS, north)), 0.8)), scale(north, 0.42)));
+          endDir = norm(slerp(now, lit0, 0.92));
         }
         if (id !== 'sun' && len(toS) > 0 && vdot(endDir, toS) < 0.3) {
           const lit = norm(add(add(scale(toS, 0.7), scale(norm(cross(toS, north)), 0.55)), scale(north, 0.45)));

@@ -38,9 +38,11 @@ export function createSky(opts: { catalogue?: boolean } = {}) {
 
   // ---- the Milky Way's diffuse glow, on a sphere round the camera
   const glowMat = new THREE.MeshBasicNodeMaterial({ side: THREE.BackSide, depthTest: false, depthWrite: false });
-  const glowTex = new THREE.TextureLoader().load('/textures/2k_milky_way_glow.webp');
+  const glowTex = new THREE.TextureLoader().load('/textures/2k_milky_way_glow_x8.webp');
   glowTex.colorSpace = THREE.SRGBColorSpace;
-  glowMat.colorNode = texture(glowTex).rgb.mul(vec3(0.23, 0.215, 0.195)).mul(starGain).mul(glowGain);
+  // the picture is stored 8 times brighter than it is shown, blurred smooth, so the dim glow has fine steps instead of flat bands and codec blocks; a trace of noise hides what is left
+  const glowGrain = fract(sin(dot(uv().mul(vec2(1317.3, 641.7)), vec2(12.9898, 78.233))).mul(43758.5453)).sub(0.5).mul(0.0007);
+  glowMat.colorNode = texture(glowTex).rgb.mul(vec3(0.23, 0.215, 0.195).div(8)).add(vec3(glowGrain)).max(float(0)).mul(starGain).mul(glowGain);
   const glow = new THREE.Mesh(new THREE.SphereGeometry(FAR * 1.2, 48, 24), glowMat);
   glow.renderOrder = -20;
   scene.add(glow);
