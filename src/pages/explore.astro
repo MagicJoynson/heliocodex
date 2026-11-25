@@ -936,8 +936,8 @@ import { sections } from '../lib/nav';
         const t = e.target as HTMLElement;
         if (t?.closest?.('input, textarea, select, .margin')) return;
         if (e.key === '?') { e.preventDefault(); openHelp(); return; }
-        if (e.code === 'KeyH' && !e.shiftKey) { setUiHidden(!body.classList.contains('ui-hidden')); return; }
         if (body.classList.contains('help-open')) return;
+        if (e.code === 'KeyH' && !e.shiftKey) { setUiHidden(!body.classList.contains('ui-hidden')); return; }
         if (e.code === 'KeyB' && !e.shiftKey) goBack();
         else if (e.key === 'Escape' && world.mode === 'cruise') { stoppedHere = true; world.stop(); }
         else if (e.key === 'Escape' && world.mode === 'free') world.setFree(false);
