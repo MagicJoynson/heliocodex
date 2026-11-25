@@ -11,16 +11,37 @@ export const CITIES: [string, number, number][] = [
   ['Denver', 39.74, -104.99], ['Chicago', 41.88, -87.63], ['New York', 40.71, -74.01], ['Toronto', 43.65, -79.38],
   ['Mexico City', 19.43, -99.13], ['Bogotá', 4.71, -74.07], ['Lima', -12.05, -77.04], ['São Paulo', -23.55, -46.63],
   ['Buenos Aires', -34.6, -58.38], ['Santiago', -33.45, -70.67],
+  ['Perth', -31.95, 115.86], ['Brisbane', -27.47, 153.03], ['Adelaide', -34.93, 138.6], ['Seoul', 37.57, 126.98],
+  ['Hong Kong', 22.32, 114.17], ['Manila', 14.6, 120.98], ['Bangkok', 13.76, 100.5], ['Jakarta', -6.2, 106.85],
+  ['Dhaka', 23.81, 90.41], ['Karachi', 24.86, 67.01], ['Tehran', 35.69, 51.39], ['Riyadh', 24.71, 46.68],
+  ['Cape Town', -33.92, 18.42], ['Kyiv', 50.45, 30.52], ['Warsaw', 52.23, 21.01], ['Lisbon', 38.72, -9.14],
+  ['Vienna', 48.21, 16.37], ['Oslo', 59.91, 10.75], ['Helsinki', 60.17, 24.94],
+  ['Vancouver', 49.28, -123.12], ['Anchorage', 61.22, -149.9], ['Houston', 29.76, -95.37], ['Miami', 25.76, -80.19], ['Caracas', 10.48, -66.9],
 ];
-// the device's clock names a city for its time zone; these are the ones spelt differently from the list
-const ALSO: Record<string, string> = { Kolkata: 'Delhi', Calcutta: 'Delhi', Shanghai: 'Beijing', Sao_Paulo: 'São Paulo', Bogota: 'Bogotá', Argentina: 'Buenos Aires' };
+// the device's clock names a city for its time zone (the IANA name, such as Australia/Perth); these are the zones named for a city
+// that is not in the list, so they point to the listed city in the same zone or the nearest one
+const ALSO: Record<string, string> = {
+  Kolkata: 'Delhi', Calcutta: 'Delhi', Shanghai: 'Beijing', Sao_Paulo: 'São Paulo', Bogota: 'Bogotá', Argentina: 'Buenos Aires', Buenos_Aires: 'Buenos Aires',
+  Detroit: 'New York', Montreal: 'Toronto', Boston: 'New York', Washington: 'New York', Atlanta: 'New York', Halifax: 'New York', Indianapolis: 'New York',
+  Winnipeg: 'Chicago', Dallas: 'Houston', Phoenix: 'Denver', Edmonton: 'Denver', Calgary: 'Denver', Boise: 'Denver', Seattle: 'Vancouver', Juneau: 'Anchorage',
+  Havana: 'Miami', Panama: 'Bogotá', Guayaquil: 'Bogotá', Montevideo: 'Buenos Aires', Asuncion: 'Buenos Aires', La_Paz: 'Lima',
+  Belfast: 'London', Jersey: 'London', Isle_of_Man: 'London', Brussels: 'Paris', Amsterdam: 'Paris', Luxembourg: 'Paris', Zurich: 'Paris', Prague: 'Berlin', Copenhagen: 'Berlin', Budapest: 'Vienna', Bucharest: 'Athens', Sofia: 'Athens', Kiev: 'Kyiv', Minsk: 'Moscow', Riga: 'Helsinki', Tallinn: 'Helsinki', Vilnius: 'Helsinki', Belgrade: 'Vienna', Zagreb: 'Vienna', Barcelona: 'Madrid',
+  Melbourne: 'Sydney', Canberra: 'Sydney', Hobart: 'Sydney', Darwin: 'Adelaide', Chongqing: 'Beijing', Taipei: 'Hong Kong', Macau: 'Hong Kong', Ho_Chi_Minh: 'Bangkok', Saigon: 'Bangkok', Kuala_Lumpur: 'Singapore', Colombo: 'Mumbai', Kathmandu: 'Delhi', Kabul: 'Karachi', Tashkent: 'Karachi', Baghdad: 'Riyadh', Kuwait: 'Riyadh', Qatar: 'Dubai', Muscat: 'Dubai', Jerusalem: 'Athens', Tel_Aviv: 'Athens', Beirut: 'Athens', Amman: 'Athens', Addis_Ababa: 'Nairobi', Dar_es_Salaam: 'Nairobi', Accra: 'Lagos', Algiers: 'Paris', Casablanca: 'Madrid', Tunis: 'Rome', Harare: 'Johannesburg', Maputo: 'Johannesburg',
+  Fiji: 'Auckland', Tongatapu: 'Auckland', Azores: 'Reykjavik', Canary: 'Lisbon', Madeira: 'Lisbon',
+};
+const CONTINENT_LAT: Record<string, (lat: number) => boolean> = { Australia: (a) => a < 0, Antarctica: (a) => a < 0, Europe: (a) => a > 34, Asia: (a) => a > -12, America: () => true, Africa: () => true, Pacific: () => true, Atlantic: () => true, Indian: () => true };
 
-/** A first guess at where the visitor is, from the time zone their device is set to. Nothing is sent anywhere. */
+/** A first guess at where the visitor is, from the IANA name of the time zone their device is set to. Nothing is sent anywhere. */
 export function guess(): number {
   let zone = '';
   try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone ?? ''; } catch { /* keep the default */ }
   const parts = zone.split('/'), last = parts[parts.length - 1] ?? '';
   const name = ALSO[last] ?? ALSO[parts[1] ?? ''] ?? last.replace(/_/g, ' ');
   const found = CITIES.findIndex((c) => c[0] === name);
-  return found < 0 ? 0 : found;
+  if (found >= 0) return found;
+  // a zone named for a place that is not listed: of the cities on the same side of the Equator or continent, the one nearest the clock's offset from UTC
+  const lon = (-new Date().getTimezoneOffset() / 60) * 15, ok = CONTINENT_LAT[parts[0]] ?? (() => true);
+  let best = 0, gap = Infinity;
+  CITIES.forEach((c, i) => { if (!ok(c[1])) return; const g = Math.abs(c[2] - lon); if (g < gap) { gap = g; best = i; } });
+  return best;
 }

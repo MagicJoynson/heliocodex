@@ -24,7 +24,7 @@ const P = planets.map((b) => {
 // a moon list that would run into its neighbour's starts below it instead
 P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && p.x - q.x < 7) p.skip = q.skip + q.moons.length; });
 // each moon row is 1.5rem (24px) tall so that every link meets the 24px target size; the band is as tall as the longest list
-const bandRem = Math.max(12.5, ...P.map((p) => 2.2 + p.d / 32 + 1.3 + (p.skip + p.moons.length) * 1.5 + 1));
+const bandRem = Math.max(12.5, 0, ...P.map((p) => 2.2 + p.d / 32 + 1.3 + (p.skip + p.moons.length) * 1.5 + 1));
 const LANES = [
   { kind: 'asteroid', name: 'Asteroids', about: 'rocky and metal worlds' },
   { kind: 'comet', name: 'Comets', about: 'icy, on stretched paths' },
@@ -73,7 +73,7 @@ for (const l of LANES) l.rows.forEach((r, i) => {
 vlabels.sort((a, b) => a.y - b.y);
 let floor = 0;
 for (const l of vlabels) {
-  const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 5.8 + 6 : 0) > 168 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
+  const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 7.8 + 6 : 0) > 168 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
   l.y = Math.max(l.y - 9, floor);
   floor = l.y + 3 + 17 + (lines - 1) * 14;
 }
@@ -92,7 +92,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
       <ol class="wm-planets" style={`height:${bandRem.toFixed(1)}rem`}>
         {P.map((p) => (
-          <li style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
+          <li class:list={[{ flip: p.id === 'jupiter', low: p.id === 'earth', shift: p.id === 'uranus' }]} style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
             <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
             <span class="wp-au">{fmtAu(p.a)} au</span>
             {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li class:list={[{ written: written(m.id) }]}><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
@@ -156,20 +156,26 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wm-field { position: relative; margin: 0 7rem 0 2.2rem; padding: 3.6rem 0 1rem; }
   .wm-zone { position: absolute; top: 0; bottom: 0; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); border-left: 1px solid rgba(236,231,220,.07); }
   .wm-zone.alt { background: rgba(236,231,220,.025); }
-  .wm-zone span { position: absolute; top: 0; left: .5rem; font: 400 .66rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
+  .wm-zone span { position: absolute; top: 0; left: .5rem; font: 400 .8125rem/1 var(--r-mono); letter-spacing: .03em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
   .wm-ticks { position: absolute; top: 1.6rem; left: 0; right: 0; }
   .wm-ticks i { position: absolute; left: calc(var(--x) * 1%); font-style: normal; }
-  .wm-ticks b { position: absolute; transform: translateX(-50%); font: 400 .66rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; font-weight: 400; }
+  .wm-ticks b { position: absolute; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; font-weight: 400; }
   .wm-ticks i::after { content: ''; position: absolute; top: 1.1rem; left: 0; width: 1px; height: .4rem; background: var(--rule); }
   .wm-sun { position: absolute; left: -2.2rem; top: 5.2rem; width: 34px; height: 34px; border-radius: 50%; background: #f6d38e; box-shadow: 0 0 28px rgba(246,211,142,.6); }
   .wm-planets { list-style: none; margin: 0; padding: 0; position: relative; height: 12.5rem; }
   .wm-planets > li { position: absolute; left: calc(var(--x) * 1%); top: 2.2rem; }
   .wp-dot { position: absolute; left: calc(var(--d) / -2); top: calc(var(--d) / -2); width: var(--d); height: var(--d); border-radius: 50%; background: var(--accent); }
   .wp-dot span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(var(--sx, -50%)); font: 400 1rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
-  .wp-au { position: absolute; top: calc(var(--d) / 2 + .3rem); left: 0; transform: translateX(-50%); font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
+  .wp-au { position: absolute; top: calc(var(--d) / 2 + .3rem); left: 0; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
   .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: 0; padding-top: calc(var(--skip) * 1.5rem); }
-  .wp-moons a { display: flex; align-items: center; gap: .35rem; min-height: 1.5rem; font: 400 .8rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
+  .wp-moons a { display: flex; align-items: center; gap: .35rem; min-height: 1.5rem; font: 400 .8125rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
   .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
+  .wm-planets > li.shift .wp-moons { left: .4rem; }
+  .wm-planets > li.low .wp-au { top: calc(var(--d) / 2 + 1.1rem); }
+  .wm-planets > li.low .wp-moons { top: calc(var(--d) / 2 + 2.1rem); }
+  /* Jupiter's long list of moons reads to the left, so it clears Saturn's */
+  .wm-planets > li.flip .wp-moons { left: auto; right: -.5rem; padding: calc(var(--skip) * 1.5rem) .5rem 0 0; border-left: 0; border-right: 1px solid rgba(233,196,138,.25); justify-items: end; }
+  .wm-planets > li.flip .wp-moons a { flex-direction: row-reverse; }
   .wp-moons li.written a { color: var(--ink); }
   .wp-moons li.written a::before { background: var(--accent); }
   .wm-lane { position: relative; margin-top: 1rem; }
@@ -188,7 +194,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wr.over .wr-name { left: calc(var(--q) * 1% + .9rem); top: auto; bottom: 50%; transform: none; padding-bottom: 3px; }
   .wr-name a { color: var(--ink); border-bottom: 1px dashed rgba(233,196,138,.4); }
   .wr-name a.wr-moon { color: var(--ink-soft); font-size: .82rem; }
-  .wr-name small { margin-left: .45rem; font: 400 .6rem/1 var(--r-mono); color: var(--ink-faint); }
+  .wr-name small { margin-left: .45rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); }
   .wr:hover .wr-span, .wr:focus-within .wr-span { background: var(--accent); }
   .wr:hover .wr-dot, .wr:focus-within .wr-dot { background: var(--accent); }
   .wm figcaption { font: 300 .92rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 1.6rem; max-width: 46rem; }
@@ -198,14 +204,14 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .w-more { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; }
   .wm-v { display: none; }
   .v-note { display: none; }
-  @media (max-width: 860px) {
+  @media (max-width: 760px) {
     .wm-field { display: none; }
     .wm-v { display: block; position: relative; height: var(--vh); }
     .wm-vs { position: absolute; left: 0; top: 0; overflow: visible; }
     .vz { fill: rgba(236,231,220,.035); }
     .vsun { fill: #f6d38e; }
     .vax { stroke: rgba(236,231,220,.25); stroke-width: 1; }
-    .vt { font: 400 10px var(--r-mono); fill: var(--ink-faint); text-anchor: end; }
+    .vt { font: 400 13px var(--r-mono); fill: var(--ink-faint); text-anchor: end; }
     .vp { fill: var(--accent); }
     .vm line, .vm path { stroke: rgba(233,196,138,.55); stroke-width: 1; fill: none; }
     .vm circle { fill: #0b0b0c; stroke: rgba(233,196,138,.9); stroke-width: 1; }
@@ -214,8 +220,8 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
     .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/17px var(--r-serif); }
     .wm-vl li > a { color: var(--ink); display: inline-block; padding: 4px 0; margin: -4px 0; }
     .wm-vl li.out > a { text-decoration: underline dashed rgba(233,196,138,.5); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-    .wm-vl small { margin-left: .4rem; font: 400 .58rem/14px var(--r-mono); color: var(--ink-faint); }
-    .wm-vl .vl-moons { display: block; font: 300 .8rem/14px var(--r-serif); color: var(--ink-faint); }
+    .wm-vl small { margin-left: .4rem; font: 400 .8125rem/16px var(--r-mono); color: var(--ink-faint); }
+    .wm-vl .vl-moons { display: block; font: 300 .8125rem/14px var(--r-serif); color: var(--ink-faint); }
     .wm-vl .vl-moons a { color: var(--ink-soft); }
     .wm-vl .vl-moons a.w { color: var(--ink); font-weight: 400; }
     .wm-key { grid-template-columns: minmax(0, 1fr); }

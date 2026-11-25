@@ -27,7 +27,7 @@
 /* on the record layout the star's drawing sits beside its data sheet */
 .rec-pic.star-face canvas { max-height: 26rem; }
 .rec-pic.star-face figcaption { text-align: left; margin: 0; }
-@media (max-width: 860px) { .rec-pic.star-face canvas { max-height: 15rem; } }
+@media (max-width: 760px) { .rec-pic.star-face canvas { max-height: 15rem; } }
 
 /* the star drawn beside the Sun, to one scale */
 .size-face svg { display: block; width: 100%; height: auto; max-height: 26rem; }

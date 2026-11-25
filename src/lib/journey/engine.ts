@@ -123,7 +123,9 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
 
   const pos = new THREE.Vector3(), dir = new THREE.Vector3(), fwd = new THREE.Vector3(), look = new THREE.Vector3(), q = new THREE.Quaternion();
   const endAlt = o.handoverAlt;
-  let clock = performance.now(), tSim = 0;
+  // the worlds whose opening words sit on the left: the planet starts a little right of centre so the name is not printed across it
+  const SHIFTED: Record<string, [number, number]> = { mars: [0.22, 0.72], earth: [0.2, 0.74], jupiter: [0.2, 0.7], mercury: [0.25, 0.7] };
+  let clock = performance.now(), tSim = 0, shifted = 0, zoomed = 1;
   function frame(now: number) {
     const dt = Math.min((now - clock) / 1000, 0.1);
     clock = now;
@@ -211,6 +213,17 @@ export function createJourney(canvas: HTMLCanvasElement, haze: HTMLElement, worl
       renderer.toneMapping = THREE.NoToneMapping;
       renderer.toneMappingExposure = 1;
       renderer.shadowMap.enabled = false;
+      // on a wide screen the planet starts smaller and right of centre, clear of the title on the left, and eases back to the middle as the fall begins
+      {
+        const W = innerWidth, H = innerHeight, fr = SHIFTED[document.body.dataset.world ?? ''];
+        const k = fr && !small && W >= 981 && W > H * 1.2 ? 1 - ease(clamp01(p / 0.12)) : 0;
+        const sh = fr ? W * fr[0] * k : 0, zm = fr ? 1 - (1 - fr[1]) * k : 1;
+        if (Math.abs(sh - shifted) > 0.25 || Math.abs(zm - zoomed) > 0.002) {
+          shifted = sh; zoomed = zm; camA.zoom = zm;
+          if (sh === 0) camA.clearViewOffset(); else camA.setViewOffset(W, H, -sh, 0, W, H);
+          camA.updateProjectionMatrix();
+        }
+      }
       renderer.render(A, camA);
     }
     else for (const { tag } of moons) if (tag) tag.style.opacity = '0';

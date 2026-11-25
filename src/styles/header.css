@@ -6,7 +6,9 @@
 .nav-item:hover .nav-top, .nav-item:focus-within .nav-top { color: var(--hd-accent); }
 .nav-panel { position: absolute; top: 100%; left: 0; min-width: 19rem; padding: 6px 0; background: var(--hd-raised); border: 1px solid var(--hd-line); box-shadow: 0 18px 40px rgba(0,0,0,.5); opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity .15s, transform .15s, visibility .15s; z-index: 40; }
 .nav-item:hover .nav-panel, .nav-item:focus-within .nav-panel { opacity: 1; visibility: visible; transform: none; }
-.nav-item:last-child .nav-panel { left: auto; right: 0; }
+.nav-item:nth-last-child(2) .nav-panel { left: auto; right: 0; }
+.nav-3d { color: var(--hd-accent); }
+.nav-3d:hover { text-decoration: underline; text-underline-offset: .3em; }
 .nav-panel a { display: grid; gap: 2px; padding: 10px 18px; text-decoration: none; }
 .nav-panel a:hover, .nav-panel a:focus-visible { background: color-mix(in srgb, var(--hd-accent) 9%, transparent); outline-offset: -2px; }
 .nav-panel b { font: 400 1.02rem/1.25 var(--hd-serif); color: var(--hd-ink); }
@@ -15,7 +17,7 @@
 /* header search */
 .find { position: relative; margin-left: clamp(10px, 1.4vw, 22px); }
 .find-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.find-q { width: clamp(12rem, 18vw, 17rem); height: 44px; padding: 0 12px 0 34px; font: 400 .92rem/1 var(--hd-sans); color: var(--hd-ink); background: rgba(236,231,220,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='6' fill='none' stroke='%23b5b0a4' stroke-width='1.6'/%3E%3Cpath d='M13 13l5 5' stroke='%23b5b0a4' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 11px 50% / 15px; border: 1px solid var(--hd-line); border-radius: 999px; }
+.find-q { width: clamp(10rem, 14vw, 15rem); height: 44px; padding: 0 12px 0 34px; font: 400 .92rem/1 var(--hd-sans); color: var(--hd-ink); background: rgba(236,231,220,.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='8.5' cy='8.5' r='6' fill='none' stroke='%23b5b0a4' stroke-width='1.6'/%3E%3Cpath d='M13 13l5 5' stroke='%23b5b0a4' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat 11px 50% / 15px; border: 1px solid var(--hd-line); border-radius: 999px; }
 .find-q::placeholder { color: var(--hd-faint); }
 .find-q:focus { outline: none; border-color: var(--hd-accent); background-color: rgba(236,231,220,.09); }
 .find-list { position: absolute; top: calc(100% + 8px); right: 0; width: min(26rem, calc(100vw - 2 * var(--hd-gutter))); margin: 0; padding: 6px 0; list-style: none; background: var(--hd-raised); border: 1px solid var(--hd-line); box-shadow: 0 18px 40px rgba(0,0,0,.55); z-index: 45; }

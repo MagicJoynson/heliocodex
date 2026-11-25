@@ -16,6 +16,7 @@
 <script>
   import { tonight } from '../lib/sky/tonight';
   import { readPlace } from '../lib/sky/remember';
+  import { CITIES, guess } from '../lib/sky/cities';
 
   const root = document.querySelector<HTMLElement>('[data-tonight]');
   const text = (k: string, t: string) => { const e = root?.querySelector(`[data-${k}]`); if (e) e.textContent = t; };
@@ -23,7 +24,8 @@
 
   function fill(): void {
     if (!root) return;
-    const p = readPlace() ?? { name: 'London', lat: 51.51, lon: -0.13 };
+    const g = CITIES[guess()];
+    const p = readPlace() ?? { name: g[0], lat: g[1], lon: g[2] };
     const t = tonight(new Date(), p.lat, p.lon);
     text('tn-place', p.name);
     const pct = Math.round(t.moon.lit * 100);
@@ -50,7 +52,7 @@
 </script>
 
 <style>
-  .tonight { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg); padding: 22px var(--gutter); display: flex; flex-wrap: wrap; gap: 18px 44px; align-items: center; min-height: 108px; justify-content: center; }
+  .tonight { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg); padding: 22px var(--edge); display: flex; flex-wrap: wrap; gap: 18px 44px; align-items: center; min-height: 108px; justify-content: flex-start; }
   .tn-where { min-width: 7.5rem; }
   .tn-where h2 { font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
   .tn-where span { display: block; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
@@ -60,5 +62,5 @@
   .tn-moon svg .dark { fill: #14161f; stroke: #2c3145; }
   .tn-moon svg .lit { fill: var(--ink); }
   .tn-go { font: 400 .8125rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid rgba(255, 179, 71, .5); text-decoration: none; padding-bottom: 3px; }
-  @media (max-width: 700px) { .tonight { min-height: 250px; flex-direction: column; align-items: flex-start; } }
+  @media (max-width: 760px) { .tonight { min-height: 250px; flex-direction: column; align-items: flex-start; } }
 </style>

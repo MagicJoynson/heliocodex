@@ -21,10 +21,10 @@ body:has(.lesson) { background: #0b0b0c; }
 .l-hero .lead { font: 300 clamp(1.15rem, 1rem + .6vw, 1.5rem)/1.5 var(--r-serif); color: var(--ink-soft); margin: 0 0 2rem; max-width: 38rem; }
 .l-begin { display: inline-block; font: 400 .76rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); text-decoration: none; padding: .2rem 0 .7rem; border-bottom: 1px solid var(--accent); }
 .l-begin:hover { color: var(--accent); }
-.l-hero > .cap { position: absolute; z-index: 1; right: var(--gutter); bottom: 1.1rem; max-width: 22rem; text-align: right; font-size: .78rem; }
+.l-hero > .cap { position: absolute; z-index: 1; right: var(--edge); bottom: 1.1rem; max-width: 22rem; text-align: right; font-size: .78rem; }
 
 /* ---- the story: words on the left, the picture held still on the right */
-.story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: 'hang stage' 'steps stage'; column-gap: clamp(24px, 4vw, 72px); padding: 0 var(--gutter); border-top: 1px solid var(--rule); scroll-margin-top: var(--header-h); }
+.story { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); grid-template-areas: 'hang stage' 'steps stage'; column-gap: clamp(24px, 4vw, 72px); padding: 0 var(--edge); border-top: 1px solid var(--rule); scroll-margin-top: var(--header-h); }
 .story > .hang { grid-area: hang; padding-top: 2.4rem; }
 .story > .hang h2 { font: italic 300 clamp(1.45rem, 2.3vw, 1.85rem)/1.15 var(--r-serif); margin: 0; }
 .story > .hang .note { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin: .5rem 0 0; }
@@ -44,7 +44,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .is-live .story-steps li[data-on] { color: var(--ink); }
 .is-live .story-steps li .prose { color: inherit; }
 
-@media (max-width: 860px) {
+@media (max-width: 760px) {
   .l-hero > .cap { position: relative; right: auto; bottom: auto; text-align: left; padding: 0 var(--gutter) 1.2rem; max-width: none; }
   .l-hero { align-content: end; }
   .l-hero-words { padding-bottom: 1.6rem; }
@@ -164,7 +164,7 @@ body:has(.lesson) { background: #0b0b0c; }
 .ticks span:last-child::before { left: 85%; }
 .skip { background: none; border: 0; cursor: pointer; text-decoration: underline; text-underline-offset: .25em; }
 .predict-note { font: italic 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); margin: 1.4rem 0 0; max-width: 34rem; }
-@media (max-width: 520px) {
+@media (max-width: 560px) {
   .opt { grid-template-columns: auto minmax(0, 1fr); }
   .opt-d { grid-column: 2; text-align: left; }
 }

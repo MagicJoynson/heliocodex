@@ -10,7 +10,9 @@ import { readPlace } from './remember';
 export function enliven(page: HTMLElement): void {
   const lyEl = page.querySelector<HTMLElement>('[data-ly]'), left = page.querySelector<HTMLElement>('[data-left]');
   if (lyEl && left) {
-    const ly = Number(lyEl.dataset.ly), year = new Date().getFullYear() - Math.round(ly);
+    const ly = Number(lyEl.dataset.ly), d = new Date();
+    // the year the light set off: today as a decimal year, less the light-years it has travelled, taken down to the whole year (Sirius, 8.6 light years, on 24 November 2026: 2026.9 - 8.6 = 2018.3, so 2018)
+    const dec = d.getFullYear() + (d.getTime() - new Date(d.getFullYear(), 0, 1).getTime()) / (365.25 * 86400000), year = Math.floor(dec - ly);
     if (ly > 0 && year > 0) left.textContent = `in about ${year}`;
   }
   const now = page.querySelector<HTMLElement>('[data-now]');

@@ -59,7 +59,7 @@ const NESTS = [{ cls: 'wide', W: 720, LX: 400, ...nest(340, 40) }, { cls: 'narro
       {[1500, 1600, 1700, 1800, 1900, 2000].map((y) => <i style={`--x:${px(y)}`}><b>{y}</b></i>)}
       {people.map((p) => (
         <div class:list={['p-row', { flip: px(p.died ?? 2026) > 72 }]} style={`--a:${px(p.born)};--b:${px(p.died ?? 2026)}`}>
-          <span class="p-bar" /><span class="p-name">{p.name}</span><span class="p-years">{p.born}–{p.died ?? ''}</span>
+          <span class="p-bar" /><span class="p-name">{p.name}<small>{p.born}–{p.died ?? ''}</small></span>
         </div>
       ))}
     </div>
@@ -84,24 +84,49 @@ const NESTS = [{ cls: 'wide', W: 720, LX: 400, ...nest(340, 40) }, { cls: 'narro
   </section>
 </Reading>
 
+<script>
+  // The mission labels are packed into lanes from their real widths, so none sits on another at any screen width.
+  const line = document.querySelector<HTMLElement>('.m-line');
+  const wide = matchMedia('(min-width: 761px)');
+  function pack(): void {
+    if (!line) return;
+    const items = [...line.querySelectorAll<HTMLElement>('.m-item')];
+    if (!wide.matches) { line.style.removeProperty('--lanes'); items.forEach((i) => i.style.removeProperty('--l')); return; }
+    const W = line.clientWidth, gap = 14, ends: number[] = [];
+    for (const it of items) {
+      const x = parseFloat(it.style.getPropertyValue('--x')) / 100 * W, w = it.offsetWidth;
+      const from = it.classList.contains('flip') ? x - w : x, to = from + w;
+      let lane = ends.findIndex((e) => e + gap <= from);
+      if (lane < 0) { lane = ends.length; ends.push(0); }
+      ends[lane] = to;
+      it.style.setProperty('--l', String(lane));
+    }
+    line.style.setProperty('--lanes', String(ends.length));
+  }
+  pack();
+  addEventListener('resize', pack);
+  wide.addEventListener('change', pack);
+  document.fonts?.ready.then(pack);
+</script>
+
 <style>
   .d-head { max-width: 48rem; margin-bottom: clamp(32px, 5vw, 56px); }
   .d-head h1 { font: 300 clamp(2.4rem, 5.5vw, 4.2rem)/1.04 var(--r-serif); margin: .6rem 0 1rem; text-wrap: balance; }
   .d-head .lead { font: 300 clamp(1.08rem, 1rem + .3vw, 1.25rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
   .d-part { margin: 0 0 clamp(48px, 7vw, 88px); }
   .d-part h2 { font: 400 1.5rem/1.2 var(--r-serif); margin: 0 0 1.6rem; }
-  .m-line { position: relative; height: calc(var(--lanes) * 3.1rem + 2.4rem); border-top: 1px solid var(--rule); }
+  .m-line { position: relative; height: calc(var(--lanes) * 3.4rem + 2.4rem); border-top: 1px solid var(--rule); }
   .m-line i, .p-chart i { position: absolute; left: calc(var(--x) * 1%); top: 0; bottom: 0; width: 1px; background: rgba(236,231,220,.06); font-style: normal; }
-  .m-line i b, .p-chart i b { position: absolute; top: -1.3rem; transform: translateX(-50%); font: 400 .64rem/1 var(--r-mono); color: var(--ink-faint); font-weight: 400; }
-  .m-item { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--l) * 3.1rem + .8rem); display: grid; gap: .15rem; padding-left: .6rem; border-left: 1px dashed rgba(233,196,138,.6); white-space: nowrap; }
+  .m-line i b, .p-chart i b { position: absolute; top: -1.3rem; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); font-weight: 400; }
+  .m-item { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--l) * 3.4rem + .8rem); display: grid; gap: .15rem; padding-left: .6rem; border-left: 1px dashed rgba(233,196,138,.6); white-space: nowrap; }
   .m-item.flip { transform: translateX(-100%); padding: 0 .6rem 0 0; border-left: 0; border-right: 1px dashed rgba(233,196,138,.6); text-align: right; }
   .m-item em { font: 400 .98rem/1.1 var(--r-serif); font-style: normal; color: var(--ink-soft); }
-  .m-item small { font: 400 .6rem/1.2 var(--r-mono); color: var(--ink-faint); letter-spacing: .04em; }
+  .m-item small { font: 400 .8125rem/1.2 var(--r-mono); color: var(--ink-faint); letter-spacing: .04em; }
   .p-chart { position: relative; border-top: 1px solid var(--rule); padding-top: .8rem; display: grid; gap: .35rem; }
   .p-row { position: relative; height: 1.5rem; }
   .p-bar { position: absolute; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); top: .2rem; height: 1.1rem; border: 1px dashed rgba(233,196,138,.55); border-radius: 2px; background: rgba(233,196,138,.06); }
   .p-name { position: absolute; left: calc(var(--b) * 1% + .6rem); top: .1rem; font: 400 .98rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
-  .p-years { position: absolute; left: calc(var(--a) * 1% + .4rem); top: .4rem; font: 400 .6rem/1.2 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
+  .p-name small { margin-left: .6rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); }
   .p-row.flip .p-name { left: auto; right: calc(100% - var(--a) * 1% + .6rem); }
   .t-nest { display: block; max-width: 100%; height: auto; overflow: visible; }
   .t-nest.narrow { display: none; }
@@ -122,6 +147,6 @@ const NESTS = [{ cls: 'wide', W: 720, LX: 400, ...nest(340, 40) }, { cls: 'narro
     .p-row { height: 3rem; }
     .p-bar { top: 1.7rem; height: .7rem; }
     .p-name, .p-row.flip .p-name { left: 0; right: auto; top: 0; }
-    .p-years { left: auto; right: 0; top: .2rem; }
+    .p-name small { position: absolute; right: 0; top: .2rem; margin: 0; }
   }
 </style>
