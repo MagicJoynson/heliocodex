@@ -26,6 +26,7 @@ function sourcesOf(url) {
   if (p.startsWith('/stars/')) return ['src/pages/stars/[star].astro', 'src/lib/sky/star.ts', 'public/data/deep/stars-meta.json'];
   if (p.startsWith('/worlds/')) return ['src/pages/worlds/[id].astro', 'src/data/world-pages.ts', 'src/data/bodies'];
   if (p.startsWith('/atlas/')) return ['src/pages/atlas', 'src/lib/v2/atlas'];
+  if (/^\/(accessibility|cookies|licences|privacy|terms)$/.test(p)) return [`src/pages${p}.astro`, `src/content/legal${p}.md`];
   const page = `src/pages${p}.astro`;
   return existsSync(page) ? [page] : ['src/pages'];
 }

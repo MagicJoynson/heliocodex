@@ -76,8 +76,8 @@ vlabels.sort((a, b) => a.y - b.y);
 let floor = 0;
 for (const l of vlabels) {
   const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 7.8 + 6 : 0) > 150 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
-  l.y = Math.max(l.y - 9, floor);
-  floor = l.y + 3 + 17 + (lines - 1) * 14;
+  l.y = Math.max(l.y - 12, floor);
+  floor = l.y + 3 + lines * 24;
 }
 const VTOTAL = Math.max(VEND + 30, floor + 20);
 ---
@@ -127,7 +127,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
         {vmarks.map((m) => m.kind === 'planet'
           ? <circle cx={m.mx} cy={m.ya} r={m.d / 2} class="vp" />
           : <g class:list={['vm', m.kind]}><line x1={m.mx} x2={m.mx} y1={m.y1} y2={m.off ? VEND + 14 : m.y2} />{m.off && <path d={`M${m.mx - 3} ${VEND + 8} L${m.mx} ${VEND + 14} L${m.mx + 3} ${VEND + 8}`} />}<circle cx={m.mx} cy={m.ya} r={m.d / 2} /></g>)}
-        {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 9}, ${LX} ${l.y + 9}`} />)}
+        {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 12}, ${LX} ${l.y + 12}`} />)}
       </svg>
       <ol class="wm-vl">
         {vlabels.map((l) => (
@@ -219,11 +219,11 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
     .vm circle { fill: #0b0b0c; stroke: rgba(233,196,138,.9); stroke-width: 1; }
     .vlead { fill: none; stroke: rgba(236,231,220,.16); stroke-width: .8; }
     .wm-vl { list-style: none; margin: 0; padding: 0; position: absolute; left: 200px; right: 0; top: 0; }
-    .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/17px var(--r-serif); }
-    .wm-vl li > a { color: var(--ink); display: inline-block; padding: 4px 0; margin: -4px 0; }
+    .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/24px var(--r-serif); }
+    .wm-vl li > a { color: var(--ink); display: inline-block; min-width: 24px; }
     .wm-vl li.out > a { text-decoration: underline dashed rgba(233,196,138,.5); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-    .wm-vl small { margin-left: .4rem; font: 400 .8125rem/16px var(--r-mono); color: var(--ink-faint); }
-    .wm-vl .vl-moons { display: block; font: 300 .8125rem/14px var(--r-serif); color: var(--ink-faint); }
+    .wm-vl small { margin-left: .4rem; font: 400 .8125rem/24px var(--r-mono); color: var(--ink-faint); }
+    .wm-vl .vl-moons { display: block; font: 300 .8125rem/24px var(--r-serif); color: var(--ink-faint); }
     .wm-vl .vl-moons a { color: var(--ink-soft); }
     .wm-vl .vl-moons a.w { color: var(--ink); font-weight: 400; }
     .wm-key { grid-template-columns: minmax(0, 1fr); }

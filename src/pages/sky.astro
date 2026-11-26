@@ -166,7 +166,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     due = 0;
     const t = when(), offset = Number(shift.value) + dayShift;
     // the day and time as the clocks read at the place being shown, which need not be where the device is
-    line.textContent = `${where.name}, ${dayIn(t, where.zone)}, ${clockIn(t, where.zone)}${clocksDiffer(t, where.zone) ? ' local time' : ''}${offset === 0 ? ' (now)' : ''}`;
+    line.textContent = `${where.name}, ${dayIn(t, where.zone)}, ${clockIn(t, where.zone)}${clocksDiffer(t, where.zone) ? ' local time' : ''}${offset === 0 ? '\u00a0(now)' : ''}`;
     if (!data || !w) return;
     const key = `${Math.floor(t.getTime() / 20000)}|${where.lat}|${where.lon}`;
     if (key !== momKey || !mom) { mom = moment(t, where.lat, where.lon); momKey = key; upNow(mom); }
@@ -593,6 +593,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   .pop-body { position: absolute; right: 0; bottom: calc(100% + .6rem); width: min(19rem, calc(100vw - 2 * var(--gutter))); background: rgba(9, 10, 14, .97); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1rem 1.1rem 1.1rem; display: grid; gap: .7rem; z-index: 3; }
   .sky select, .sky input[type='number'] { font: 300 1.02rem var(--r-serif); color: var(--ink); background: #131315; border: 1px solid var(--rule); border-radius: 2px; padding: .5rem .6rem; width: 100%; min-height: 44px; }
   .pop-body button { justify-self: start; }
+  .pop-body button[hidden] { display: none; }
   .hint { font: italic 300 .9rem/1.4 var(--r-serif); color: var(--ink-faint); margin: 0; }
   .hint:empty { display: none; }
   .pair { display: grid; gap: .6rem; }

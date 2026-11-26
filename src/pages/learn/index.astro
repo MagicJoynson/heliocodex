@@ -126,7 +126,8 @@ const ticks = TICKS.filter((t) => t.s > 1);
   .out-head p { font: 300 1.02rem/1.5 var(--r-serif); color: var(--ink-faint); margin: 0; max-width: 34rem; }
   .scale { display: grid; grid-template-columns: var(--name-col) minmax(0, 1fr) var(--reach-col); gap: 0 1.6rem; font: 400 .66rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); padding-bottom: .7rem; }
   .scale-here { grid-column: 1; text-align: right; }
-  .scale-track { grid-column: 2; position: relative; height: 1em; margin: 0 10px; }
+  .scale-track { grid-column: 2; position: relative; height: 2.2em; margin: 0 10px; }
+  .scale-track i:nth-child(even) b { top: 1.2em; }
   .scale-track i { position: absolute; left: calc(var(--x) * 100%); font-style: normal; }
   .scale-track b { position: absolute; left: 0; transform: translateX(-50%); white-space: nowrap; font-weight: 400; }
   .places { list-style: none; margin: 0; padding: 0; }
@@ -174,8 +175,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
     .start { grid-template-columns: 1fr; }
     .scale { grid-template-columns: minmax(0, 1fr); }
     .scale-here { display: none; }
-    .scale-track { grid-column: 1; height: 2.2em; }
-    .scale-track i:nth-child(even) b { top: 1.2em; }
+    .scale-track { grid-column: 1; }
     .places a { grid-template-columns: 1fr auto; grid-template-areas: 'name count' 'track track' 'reach reach'; gap: .2rem 1rem; padding: .9rem 0 1rem; }
     .p-name, .p-count { text-align: left; align-self: baseline; }
     .p-track { height: 1.6rem; }
