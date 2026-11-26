@@ -347,16 +347,21 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
       { name: 'Moon', alt: moon.altDeg, az: moon.azDeg, kind: 'moon' },
       ...PLANETS.map((id) => { const k = toSky(planetFromEarth(id, m.T).dir, m); return { name: PLANET_NAMES[id], alt: k.altDeg, az: k.azDeg, kind: id === 'uranus' || id === 'neptune' ? 'faint' : 'planet' }; }),
     ].sort((a, b) => a.az - b.az);
-    let lastX = -999, lastLift = 0;
+    // each name goes just above its mark, or is moved up (then below the mark) until it is clear of the names already placed
+    const placed: { a: number; b: number; t: number; u: number }[] = [];
+    const clear = (a: number, b: number, t: number, u: number) => placed.every((p) => b < p.a - 4 || a > p.b + 4 || u < p.t - 2 || t > p.u + 2);
     for (const it of items) {
       const x = X(it.az), y = Y(it.alt), below = it.alt < 0;
       const g = mk('g', { class: `r-${it.kind}${below ? ' below' : ''}` });
       g.append(mk('circle', { cx: x, cy: y, r: it.kind === 'sun' ? 11 : it.kind === 'moon' ? 9 : it.kind === 'faint' ? 3 : 5 }));
       // below the ground only the Sun and the Moon are named, to say where they will rise
       if (!below || it.kind === 'sun' || it.kind === 'moon') {
-        const lift = x - lastX < 64 ? lastLift + 17 : 0; lastX = x; lastLift = lift;
         const anchor = x < L + 30 ? 'start' : x > R - 30 ? 'end' : 'middle';
-        g.append(mk('text', { x, y: y - 14 - lift, 'text-anchor': anchor }, it.name));
+        const w = it.name.length * 7.6 + 4, a0 = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2;
+        const tries = [0, 1, 2, 3, 4].map((n) => y - 14 - n * 17).concat([y + 26, y + 43]);
+        const ty = tries.find((t) => clear(a0, a0 + w, t - 12, t + 3)) ?? tries[0];
+        placed.push({ a: a0, b: a0 + w, t: ty - 12, u: ty + 3 });
+        g.append(mk('text', { x, y: ty, 'text-anchor': anchor }, it.name));
       }
       parts.push(g);
     }

@@ -18,7 +18,8 @@ const strands = STRAND_ORDER.map((strand) => ({ strand, name: STRAND_NAMES[stran
 const moonCards = Object.entries(WORLD_PAGES).filter(([, pg]) => !!(pg.globe ?? pg.picture)).sort(([a], [b]) => (a === 'moon' ? -1 : b === 'moon' ? 1 : 0)).map(([id, pg]) => ({ id, name: body(id)!.name.replace(/^The /, 'The '), src: ['deimos', 'iapetus', 'ida', 'bennu', 'pallas'].includes(id) ? `/img/thumbs/${id}.jpg` : (pg.globe ?? pg.picture)!.src }));
 // four ways into the lessons: the ten-lesson start, then three first looks from the stars out to the whole universe
 const startPack = PACKS.find((p) => p.id === 'start-here')!;
-const picks = ['how-stars-live-and-die', 'what-a-black-hole-is', 'the-expanding-universe'].map((id) => lessons.find((l) => l.id === id)!).map((l) => ({ id: l.id, title: l.data.title, summary: l.data.summary, pic: cover(l) }));
+// three lessons from across the range, each with a picture of its own: the first three of these that have one
+const picks = ['how-stars-live-and-die', 'what-a-black-hole-is', 'the-expanding-universe', 'when-galaxies-collide', 'how-galaxies-form-and-change', 'the-cosmic-web'].map((id) => lessons.find((l) => l.id === id)).filter((l) => l && cover(l)).slice(0, 3).map((l) => ({ id: l!.id, title: l!.data.title, summary: l!.data.summary, pic: cover(l!) }));
 const plainCredit = (c: string) => c.replace(/<[^>]+>/g, '').replace(/^[\s\S]*?Credit:\s*/, '').replace(/\.$/, '').trim();
 const pictureCredits = [`Earthrise, ${plainCredit(startPack.photo.caption)}`, ...picks.filter((p) => p.pic).map((p) => `${p.title}, ${plainCredit(p.pic!.caption)}`)].join('; ') + '.';
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
@@ -82,7 +83,6 @@ import Tonight from '../components/Tonight.astro';
         The Sun and its eight planets in real spacecraft photographs, all drawn to one scale. The distances would never fit: at this size, Neptune would be <b id="nep">about 5 kilometres</b> off to the right. <a href="/explore">See it at true size and distance</a>.
       </figcaption>
     </figure>
-    <div class="ledger"><p class="ledger-go"><a href="/worlds">Every moon and small world, by distance</a></p></div>
   </section>
 
   <div class="reading home">
@@ -197,17 +197,6 @@ import Tonight from '../components/Tonight.astro';
   @media (prefers-reduced-motion: reduce) { .front-enter { transition: none; } }
 
   .home-hero { position: relative; overflow: hidden; background: #000; border-bottom: 1px solid rgba(236,231,220,.12); font-family: 'Spectral', Georgia, serif; --ink: #ece7dc; --ink-soft: #d8d2c5; --ink-faint: #a8a296; --accent: #e9c48a; }
-  .ledger { position: relative; z-index: 2; padding: clamp(14px, 2vw, 24px) var(--edge) clamp(24px, 3vw, 36px); margin-left: 0; }
-  .ledger table { width: 100%; border-collapse: collapse; font: 400 1.02rem/1.3 'Spectral', Georgia, serif; color: var(--ink-soft); }
-  .ledger caption { text-align: left; font: 400 .82rem/1.4 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding: 0 0 .6rem; }
-  .ledger th, .ledger td { text-align: left; padding: .42rem 1rem .42rem 0; border-top: 1px solid rgba(236,231,220,.12); font-weight: 400; }
-  .ledger thead th { font: 400 .8rem/1.3 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); border-top: 0; }
-  .ledger .kind { display: block; font: 400 .78rem/1.3 'IBM Plex Mono', monospace; color: var(--ink-faint); }
-  .ledger tbody th a { color: var(--ink); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.45); }
-  .ledger tbody th a:hover { color: var(--accent); }
-  .ledger-go { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; margin: 1rem 0 0; }
-  .ledger-go a { font: 400 .82rem/1 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(233,196,138,.5); padding-bottom: 3px; }
-  @media (max-width: 560px) { .ledger table { font-size: .92rem; } .ledger th, .ledger td { padding-right: .5rem; } }
   .home-hero .home-text { position: relative; z-index: 2; max-width: 46rem; padding: clamp(22px, 3.4vw, 40px) var(--gutter) 0; margin-left: 0; }
   .home-hero .label { font: 400 .72rem/1.5 'IBM Plex Mono', monospace; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1.1rem; }
   .home-hero h1 { font: 300 clamp(1.7rem, 3vw, 2.4rem)/1.1 'Spectral', Georgia, serif; letter-spacing: -.02em; margin: 0 0 1.2rem; text-wrap: balance; color: var(--ink); }
@@ -245,12 +234,7 @@ import Tonight from '../components/Tonight.astro';
     .worlds span { font-size: .8125rem; letter-spacing: .04em; top: calc(50% + var(--j) * .62); }
     .worlds li:nth-child(even) span { top: auto; bottom: calc(50% + var(--j) * .62); }
     .family figcaption { position: sticky; left: 0; max-width: 100vw; }
-    .home-hero .home-text, .ledger, .family figcaption { margin-left: 0; }
-    .ledger td, .ledger th { white-space: nowrap; }
-    .ledger td:last-child { white-space: normal; }
-    .ledger table { table-layout: auto; }
-    .ledger table { font-size: .9rem; }
-    .ledger thead th { white-space: normal; }
+    .home-hero .home-text, .family figcaption { margin-left: 0; }
   }
 
   .home { padding-top: 0; padding-bottom: clamp(24px, 3vw, 40px); }
@@ -293,6 +277,8 @@ import Tonight from '../components/Tonight.astro';
   .b-lead-t { padding-bottom: 1.4rem !important; font: 300 1.02rem/1.5 var(--r-serif); color: var(--ink-soft); max-width: 32rem; }
   .b-lead:hover img, .b-lead:focus-visible img { opacity: 1; }
   .b-lead:hover b, .b-lead:focus-visible b { text-decoration: underline; text-decoration-color: rgba(233,196,138,.6); text-underline-offset: .18em; }
+  .b-learn { align-items: start; }
+  .b-picks a:not(:has(img)) { grid-template-columns: minmax(0, 1fr); }
   .b-picks { list-style: none; margin: 0; padding: 0; display: grid; align-content: start; }
   .b-picks li { border-top: 1px solid var(--rule); }
   .b-picks li:last-child { border-bottom: 1px solid var(--rule); }
