@@ -93,7 +93,9 @@ body:has(.reading-head.with-pic) { overflow-x: clip; }
 .reading-head.with-pic > * { max-width: 38rem; }
 .reading-head.with-pic::before { content: ''; position: absolute; z-index: -1; top: calc(-1 * var(--top-pad)); right: calc(-1 * max(var(--gutter), (100vw - var(--page)) / 2 + var(--gutter))); bottom: -1rem; width: min(62vw, 56rem);
   background: var(--pic) center / cover no-repeat;
-  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent), linear-gradient(to top, transparent, #000 30%); mask-image: linear-gradient(to left, #000 35%, transparent);
+  /* faded on the left and along the foot, so the picture has no hard edge anywhere: the two fades are multiplied together */
+  -webkit-mask-image: linear-gradient(to left, #000 35%, transparent), linear-gradient(to top, transparent, #000 35%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to left, #000 35%, transparent), linear-gradient(to top, transparent, #000 35%); mask-composite: intersect;
   opacity: .85; }
 @media (max-width: 760px) {
   .reading-head.with-pic { min-height: 0; padding-top: 9rem; }

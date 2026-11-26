@@ -1,10 +1,11 @@
 ---
 // "Tonight" strip for the home page. Filled in by the visitor's own device from the sky sums
-// (src/lib/sky/tonight.ts), for the place saved on the sky map or London. Nothing is sent anywhere.
+// (src/lib/sky/tonight.ts), for the same place every other page uses (src/lib/sky/remember.ts herePlace),
+// with times as the clocks read there. Nothing is sent anywhere.
 ---
 <section class="tonight" aria-labelledby="tn-h" data-tonight>
   <noscript><style>.tonight .tn-where, .tonight .tn-moon svg { display: none; }</style></noscript>
-  <div class="tn-where"><h2 id="tn-h">Tonight</h2><span data-tn-place>London</span></div>
+  <div class="tn-where"><h2 id="tn-h">Tonight from <span data-tn-place>London</span></h2><a class="tn-change" href="/sky#where" data-tn-change>Change place</a></div>
   <div class="tn-item tn-moon">
     <svg width="60" height="60" viewBox="-30 -30 60 60" aria-hidden="true" focusable="false"><circle r="26" class="dark" /><path class="lit" d="" /></svg>
     <div><b data-tn-moon>The Moon</b><span data-tn-moon-sub>Its phase tonight is on the sky map</span></div>
@@ -15,8 +16,8 @@
 
 <script>
   import { tonight } from '../lib/sky/tonight';
-  import { readPlace } from '../lib/sky/remember';
-  import { CITIES, guess } from '../lib/sky/cities';
+  import { herePlace } from '../lib/sky/remember';
+  import { clockIn, clocksDiffer } from '../lib/sky/cities';
 
   const root = document.querySelector<HTMLElement>('[data-tonight]');
   const text = (k: string, t: string) => { const e = root?.querySelector(`[data-${k}]`); if (e) e.textContent = t; };
@@ -24,16 +25,19 @@
 
   function fill(): void {
     if (!root) return;
-    const g = CITIES[guess()];
-    const p = readPlace() ?? { name: g[0], lat: g[1], lon: g[2] };
+    const p = herePlace();
     const t = tonight(new Date(), p.lat, p.lon);
-    text('tn-place', p.name);
+    const at = (d: Date) => clockIn(d, p.zone) + (clocksDiffer(d, p.zone) ? ' local time' : '');
+    text('tn-place', p.from);
+    const change = root.querySelector<HTMLAnchorElement>('[data-tn-change]');
+    if (change) change.textContent = p.guessed ? 'Not there? Change place' : 'Change place';
     const pct = Math.round(t.moon.lit * 100);
     text('tn-moon', t.moon.name);
-    text('tn-moon-sub', `${pct} per cent lit, ${t.moon.up ? t.moon.where : 'below the horizon'}`);
+    const sky = t.moon.up ? `${t.now ? 'up now' : 'up at dusk'}${t.moon.sets ? `, sets ${at(t.moon.sets)}` : ''}` : t.moon.rises ? `rises ${at(t.moon.rises)}` : 'below the horizon';
+    text('tn-moon-sub', `${pct} per cent lit, ${sky}`);
     if (t.noDark) { text('tn-planets', 'It does not get fully dark here tonight'); text('tn-planets-sub', 'The Sun stays too close to the horizon'); }
     else if (t.planets.length) {
-      text('tn-planets', `${list(t.planets.map((k) => k.name))} ${t.planets.length > 1 ? 'are' : 'is'} up tonight`);
+      text('tn-planets', `${list(t.planets.map((k) => k.name))} ${t.planets.length > 1 ? 'are' : 'is'} up ${t.now ? 'now' : `from about ${at(t.at)}`}`);
       text('tn-planets-sub', t.planets.map((k) => `${k.name}: ${k.where}`).join('; '));
     } else { text('tn-planets', 'No bright planet is up tonight'); text('tn-planets-sub', 'Planets you can see by eye'); }
     // the lit part of the face: right-hand side while the Moon grows (left in the southern hemisphere), the other way as it shrinks
@@ -55,7 +59,9 @@
   .tonight { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--bg); padding: 22px var(--edge); display: flex; flex-wrap: wrap; gap: 18px 44px; align-items: center; min-height: 108px; justify-content: flex-start; }
   .tn-where { min-width: 7.5rem; }
   .tn-where h2 { font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0; }
-  .tn-where span { display: block; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+  .tn-where h2 span { color: var(--ink-soft); }
+  .tn-change { display: inline-block; margin-top: 4px; font: 400 .875rem/1.4 var(--serif); color: var(--ink-soft); text-decoration: underline; text-decoration-color: rgba(236,231,220,.35); text-underline-offset: .2em; }
+  .tn-change:hover, .tn-change:focus-visible { color: var(--accent); }
   .tn-item { display: flex; gap: 16px; align-items: center; }
   .tn-item b { display: block; font: 400 1.25rem/1.3 var(--serif); color: var(--ink); }
   .tn-item span { display: block; font: 400 .8125rem/1.5 var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--ink-faint); max-width: 34rem; }

@@ -92,10 +92,14 @@ const NESTS = [{ cls: 'wide', W: 720, LX: 400, ...nest(340, 40) }, { cls: 'narro
     if (!line) return;
     const items = [...line.querySelectorAll<HTMLElement>('.m-item')];
     if (!wide.matches) { line.style.removeProperty('--lanes'); items.forEach((i) => i.style.removeProperty('--l')); return; }
-    const W = line.clientWidth, gap = 14, ends: number[] = [];
-    for (const it of items) {
+    const W = line.clientWidth, gap = 32, ends: number[] = [];
+    // placed in order of their left edges, which packs them into the fewest lanes (and leaves no empty corner)
+    const spans = items.map((it) => {
       const x = parseFloat(it.style.getPropertyValue('--x')) / 100 * W, w = it.offsetWidth;
-      const from = it.classList.contains('flip') ? x - w : x, to = from + w;
+      const from = it.classList.contains('flip') ? x - w : x;
+      return { it, from, to: from + w };
+    }).sort((a, b) => a.from - b.from);
+    for (const { it, from, to } of spans) {
       let lane = ends.findIndex((e) => e + gap <= from);
       if (lane < 0) { lane = ends.length; ends.push(0); }
       ends[lane] = to;

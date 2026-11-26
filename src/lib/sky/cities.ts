@@ -45,3 +45,52 @@ export function guess(): number {
   CITIES.forEach((c, i) => { if (!ok(c[1])) return; const g = Math.abs(c[2] - lon); if (g < gap) { gap = g; best = i; } });
   return best;
 }
+
+/** The time zone each listed city keeps its clocks by (IANA names), so times can be given as they read there. */
+export const ZONES: Record<string, string> = {
+  London: 'Europe/London', Manchester: 'Europe/London', Edinburgh: 'Europe/London', Dublin: 'Europe/Dublin', Reykjavik: 'Atlantic/Reykjavik',
+  'Tromsø': 'Europe/Oslo', Stockholm: 'Europe/Stockholm', Paris: 'Europe/Paris', Berlin: 'Europe/Berlin', Madrid: 'Europe/Madrid', Rome: 'Europe/Rome',
+  Athens: 'Europe/Athens', Istanbul: 'Europe/Istanbul', Moscow: 'Europe/Moscow', Cairo: 'Africa/Cairo', Lagos: 'Africa/Lagos', Nairobi: 'Africa/Nairobi',
+  Johannesburg: 'Africa/Johannesburg', Dubai: 'Asia/Dubai', Delhi: 'Asia/Kolkata', Mumbai: 'Asia/Kolkata', Singapore: 'Asia/Singapore', Beijing: 'Asia/Shanghai',
+  Tokyo: 'Asia/Tokyo', Sydney: 'Australia/Sydney', Auckland: 'Pacific/Auckland', Honolulu: 'Pacific/Honolulu', 'Los Angeles': 'America/Los_Angeles',
+  Denver: 'America/Denver', Chicago: 'America/Chicago', 'New York': 'America/New_York', Toronto: 'America/Toronto', 'Mexico City': 'America/Mexico_City',
+  'Bogotá': 'America/Bogota', Lima: 'America/Lima', 'São Paulo': 'America/Sao_Paulo', 'Buenos Aires': 'America/Argentina/Buenos_Aires', Santiago: 'America/Santiago',
+  Perth: 'Australia/Perth', Brisbane: 'Australia/Brisbane', Adelaide: 'Australia/Adelaide', Seoul: 'Asia/Seoul', 'Hong Kong': 'Asia/Hong_Kong', Manila: 'Asia/Manila',
+  Bangkok: 'Asia/Bangkok', Jakarta: 'Asia/Jakarta', Dhaka: 'Asia/Dhaka', Karachi: 'Asia/Karachi', Tehran: 'Asia/Tehran', Riyadh: 'Asia/Riyadh',
+  'Cape Town': 'Africa/Johannesburg', Kyiv: 'Europe/Kyiv', Warsaw: 'Europe/Warsaw', Lisbon: 'Europe/Lisbon', Vienna: 'Europe/Vienna', Oslo: 'Europe/Oslo',
+  Helsinki: 'Europe/Helsinki', Vancouver: 'America/Vancouver', Anchorage: 'America/Anchorage', Houston: 'America/Chicago', Miami: 'America/New_York', Caracas: 'America/Caracas',
+};
+
+/** The time zone the device's clock is set to, or London's if it will not say. */
+export function deviceZone(): string {
+  try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/London'; } catch { return 'Europe/London'; }
+}
+
+/**
+ * The clocks a place keeps: the listed city's own zone; for the device's own position, the device's zone;
+ * for a position typed or taken from a link, the zone of the nearest listed city within about 800 km, or else the device's.
+ */
+export function zoneOf(name: string, lat: number, lon: number): string {
+  if (ZONES[name]) return ZONES[name];
+  if (name === 'Where you are') return deviceZone();
+  const R = Math.PI / 180;
+  let best = '', gap = 800;
+  for (const [n, a, b] of CITIES) {
+    const km = 6371 * Math.acos(Math.min(1, Math.sin(a * R) * Math.sin(lat * R) + Math.cos(a * R) * Math.cos(lat * R) * Math.cos((b - lon) * R)));
+    if (km < gap) { gap = km; best = n; }
+  }
+  return best ? ZONES[best] : deviceZone();
+}
+
+/** A clock time as it reads in a zone, such as "21:40". */
+export function clockIn(d: Date, zone: string): string {
+  try { return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: zone }); } catch { return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); }
+}
+/** A day as it reads in a zone, such as "Thursday 26 November". */
+export function dayIn(d: Date, zone: string): string {
+  try { return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: zone }); } catch { return d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }); }
+}
+/** true when the zone's clocks read differently from the device's at this moment, so a time needs "local time" after it. */
+export function clocksDiffer(d: Date, zone: string): boolean {
+  return clockIn(d, zone) !== clockIn(d, deviceZone()) || dayIn(d, zone) !== dayIn(d, deviceZone());
+}

@@ -2,7 +2,7 @@
 title: "Accessibility"
 description: "How accessible Heliocodex is, what we have checked, what doesn't work yet, what you can use instead and how to tell us about a problem."
 lead: "We want everyone to be able to learn from Heliocodex. This page says honestly how well the site works today, where it falls short and what to do if it doesn't work for you."
-updated: 2026-11-11
+updated: 2026-11-26
 ---
 
 <div class="short-version">
@@ -39,15 +39,13 @@ What works:
 
 ## 3. What we have checked
 
-On 11 November 2026 we ran an automated check (axe-core) against WCAG 2.0, 2.1 and 2.2 levels A and AA on the home page, the legal pages, the sky map, the star pages, the lessons, the glossary, the atlas, the sources page and several planet pages, at desktop and at phone width. We checked the keyboard on the text pages by hand. We haven't yet had the site audited by an independent accessibility specialist, and we haven't tested the 3D views with screen readers, screen magnifiers or switch devices. Automated checks find only part of the problems, so please treat this statement as our honest best account, not a guarantee.
+On 26 November 2026 we ran an automated check (axe-core) against WCAG 2.0, 2.1 and 2.2 levels A and AA on the home page, the sky map, the stars page, a star page, a constellation page, the lessons, the glossary, the list of worlds, the discovery timeline, several planet pages and the page that opens the 3D explorer, at desktop width (1,440 pixels) and at phone width (390 pixels). It found no failures. We also went through the same pages with the keyboard alone, checking that the skip link comes first and that every link and button shows where you are. The first checks, on 11 November 2026, covered the legal pages, the atlas and the sources page too. We haven't yet had the site audited by an independent accessibility specialist, and we haven't tested the 3D views with screen readers, screen magnifiers or switch devices. Automated checks find only part of the problems, so please treat this statement as our honest best account, not a guarantee.
 
 ## 4. What doesn't work yet
 
-- **The 3D views can't be read by a screen reader.** The 3D view on the home page, the solar system on the Bodies page and the star and galaxy flights are drawn on a canvas, which assistive technology sees as a single picture with a short label. The facts the views show are on the text pages, but the flying, choosing and looking around aren't available in text. WCAG 2.2 criteria that this affects include 1.1.1 (non-text content), 1.3.1 and 4.1.2.
+- **The 3D views can't be read by a screen reader.** The 3D explorer and its star and galaxy flights are drawn on a canvas, which assistive technology sees as a single picture with a short label. The facts the views show are on the text pages, but the flying, choosing and looking around aren't available in text. WCAG 2.2 criteria that this affects include 1.1.1 (non-text content), 1.3.1 and 4.1.2.
 - **Some 3D controls need a pointer.** In the 3D views you look round by dragging, and set your speed with the scroll wheel (one gear a notch), a pinch or the throttle slider. The 3D explorer also works from the keyboard: you fly yourself from the moment you arrive, with W and S to go ahead and astern, A and D sideways, E and Q up and down, the left and right arrow keys to turn, the up and down arrow keys to go ahead and astern, . and , for speed and X to brake at once. [ and ] go to the world before or after, B goes back, and Esc eases a trip to a stop, or in free flight stops you (and, if you are not close to the ground, circles the nearest world, after which F sets you flying free again). The scale along the top, the "Go to" list, the "Time" panel, the tour, the speed button, the Settings panel and the Help page (also opened with ?) are ordinary buttons, and H hides and shows all the on-screen controls. It follows your device's reduced-motion setting, and the Settings panel has a reduced-motion switch that replaces every trip with a quick fade. We haven't yet checked that every part of the guide panel can be reached and used by keyboard alone.
-- **Small targets on the Bodies page.** The name labels of the planets in the 3D solar system are about 23 pixels high, a little under the 24 pixel minimum in WCAG 2.2 criterion 2.5.8. The planets can also be chosen from the list of bodies on the page.
 - **The sky map is a canvas.** The chart is a picture, and touching a star in it asks for a pointer. Underneath it is a list in text of what is up at your place and time, which is the way to read it without the picture.
-- **No "skip to content" link.** The main menu is short, but pages don't yet have a link to jump past it, which doesn't meet WCAG criterion 2.4.1 in full.
 - **Animation.** Pages respect your reduced-motion setting, but we haven't tested every animation and every flight in the 3D view with that setting turned on.
 - **Graphics demands.** The 3D view needs a device that supports WebGPU or WebGL 2. If yours doesn't, it says so, and the rest of the site still works.
 
@@ -74,6 +72,7 @@ If you contact us and aren't happy with how we respond, you can complain to the 
 
 Heliocodex is built with HTML, CSS and JavaScript, and its 3D views use WebGPU or WebGL 2. It works best in a current version of Chrome, Edge, Firefox or Safari. The reading pages work without JavaScript. The sky map, the birthday-star finder and the 3D views need it.
 
-This statement was prepared on 11 November 2026. We will review it at least once a year and when we change the site in a way that affects it.
+This statement was prepared on 11 November 2026 and last reviewed on 26 November 2026. We will review it at least once a year and when we change the site in a way that affects it.
 
+- **26 November 2026.** Checks run again on the current pages. Took out two problems that no longer apply: every page now has a skip link, and the old Bodies page with its small labels has gone. The 3D section now describes the explorer as it is.
 - **11 November 2026.** First version.

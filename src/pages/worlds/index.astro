@@ -22,7 +22,9 @@ const P = planets.map((b) => {
   return { id: b.id, name: b.name.replace(/^The /, ''), a, x: x(a), d: Math.round(6 + Math.sqrt(r) / 16), moons: moonsOf(b.id), known: moonCount(b.id), skip: 0 };
 });
 // a moon list that would run into its neighbour's starts below it instead
-P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && p.x - q.x < 7) p.skip = q.skip + q.moons.length; });
+// (Jupiter's list reads to the right, towards Saturn's, so Saturn's always starts below it;
+// the Earth's one moon sits a row lower, under its distance, so Mars's list starts a row further down)
+P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && (p.x - q.x < 7 || q.id === 'jupiter')) p.skip = q.skip + q.moons.length + (q.id === 'earth' ? 1 : 0); });
 // each moon row is 1.5rem (24px) tall so that every link meets the 24px target size; the band is as tall as the longest list
 const bandRem = Math.max(12.5, 0, ...P.map((p) => 2.2 + p.d / 32 + 1.3 + (p.skip + p.moons.length) * 1.5 + 1));
 const LANES = [
@@ -73,7 +75,7 @@ for (const l of LANES) l.rows.forEach((r, i) => {
 vlabels.sort((a, b) => a.y - b.y);
 let floor = 0;
 for (const l of vlabels) {
-  const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 7.8 + 6 : 0) > 168 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
+  const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 7.8 + 6 : 0) > 150 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
   l.y = Math.max(l.y - 9, floor);
   floor = l.y + 3 + 17 + (lines - 1) * 14;
 }
@@ -92,7 +94,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
       <ol class="wm-planets" style={`height:${bandRem.toFixed(1)}rem`}>
         {P.map((p) => (
-          <li class:list={[{ flip: p.id === 'jupiter', low: p.id === 'earth', shift: p.id === 'uranus' }]} style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
+          <li class:list={[{ low: p.id === 'earth', shift: p.id === 'uranus' }]} style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
             <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
             <span class="wp-au">{fmtAu(p.a)} au</span>
             {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li class:list={[{ written: written(m.id) }]}><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
@@ -172,7 +174,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
   .wm-planets > li.shift .wp-moons { left: .4rem; }
   .wm-planets > li.low .wp-au { top: calc(var(--d) / 2 + 1.1rem); }
-  .wm-planets > li.low .wp-moons { top: calc(var(--d) / 2 + 2.1rem); }
+  .wm-planets > li.low .wp-moons { top: calc(var(--d) / 2 + 2.6rem); }
   /* Jupiter's long list of moons reads to the left, so it clears Saturn's */
   .wm-planets > li.flip .wp-moons { left: auto; right: -.5rem; padding: calc(var(--skip) * 1.5rem) .5rem 0 0; border-left: 0; border-right: 1px solid rgba(233,196,138,.25); justify-items: end; }
   .wm-planets > li.flip .wp-moons a { flex-direction: row-reverse; }

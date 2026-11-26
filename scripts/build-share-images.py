@@ -73,7 +73,11 @@ PLANETS = {
     '/uranus': ('/img/uranus/voyager-1986.jpg', 'Uranus as a plain, pale blue-green sphere against black space.', 'Image: NASA/JPL-Caltech.'),
     '/neptune': ('/img/neptune/great-dark-spot.jpg', 'Neptune as a deep blue globe with a large dark oval storm left of centre.', 'Image: NASA/JPL.'),
 }
-pages.update(PLANETS)   # Mars (strips too narrow) and Jupiter (the Great Red Spot picture is not reused) keep the site card
+# Mars and Jupiter lead with scroll strips that are too narrow to crop, so they use the whole-globe portrait each page shows in its
+# size comparison, with that picture's own credit (not the Great Red Spot picture, which is not reused)
+PLANETS['/mars'] = ('/img/bodies/mars.jpg', 'A rust-orange globe with dark markings, a white polar cap and a long canyon across its middle.', 'Credit: NASA/JPL/USGS.')
+PLANETS['/jupiter'] = ('/img/bodies/jupiter.jpg', 'A globe banded in cream, orange and rust, with the round Great Red Spot below the middle.', 'Credit: NASA, ESA, A. Simon (Goddard Space Flight Center) and M. H. Wong (University of California, Berkeley), CC BY 4.0.')
+pages.update(PLANETS)
 
 def make(src_path, dest):
     im = Image.open('public' + src_path).convert('RGB')

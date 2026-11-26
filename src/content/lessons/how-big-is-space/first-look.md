@@ -9,7 +9,7 @@ sources:
 ---
 Shrink the Sun to the size of a football, 22 centimetres across, and put it on the centre spot of a football pitch.
 
-On that scale the Earth is a peppercorn, 2 millimetres wide, about 24 metres away: a short walk from the centre spot. Jupiter is a large marble, 120 metres off, out beyond the stands. Neptune is a pea, 710 metres away, somewhere in the streets round the ground.
+On that scale the Earth is a peppercorn, 2 millimetres wide, about 23.6 metres away: a short walk from the centre spot. Jupiter is a large marble, 120 metres off, out beyond the stands. Neptune is a pea, 710 metres away, somewhere in the streets round the ground.
 
 Everything in between is empty. All eight planets, with every one of their moons, fit inside a circle you could walk across in a quarter of an hour. The football holds almost all of the mass in it.
 

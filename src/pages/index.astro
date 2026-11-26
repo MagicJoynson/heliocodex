@@ -6,33 +6,21 @@ import { portraits } from '../lib/portraits';
 import { allLessons, STRAND_NAMES } from '../lib/v2/margin/content';
 import facts from '../data/facts.json';
 import { bodies } from '../data/bodies';
-import { planetCells, TEMPS } from '../lib/planet-sheet';
-import { properStars } from '../lib/sky/starlist';
-import { slugOf } from '../lib/sky/star';
-import { allTerms, STRAND_ORDER } from '../lib/v2/margin/content';
+import { STRAND_ORDER } from '../lib/v2/margin/content';
 import { WORLD_PAGES } from '../data/world-pages';
-import { outlineWorlds, IAU_DWARFS } from '../lib/worlds';
 import { body } from '../data/bodies/index';
+import { PACKS } from '../lib/learn/packs';
+import { cover } from '../lib/learn/map';
 
 const lessons = await allLessons();
-// what the site holds, shown by name: the brightest named stars, well-known constellations, every subject with
-// a few of its lessons, the moons with full pages (with their pictures), the small worlds, and some glossary words
-const brightStars = properStars().sort((a, b) => a.appMag - b.appMag).slice(0, 12);
-const CONS = ['Orion', 'Ursa Major', 'Cassiopeia', 'Cygnus', 'Scorpius', 'Leo', 'Taurus', 'Crux', 'Lyra', 'Andromeda'];
+// what the site holds, shown by name: ways into the lessons and every subject, and the moons with full pages (with their pictures)
 const strands = STRAND_ORDER.map((strand) => ({ strand, name: STRAND_NAMES[strand], first: lessons.filter((l) => l.data.strand === strand).sort((a, b) => a.data.order - b.data.order)[0] })).filter((g) => g.first);
 const moonCards = Object.entries(WORLD_PAGES).filter(([, pg]) => !!(pg.globe ?? pg.picture)).sort(([a], [b]) => (a === 'moon' ? -1 : b === 'moon' ? 1 : 0)).map(([id, pg]) => ({ id, name: body(id)!.name.replace(/^The /, 'The '), src: ['deimos', 'iapetus', 'ida', 'bennu', 'pallas'].includes(id) ? `/img/thumbs/${id}.jpg` : (pg.globe ?? pg.picture)!.src }));
-const KIND_LABEL: [string, string][] = [['dwarf', 'Dwarf planets, named by the IAU'], ['likely', 'Likely dwarf planets'], ['asteroid', 'Asteroids'], ['comet', 'Comets']];
-const smallKinds = KIND_LABEL.map(([kind, label]) => ({ label, items: outlineWorlds.filter((b) => (kind === 'dwarf' ? b.kind === 'dwarf' && IAU_DWARFS.has(b.id) : kind === 'likely' ? b.kind === 'dwarf' && !IAU_DWARFS.has(b.id) : b.kind === kind)).slice(0, 6) }));
-const terms = await allTerms();
-const WORD_IDS = ['light-year', 'orbit', 'parallax', 'redshift', 'black-hole', 'nebula', 'exoplanet', 'supernova', 'apparent-magnitude', 'galaxy', 'tide', 'aurora', 'equinox'];
-const words = WORD_IDS.map((id) => terms.find((t) => t.id === id)).filter((t): t is (typeof terms)[number] => !!t);
-// the start of the reference, on the first screen: each world's first three record numbers
-const plain = (h: string) => h.replace(/<[^>]+>/g, '');
-const ledger = ['sun', 'mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'].map((slug) => {
-  const c = planetCells(slug);
-  const get = (k: string) => { const x = c.find((y) => y.key === k)!; return plain(`${x.value}${x.unit ? ` ${x.unit.replace(' on average', '').replace(' across', '')}` : ''}`); };
-  return { slug, name: slug === 'sun' ? 'The Sun' : slug[0].toUpperCase() + slug.slice(1), dist: slug === 'sun' ? 'At the centre' : get('distance'), size: get('size'), temp: get('temperature'), tempKind: TEMPS[slug].kind };
-});
+// four ways into the lessons: the ten-lesson start, then three first looks from the stars out to the whole universe
+const startPack = PACKS.find((p) => p.id === 'start-here')!;
+const picks = ['how-stars-live-and-die', 'what-a-black-hole-is', 'the-expanding-universe'].map((id) => lessons.find((l) => l.id === id)!).map((l) => ({ id: l.id, title: l.data.title, summary: l.data.summary, pic: cover(l) }));
+const plainCredit = (c: string) => c.replace(/<[^>]+>/g, '').replace(/^[\s\S]*?Credit:\s*/, '').replace(/\.$/, '').trim();
+const pictureCredits = [`Earthrise, ${plainCredit(startPack.photo.caption)}`, ...picks.filter((p) => p.pic).map((p) => `${p.title}, ${plainCredit(p.pic!.caption)}`)].join('; ') + '.';
 const tagline = Object.fromEntries(bodies.map((b) => [b.slug, b.tagline]));
 const jupiterKm = portraits.find((p) => p.slug === 'jupiter')!.km;
 // every picture is sized so that its disc is (diameter ÷ Jupiter's) × --j across
@@ -62,14 +50,14 @@ import Tonight from '../components/Tonight.astro';
    <div class="front-hero">
     <div class="front-text">
       <h1 id="home-h">The Sun, its worlds and everything beyond</h1>
-      <p class="front-lede">Real spacecraft images. Every number measured and credited.</p>
+      <p class="front-lede">Fly through the real Solar System at its true size and distance, or see what is above you tonight. The photographs are from real spacecraft and telescopes, and every figure has its source.</p>
     </div>
     <div class="front-scene">
       <svg class="front-orbits" viewBox="0 0 1200 420" aria-hidden="true" focusable="false"><ellipse class="ring" cx="600" cy="470" rx="150" ry="90" /><ellipse class="ring" cx="600" cy="470" rx="250" ry="160" /><ellipse class="ring" cx="600" cy="470" rx="380" ry="240" /><ellipse class="ring" cx="600" cy="470" rx="520" ry="330" /><ellipse class="ring" cx="600" cy="470" rx="680" ry="430" /><circle r="5" fill="#7fb2e8"><animateMotion dur="38s" begin="-4s" repeatCount="indefinite" path="M 350 470 a 250 160 0 1 1 500 0 a 250 160 0 1 1 -500 0" /></circle><circle r="4.5" fill="#d9784a"><animateMotion dur="70s" begin="-30s" repeatCount="indefinite" path="M 220 470 a 380 240 0 1 1 760 0 a 380 240 0 1 1 -760 0" /></circle><circle r="9" fill="#e3c79a"><animateMotion dur="120s" begin="-60s" repeatCount="indefinite" path="M 80 470 a 520 330 0 1 1 1040 0 a 520 330 0 1 1 -1040 0" /></circle><circle r="7" fill="#e9d9a8"><animateMotion dur="190s" begin="-20s" repeatCount="indefinite" path="M -80 470 a 680 430 0 1 1 1360 0 a 680 430 0 1 1 -1360 0" /></circle></svg>
-      <a class="front-enter" href="/explore?enter=1"><span>Enter</span><b>the model in 3D</b></a>
+      <a class="front-enter" href="/explore?enter=1"><span>Enter</span><b>fly it in 3D</b></a>
       <img class="front-sun" src={sun.src} alt="" width={sun.width} height={sun.height} fetchpriority="high" />
     </div>
-    <nav class="front-more" aria-label="Other ways in"><a href="/explore?tour=1">Take the tour</a><a href="/sky">Tonight’s sky</a><a href="/learn/packs/start-here">Ten lessons</a></nav>
+    <nav class="front-more" aria-label="Other ways in"><a href="/explore?tour=1">Take the guided tour in 3D</a><a href="/sky">See tonight’s sky</a><a href="/learn/packs/start-here">Start with ten short lessons</a></nav>
    </div>
     <p class="front-credit">{sun.credit} The orbits above are drawn for effect, not to scale.</p>
   </section>
@@ -94,40 +82,29 @@ import Tonight from '../components/Tonight.astro';
         The Sun and its eight planets in real spacecraft photographs, all drawn to one scale. The distances would never fit: at this size, Neptune would be <b id="nep">about 5 kilometres</b> off to the right. <a href="/explore">See it at true size and distance</a>.
       </figcaption>
     </figure>
-    <div class="ledger">
-      <table>
-        <caption>The Sun and the eight planets: the first three numbers of each record</caption>
-        <thead><tr><th scope="col">World</th><th scope="col">From the Sun</th><th scope="col">Size</th><th scope="col">Temperature</th></tr></thead>
-        <tbody>
-          {ledger.map((r) => (
-            <tr><th scope="row"><a href={`/${r.slug}`}>{r.name}</a></th><td>{r.dist}</td><td>{r.size}</td><td>{r.temp}<span class="kind">{r.tempKind}</span></td></tr>
-          ))}
-        </tbody>
-      </table>
-      <p class="ledger-go"><a href="/worlds">Every moon and small world, by distance</a></p>
-    </div>
+    <div class="ledger"><p class="ledger-go"><a href="/worlds">Every moon and small world, by distance</a></p></div>
   </section>
 
   <div class="reading home">
-    <section class="band" aria-labelledby="b-sky">
-      <h2 id="b-sky"><a href="/sky">Sky</a></h2>
-      <div class="b-body">
-        <p class="b-line"><a href="/sky">What is up tonight</a>, wherever you are, with every planet and bright star named.</p>
-        <p class="b-k">Named stars</p>
-        <p class="b-list">{brightStars.map((t, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/stars/${t.slug}`}>{t.name}</a></>)}</p>
-        <p class="b-k">Constellations</p>
-        <p class="b-list">{CONS.map((c, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/stars/in/${slugOf(c)}`}>{c}</a></>)} <a class="b-all" href="/stars#constellations">All 88</a></p>
-      </div>
-    </section>
-
     <section class="band" aria-labelledby="b-learn">
       <h2 id="b-learn"><a href="/learn">Learn</a></h2>
-      <div class="b-body"><p class="b-k">Subjects</p><div class="b-strands">
-        {strands.map((g) => (
-          <a class="b-strand" href={`/learn/subject/${g.strand}`}>{g.name}</a>
-        ))}
+      <div class="b-body">
+        <div class="b-learn">
+          <a class="b-lead" href="/learn/packs/start-here">
+            <img src={startPack.photo.src} alt="" width={startPack.photo.width} height={startPack.photo.height} loading="lazy" decoding="async" />
+            <span class="b-lead-k">Start here</span>
+            <b>{startPack.name}</b>
+            <span class="b-lead-t">{startPack.blurb}</span>
+          </a>
+          <ul class="b-picks">
+            {picks.map((l) => (
+              <li><a href={`/learn/${l.id}`}>{l.pic && <img src={l.pic.src} alt="" width="160" height="160" loading="lazy" decoding="async" />}<span><b>{l.title}</b><span>{l.summary}</span></span></a></li>
+            ))}
+          </ul>
         </div>
-        <p class="b-more-lessons">Each subject starts with a first look. <a class="b-all" href="/learn">All {lessons.length} lessons, in order</a></p>
+        <p class="b-k">Or choose a subject</p>
+        <p class="b-list b-subjects">{strands.map((g, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/learn/subject/${g.strand}`}>{g.name}</a></>)} <a class="b-all" href="/learn">All {lessons.length} lessons</a></p>
+        <p class="b-credit">Pictures: {pictureCredits}</p>
       </div>
     </section>
 
@@ -138,21 +115,6 @@ import Tonight from '../components/Tonight.astro';
           {moonCards.slice(0, 16).map((m) => <li><a href={`/worlds/${m.id}`}><img src={m.src} alt="" width="96" height="96" loading="lazy" /><span>{m.name}</span></a></li>)}
         </ul>
         <p class="b-more-lessons"><a class="b-all" href="/worlds">Every moon and small world, by distance</a></p>
-        {smallKinds.slice(0, 2).map((k) => (
-          <>
-            <p class="b-k">{k.label}</p>
-            <p class="b-list">{k.items.map((b, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/worlds/${b.id}`}>{b.name.replace(/^The /, '')}</a></>)}</p>
-          </>
-        ))}
-      </div>
-    </section>
-
-    <section class="band" aria-labelledby="b-ref">
-      <h2 id="b-ref"><a href="/glossary">Reference</a></h2>
-      <div class="b-body">
-        <p class="b-k">Glossary words</p>
-        <p class="b-list">{words.map((t, i) => <>{i > 0 && <span aria-hidden="true"> · </span>}<a href={`/glossary#${t.id}`}>{t.term}</a></>)} <a class="b-all" href="/glossary">A to Z</a></p>
-        <p class="b-list b-refs"><a href="/atlas">Charts, drawn to scale</a><a href="/explore">The Solar System in 3D</a><a href="/learn/facts">Facts</a><a href="/sources">Sources</a></p>
       </div>
     </section>
 
@@ -217,8 +179,9 @@ import Tonight from '../components/Tonight.astro';
   .front-orbits { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 55%, transparent 96%); mask-image: linear-gradient(to bottom, transparent 0, #000 16%, #000 55%, transparent 96%); }
   .front-orbits .ring { fill: none; stroke: rgba(236,231,220,.22); stroke-width: 1; }
   .front-hero { display: flex; flex-direction: column; min-height: calc(100vh - 56px); min-height: calc(100svh - 56px); }
-  .front-more { position: relative; z-index: 3; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 1.6rem; padding: .35rem var(--gutter); background: #000; border-top: 1px solid rgba(236,231,220,.12); font: 300 1rem/1.5 'Spectral', Georgia, serif; }
-  .front-more a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-soft); text-decoration: underline dashed rgba(233,196,138,.55); text-underline-offset: .22em; text-decoration-thickness: 1px; }
+  .front-more { position: relative; z-index: 3; display: flex; flex-wrap: wrap; justify-content: center; gap: 0 2.2rem; padding: .5rem var(--gutter); background: #000; border-top: 1px solid rgba(236,231,220,.12); font: 400 1.1rem/1.5 'Spectral', Georgia, serif; }
+  .front-more a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration: underline rgba(233,196,138,.7); text-underline-offset: .25em; text-decoration-thickness: 1px; }
+  .front-more a::after { content: '→'; margin-left: .4em; color: var(--accent); text-decoration: none; }
   .front-more a:hover { color: var(--accent); }
   .front-more a:focus-visible, .front-enter:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .front-credit { position: relative; z-index: 3; margin: 0; max-width: none; padding: .7rem var(--edge) 1rem; background: #000; font: italic 300 .8125rem/1.4 'Spectral', Georgia, serif; color: var(--ink-faint); text-align: left; }
@@ -319,6 +282,30 @@ import Tonight from '../components/Tonight.astro';
   .b-strand .b-k a { color: var(--accent); text-decoration: none; }
   .b-strand .b-k a:hover { text-decoration: underline; }
   .b-strand li { padding-left: .8rem; border-left: 1px solid var(--rule); }
+  /* Learn: one lead way in with its picture, three questions beside it, then every subject as plain links */
+  .b-learn { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 1.6rem 2.6rem; margin-bottom: 1.6rem; }
+  .b-lead { display: grid; align-content: start; color: var(--ink); text-decoration: none; border: 1px solid var(--rule); background: #0b0c12; }
+  .b-lead img { width: 100%; height: 15rem; object-fit: cover; object-position: 50% 45%; display: block; opacity: .9; transition: opacity .3s ease; }
+  .b-lead > span, .b-lead > b { padding: 0 1.5rem; }
+  .b-lead-k { margin-top: 1.2rem; font: 400 .8125rem/1.4 var(--r-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .b-lead b { font: 400 clamp(1.5rem, 2.4vw, 2rem)/1.15 var(--r-serif); margin: .35rem 0 .5rem; }
+  .b-lead b::after { content: ' →'; color: var(--accent); }
+  .b-lead-t { padding-bottom: 1.4rem !important; font: 300 1.02rem/1.5 var(--r-serif); color: var(--ink-soft); max-width: 32rem; }
+  .b-lead:hover img, .b-lead:focus-visible img { opacity: 1; }
+  .b-lead:hover b, .b-lead:focus-visible b { text-decoration: underline; text-decoration-color: rgba(233,196,138,.6); text-underline-offset: .18em; }
+  .b-picks { list-style: none; margin: 0; padding: 0; display: grid; align-content: start; }
+  .b-picks li { border-top: 1px solid var(--rule); }
+  .b-picks li:last-child { border-bottom: 1px solid var(--rule); }
+  .b-picks a { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 1.1rem; align-items: center; padding: 1rem 0; color: var(--ink); text-decoration: none; }
+  .b-picks img { width: 4.5rem; height: 4.5rem; object-fit: cover; border-radius: 2px; }
+  .b-picks b { display: block; font: 400 1.2rem/1.25 var(--r-serif); text-decoration: underline; text-decoration-color: rgba(236,231,220,.3); text-underline-offset: .2em; text-decoration-thickness: 1px; }
+  .b-picks b::after { content: ' →'; color: var(--accent); }
+  .b-picks a > span > span { display: block; margin-top: .3rem; font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-soft); }
+  .b-picks a:hover b, .b-picks a:focus-visible b { color: var(--accent); text-decoration-color: currentColor; }
+  .b-subjects { line-height: 1.75; }
+  .b-subjects a { white-space: normal; text-decoration-color: rgba(236,231,220,.4); }
+  .b-credit { margin: 1.2rem 0 0; font: 300 .875rem/1.5 var(--r-serif); color: var(--ink-faint); }
+  @media (max-width: 860px) { .b-learn { grid-template-columns: minmax(0, 1fr); } .b-lead img { height: 11rem; } }
   .b-moons { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: .9rem .8rem; }
   @media (max-width: 1100px) { .b-moons { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .b-moons a { display: grid; justify-items: center; gap: .45rem; text-decoration: none; color: var(--ink); font: 400 .98rem/1.2 var(--r-serif); }
