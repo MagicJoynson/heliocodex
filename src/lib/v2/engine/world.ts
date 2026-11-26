@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { uniform, positionLocal, normalWorld, normalView, positionViewDirection, pow, texture, uv, min, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
+import { uniform, positionLocal, positionWorld, normalWorld, normalView, positionViewDirection, pow, texture, uv, min, mix, vec2, vec3, vec4, float, dot, length, smoothstep, select } from 'three/tsl';
 import { createSky, GLINT, FAR as SKY_FAR } from './sky';
 import { createDeep, PC, radecToEngine, GAL_CENTRE, GAL_X, GAL_Z, SUPERGAL_POLE, pcFromLy } from './deep';
 import { createTerrain } from './terrain';
@@ -40,6 +40,12 @@ export interface Readout {
   far?: boolean;
   /** free flight speed: 0 is local (about your height a second), 1 and up are fixed speeds */
   gear: number;
+  /** on a trip: still turning on the spot to face the way, so not yet moving */
+  turning?: boolean;
+  /** on a trip: metres to the point where it ends, metres come so far, and how far from the Sun it ends */
+  toGo?: number;
+  gone?: number;
+  endFromSun?: number;
 }
 
 export interface Quality { tier: 0 | 1 | 2 | 3; scale: number; split: number; maxTiles: number; antialias: boolean; target: number; maxPx: number }
@@ -190,13 +196,55 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     return e;
   };
   const surfaceAlong = (id: string, u: V3, mean: number): number => { const e = ellipsoidOf(id); return e ? ellipsoidRadius(e, u) : mean; };
+  /**
+   * How a globe is lit: by the Sun, from where the Sun really is as seen from that body (not from the camera), so each
+   * world has its own day side, terminator and night side. A world with a thick atmosphere fades evenly to the terminator
+   * and a little past it (twilight); an airless one is flatter across its face, as the Moon is (half Lambert, half
+   * Lommel-Seeliger, the usual "lunar-Lambert" mix). The night side is all but black. Up to four of its largest moons cast
+   * their shadows on it: each is a sphere between the point and the Sun, with a soft edge as wide as the Sun's disc makes it.
+   */
+  const AIRY = new Set(['venus', 'earth', 'jupiter', 'saturn', 'uranus', 'neptune']);
+  interface Lit { sun: { value: THREE.Vector3 }; centre: { value: THREE.Vector3 }; sunTan: { value: number }; casters: { value: THREE.Vector4 }[]; dim: { value: number }; mat: THREE.MeshBasicNodeMaterial; paint: (extra?: unknown) => void }
+  const lits = new Map<string, Lit>();
+  function sunlit(id: string, map?: THREE.Texture) {
+    const sun = uniform(new THREE.Vector3(0, 1, 0)) as any, centre = uniform(new THREE.Vector3()) as any, sunTan = uniform(0.005) as any, dim = uniform(1) as any;
+    const casters = [0, 1, 2, 3].map(() => uniform(new THREE.Vector4(0, 0, 0, 0)) as any);
+    const mat = new THREE.MeshBasicNodeMaterial();
+    const paint = (extra?: unknown) => {
+      const mu0 = dot(normalWorld as any, sun);
+      const mu = (normalView as any).dot(positionViewDirection as any).max(0);
+      const tw = id === 'mars' ? 0.02 : AIRY.has(id) ? 0.045 : 0.004;
+      const lambert = mu0.add(tw).div(1 + tw).max(0);
+      const m0 = mu0.max(0);
+      const seeliger = m0.mul(2).div(m0.add(mu).add(0.001)).min(1.15);
+      let lit: any = AIRY.has(id) ? lambert : mix(lambert, seeliger.mul(smoothstep(0, 0.02, mu0)), id === 'mars' ? 0.25 : 0.5);
+      const P = (positionWorld as any).sub(centre);
+      for (const c of casters) {
+        const v = c.xyz.sub(P);
+        const along = dot(v, sun);
+        const miss = length(v.sub(sun.mul(along)));
+        const w = along.mul(sunTan).max(1);
+        // how much of the Sun the moon can cover from here, at most (a small moon far off only dents the light)
+        const depth = c.w.div(w).pow(2).min(1);
+        const light = float(1).sub(depth.mul(float(1).sub(smoothstep(c.w.sub(w), c.w.add(w), miss))));
+        lit = lit.mul(select(along.greaterThan(0).and(c.w.greaterThan(0)), light, float(1)));
+      }
+      if (extra) lit = lit.mul(extra as any);
+      const base = map ? (texture(map) as any).rgb : vec3(0.54, 0.52, 0.5);
+      mat.colorNode = vec4(base.mul(lit.mul(0.9).add(0.004)).mul(dim), 1);
+      mat.needsUpdate = true;
+    };
+    paint();
+    lits.set(id, { sun, centre, sunTan, casters, dim, mat, paint });
+    return mat;
+  }
   function makeGlobe(id: string, radius: number, map?: THREE.Texture) {
     const holder = new THREE.Group();
     // y along the spin pole and x towards the node, so turning about y by W puts longitude 0 where the IAU says
     const Y = poleOf(id), X0 = nodeOf(id);
     const X = X0.sub(Y.clone().multiplyScalar(X0.dot(Y))).normalize();
     holder.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(X, Y, new THREE.Vector3().crossVectors(X, Y)));
-    const g = new THREE.Mesh(globeGeo, new THREE.MeshStandardNodeMaterial(map ? { map, roughness: 1, metalness: 0 } : { color: 0x8a8580, roughness: 1, metalness: 0 }));
+    const g = new THREE.Mesh(globeGeo, sunlit(id, map));
     const sh = SHAPE[id];
     if (sh) g.scale.set(sh[0] * 1000, sh[1] * 1000, sh[2] * 1000);
     else g.scale.setScalar(radius);
@@ -222,19 +270,25 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
   const lazyMaps = new Map<string, () => void>();
   const MAP_DIM = 0.54;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mapFades: { mat: THREE.MeshStandardNodeMaterial; t0: number }[] = [];
-  const fadeSetters = new Map<THREE.Material, (v: number) => void>();
-  const setDim = (m: THREE.MeshStandardNodeMaterial, v: number) => { m.color.setScalar(v); fadeSetters.get(m)?.(v); };
+  const mapFades: { id: string; t0: number }[] = [];
+  const setDim = (id: string, v: number) => { const l = lits.get(id); if (l) l.dim.value = v; };
   for (const p of PLANETS) {
     const map = new THREE.Texture();
     map.colorSpace = THREE.SRGBColorSpace;
     map.anisotropy = 4;
     const globe = makeGlobe(p, RADII[p], map);
     // until its map arrives the ball is plain grey; when it does, the colour comes up over about a second instead of popping in
-    const mat = (globe.children[0] as THREE.Mesh).material as THREE.MeshStandardNodeMaterial;
-    mat.color.setScalar(MAP_DIM);
-    lazyMaps.set(p, () => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; if (reducedMotion) setDim(mat, 1); else mapFades.push({ mat, t0: performance.now() }); }).catch((e) => { setDim(mat, 1); console.error(`the map of ${p} did not load`, e); }); });
+    void globe;
+    setDim(p, MAP_DIM);
+    lazyMaps.set(p, () => { loader.loadAsync(`/textures/${TEX[p]}`).then((t) => { map.image = t.image; map.needsUpdate = true; if (reducedMotion) setDim(p, 1); else mapFades.push({ id: p, t0: performance.now() }); }).catch((e) => { setDim(p, 1); console.error(`the map of ${p} did not load`, e); }); });
   }
+  // the four largest moons of each world, which are the ones whose shadows can be seen crossing it
+  const casterLists = new Map<string, { id: string; r: number }[]>();
+  const shadowCasters = (id: string) => {
+    let l = casterLists.get(id);
+    if (!l) { l = allBodies.filter((b) => b.kind === 'moon' && b.parent === id && (b.meanRadiusKm ?? 0) > 5).sort((a, b) => b.meanRadiusKm! - a.meanRadiusKm!).slice(0, 4).map((b) => ({ id: b.id, r: b.meanRadiusKm! * 1000 })); casterLists.set(id, l); }
+    return l;
+  };
   let farLoaded = false;
   const loadFar = () => { if (farLoaded) return; farLoaded = true; deep.load(); };
   let saturnShadows: { holder: THREE.Group; ball: THREE.Mesh; sunH: { value: THREE.Vector3 }; sunL: { value: THREE.Vector3 }; face: { value: number } } | null = null;
@@ -280,13 +334,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       const inRing = t.greaterThan(0).and(u.greaterThan(0)).and(u.lessThan(1));
       const opacity = (texture(tex, vec2(u.clamp(0, 1), 0.5)) as any).a;
       const litG = select(inRing, float(1).sub(opacity.mul(0.85)), float(1));
-      const gm = ball.material as THREE.MeshStandardNodeMaterial;
-      if (gm.map) {
-        // this material's own colour node ignores material.color, so its fade goes through a uniform instead
-        const dim = uniform(gm.color.r) as any;
-        gm.colorNode = (texture(gm.map) as any).mul(vec4(vec3(litG.mul(dim)), 1));
-        fadeSetters.set(gm, (v) => { dim.value = v; });
-      }
+      lits.get('saturn')?.paint(litG);
     }
   }
 
@@ -306,8 +354,9 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     const maxN = Math.sqrt(1 - 1 / (s * s)); // the shell's own edge, where the surface normal is square on to the view
     const ndv = (normalView as any).dot(positionViewDirection as any).abs();
     const t = ndv.div(maxN).clamp(0, 1); // 0 at the shell's edge, 1 at the planet's edge
-    const lit = (positionLocal as any).normalize().dot(sunDirU).mul(0.5).add(0.5).clamp(0, 1);
-    const k = pow(t, 1.8).mul(pow(lit, 1.6).mul(gain).add(0.01));
+    // bright over the day side, a twilight band past the terminator, and nothing on the night side
+    const lit = smoothstep(-0.28, 0.75, (positionLocal as any).normalize().dot(sunDirU));
+    const k = pow(t, 1.8).mul(lit.mul(gain).add(0.002));
     const mat = new THREE.MeshBasicNodeMaterial({ transparent: true, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending });
     mat.colorNode = vec4(vec3(r, g, b).mul(k), 1);
     const mesh = new THREE.Mesh(globeGeo, mat);
@@ -493,7 +542,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     'oort-cloud': 'The Oort cloud is drawn from a model; nobody has seen it, only comets that come from it',
     neighbourhood: 'Real stars at their measured distances. Stars whose distance is not known are left out',
     'night-sky': 'Real stars at their measured distances, seen from outside the sky. The Pleiades and the Orion Nebula are each placed by one measured distance',
-    'milky-way': 'The galaxy’s shape is reconstructed from measurements made from inside it, because no one has seen it from outside. It is a model',
+    'milky-way': 'The galaxy’s shape is reconstructed from measurements made from inside it, because no one has seen it from outside. It is a model, and its points of light stand in for stars: they are not real ones',
     'local-group': 'Andromeda, Triangulum and the Magellanic Clouds are models, placed and tilted as measured',
     'cosmic-web': 'Real SDSS galaxies. Distances are approximate, worked out from redshift at 70 km/s per megaparsec. Blank sky was not surveyed',
     cmb: 'The sphere is 46 billion light years in radius: the comoving distance to where the oldest light started, in today’s stretched-out space, though the universe is only 13.8 billion years old. That light was released about 380,000 years after the Big Bang. Nothing is really this far away, and its tiny differences are shown far stronger than they are',
@@ -664,11 +713,18 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
         return Math.acos(Math.min(1, dot)) < c.ang * 1.05;
       });
     };
-    const extra = PLANETS.map((p) => ({ text: PLANET_NAMES[p], dir: sub(planetPos[p], cam), hot: cruising && p === focusKey, alpha: covered(p) ? 0 : Math.max(wide * (p === 'mercury' || p === 'venus' ? smooth(30, 8, fromSunAU) : 1), named(p) * 0.9) })).filter((x) => x.alpha > 0.01);
+    // all eight are named in the wide views (the outer ones first, so they keep their places; the inner four fan out round the Sun), and the Sun with them
+    const sunPx = (695_700_000 / Math.max(1, len(sunRel))) * pxPerRad0;
+    const extra = [
+      ...['neptune', 'uranus', 'saturn', 'jupiter'].map((p) => ({ text: PLANET_NAMES[p], go: p, dir: sub(planetPos[p], cam), hot: cruising && p === focusKey, alpha: covered(p) ? 0 : Math.max(wide, named(p) * 0.9) })),
+      { text: 'The Sun', go: 'sun', dir: sunRel, hot: cruising && focusKey === 'sun', alpha: wide * (1 - smooth(14, 40, sunPx)) * (1 - smooth(800, 1000, fromSunAU)) },
+      ...['mars', 'earth', 'venus', 'mercury'].map((p) => ({ text: PLANET_NAMES[p], go: p, dir: sub(planetPos[p], cam), hot: cruising && p === focusKey, alpha: covered(p) ? 0 : Math.max(wide, named(p) * 0.9) })),
+    ].filter((x) => x.alpha > 0.01);
     deep.update({ cam, quaternion: camera.quaternion, fovDeg: camera.fov, heightPx: o.canvas.clientHeight, widthPx: o.canvas.clientWidth, starGain: sky.starGain.value, extra });
 
     // light: from the Sun's direction (only the direction matters)
-    const sd = norm(sunRel);
+    // the walkable ground is lit from where the Sun is as seen from that world, not from the camera
+    const sd = norm(sub(sunPos, bodyPos));
     sunLight.position.set(sd[0], sd[1], sd[2]);
     sunLight.target.position.set(0, 0, 0);
 
@@ -689,7 +745,23 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       // Mars has walkable ground of its own: its plain globe only stands in while it is drawn bigger than life
       // beyond 1,500 km the generated heights would only bend its outline out of round, so the smooth globe is shown until you come down
       if (p === bodySlug) { marsBoosted = k > 1.02 || dBody - terrain.radius > GENERATED_FROM; g.visible = marsBoosted && (radOf(p) * k / d) * pxPerRad > 1.5; }
-      if (g.visible) g.position.set(r[0], r[1], r[2]);
+      if (g.visible) {
+        g.position.set(r[0], r[1], r[2]);
+        // lit from where the Sun is as seen from this body, and shadowed by its own large moons
+        const L = lits.get(p);
+        if (L) {
+          const ps = sub(sunPos, posOf(p)), dS = len(ps) || 1;
+          L.sun.value.set(ps[0] / dS, ps[1] / dS, ps[2] / dS);
+          L.centre.value.set(r[0], r[1], r[2]);
+          L.sunTan.value = 695_700_000 / dS;
+          const cs = shadowCasters(p), real = k < 1.02;
+          for (let i = 0; i < 4; i++) {
+            const m = real ? cs[i] : undefined, mp = m ? system.pos(m.id) : null;
+            if (m && mp) L.casters[i].value.set(mp[0] - posOf(p)[0], mp[1] - posOf(p)[1], mp[2] - posOf(p)[2], m.r);
+            else L.casters[i].value.set(0, 0, 0, 0);
+          }
+        }
+      }
     }
     for (const [id, sh] of shells) {
       const r = sub(posOf(id), cam), d = len(r), k = sizeBoost(id, d), R = radOf(id) * k * (1 + sh.h);
@@ -718,7 +790,7 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
     }
     for (let i = mapFades.length - 1; i >= 0; i--) {
       const f = mapFades[i], k = Math.min(1, (performance.now() - f.t0) / 900);
-      setDim(f.mat, MAP_DIM + (1 - MAP_DIM) * k * k * (3 - 2 * k));
+      setDim(f.id, MAP_DIM + (1 - MAP_DIM) * k * k * (3 - 2 * k));
       if (k >= 1) mapFades.splice(i, 1);
     }
     for (const { id, mesh } of spinning) {
@@ -782,14 +854,16 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
 
     const now = performance.now();
     if (now - readoutAt < 120 && f.mode !== 'cruise') return;
-    const farNow = placeAt(len(cam), nearId);
+    // on a trip the note is the destination's, from start to finish: it does not change as you pass through other places on the way
+    const farNow = f.mode === 'cruise' && f.endFromSun !== undefined ? placeAt(f.endFromSun, 'sun') : placeAt(len(cam), nearId);
     const illustrative = onTerrain && !terrain.source.resolution && f.alt < terrain.radius * 0.5;
     readoutAt = now;
     o.onReadout?.({
       alt: f.alt, speed: f.speed, coasting: f.coasting, gear: flight.gear, mode: f.mode, arriving: f.arriving, secsLeft: f.secsLeft,
+      turning: f.turning, toGo: f.toGo, gone: f.gone, endFromSun: f.endFromSun,
       target: farNow ? PLACE_NAMES[farNow.id] : system.body(nearId)?.name ?? nearId,
       dist: f.mode !== 'free' ? Math.max(0, len(sub(flight.target.centre(), cam)) - flight.target.radius) : f.alt,
-      far: !!farNow,
+      far: f.mode === 'cruise' ? !!placeAt(len(cam), nearId) : !!farNow,
       illustrative,
       note: (illustrative ? 'Illustrative terrain. The hills and craters here are generated to make the view feel real; they are not the measured surface of Mars' : undefined) ?? (farNow ? PLACE_NOTES[farNow.id] : undefined) ?? (() => { const y = new Date(system.timeMs).getUTCFullYear(); return y < 1800 || y > 2050 ? `Planet and moon positions are approximate in ${y}` : y < 2000 || y > 2040 ? `Moon positions are approximate in ${y}` : undefined; })() ?? (onTerrain && terrain.source.resolution ? `Detail finer than ${fmtRes(terrain.source.resolution)} is generated, not measured` : onTerrain && !terrain.source.resolution && dBody - terrain.radius <= GENERATED_FROM ? 'This ground is generated, not measured' : undefined),
       tech: `${backend} · ${depthMode} · ${stats.tiles} tiles (${stats.live} kept, ${stats.queued} coming, ${stats.built} built, ${stats.inflight} out) · level ${stats.deepest} · ${fpsShown} fps · ${ratio.toFixed(2)}x`,
@@ -1003,13 +1077,15 @@ export async function createWorld(o: { canvas: HTMLCanvasElement; onReadout?: (r
       return (pq.x * c[0] + pq.y * c[1] + pq.z * c[2]) * sgn;
     },
     /** for tests (?debug): stand at a latitude over a world, measured from the plane of its equator (the rings' plane for Saturn), on the side facing the Sun, at so many radii; negative latitudes are below the plane */
-    debugOrbit(id: string, latDeg: number, radii = 4.6) {
+    debugOrbit(id: string, latDeg: number, radii = 4.6, roundDeg = 0) {
       const tg = posOf(id);
       const pole: V3 = id === 'saturn' && saturnShadows ? (() => { const v = new THREE.Vector3(0, 1, 0).applyQuaternion(saturnShadows.holder.getWorldQuaternion(new THREE.Quaternion())); return [v.x, v.y, v.z] as V3; })() : north;
       const toS = norm(sub(sunPos, tg));
       const flat = norm(sub(toS, scale(pole, vdot(toS, pole))));
       const l = latDeg * Math.PI / 180;
-      const d = add(scale(flat, Math.cos(l)), scale(pole, Math.sin(l)));
+      // roundDeg turns the stand round the pole, away from the Sun's side: 90 looks along the terminator, 180 is the night side
+      const fl = new THREE.Vector3(flat[0], flat[1], flat[2]).applyAxisAngle(new THREE.Vector3(pole[0], pole[1], pole[2]), roundDeg * Math.PI / 180);
+      const d = add(scale([fl.x, fl.y, fl.z] as V3, Math.cos(l)), scale(pole, Math.sin(l)));
       focusId = PLANETS.includes(id) ? '' : id; focusKey = id; focusName = PLANET_NAMES[id] ?? id;
       flight.orbitAt(focusOf(id), radOf(id) * radii, d);
     },
