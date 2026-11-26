@@ -1,5 +1,5 @@
 import * as THREE from 'three/webgpu';
-import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, max, uniform, normalWorld, texture } from 'three/tsl';
+import { instancedBufferAttribute, uv, vec4, vec3, float, exp, dot, sub, max, uniform, normalWorld, texture, userData } from 'three/tsl';
 import type { Body, Layer } from '../engine/index';
 import type { KeplerOrbit } from '../atlas/types';
 import { keplerPath, keplerPosition, eclToEngine } from '../atlas/kepler';
@@ -78,6 +78,10 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
   // how far out each planet's moons reach, to decide which planet you are "near"
   const reach = new Map(parents.map((p) => [p, Math.max(...moons.filter((m) => m.parent === p).map((m) => m.orbit.aKm * (1 + m.orbit.e))) * KM]));
 
+  // each planet's radius, for its shadow: a moon that passes behind its planet goes dark, as the real ones do
+  const parentR = new Map(parents.map((p) => [p, (bodies.find((b) => b.id === p)?.meanRadiusKm ?? 0) * KM]));
+  const SUN_R = 695_700_000;
+
   const group = new THREE.Group();
   group.name = 'moons';
   let markers = false, orbits = true, viewH = 900, fov = 55;
@@ -106,7 +110,8 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
   // ---- discs: plain lit balls for moons with a measured size, once they are more than a dot
   const sunDir = uniform(new THREE.Vector3(1, 0, 0));
   const bmat = new THREE.MeshBasicNodeMaterial();
-  const lit = max(float(0), dot(normalWorld, sunDir));
+  // each ball carries how much sunlight reaches it (1, or less while it is inside its planet's shadow)
+  const lit = max(float(0), dot(normalWorld, sunDir)).mul(userData('shade', 'float') as unknown as ReturnType<typeof float>);
   // a soft edge to the lit side, and the faintest glow on the night side so the ball has a shape
   bmat.colorNode = vec3(0.56, 0.55, 0.53).mul(lit.mul(0.97).add(0.012));
   const ballGeo = new THREE.IcosahedronGeometry(1, 20);
@@ -131,6 +136,7 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
     mesh.visible = false;
     mesh.frustumCulled = false;
     mesh.name = m.body.id;
+    mesh.userData.shade = 1;
     balls.set(m.body.id, mesh);
     group.add(mesh);
   }
@@ -235,15 +241,28 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
       const discPx = (m.radiusM / dist) * pxPerRad; // radius of the disc on screen
 
       // how bright: sunlight falling on it, the share of the lit side facing us, and distance
-      let phase = 1, dSun = AU;
+      let phase = 1, dSun = AU, shade = 1;
       if (sun) {
         const sx = sun[0] - x, sy = sun[1] - y, sz = sun[2] - z; // moon to Sun
         dSun = Math.hypot(sx, sy, sz) || 1;
+        // in the planet's shadow? The planet lies towards the Sun and the line to the Sun passes through it.
+        // The edge is as soft as the Sun's width makes it at this distance behind the planet.
+        const Rp = parentR.get(m.parent) ?? 0;
+        if (Rp > 0) {
+          const vx = pr[0] - x, vy = pr[1] - y, vz = pr[2] - z;
+          const along = (vx * sx + vy * sy + vz * sz) / dSun;
+          if (along > 0) {
+            const miss = Math.hypot(vx - (sx / dSun) * along, vy - (sy / dSun) * along, vz - (sz / dSun) * along);
+            const w = Math.max(1, (along * SUN_R) / dSun);
+            const t = Math.min(1, Math.max(0, (miss - (Rp - w)) / (2 * w)));
+            shade = t * t * (3 - 2 * t);
+          }
+        }
         const cosA = (sx * -x + sy * -y + sz * -z) / (dSun * dist); // angle Sun-moon-camera
         const a = Math.acos(Math.max(-1, Math.min(1, cosA)));
         phase = (Math.sin(a) + (Math.PI - a) * Math.cos(a)) / Math.PI; // a matt ball
       }
-      const flux = (ALBEDO * phase * m.radiusM * m.radiusM) / ((dSun / AU) ** 2 * dist * dist);
+      const flux = (ALBEDO * phase * shade * m.radiusM * m.radiusM) / ((dSun / AU) ** 2 * dist * dist);
       // the full Moon seen from Earth (flux about 2.45e-6 in these units) is magnitude -12.7
       const mag = -12.7 - 2.5 * Math.log10(Math.max(1e-30, flux / 2.45e-6));
       let b = Math.pow(10, -0.4 * (mag - 0.5));
@@ -259,6 +278,7 @@ export function createMoonsLayer(bodies: Body[]): MoonsLayer {
       look[q + 3] = (Math.min(8, Math.max(1.6, 1.6 + Math.sqrt(b) * 2.6)) * 2.2) / px;
       if (ball) {
         ball.visible = asBall > 0;
+        ball.userData.shade = shade;
         if (ball.visible) {
           ball.position.set(x, y, z);
           if (mapped.has(m.body.id)) {

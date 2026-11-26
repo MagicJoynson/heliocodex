@@ -260,7 +260,7 @@ export interface DeepView {
   /** star field brightness, as the sky's (dims in daylight) */
   starGain: number;
   /** other names to show, such as the planets: direction from the camera (any length) and how strongly */
-  extra?: { text: string; dir: V3; alpha: number; hot?: boolean }[];
+  extra?: { text: string; dir: V3; alpha: number; hot?: boolean; /** where a click on the name goes */ go?: string }[];
 }
 
 export function createDeep(o: { scene: THREE.Scene; far: number; particles: number; labelsAfter: HTMLElement; pxRatio: number; onPick?: (id: string) => void }) {
@@ -451,6 +451,32 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     const dust = place(mw.dust, ex, ey, GAL_CENTRE);
     points(light.length / 4, cloudMaterial(light, new Float32Array(mw.light.col), galGain, exposureFor(nMW, 0.02)), -15, galGain);
     points(dust.length / 4, cloudMaterial(dust, new Float32Array(mw.dust.col), galGain, 1, true), -14, galGain);
+    // ---- the model's stars: fine points scattered through the same disc, arms and bulge. No catalogue reaches this far
+    // (the measured stars thin out a few thousand light years from the Sun), so without these a trip across the galaxy has
+    // nothing near enough to move against the far glow. Each point is a stand-in for the stars of its neighbourhood, not a real
+    // star, and the caption says so. The near ones are brighter and slide past as you travel; from outside they are the grain of the disc.
+    {
+      const R = rng(19);
+      const n = light.length / 4;
+      const gp = new Float32Array(n * 4), gc = new Float32Array(n * 3);
+      for (let i = 0; i < n; i++) {
+        const w = light[i * 4 + 3];
+        gp[i * 4] = light[i * 4] + R.gauss() * w * 0.9; gp[i * 4 + 1] = light[i * 4 + 1] + R.gauss() * w * 0.9; gp[i * 4 + 2] = light[i * 4 + 2] + R.gauss() * w * 0.9;
+        gp[i * 4 + 3] = 0.55 + 0.45 * R.next(); // each a little different in brightness
+        gc[i * 3] = 0.6 + 0.4 * mw.light.col[i * 4]; gc[i * 3 + 1] = 0.6 + 0.4 * mw.light.col[i * 4 + 1]; gc[i * 3 + 2] = 0.6 + 0.4 * mw.light.col[i * 4 + 2];
+      }
+      const mat = new THREE.PointsNodeMaterial({ transparent: true, depthTest: false, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: false });
+      const P = attr4(gp), C = attr3(gc);
+      const rel = P.xyz.sub(camPc);
+      const d = max(length(rel), float(1e-2));
+      mat.positionNode = rel.div(d).mul(FAR);
+      // within about 1,500 parsecs a point is bright; further off it sinks to a faint grain; one about to brush the camera fades instead of swelling
+      const nearness = clamp(float(1500).div(d), 0, 1).pow(1.3);
+      const a = vary(nearness.mul(0.42).add(0.02).mul(P.w).mul(smoothstep(3, 30, d)).mul(galGain));
+      mat.sizeNode = float(1.3).add(nearness.mul(1.5)).mul(P.w.mul(0.6).add(0.4)).mul(2.2).mul(pxr);
+      mat.colorNode = vec4(C.mul(a).mul(fall), 1);
+      points(n, mat, -13, galGain);
+    }
   }
 
   // ---- the Local Group
@@ -585,28 +611,59 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
   // the places on screen where text of the page's own sits, so a name is never drawn under it
   let avoid: { left: number; right: number; top: number; bottom: number }[] = [];
   let avoidAt = 0;
-  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '', hot = false) {
-    if (alpha <= 0.02 || shown >= 28) return;
+  /** where a direction from the camera falls on the screen, in CSS pixels; null behind the camera or well off screen */
+  function project(dir: V3, view: DeepView): [number, number] | null {
     v.set(dir[0], dir[1], dir[2]).applyQuaternion(invQ);
-    if (v.z >= -1e-6) return; // behind the camera
+    if (v.z >= -1e-6) return null;
     const t = Math.tan(THREE.MathUtils.degToRad(view.fovDeg / 2));
-    let x = (v.x / -v.z / (t * (view.widthPx / view.heightPx)) + 1) / 2 * view.widthPx;
+    const x = (v.x / -v.z / (t * (view.widthPx / view.heightPx)) + 1) / 2 * view.widthPx;
     const y = (1 - v.y / -v.z / t) / 2 * view.heightPx;
-    if (x < -50 || x > view.widthPx + 10 || y < -10 || y > view.heightPx + 10) return;
+    if (x < -50 || x > view.widthPx + 10 || y < -10 || y > view.heightPx + 10) return null;
+    return [x, y];
+  }
+  /** is this strip of the screen free of the names already placed and of the page's own panels? */
+  const free = (bx: number, y: number, w: number) => {
+    for (const r of placed) if (bx < r[0] + r[2] + 4 && bx + w + 4 > r[0] && Math.abs(y - r[1]) < 17) return false;
+    for (const r of avoid) if (bx < r.right && bx + w > r.left && y + 8 > r.top && y - 8 < r.bottom) return false;
+    return true;
+  };
+  // thin lines from a world to its name, for when the name has had to be set to one side
+  const leaders: HTMLElement[] = [];
+  let ledN = 0;
+  function leader(x0: number, y0: number, x1: number, y1: number, alpha: number) {
+    let el = leaders[ledN];
+    if (!el) { el = document.createElement('i'); el.style.cssText = 'position:absolute;left:0;top:0;height:1px;background:rgba(236,231,220,.42);transform-origin:0 50%;will-change:transform;pointer-events:none;'; labels.appendChild(el); leaders.push(el); }
+    const dx = x1 - x0, dy = y1 - y0, L = Math.hypot(dx, dy), gap = 5;
+    if (L <= gap + 2) return;
+    el.style.width = `${(L - gap).toFixed(1)}px`;
+    el.style.opacity = String(Math.min(1, alpha));
+    el.style.transform = `translate(${(x0 + (dx / L) * gap).toFixed(1)}px, ${(y0 + (dy / L) * gap).toFixed(1)}px) rotate(${Math.atan2(dy, dx).toFixed(4)}rad)`;
+    el.style.display = '';
+    ledN++;
+  }
+  /** `off` sets the name to one side of its place (pixels), joined to it by a thin line; a negative first value puts it on the left */
+  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '', hot = false, off?: [number, number]): boolean {
+    if (alpha <= 0.02 || shown >= 28) return false;
+    const at = project(dir, view);
+    if (!at) return false;
+    let x = at[0];
+    const y = at[1] + (off ? off[1] : 0);
+    const set = !!off && (off[0] !== 0 || off[1] !== 0);
+    if (set) x += off![0];
     // how wide the name is drawn (a mono face: 13 px letters plus spacing), so two names never touch and none runs off the edge
     const fig = kind === 'constellation';
     const w = text.length * (fig ? 10.7 : 8.9) + (fig ? 0 : 14);
     const limit = view.widthPx - 56; // the Codex tab covers the right edge
     if (fig) x -= w / 2;
     // a name that would run past the right edge sits to the left of its dot instead; one that cannot fit either way is left out
-    const flip = !fig && x + w > limit;
+    const flip = !fig && (set ? off![0] < 0 : x + w > limit);
     const bx = flip ? x - w + 8 : x;
-    if (bx < 6 || (fig && bx + w > limit)) return;
-    // the earlier (more important) one wins
-    for (const r of placed) if (bx < r[0] + r[2] + 4 && bx + w + 4 > r[0] && Math.abs(y - r[1]) < 17) return;
-    // and keep clear of the panels and captions drawn over the view
-    for (const r of avoid) if (bx < r.right && bx + w > r.left && y + 8 > r.top && y - 8 < r.bottom) return;
+    if (bx < 6 || ((fig || set) && bx + w > limit)) return false;
+    if (set && (y < 70 || y > view.heightPx - 20)) return false;
+    // the earlier (more important) one wins, and all keep clear of the panels and captions drawn over the view
+    if (!free(bx, y, w)) return false;
     placed.push([bx, y, w]);
+    if (set) leader(at[0], at[1], flip ? x + 2 : x + 6, y, alpha * 0.9);
     let el = pool[shown];
     if (!el) { el = document.createElement('span'); el.style.cssText = tagStyle; labels.appendChild(el); pool.push(el); }
     if (el.textContent !== text) el.textContent = text;
@@ -617,10 +674,11 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     el.style.cursor = go ? 'pointer' : '';
     el.style.padding = fig ? (go ? '7px 8px' : '0') : flip ? (go ? '7px 12px 7px 8px' : '0 12px 0 0') : (go ? '7px 8px 7px 12px' : '0 0 0 12px');
     el.style.display = '';
-    const sig = `${kind}|${flip ? 1 : 0}`;
+    const sig = `${kind}|${flip ? 1 : 0}|${set ? 1 : 0}`;
     if (el.dataset.sig !== sig) {
       // a constellation is an area, not a point: no ring, and a cooler, spaced-out name
       el.style.backgroundImage = fig ? 'none' : flip ? ringBgR : ringBg;
+      el.style.backgroundSize = set ? '0 0' : '';
       el.style.color = fig ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)';
       el.style.letterSpacing = fig ? '.22em' : '.08em';
       el.style.textTransform = fig ? 'uppercase' : 'none';
@@ -630,6 +688,33 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     if (hot) { el.style.color = '#f1c98e'; el.dataset.hot = '1'; }
     else if (el.dataset.hot) { el.style.color = fig ? 'rgba(160,185,215,.7)' : 'rgba(236,231,220,.72)'; delete el.dataset.hot; }
     shown++;
+    return true;
+  }
+
+  /**
+   * The names of the Sun and the planets. Each sits beside its own dot when there is room. Where several worlds crowd
+   * together (the four inner planets, seen from out past Neptune, are a knot a few pixels wide) the names fan out above and
+   * below, each joined to its world by a thin line, so every one of them can be read and clicked. A name keeps the place
+   * it had last frame for as long as that place stays free, so the fan does not flicker as the view turns.
+   */
+  const SLOTS: [number, number][] = [[0, 0], [26, -19], [26, 19], [26, -38], [26, 38], [-26, -19], [-26, 19], [26, -57], [26, 57], [-26, -38], [-26, 38], [-26, -57], [-26, 57], [26, -76], [26, 76]];
+  const slotOf = new Map<string, number>();
+  function bodyNames(view: DeepView) {
+    const list = (view.extra ?? []).filter((e) => e.alpha > 0.02).map((e) => ({ e, p: project(e.dir, view) })).filter((x): x is { e: NonNullable<DeepView['extra']>[number]; p: [number, number] } => !!x.p);
+    for (const it of list) {
+      const { e, p } = it;
+      const last = slotOf.get(e.text);
+      const order = last === undefined ? SLOTS.map((_, i) => i) : [last, ...SLOTS.map((_, i) => i).filter((i) => i !== last)];
+      let done = false;
+      for (const si of order) {
+        const off = SLOTS[si];
+        // a name must not lie across another world's dot
+        const w = e.text.length * 8.9 + 14, x0 = off[0] < 0 ? p[0] + off[0] - w + 8 : p[0] + off[0], y0 = p[1] + off[1];
+        if (list.some((o) => o !== it && o.p[0] > x0 - 5 && o.p[0] < x0 + w + 5 && Math.abs(o.p[1] - y0) < 11)) continue;
+        if (tag(e.text, e.dir, e.alpha, view, 'body', e.go ?? '', !!e.hot, off)) { slotOf.set(e.text, si); done = true; break; }
+      }
+      if (!done) slotOf.delete(e.text);
+    }
   }
 
   const mwCentreLabel = GAL_CENTRE;
@@ -673,15 +758,16 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     // ---- names
     if (performance.now() - avoidAt > 400) {
       avoidAt = performance.now();
-      avoid = ['.gen', '.where', '.readout', '.gear-pill', '.back-chip', '.centre'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
+      avoid = ['.gen', '.where', '.readout', '.gear-pill', '.back-chip', '.centre', '.eta', '.scale'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
     }
     shown = 0;
+    ledN = 0;
     placed.length = 0;
     invQ.copy(view.quaternion).invert();
     const rel = (p: V3): V3 => [p[0] - c[0], p[1] - c[1], p[2] - c[2]];
     // the Sun, once it is a star
     tag('The Sun', rel([0, 0, 0]), sunGain.value * (1 - smooth(2e4, 1e5, dS)), view, 'sun', 'sun');
-    for (const e of view.extra ?? []) tag(e.text, e.dir, e.alpha, view, 'body', '', !!e.hot);
+    bodyNames(view);
     // the Sun's neighbours by name, faint or not, while you are among them
     const neighbours = smooth(0.3, 1.5, dS) * (1 - smooth(60, 150, dS));
     const reach = Math.max(4, dS * 0.9);
@@ -733,6 +819,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     tag('The oldest light, from 46 billion light years away', rel(scale(limbDir, CMB_PC * 1.02)), cm * 0.9, view, 'cmb');
     tag('We are here', rel([0, 0, 0]), smooth(4e9, 1.2e10, dS), view, 'here');
     for (let i = shown; i < pool.length; i++) if (pool[i].style.display !== 'none') pool[i].style.display = 'none';
+    for (let i = ledN; i < leaders.length; i++) if (leaders[i].style.display !== 'none') leaders[i].style.display = 'none';
   }
 
   if (new URLSearchParams(location.search).has('debug')) (globalThis as unknown as { __deep: unknown }).__deep = { gated, root, gains: { galGain, lgGain, webGain, cmbGain } };

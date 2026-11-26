@@ -106,7 +106,6 @@ import { sections } from '../lib/nav';
           </div>
         </div>
       </div>
-      <button type="button" class="skip" id="skip">Skip ahead</button>
     </div>
 
     <!-- the controls: always in the same place, all reachable by keyboard -->
@@ -220,7 +219,7 @@ import { sections } from '../lib/nav';
     <div class="centre" id="centre" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="11" /><path d="M20 2v6M20 32v6M2 20h6M32 20h6" /></svg></div>
 
     <nav class="scale" id="scale" aria-label="Where you are, from the Sun out to the whole universe. Choose a stop to fly there." inert>
-      <div class="scale-line"><i class="scale-you" id="scale-you"></i></div>
+      <div class="scale-line"><i class="scale-to" id="scale-to" hidden></i><i class="scale-you" id="scale-you"></i></div>
       <ol>
         <li><button type="button" data-go="sun">The Sun</button></li>
         <li><button type="button" data-go="solar-system">Planets</button></li>
@@ -231,7 +230,16 @@ import { sections } from '../lib/nav';
     </nav>
     <div class="vignette" id="vignette" aria-hidden="true"></div>
     <canvas class="streaks" id="streaks" aria-hidden="true"></canvas>
-    <div class="eta" id="eta" hidden aria-hidden="true"><b id="eta-n"></b><span id="eta-d"></span><div class="eta-bar"><i id="eta-f"></i></div><button type="button" id="eta-stop">Stop here</button></div>
+    <!-- a trip in progress: where to, how far, how fast, and the two ways to cut it short. It sits in the readout's corner, clear of what you are flying to -->
+    <div class="eta" id="eta" hidden role="group" aria-label="Trip in progress">
+      <p class="eta-k" id="eta-k" aria-hidden="true">On the way to</p>
+      <b id="eta-n"></b>
+      <span class="eta-d" id="eta-d" aria-hidden="true"></span>
+      <div class="eta-bar" aria-hidden="true"><i id="eta-f"></i></div>
+      <span class="eta-s" id="eta-s" aria-hidden="true"></span>
+      <span class="eta-w" id="eta-w" aria-hidden="true"></span>
+      <div class="eta-b"><button type="button" id="eta-stop">Stop here</button><button type="button" id="skip">Skip ahead</button></div>
+    </div>
     <div class="coach" id="coach" hidden role="note">
       <p><b>1</b><span class="fine-only">Drag to look around</span><span class="coarse-only">Drag to look around</span></p>
       <p><b>2</b><span class="fine-only">Click a world to fly there</span><span class="coarse-only">Tap a world to fly there</span></p>
@@ -364,7 +372,19 @@ import { sections } from '../lib/nav';
       let backTarget = '';
       let prevMode = '';
       let stoppedHere = false; // Stop here was pressed: say so, instead of claiming to have arrived
-      let tripFrom = 1;
+      let tripEnd = -1; // on a trip: how far from the Sun it ends, for the mark on the scale ribbon (-1 when not on one)
+      // things you pass on a long trip, by distance from the Sun (figures as given in the lessons and facts)
+      const WAY: [number, string][] = [
+        [30.07 * AU, 'Neptune’s distance from the Sun · 30 au'],
+        [100_000 * AU, 'The far edge of the Oort cloud, a model · about 100,000 au'],
+        [4.25 * LY, 'As far as Proxima Centauri, the nearest star · 4.25 light years'],
+        [8.6 * LY, 'As far as Sirius · 8.6 light years'],
+        [440 * LY, 'As far as the Pleiades · about 440 light years'],
+        [1300 * LY, 'As far as the Orion Nebula · about 1,300 light years'],
+        [26_700 * LY, 'As far as the centre of the galaxy · about 26,700 light years'],
+        [2.5e6 * LY, 'As far as Andromeda · about 2.5 million light years'],
+      ];
+      let wayLast = -1;
       let tripK = 0; // 0 to 1 through the middle of a trip: how strong the streaks are
       // quiet star streaks while travelling: a sense of speed, never on in reduced motion
       {
@@ -444,12 +464,24 @@ import { sections } from '../lib/nav';
                 ($('vignette') as HTMLElement).style.opacity = reducedNow() ? '0' : String(Math.max(tripK, warp * 0.9).toFixed(2)); }
               if (cr) { $('aim').hidden = true; picked = ''; body.classList.remove('picking'); }
               if (cr) {
-                if (prevMode !== 'cruise') { tripFrom = Math.max(r.dist, 1); $('eta-n').textContent = cap(world?.focus.name ?? r.target); }
-                const secs = r.secsLeft;
-                const left = secs < 1 ? 'arriving' : secs < 90 ? `arriving in ${Math.round(secs)} s` : secs < 5400 ? `arriving in ${Math.round(secs / 60)} min` : '';
-                $('eta-d').textContent = [fmt(r.dist) + ' to go', left].filter(Boolean).join(' · ');
+                const name = world?.focus.name ?? r.target;
+                const fromSun = world ? Math.hypot(...world.mapState().cam) : 0;
+                if (prevMode !== 'cruise' || $('eta-n').textContent !== cap(name)) { $('eta-n').textContent = cap(name); wayLast = fromSun; $('eta-w').textContent = ''; }
+                const secs = r.secsLeft, togo = r.toGo ?? r.dist;
+                // the card clears the view for the last moment of the trip, so you arrive looking at the place and nothing else
+                body.classList.toggle('trip-end', secs < 1.2);
+                $('eta-k').textContent = r.turning ? 'Turning to face' : 'On the way to';
+                $('eta-d').textContent = `${fmt(togo)} to go · ${secs < 1 ? 'arriving' : `${Math.round(secs)} s`}`;
+                $('eta-s').textContent = r.turning ? 'Not moving yet' : r.speed > 0 ? fmtSpeed(r.speed) : '';
                 ($('eta-f') as HTMLElement).style.width = `${Math.max(0, Math.min(100, r.arriving * 100)).toFixed(1)}%`;
-              } }
+                tripEnd = r.endFromSun ?? -1;
+                // the last landmark distance you have passed since setting off (wayLast is where the trip began). It follows where you
+                // are now, never an event from a moment ago: at these speeds a line held "long enough to read" is already far behind you
+                let way = '';
+                if (fromSun > wayLast) { for (const [m, text] of WAY) if (m > wayLast && m <= fromSun) way = text; }
+                else for (const [m, text] of WAY) if (m < wayLast && m >= fromSun) { way = text; break; }
+                if ($('eta-w').textContent !== way) $('eta-w').textContent = way;
+              } else { tripEnd = -1; body.classList.remove('trip-end'); } }
             prevMode = r.mode;
           },
           onFocus(id, name) {
@@ -478,7 +510,6 @@ import { sections } from '../lib/nav';
             $('step-back').removeAttribute('inert'); refreshBack();
             $('scale').removeAttribute('inert');
             $('threshold').setAttribute('inert', '');
-            $('skip').hidden = true;
             $('said').textContent = `The 3D view is ready, at ${world.focus.name}. The controls are at the end of the page. Press M for the guide.`;
             if (!prefs.coached) { $('coach').hidden = false; body.classList.add('coaching'); }
             else { $('hint').classList.add('show'); setTimeout(() => $('hint').classList.remove('show'), 9000); }
@@ -511,7 +542,6 @@ import { sections } from '../lib/nav';
             $('controls').setAttribute('inert', '');
             $('step-back').setAttribute('inert', '');
             $('threshold').removeAttribute('inert');
-            $('skip').hidden = false;
           },
         });
         world.setReduced(reducedNow());
@@ -952,13 +982,16 @@ import { sections } from '../lib/nav';
       // ---- the scale ribbon: where you are between the Sun and the whole universe (and a way to travel along it)
       {
         const ANCHORS = [8.8, 12, 16.5, 21, 26.5]; // log10 metres from the Sun at each stop
-        const you = $('scale-you'), btns = [...document.querySelectorAll<HTMLButtonElement>('#scale button')];
+        const you = $('scale-you'), to = $('scale-to'), btns = [...document.querySelectorAll<HTMLButtonElement>('#scale button')];
         const pos = (m: number) => { const L = Math.log10(Math.max(m, 1)); let i = 0; while (i < ANCHORS.length - 2 && L > ANCHORS[i + 1]) i++; return Math.min(1, Math.max(0, (i + (L - ANCHORS[i]) / (ANCHORS[i + 1] - ANCHORS[i])) / (ANCHORS.length - 1))); };
         btns.forEach((b) => b.addEventListener('click', () => { goTo(b.dataset.go!); ($('space') as HTMLElement).focus({ preventScroll: true }); }));
         setInterval(() => {
           if (document.hidden || !world || !body.classList.contains('arrived')) return;
           const t = pos(Math.hypot(...world.mapState().cam));
           you.style.left = `${t * 100}%`;
+          // on a trip the ribbon also marks where you are going, so the dot can be seen closing on it
+          to.hidden = tripEnd < 0;
+          if (tripEnd >= 0) to.style.left = `${pos(tripEnd) * 100}%`;
           const near = Math.min(btns.length - 1, Math.round(t * (btns.length - 1)));
           btns.forEach((b, i) => b.classList.toggle('here', i === near));
         }, 150);
@@ -981,7 +1014,8 @@ import { sections } from '../lib/nav';
       ap.addEventListener('click', go);
       if (linkedTo || document.documentElement.classList.contains('quick')) setTimeout(go, 250);
       addEventListener('keydown', (e) => { if (e.key === 'Enter' && !body.classList.contains('in') && !(e.target as HTMLElement)?.closest?.('a, button')) go(); });
-      $('skip').addEventListener('click', () => world.skip());
+      // Skip ahead cuts to the last moment of the trip, behind a quick dip to black so the view does not lurch
+      $('skip').addEventListener('click', () => { const v = $('veil'); v.classList.remove('lift'); void v.offsetWidth; v.classList.add('lift'); world.skip(); ($('space') as HTMLElement).focus({ preventScroll: true }); });
       // any press of a key (Space, Escape, an arrow) or a tap on the view also ends the way in early
       addEventListener('keydown', (e) => { if (body.classList.contains('in') && !body.classList.contains('arrived') && (e.key === ' ' || e.key === 'Escape')) { e.preventDefault(); world.skip(); } });
       ($('space') as HTMLElement).addEventListener('pointerdown', () => { if (body.classList.contains('in') && !body.classList.contains('arrived')) world.skip(); });
@@ -998,7 +1032,7 @@ import { sections } from '../lib/nav';
       pad.addEventListener('pointerup', off);
       pad.addEventListener('pointercancel', off);
 
-      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('step-back').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); $('skip').hidden = true; }
+      if (params.has('low')) { body.classList.add('in', 'arrived'); $('controls').removeAttribute('inert'); $('step-back').removeAttribute('inert'); $('threshold').setAttribute('inert', ''); }
     </script>
 
     <style is:global>
@@ -1164,6 +1198,8 @@ import { sections } from '../lib/nav';
       body.arrived .scale { opacity: 1; pointer-events: auto; }
       .scale-line { position: relative; height: 1px; margin: 9px 6% 0; background: rgba(236,231,220,.35); }
       .scale-you { position: absolute; top: -6px; left: 0; width: 13px; height: 13px; margin-left: -6px; border-radius: 50%; background: var(--warm); box-shadow: 0 0 14px rgba(241,201,142,.6); transition: left .25s linear; }
+      .scale-to { position: absolute; top: -7px; left: 0; width: 15px; height: 15px; margin-left: -7px; border-radius: 50%; border: 1.5px solid var(--warm); box-sizing: border-box; transition: left .25s linear; }
+      .scale-to[hidden] { display: none; }
       .scale ol { display: flex; justify-content: space-between; margin: 0; padding: 0; list-style: none; }
       .scale button { background: none; border: 0; color: var(--soft); font: 300 .8125rem/1 var(--serif); letter-spacing: .02em; padding: 12px 6px 10px; min-width: 44px; min-height: 44px; text-shadow: 0 1px 8px #000; cursor: pointer; }
       .scale button:hover, .scale button:focus-visible { color: var(--warm); outline: none; }
@@ -1177,14 +1213,22 @@ import { sections } from '../lib/nav';
       .look-f output { font: 400 .8125rem/1 var(--mono); letter-spacing: .06em; color: var(--soft); min-width: 3.2rem; text-align: right; }
       /* no second Enter for someone coming in from the site, or who has been in before */
       html.quick .threshold { opacity: 0; visibility: hidden; pointer-events: none; transition: none; }
-      .eta { position: fixed; z-index: 18; left: 50%; top: 36%; transform: translateX(-50%); width: min(520px, calc(100vw - 32px)); text-align: center; pointer-events: none; }
+      .eta { position: fixed; z-index: 18; left: var(--gut); bottom: var(--bot); width: min(25rem, calc(100vw - 2 * var(--gut))); margin: 0 -14px -12px; padding: 14px 16px 14px; border-radius: 14px; background: rgba(9,9,11,.92); backdrop-filter: blur(6px); display: grid; gap: 0; transition: opacity .5s ease; }
       .eta[hidden] { display: none; }
-      .eta b { display: block; font: 400 clamp(1.8rem, 5vw, 2.6rem)/1.1 var(--serif); text-shadow: 0 2px 20px #000; }
-      .eta span { display: block; margin-top: 6px; font: 300 1.125rem/1.3 var(--serif); color: var(--ink); text-shadow: 0 2px 14px #000; }
-      .eta-bar { width: min(360px, 80%); height: 4px; margin: 16px auto 0; background: rgba(236,231,220,.22); border-radius: 2px; }
-      .eta-bar i { display: block; height: 4px; width: 0; background: var(--warm); border-radius: 2px; }
-      .eta button { pointer-events: auto; margin-top: 18px; padding: 14px 22px; min-height: 48px; font: 400 .8125rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--glass); border: 1px solid var(--line); border-radius: 999px; cursor: pointer; }
+      .eta-k { margin: 0 0 .3rem; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
+      .eta b { display: block; font: 300 clamp(1.5rem, 3.4vw, 2rem)/1.1 var(--serif); }
+      .eta-d { display: block; margin-top: 6px; font: 300 1.0625rem/1.3 var(--serif); font-variant-numeric: tabular-nums; color: var(--ink); }
+      .eta-bar { height: 3px; margin: 12px 0 0; background: rgba(236,231,220,.2); border-radius: 2px; }
+      .eta-bar i { display: block; height: 3px; width: 0; background: var(--warm); border-radius: 2px; }
+      .eta-s, .eta-w { display: block; min-height: 1.3em; margin-top: 8px; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .04em; font-variant-numeric: tabular-nums; color: var(--soft); }
+      .eta-w { margin-top: 2px; min-height: 2.6em; font: 300 .9375rem/1.3 var(--serif); letter-spacing: 0; color: var(--ink); }
+      .eta-b { display: flex; gap: 10px; margin-top: 6px; }
+      .eta button { flex: 1; padding: 0 14px; min-height: 48px; font: 400 .8125rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; white-space: nowrap; }
       .eta button:hover, .eta button:focus-visible { color: var(--warm); border-color: rgba(241,201,142,.6); outline: none; }
+      body.trip-end .eta { opacity: 0; pointer-events: none; }
+      body.calm .eta { transition: none; }
+      /* on a narrow screen the card sits above the row of controls */
+      @media (min-width: 601px) and (max-width: 940px) { .eta { bottom: calc(var(--bot) + 64px); } }
       body.touring .eta { opacity: 0; pointer-events: none; }
       .coach { position: fixed; z-index: 17; left: 50%; bottom: calc(var(--bot) + 132px); transform: translateX(-50%); display: flex; align-items: center; gap: 18px; padding: 14px 20px; max-width: calc(100vw - 32px); background: var(--glass); border: 1px solid var(--line); border-radius: 14px; }
       .coach[hidden] { display: none; }
@@ -1213,8 +1257,6 @@ import { sections } from '../lib/nav';
       .readout .k, .readout .k2 { font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); }
       .readout .k2 { text-transform: none; }
       .readout .v { font: 200 clamp(1.8rem, 4.4vw, 3rem)/1 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
-      .skip { pointer-events: auto; font: 400 .8125rem/1.3 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--soft); border-bottom: 1px solid rgba(236,231,220,.3); padding: 10px 0 3px; margin-bottom: 70px; }
-      body.arrived .skip { opacity: 0; pointer-events: none; transition: opacity .6s; }
 
       /* ---- controls */
       @media (max-width: 600px) { .hud { padding-bottom: calc(var(--bot) + 112px); } .readout { max-width: none; padding-bottom: 2px; margin-bottom: 0; } .readout .k, .readout .k2 { letter-spacing: .04em; } .controls { gap: 6px; } .controls .pill { padding: 15px 11px; letter-spacing: .08em; font-size: .8125rem; } .zoom button { width: 44px; } }
@@ -1332,7 +1374,8 @@ import { sections } from '../lib/nav';
       @media (max-height: 520px) { .pad { right: calc(var(--gut) + 44px); bottom: calc(var(--bot) + 66px); height: 116px; padding: 16px 0; } }
       @media (max-width: 600px) {
         .gen { top: calc(var(--top) + 164px); }
-        .eta { width: calc(100vw - 96px); }
+        .eta { left: var(--gut); right: var(--gut); width: auto; margin: 0; bottom: calc(var(--dock) + 10px); }
+        .eta-w { min-height: 2.6em; }
         body:has(.back-chip:not(:disabled)) .gen { left: var(--gut); top: calc(var(--top) + 164px); }
         .controls .pill:focus-visible { outline-offset: -4px; }
       }

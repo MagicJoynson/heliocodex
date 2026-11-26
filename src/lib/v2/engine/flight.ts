@@ -225,7 +225,7 @@ export function createFlight(canvas: HTMLElement) {
     if (gp && (gp.rx || gp.ry) && mode !== 'cruise') { look.dx += gp.rx * 900 * wall; look.dy += gp.ry * 900 * wall; }
 
     if (mode === 'cruise' && cr) {
-      cr.t = Math.min(cr.total, cr.t + Math.min(wall, 0.05)); // a stall pauses the trip instead of jumping it
+      cr.t = Math.min(cr.total, cr.t + Math.min(wall, 0.1)); // a stall pauses the trip instead of jumping it; down to ten frames a second a trip still takes the time it says
       if (cr.t < cr.turn && cr.q0 && cr.q1) {
         // turning on the spot, slowly in and out, before going anywhere
         pos[0] = cr.p0[0]; pos[1] = cr.p0[1]; pos[2] = cr.p0[2];
@@ -397,7 +397,17 @@ export function createFlight(canvas: HTMLElement) {
       else { const target = q.clone(); q.copy(blendFrom).slerp(target, smooth(0, 1, blendT)); }
     }
 
-    return { alt, mode, coasting, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.total, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.total - cr.t) : 0 };
+    return { alt, mode, coasting, speed: mode === 'cruise' ? len(cruiseVel) : len(vel), arriving: cr ? cr.t / Math.max(cr.total, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.total - cr.t) : 0, /** on a trip, still turning on the spot to face the way: not yet moving */ turning: !!cr && cr.t < cr.turn,
+      /** on a trip: metres still to go to the point where it ends, metres come from where it began, and how far from the Sun (the origin) it ends */
+      ...(cr ? (() => {
+        // how far is left ALONG THE ROUTE, not in a straight line: a long trip pulls back and swings round before it closes in,
+        // so the straight-line distance to the end grows for a while, and a number that goes up reads as going the wrong way
+        const c = cr; const e = add(c.to.centre(), scale(c.dir1, c.d1));
+        const u0 = c.secs > 0 ? Math.min(1, Math.max(0, (c.t - c.turn) / c.secs)) : 1;
+        let left = 0, a = pos as V3;
+        for (let i = 1; i <= 48; i++) { const at = cruiseAt(u0 + (1 - u0) * (i / 48)); const b = add(at.c, scale(at.dir, at.d)); left += len(sub(b, a)); a = b; }
+        return { toGo: left, gone: len(sub(pos, c.p0)), endFromSun: len(e) };
+      })() : {}) };
   }
 
   function enterOrbit(f: Focus) {
