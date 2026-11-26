@@ -642,28 +642,28 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     ledN++;
   }
   /** `off` sets the name to one side of its place (pixels), joined to it by a thin line; a negative first value puts it on the left */
-  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '', hot = false, off?: [number, number]): boolean {
+  function tag(text: string, dir: V3, alpha: number, view: DeepView, kind = '', go = '', hot = false, off?: [number, number], /** a place on the screen to use instead of where the thing is: for a pointer at the edge to something out of view */ fixed?: [number, number]): boolean {
     if (alpha <= 0.02 || shown >= 28) return false;
-    const at = project(dir, view);
+    const at = fixed ?? project(dir, view);
     if (!at) return false;
     let x = at[0];
     const y = at[1] + (off ? off[1] : 0);
-    const set = !!off && (off[0] !== 0 || off[1] !== 0);
-    if (set) x += off![0];
+    const set = !!fixed || (!!off && (off[0] !== 0 || off[1] !== 0));
+    if (set && off) x += off[0];
     // how wide the name is drawn (a mono face: 13 px letters plus spacing), so two names never touch and none runs off the edge
     const fig = kind === 'constellation';
     const w = text.length * (fig ? 10.7 : 8.9) + (fig ? 0 : 14);
     const limit = view.widthPx - 56; // the Codex tab covers the right edge
     if (fig) x -= w / 2;
     // a name that would run past the right edge sits to the left of its dot instead; one that cannot fit either way is left out
-    const flip = !fig && (set ? off![0] < 0 : x + w > limit);
+    const flip = !fig && !fixed && (set ? off![0] < 0 : x + w > limit);
     const bx = flip ? x - w + 8 : x;
     if (bx < 6 || ((fig || set) && bx + w > limit)) return false;
     if (set && (y < 70 || y > view.heightPx - 20)) return false;
     // the earlier (more important) one wins, and all keep clear of the panels and captions drawn over the view
     if (!free(bx, y, w)) return false;
     placed.push([bx, y, w]);
-    if (set) leader(at[0], at[1], flip ? x + 2 : x + 6, y, alpha * 0.9);
+    if (set && !fixed) leader(at[0], at[1], flip ? x + 2 : x + 6, y, alpha * 0.9);
     let el = pool[shown];
     if (!el) { el = document.createElement('span'); el.style.cssText = tagStyle; labels.appendChild(el); pool.push(el); }
     if (el.textContent !== text) el.textContent = text;
@@ -715,6 +715,20 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       }
       if (!done) slotOf.delete(e.text);
     }
+    // on a narrow screen the outer planets can lie off to one side of the overview. When most of the family is in view, a world
+    // that is out of it gets its name at that edge with an arrow, so all eight can be found (and chosen) without turning the view
+    if (list.length >= 4) for (const e of view.extra ?? []) {
+      if (!e.go || e.alpha < 0.35 || list.some((x) => x.e === e)) continue;
+      v.set(e.dir[0], e.dir[1], e.dir[2]).applyQuaternion(invQ);
+      if (v.z >= -1e-6) continue;
+      const t = Math.tan(THREE.MathUtils.degToRad(view.fovDeg / 2));
+      const x = (v.x / -v.z / (t * (view.widthPx / view.heightPx)) + 1) / 2 * view.widthPx;
+      const y = Math.min(view.heightPx - 150, Math.max(96, (1 - v.y / -v.z / t) / 2 * view.heightPx));
+      const right = x > view.widthPx / 2;
+      const text = right ? `${e.text} ›` : `‹ ${e.text}`;
+      const w = text.length * 8.9 + 14;
+      for (const dy of [0, 22, -22, 44, -44]) if (tag(text, e.dir, e.alpha * 0.85, view, 'body', e.go, false, undefined, [right ? view.widthPx - 56 - w - 2 : 8, y + dy])) break;
+    }
   }
 
   const mwCentreLabel = GAL_CENTRE;
@@ -758,7 +772,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
     // ---- names
     if (performance.now() - avoidAt > 400) {
       avoidAt = performance.now();
-      avoid = ['.gen', '.where', '.readout', '.gear-pill', '.back-chip', '.centre', '.eta', '.scale'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
+      avoid = ['.gen', '.where', '.readout', '.gear-pill', '.back-chip', '.centre', '.eta', '.scale', '#margin-tab'].map((q) => document.querySelector(q)).filter((e): e is Element => !!e).map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0);
     }
     shown = 0;
     ledN = 0;
