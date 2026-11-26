@@ -727,7 +727,7 @@ export function createDeep(o: { scene: THREE.Scene; far: number; particles: numb
       const right = x > view.widthPx / 2;
       const text = right ? `${e.text} ›` : `‹ ${e.text}`;
       const w = text.length * 8.9 + 14;
-      for (const dy of [0, 22, -22, 44, -44]) if (tag(text, e.dir, e.alpha * 0.85, view, 'body', e.go, false, undefined, [right ? view.widthPx - 56 - w - 2 : 8, y + dy])) break;
+      for (const dy of [0, 22, -22, 44, -44, 66, -66, 88, -88, 110, -110, 132, -132, 154, -154]) if (tag(text, e.dir, e.alpha * 0.85, view, 'body', e.go, false, undefined, [right ? view.widthPx - 56 - w - 2 : 8, y + dy])) break;
     }
   }
 
