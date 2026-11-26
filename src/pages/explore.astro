@@ -373,18 +373,18 @@ import { sections } from '../lib/nav';
       let prevMode = '';
       let stoppedHere = false; // Stop here was pressed: say so, instead of claiming to have arrived
       let tripEnd = -1; // on a trip: how far from the Sun it ends, for the mark on the scale ribbon (-1 when not on one)
-      // things you pass on a long trip, by distance from the Sun (figures as given in the lessons and facts)
+      // landmark distances from the Sun on a long trip (figures as given in the lessons and facts)
       const WAY: [number, string][] = [
-        [30.07 * AU, 'Neptune’s distance from the Sun · 30 au'],
-        [100_000 * AU, 'The far edge of the Oort cloud, a model · about 100,000 au'],
-        [4.25 * LY, 'As far as Proxima Centauri, the nearest star · 4.25 light years'],
-        [8.6 * LY, 'As far as Sirius · 8.6 light years'],
-        [440 * LY, 'As far as the Pleiades · about 440 light years'],
-        [1300 * LY, 'As far as the Orion Nebula · about 1,300 light years'],
-        [26_700 * LY, 'As far as the centre of the galaxy · about 26,700 light years'],
-        [2.5e6 * LY, 'As far as Andromeda · about 2.5 million light years'],
+        [30.07 * AU, 'Neptune’s orbit'],
+        [100_000 * AU, 'the far edge of the Oort cloud'],
+        [4.25 * LY, 'the distance of Proxima Centauri, the nearest star'],
+        [8.6 * LY, 'the distance of Sirius'],
+        [440 * LY, 'the distance of the Pleiades'],
+        [1300 * LY, 'the distance of the Orion Nebula'],
+        [26_700 * LY, 'the distance of the centre of the galaxy'],
+        [2.5e6 * LY, 'the distance of Andromeda'],
       ];
-      let wayLast = -1;
+      let wayLast = -1, wayMin = Infinity;
       let tripK = 0; // 0 to 1 through the middle of a trip: how strong the streaks are
       // quiet star streaks while travelling: a sense of speed, never on in reduced motion
       {
@@ -466,8 +466,8 @@ import { sections } from '../lib/nav';
               if (cr) {
                 const name = world?.focus.name ?? r.target;
                 const fromSun = world ? Math.hypot(...world.mapState().cam) : 0;
-                if (prevMode !== 'cruise' || $('eta-n').textContent !== cap(name)) { $('eta-n').textContent = cap(name); wayLast = fromSun; $('eta-w').textContent = ''; }
-                const secs = r.secsLeft, togo = r.toGo ?? r.dist;
+                if (prevMode !== 'cruise' || $('eta-n').textContent !== cap(name)) { $('eta-n').textContent = cap(name); wayLast = fromSun; wayMin = Infinity; $('eta-w').textContent = ''; }
+                const secs = r.secsLeft, togo = (wayMin = Math.min(wayMin, r.toGo ?? r.dist)); // never shown rising: the route is measured in steps, which can wobble by a hair
                 // the card clears the view for the last moment of the trip, so you arrive looking at the place and nothing else
                 body.classList.toggle('trip-end', secs < 1.2);
                 $('eta-k').textContent = r.turning ? 'Turning to face' : 'On the way to';
@@ -475,12 +475,13 @@ import { sections } from '../lib/nav';
                 $('eta-s').textContent = r.turning ? 'Not moving yet' : r.speed > 0 ? fmtSpeed(r.speed) : '';
                 ($('eta-f') as HTMLElement).style.width = `${Math.max(0, Math.min(100, r.arriving * 100)).toFixed(1)}%`;
                 tripEnd = r.endFromSun ?? -1;
-                // the last landmark distance you have passed since setting off (wayLast is where the trip began). It follows where you
-                // are now, never an event from a moment ago: at these speeds a line held "long enough to read" is already far behind you
+                // how far from the Sun you are now, and the last landmark distance passed since setting off (wayLast is where the trip
+                // began). Both are measured from the Sun, and the line says so: the route curves, so it is not the same as the distance to go
                 let way = '';
-                if (fromSun > wayLast) { for (const [m, text] of WAY) if (m > wayLast && m <= fromSun) way = text; }
-                else for (const [m, text] of WAY) if (m < wayLast && m >= fromSun) { way = text; break; }
-                if ($('eta-w').textContent !== way) $('eta-w').textContent = way;
+                if (fromSun > wayLast) { for (const [m, text] of WAY) if (m > wayLast && m <= fromSun) way = `, beyond ${text}`; }
+                else for (const [m, text] of WAY) if (m < wayLast && m >= fromSun) { way = `, within ${text}`; break; }
+                const line = r.turning ? '' : `${fmt(fromSun)} from the Sun${way}`;
+                if ($('eta-w').textContent !== line) $('eta-w').textContent = line;
               } else { tripEnd = -1; body.classList.remove('trip-end'); } }
             prevMode = r.mode;
           },
