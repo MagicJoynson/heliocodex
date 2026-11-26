@@ -59,6 +59,7 @@ export function createFlight(canvas: HTMLElement) {
   let loVel = 0;
   let loCap = Infinity; // after leaving free flight below the orbit limit, the limit rises into place instead of jumping
   let stopRamp = 0; // seconds of gentle braking left after Stop or Esc
+  const ROUTE_N = 400; let routeLen: Float64Array | null = null; let routeFor: unknown = null; // the length of the trip in hand, step by step
   let cruiseVel: V3 = [0, 0, 0]; // how the camera was moving on a trip, so Stop can slow it down instead of freezing it
   let mode: 'idle' | 'orbit' | 'cruise' | 'free' = 'idle';
   let speedMul = 1;
@@ -205,10 +206,20 @@ export function createFlight(canvas: HTMLElement) {
   function cruiseAt(u: number): { c: V3; d: number; dir: V3 } {
     const c = cr!;
     const pan = smooth(0.12, 0.88, u);
-    const ctr = add(scale(c.c0, 1 - pan), scale(c.to.centre(), pan));
     // distance: logarithmic from the start to the end, plus a rise in the middle wide enough to see both ends
     const e = ease(u);
     const ld = Math.log(c.d0) * (1 - e) + Math.log(c.d1) * e + c.hump * Math.sin(Math.PI * u);
+    // the slide across is even in space but the closing in is even in scale, so on a trip that ends close to a world the view used
+    // to finish zooming while the world was still millions of kilometres off to one side, and then it swept in as a dot and filled
+    // the screen in the last half second. The point looked at is now never further from the destination than a share of the
+    // viewing distance, so the world is in the picture and grows steadily as you close in. (Nothing changes in the first third of a trip,
+    // and nothing on trips that end far out, where the old slide was already inside this limit.)
+    const to = c.to.centre(), span = len(sub(c.c0, to));
+    let keep = 1 - pan;
+    // only on the way in, and only when the trip ends closer to its destination than the slide is long: leaving, and trips
+    // that end far out (to the galaxy view, say), are as they were
+    if (span > 0 && u > 0.35 && c.d1 < span) { const lim = 0.3 * Math.exp(ld) / span / smooth(0.35, 0.65, u); keep = Math.pow(Math.pow(keep, -4) + Math.pow(lim, -4), -0.25); }
+    const ctr = add(scale(c.c0, keep), scale(to, 1 - keep));
     const dd = clampEl(norm(slerp(c.dir0, c.dir1, smooth(0.2, 0.8, u))));
     return { c: ctr, d: Math.exp(ld), dir: dd };
   }
@@ -225,7 +236,7 @@ export function createFlight(canvas: HTMLElement) {
     if (gp && (gp.rx || gp.ry) && mode !== 'cruise') { look.dx += gp.rx * 900 * wall; look.dy += gp.ry * 900 * wall; }
 
     if (mode === 'cruise' && cr) {
-      cr.t = Math.min(cr.total, cr.t + Math.min(wall, 0.05)); // a stall pauses the trip instead of jumping it
+      cr.t = Math.min(cr.total, cr.t + Math.min(wall, 0.1)); // a stall pauses the trip instead of jumping it; down to ten frames a second a trip still takes the time it says
       if (cr.t < cr.turn && cr.q0 && cr.q1) {
         // turning on the spot, slowly in and out, before going anywhere
         pos[0] = cr.p0[0]; pos[1] = cr.p0[1]; pos[2] = cr.p0[2];
@@ -397,7 +408,24 @@ export function createFlight(canvas: HTMLElement) {
       else { const target = q.clone(); q.copy(blendFrom).slerp(target, smooth(0, 1, blendT)); }
     }
 
-    return { alt, mode, coasting, speed: len(vel), arriving: cr ? cr.t / Math.max(cr.total, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.total - cr.t) : 0 };
+    return { alt, mode, coasting, speed: mode === 'cruise' ? len(cruiseVel) : len(vel), arriving: cr ? cr.t / Math.max(cr.total, 1e-6) : 1, secsLeft: cr ? Math.max(0, cr.total - cr.t) : 0, /** on a trip, still turning on the spot to face the way: not yet moving */ turning: !!cr && cr.t < cr.turn,
+      /** on a trip: metres still to go to the point where it ends, metres come from where it began, and how far from the Sun (the origin) it ends */
+      ...(cr ? (() => {
+        // how far is left ALONG THE ROUTE, not in a straight line: a long trip pulls back and swings round before it closes in,
+        // so the straight-line distance to the end grows for a while, and a number that goes up reads as going the wrong way
+        const c = cr; const e = add(c.to.centre(), scale(c.dir1, c.d1));
+        const u0 = c.secs > 0 ? Math.min(1, Math.max(0, (c.t - c.turn) / c.secs)) : 1;
+        // measured once, on a fixed set of steps, so the figure can only fall as the trip goes on (measuring afresh from where
+        // you are each frame gave a slightly different length every time, and the number crept up and down)
+        if (!routeLen || routeFor !== c) {
+          routeFor = c; routeLen = new Float64Array(ROUTE_N + 1);
+          let a = add(cruiseAt(0).c, scale(cruiseAt(0).dir, cruiseAt(0).d));
+          for (let i = 1; i <= ROUTE_N; i++) { const at = cruiseAt(i / ROUTE_N); const b = add(at.c, scale(at.dir, at.d)); routeLen[i] = routeLen[i - 1] + len(sub(b, a)); a = b; }
+        }
+        const f = u0 * ROUTE_N, i0 = Math.min(ROUTE_N - 1, Math.floor(f));
+        const left = routeLen[ROUTE_N] - (routeLen[i0] + (routeLen[i0 + 1] - routeLen[i0]) * (f - i0));
+        return { toGo: left, gone: len(sub(pos, c.p0)), endFromSun: len(e) };
+      })() : {}) };
   }
 
   function enterOrbit(f: Focus) {

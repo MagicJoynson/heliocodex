@@ -20,6 +20,9 @@ for (const [typed, want] of [['jup', 'Jupiter'], ['europa', 'Europa'], ['betel',
   test(`as typed "${typed}" still puts ${want} first`, () => assert.equal(top(typed, 1)[0], want));
 for (const [typed, want] of [['proxima centuri', 'Proxima'], ['ursa magor', 'Ursa Major'], ['millky way', 'Milky Way'], ['blackhole', 'Black hole']] as const)
   test(`typo "${typed}" finds ${want}`, () => assert.ok(top(typed, 4).some((n) => n.toLowerCase().includes(want.toLowerCase())), `got ${top(typed, 4).join(', ')}`));
+for (const q of ['alpha centauri', 'α centauri', 'rigil kentaurus']) test(`"${q}" finds the star Rigil Kentaurus in the first three`, () => assert.ok(top(q, 3).includes('Rigil Kentaurus'), `got ${top(q, 3).join(', ')}`));
+test('"orbit" puts the glossary word first', () => assert.equal(top('orbit', 1)[0], 'Orbit'));
+test('"orion nebula" finds the nebula, not only the constellation', () => assert.ok(top('orion nebula', 3).includes('Orion Nebula')));
 for (const q of ['europa', 'mars', 'uranus', 'nebula', 'eclipse']) test(`"${q}" gets no guessed neighbours`, () => {
   // a lesson or glossary entry may be offered because its hidden text (the questions it answers, its summary) holds the word; that is not a guess
   const stray = rank(all, q, 8).filter((e) => !e[0].toLowerCase().includes(q) && !(e[3] ?? '').toLowerCase().includes(q) && !(e[4] ?? '').toLowerCase().includes(q));

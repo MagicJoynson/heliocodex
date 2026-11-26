@@ -45,7 +45,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
   <section class="outward" aria-labelledby="out-h">
     <div class="out-head">
       <h2 id="out-h">Outward from here</h2>
-      <p>Every place the lessons go, set out by how long its light takes to reach you. Each step along the scale is ten times longer than the one before.</p>
+      <p>Every place the lessons go, set out by how long its light takes to reach you. Each step along the scale is ten times longer than the one before. A small dashed ring beside a number means more lessons on that subject are on the way.</p>
     </div>
     <div class="scale" aria-hidden="true">
       <span class="scale-here">Here</span>
@@ -56,7 +56,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
         <li>
           <a href={`/learn/subject/${p.strand}`} style={`--a:${p.a};--b:${p.b};--tint:${p.tint}`}>
             <span class="p-name">{p.name}</span>
-            <span class="p-count">{count(p.lessons.length)}{planned(p.strand) > 0 && <span class="outline-n"><span class="vh">, more being written</span></span>}</span>
+            <span class="p-count">{count(p.lessons.length)}{planned(p.strand) > 0 && <span class="outline-n" aria-hidden="true"></span>}</span>
             <span class="p-track" aria-hidden="true">{ticks.map((t) => <i style={`--x:${along(t.s)}`} />)}<span class:list={['p-bar', { dot: p.b - p.a < 0.012 }]} /></span>
             <span class="p-reach">{p.reach}</span>
           </a>
@@ -73,7 +73,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
         {ideas.map((i) => (
           <li>
             <a class="i-name" href={`/learn/subject/${i.id}`}>{i.name}</a>
-            <span class="i-count">{i.lessons.length}{planned(i.id) > 0 && <span class="outline-n"><span class="vh">, more being written</span></span>}</span>
+            <span class="i-count">{i.lessons.length}{planned(i.id) > 0 && <span class="outline-n" aria-hidden="true"></span>}</span>
             <p>{i.lessons.slice(0, 3).map((l) => l.data.title).join(' · ')}</p>
           </li>
         ))}
@@ -126,13 +126,14 @@ const ticks = TICKS.filter((t) => t.s > 1);
   .out-head p { font: 300 1.02rem/1.5 var(--r-serif); color: var(--ink-faint); margin: 0; max-width: 34rem; }
   .scale { display: grid; grid-template-columns: var(--name-col) minmax(0, 1fr) var(--reach-col); gap: 0 1.6rem; font: 400 .66rem/1 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); padding-bottom: .7rem; }
   .scale-here { grid-column: 1; text-align: right; }
-  .scale-track { grid-column: 2; position: relative; height: 1em; margin: 0 10px; }
+  .scale-track { grid-column: 2; position: relative; height: 2.2em; margin: 0 10px; }
+  .scale-track i:nth-child(even) b { top: 1.2em; }
   .scale-track i { position: absolute; left: calc(var(--x) * 100%); font-style: normal; }
   .scale-track b { position: absolute; left: 0; transform: translateX(-50%); white-space: nowrap; font-weight: 400; }
   .places { list-style: none; margin: 0; padding: 0; }
   .places a { display: grid; grid-template-columns: var(--name-col) minmax(0, 1fr) var(--reach-col); grid-template-areas: 'name track reach' 'count track reach'; gap: .1rem 1.6rem; align-items: center; padding: .85rem 0; border-top: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
   .places li:last-child a { border-bottom: 1px solid var(--rule); }
-  .p-name { grid-area: name; font: 400 1.3rem/1.2 var(--r-serif); text-align: right; align-self: end; }
+  .p-name { grid-area: name; font: 400 1.3rem/1.2 var(--r-serif); text-align: right; align-self: end; text-decoration: underline; text-decoration-color: rgba(236,231,220,.35); text-decoration-thickness: 1px; text-underline-offset: .2em; }
   .p-count { grid-area: count; font: 400 .7rem/1.4 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); text-align: right; align-self: start; }
   .p-reach { grid-area: reach; font: 300 .98rem/1.35 var(--r-serif); color: var(--ink-soft); }
   .p-track { grid-area: track; position: relative; height: 2.6rem; margin: 0 10px; }
@@ -147,7 +148,8 @@ const ticks = TICKS.filter((t) => t.s > 1);
   .lower { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr); gap: 3rem 5rem; padding: 3.2rem 0 0; }
   .ideas ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.4rem; }
   .ideas li { padding: 1rem 0 1.1rem; border-top: 1px solid var(--rule); display: grid; grid-template-columns: 1fr auto; gap: .35rem 1rem; align-content: start; }
-  .i-name { font: 400 1.22rem/1.25 var(--r-serif); text-decoration: none; }
+  .i-name { font: 400 1.22rem/1.25 var(--r-serif); text-decoration: underline; text-decoration-color: rgba(236,231,220,.35); text-decoration-thickness: 1px; text-underline-offset: .2em; }
+  .i-name::after { content: ' →'; color: var(--accent); }
   .i-count { font: 400 .74rem/1.9 var(--r-mono); color: var(--ink-faint); }
   .ideas li p { grid-column: 1 / -1; font: 300 .94rem/1.45 var(--r-serif); color: var(--ink-faint); margin: 0; }
 
@@ -173,8 +175,7 @@ const ticks = TICKS.filter((t) => t.s > 1);
     .start { grid-template-columns: 1fr; }
     .scale { grid-template-columns: minmax(0, 1fr); }
     .scale-here { display: none; }
-    .scale-track { grid-column: 1; height: 2.2em; }
-    .scale-track i:nth-child(even) b { top: 1.2em; }
+    .scale-track { grid-column: 1; }
     .places a { grid-template-columns: 1fr auto; grid-template-areas: 'name count' 'track track' 'reach reach'; gap: .2rem 1rem; padding: .9rem 0 1rem; }
     .p-name, .p-count { text-align: left; align-self: baseline; }
     .p-track { height: 1.6rem; }

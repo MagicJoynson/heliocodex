@@ -8,7 +8,8 @@ import '../styles/header.css';
 ---
 <nav class="site-nav" aria-label="Main">
   {groups.map((g) => {
-    const here = g.sections.some((x) => x.match(path)) || path === g.href;
+    // the 3D view has its own item, so it does not also light up the Solar System heading
+    const here = g.sections.some((x) => x.href !== '/explore' && x.match(path)) || path === g.href;
     return (
       <div class="nav-item">
         <a class="nav-top" href={g.href} aria-current={here ? 'page' : undefined}>{g.name}</a>

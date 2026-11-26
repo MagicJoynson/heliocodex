@@ -18,6 +18,7 @@ import { fmt, daysToYear, hoursToDay } from '../lib/format';
 import { lessonsAbout } from '../lib/objects';
 import { thumb as lessonThumb } from '../lib/learn/map';
 import { shareFor } from '../lib/share';
+import { recordLd } from '../lib/site';
 /**
  * Shared bones of a "world" page: the fixed 3D canvas, the haze, the altitude ruler and the scroll
  * driver. Everything you see (type, colour, layout, copy) belongs to the page that uses it.
@@ -26,6 +27,7 @@ interface Props { world: string; title: string; description: string; readout?: s
 const { world, title, description, readout = 'Altitude' } = Astro.props;
 const fullTitle = `${title} · Heliocodex`.length > 60 ? title : `${title} · Heliocodex`;
 const share = shareFor(`/${world}`, Astro.site);
+const ld = recordLd({ path: `/${world}`, name: title, description, kind: world === 'sun' ? 'Our star' : 'A planet of the Sun', image: share.own ? share.src : undefined, trail: [['Solar System', '/worlds']] });
 // lessons whose camera looks at this world, so the fall leads on into reading
 const all = await allLessons();
 // the same lessons the search results offer: ranked by what they are about, not by where their 3D camera points
@@ -88,6 +90,7 @@ const nameOf = (b: (typeof bodies)[number]) => (b.slug === 'sun' ? 'The Sun' : b
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#07080d" />
+    <script type="application/ld+json" set:html={JSON.stringify(ld).replace(/</g, '\\u003c')} />
     <Analytics />
   </head>
   <body data-world={world}>

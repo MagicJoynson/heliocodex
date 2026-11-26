@@ -10,7 +10,7 @@ Run from the repository root:  python3 scripts/build-share-images.py
 Writes public/img/share/*.jpg and src/data/share-images.json, and prints what it used and what it left out.
 """
 import glob, html, json, os, re, sys
-from PIL import Image
+from PIL import Image, ImageDraw
 
 ROOT = os.getcwd()
 OUT = 'public/img/share'
@@ -73,11 +73,25 @@ PLANETS = {
     '/uranus': ('/img/uranus/voyager-1986.jpg', 'Uranus as a plain, pale blue-green sphere against black space.', 'Image: NASA/JPL-Caltech.'),
     '/neptune': ('/img/neptune/great-dark-spot.jpg', 'Neptune as a deep blue globe with a large dark oval storm left of centre.', 'Image: NASA/JPL.'),
 }
-pages.update(PLANETS)   # Mars (strips too narrow) and Jupiter (the Great Red Spot picture is not reused) keep the site card
+# Mars and Jupiter lead with scroll strips that are too narrow to crop, so they use the whole-globe portrait each page shows in its
+# size comparison, with that picture's own credit (not the Great Red Spot picture, which is not reused)
+PLANETS['/mars'] = ('/img/bodies/mars.jpg', 'A rust-orange globe with dark markings, a white polar cap and a long canyon across its middle.', 'Credit: NASA/JPL/USGS.')
+PLANETS['/jupiter'] = ('/img/bodies/jupiter.jpg', 'A globe banded in cream, orange and rust, with the round Great Red Spot below the middle.', 'Credit: NASA, ESA, A. Simon (Goddard Space Flight Center) and M. H. Wong (University of California, Berkeley), CC BY 4.0.')
+pages.update(PLANETS)
+
+ROUND = {'/img/bodies/mars.jpg'}
 
 def make(src_path, dest):
     im = Image.open('public' + src_path).convert('RGB')
     w, h = im.size
+    if src_path in ROUND:
+        # this globe is a little wider than its picture, so its sides are cut flat; trim it to the circle the picture holds whole
+        d = min(w, h)
+        im = im.crop(((w - d) // 2, (h - d) // 2, (w - d) // 2 + d, (h - d) // 2 + d))
+        mask = Image.new('L', (d * 4, d * 4), 0)
+        ImageDraw.Draw(mask).ellipse((0, 0, d * 4 - 1, d * 4 - 1), fill=255)
+        im = Image.composite(im, Image.new('RGB', (d, d), (0, 0, 0)), mask.resize((d, d), Image.LANCZOS))
+        w, h = im.size
     # fill the frame if that needs little enlarging and loses less than a third of the picture; otherwise show it whole on the page's dark colour
     cover = max(W / w, H / h)
     kept = min(1.0, (W / cover) * (H / cover) / (w * h))

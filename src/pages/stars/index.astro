@@ -57,7 +57,7 @@ import { PLANNED_LESSONS } from '../../data/plan';
   <header class="reading-head with-pic" style="--pic: url(/img/learn/omega-centauri-hubble.jpg)">
     <p class="label">Meet a star</p>
     <h1>Pick one and say hello</h1>
-    <p class="lead">Every star you can see is a sun, with its own distance, colour and story. {withPage.length.toLocaleString('en-GB')} of them have a page here, and all of them are on the sky map. Only {stars.length} have been given a name. The rest go by a Greek letter, a number or their place in a catalogue. Start with the one whose light is as old as you are.</p>
+    <p class="lead">Every star you can see is a sun, with its own distance, colour and story. {withPage.length.toLocaleString('en-GB')} of them have a page here, and all of them are on the sky map. Only {stars.length} have been given a name. The rest go by a Greek letter, a number or their place in a catalogue. The 3D view holds about 109,000 stars from the same catalogue, most of them too faint to see by eye. Start with the one whose light is as old as you are.</p>
   </header>
 
   <section class="row">
@@ -158,8 +158,7 @@ import { PLANNED_LESSONS } from '../../data/plan';
     const syncHr = () => { if (hrFrame.scrollWidth > hrFrame.clientWidth + 1) hrFrame.tabIndex = 0; else hrFrame.removeAttribute('tabindex'); };
     syncHr(); addEventListener('resize', syncHr);
   }
-  import { CITIES, guess } from '../../lib/sky/cities';
-  import { readPlace } from '../../lib/sky/remember';
+  import { herePlace } from '../../lib/sky/remember';
   type Near = [name: string, ly: number, mag: number, href: string, index: number, dec: number];
   const form = document.getElementById('age-form') as HTMLFormElement, out = document.getElementById('age-out')!;
   const near = JSON.parse(form.dataset.near!) as Near[];
@@ -177,11 +176,11 @@ import { PLANNED_LESSONS } from '../../data/plan';
     // light that left during the year you were born has travelled between age and age + 1 years
     const born = new Date().getFullYear() - age;
     // stars that climb well clear of the horizon from the visitor's place come first, then the brightest
-    const first = guess(), here = readPlace() ?? { name: CITIES[first][0], lat: CITIES[first][1], lon: CITIES[first][2] };
+    const here = herePlace();
     const top = (s: Near) => 90 - Math.abs(here.lat - s[5]), seen = (s: Near) => top(s) >= 15;
     const exact = near.filter((s) => Math.abs(s[1] - age) <= 0.5).sort((a, b) => Number(seen(b)) - Number(seen(a)) || a[2] - b[2]);
     const star = exact[0] ?? [...near].sort((a, b) => Math.abs(a[1] - age) - Math.abs(b[1] - age))[0];
-    const [name, ly, mag, href, index] = star, from = here.name === 'Where you are' ? 'where you are' : here.name;
+    const [name, ly, mag, href, index] = star, from = here.from;
     const n = safe(name), sight = !seen(star) ? '' : mag <= 2 ? 'It is one of the bright stars, easy to pick out.' : mag <= 4.5 ? 'It is easy to see by eye on a clear night.' : 'It is faint, and needs a dark sky to see by eye.';
     const parts = [p(`<strong class="found">${n}</strong>`)];
     parts.push(p(exact.length

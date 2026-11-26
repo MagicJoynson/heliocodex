@@ -7,7 +7,7 @@
 .nav-panel { position: absolute; top: 100%; left: 0; min-width: 19rem; padding: 6px 0; background: var(--hd-raised); border: 1px solid var(--hd-line); box-shadow: 0 18px 40px rgba(0,0,0,.5); opacity: 0; visibility: hidden; transform: translateY(4px); transition: opacity .15s, transform .15s, visibility .15s; z-index: 40; }
 .nav-item:hover .nav-panel, .nav-item:focus-within .nav-panel { opacity: 1; visibility: visible; transform: none; }
 .nav-item:nth-last-child(2) .nav-panel { left: auto; right: 0; }
-.nav-3d { color: var(--hd-accent); }
+.site-nav .nav-3d, .site-nav .nav-item:hover .nav-3d, .site-nav .nav-item:focus-within .nav-3d { color: #ffb347; } /* the brand amber on every page, whatever accent a planet page uses */
 .nav-3d:hover { text-decoration: underline; text-underline-offset: .3em; }
 .nav-panel a { display: grid; gap: 2px; padding: 10px 18px; text-decoration: none; }
 .nav-panel a:hover, .nav-panel a:focus-visible { background: color-mix(in srgb, var(--hd-accent) 9%, transparent); outline-offset: -2px; }

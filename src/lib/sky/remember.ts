@@ -1,4 +1,5 @@
 // The place last chosen on the sky map, kept on the visitor's own device so other pages can use it.
+import { CITIES, guess, zoneOf } from './cities';
 export interface Place { name: string; lat: number; lon: number }
 const KEY = 'heliocodex-sky-place';
 export function readPlace(): Place | null {
@@ -14,4 +15,25 @@ export function keepPlace(p: Place): void {
 }
 export function forgetPlace(): void {
   try { localStorage.removeItem(KEY); } catch { /* nothing to forget */ }
+}
+
+
+/** The one place every page uses: the one chosen on the sky map, or else a guess from the device's clock. */
+export interface Here extends Place {
+  /** The time zone its clocks keep (IANA name). */
+  zone: string;
+  /** true when nothing has been chosen and this is the guess from the device's clock. */
+  guessed: boolean;
+  /** How to name it in a sentence: "London", or "where you are". */
+  from: string;
+}
+export function herePlace(): Here {
+  const kept = readPlace();
+  if (kept) {
+    // a place typed by hand is saved under the words used on the sky map for it
+    const name = kept.name;
+    return { ...kept, zone: zoneOf(name, kept.lat, kept.lon), guessed: false, from: name === 'Where you are' ? 'where you are' : name === 'The place you typed' ? 'the place you chose' : name };
+  }
+  const [name, lat, lon] = CITIES[guess()];
+  return { name, lat, lon, zone: zoneOf(name, lat, lon), guessed: true, from: name };
 }

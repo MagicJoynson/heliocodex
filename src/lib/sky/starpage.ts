@@ -3,9 +3,8 @@
  * visitor's sky at this moment, and the slow glow of its drawn face.
  */
 import { moment, toSky, type Vec } from './place';
-import { CITIES, guess } from './cities';
 import { wayOf, heightOf } from './words';
-import { readPlace } from './remember';
+import { herePlace } from './remember';
 
 export function enliven(page: HTMLElement): void {
   const lyEl = page.querySelector<HTMLElement>('[data-ly]'), left = page.querySelector<HTMLElement>('[data-left]');
@@ -17,20 +16,20 @@ export function enliven(page: HTMLElement): void {
   }
   const now = page.querySelector<HTMLElement>('[data-now]');
   if (now) {
-    const first = guess(), saved = readPlace() ?? { name: CITIES[first][0], lat: CITIES[first][1], lon: CITIES[first][2] };
+    const saved = herePlace();
     const dir = page.dataset.dir!.split(',').map(Number) as Vec, given = page.dataset.name!, name = /^An? (unnamed|companion)/.test(given) ? 'This star' : given;
     const s = toSky(dir, moment(new Date(), saved.lat, saved.lon));
     // how high it gets and how low it sinks as the sky turns, from its height over a day
     let top = -90, low = 90;
     for (let h = 0; h < 24; h += 0.25) { const a = toSky(dir, moment(new Date(Date.now() + h * 3600000), saved.lat, saved.lon)).altDeg; top = Math.max(top, a); low = Math.min(low, a); }
-    const from = saved.name === 'Where you are' ? 'where you are' : saved.name;
+    const from = saved.from;
     now.textContent = top < 0 ? `${name} never rises above the horizon from ${from}. You would have to travel ${saved.lat > 0 ? 'south' : 'north'} to see it.`
       : s.altDeg > 0 ? `${name} is up now from ${from}: ${heightOf(s.altDeg)} in the ${wayOf(s.azDeg)}, ${Math.round(s.altDeg)}° above the horizon.${low > 0 ? ' From there it never sets.' : ''}`
       : `${name} is below the horizon from ${from} at this moment. At its highest it stands ${Math.round(top)}° up.`;
     const topLine = page.querySelector<HTMLElement>('[data-now-top]');
     if (topLine) topLine.textContent = now.textContent!.split('. ')[0].replace(/\.$/, '') + '.';
     const more = document.createElement('p');
-    more.innerHTML = 'The place is the one you last chose on <a href="/sky">the sky map</a>, or a guess from your device\'s clock.';
+    more.innerHTML = saved.guessed ? 'The place is a guess from your device\'s clock. <a href="/sky#where">Change place</a>.' : 'The place is the one you chose on the sky map. <a href="/sky#where">Change place</a>.';
     now.after(more);
   }
 

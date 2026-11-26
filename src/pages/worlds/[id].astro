@@ -11,7 +11,8 @@ import { WORLD_PAGES } from '../../data/world-pages';
 import { allLessons, allFacts } from '../../lib/v2/margin/content';
 import { goFor, lessonsAbout } from '../../lib/objects';
 import { sheet, head, ratio, sig, type Cell } from '../../lib/record';
-import { SHOW_OUTLINES } from '../../lib/site';
+import { SHOW_OUTLINES, recordLd } from '../../lib/site';
+import { shareFor } from '../../lib/share';
 import { sunAu } from '../../lib/worlds';
 import '../../styles/record.css';
 
@@ -122,7 +123,7 @@ const refPx = REF.km * sk2;
 const bx = c2 + r2 + 70; // where the length or the Moon sits
 const moonR2 = MOON_KM * sk2;
 ---
-<Reading title={(b.kind === 'comet' && /comet/i.test(b.name) ? `${b.name}: orbit and facts` : `${b.name}: ${lowerKind}`).replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
+<Reading jsonld={recordLd({ path: `/worlds/${b.id}`, name: b.name, description: metaDesc, kind: metaKind, image: shareFor(`/worlds/${b.id}`, Astro.site).own ? shareFor(`/worlds/${b.id}`, Astro.site).src : undefined, trail: crumbs })} title={(b.kind === 'comet' && /comet/i.test(b.name) ? `${b.name}: orbit and facts` : `${b.name}: ${lowerKind}`).replace(/the Earth/g, 'Earth')} path={`/worlds/${b.id}`} description={metaDesc}>
   <article class="rec world-record">
     <Fragment set:html={headHtml} />
     <section class:list={['rec-top', { 'no-pic': !lead }]}>

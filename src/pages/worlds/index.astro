@@ -22,7 +22,9 @@ const P = planets.map((b) => {
   return { id: b.id, name: b.name.replace(/^The /, ''), a, x: x(a), d: Math.round(6 + Math.sqrt(r) / 16), moons: moonsOf(b.id), known: moonCount(b.id), skip: 0 };
 });
 // a moon list that would run into its neighbour's starts below it instead
-P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && p.x - q.x < 7) p.skip = q.skip + q.moons.length; });
+// (Jupiter's list reads to the right, towards Saturn's, so Saturn's always starts below it;
+// the Earth's one moon sits a row lower, under its distance, so Mars's list starts a row further down)
+P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && (p.x - q.x < 7 || q.id === 'jupiter')) p.skip = q.skip + q.moons.length + (q.id === 'earth' ? 1 : 0); });
 // each moon row is 1.5rem (24px) tall so that every link meets the 24px target size; the band is as tall as the longest list
 const bandRem = Math.max(12.5, 0, ...P.map((p) => 2.2 + p.d / 32 + 1.3 + (p.skip + p.moons.length) * 1.5 + 1));
 const LANES = [
@@ -55,7 +57,7 @@ const VH = 2700, VT = 36, STRETCH = 700, SL = Math.log10(1.5), SH6 = Math.log10(
 const vy = (au: number) => VT + f(au) * VH + STRETCH * Math.min(1, Math.max(0, (Math.log10(au) - SL) / (SH6 - SL)));
 const VEND = VT + VH + STRETCH;
 const LX = 200;
-type VL = { id: string; href: string; name: string; sub?: string; subs?: { id: string; name: string; w?: boolean }[]; y: number; mx: number; my: number; out: boolean };
+type VL = { id: string; href: string; name: string; pre?: string; sub?: [string, string]; subs?: { id: string; name: string; w?: boolean }[]; y: number; y0?: number; mx: number; my: number; out: boolean };
 // names of close neighbours are pushed apart so they do not run into each other
 const NUDGE: Record<string, string> = { venus: '-80%', mars: '-22%', uranus: '-72%', neptune: '-28%' };
 const vlabels: VL[] = [];
@@ -68,14 +70,19 @@ const COLS: Record<string, [number, number]> = { asteroid: [70, 3], comet: [128,
 for (const l of LANES) l.rows.forEach((r, i) => {
   const mx = COLS[l.kind][0] + i * COLS[l.kind][1];
   vmarks.push({ kind: l.kind, mx, y1: vy(r.q), y2: vy(r.Q), ya: vy(r.a), d: Math.max(4, Math.round(r.d * .7)), out: true, off: r.off });
-  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, sub: `${r.likely ? 'likely dwarf planet · ' : ''}${fmtAu(r.q)}–${r.off ? '700+' : fmtAu(r.Q)} au`, subs: r.moons.map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), y: vy(r.a), mx, my: vy(r.a), out: !written(r.id) });
+  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, pre: r.likely ? 'likely dwarf planet · ' : undefined, sub: [`${fmtAu(r.q)}–`, `${r.off ? '700+' : fmtAu(r.Q)}\u00a0au`], subs: r.moons.map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), y: vy(r.a), mx, my: vy(r.a), out: !written(r.id) });
 });
 vlabels.sort((a, b) => a.y - b.y);
 let floor = 0;
 for (const l of vlabels) {
-  const lines = (l.name.length * 7.4 + (l.sub ? l.sub.length * 7.8 + 6 : 0) > 168 ? 2 : 1) + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.4 / 150) : 0);
-  l.y = Math.max(l.y - 9, floor);
-  floor = l.y + 3 + 17 + (lines - 1) * 14;
+  // lines this label takes in the narrowest phone column (about 78 px at 320 px wide), so that without the
+  // script below the names still clear each other; with it, each label is measured as drawn and the gaps close up
+  const C = 78, nameW = l.name.length * 7.6, range = l.sub ? l.sub.join('').length * 7.9 : 0, pre = (l.pre?.length ?? 0) * 7.9;
+  const labelLines = !l.sub ? Math.ceil(nameW / C) : nameW + 6 + pre + range <= C ? 1 : Math.ceil(nameW / C) + Math.ceil(pre / C) + (range > C ? 2 : 1);
+  const lines = labelLines + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.6 / C) : 0);
+  l.y0 = l.y - 12;
+  l.y = Math.max(l.y0, floor);
+  floor = l.y + 3 + lines * 24;
 }
 const VTOTAL = Math.max(VEND + 30, floor + 20);
 ---
@@ -92,7 +99,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
       <ol class="wm-planets" style={`height:${bandRem.toFixed(1)}rem`}>
         {P.map((p) => (
-          <li class:list={[{ flip: p.id === 'jupiter', low: p.id === 'earth', shift: p.id === 'uranus' }]} style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
+          <li class:list={[{ low: p.id === 'earth', shift: p.id === 'uranus' }]} style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
             <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
             <span class="wp-au">{fmtAu(p.a)} au</span>
             {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li class:list={[{ written: written(m.id) }]}><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
@@ -115,7 +122,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
       ))}
     </div>
 
-    <div class="wm-v" style={`--vh:${VTOTAL}px`}>
+    <div class="wm-v" style={`--vh:${VTOTAL}px`} data-min={VEND + 30} data-lx={LX}>
       <svg class="wm-vs" width={LX} height={VTOTAL} viewBox={`0 0 ${LX} ${VTOTAL}`} aria-hidden="true">
         {ZONES.map((z, i) => i % 2 ? <rect x="44" y={vy(z.from)} width={LX - 44} height={vy(z.to) - vy(z.from)} class="vz" /> : null)}
         <circle cx="52" cy="10" r="14" class="vsun" />
@@ -125,13 +132,13 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
         {vmarks.map((m) => m.kind === 'planet'
           ? <circle cx={m.mx} cy={m.ya} r={m.d / 2} class="vp" />
           : <g class:list={['vm', m.kind]}><line x1={m.mx} x2={m.mx} y1={m.y1} y2={m.off ? VEND + 14 : m.y2} />{m.off && <path d={`M${m.mx - 3} ${VEND + 8} L${m.mx} ${VEND + 14} L${m.mx + 3} ${VEND + 8}`} />}<circle cx={m.mx} cy={m.ya} r={m.d / 2} /></g>)}
-        {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 9}, ${LX} ${l.y + 9}`} />)}
+        {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 12}, ${LX} ${l.y + 12}`} />)}
       </svg>
       <ol class="wm-vl">
         {vlabels.map((l) => (
-          <li class:list={[{ out: l.out }]} style={`top:${l.y}px`}>
+          <li class:list={[{ out: l.out }]} style={`top:${l.y}px`} data-y={l.y0} data-mx={l.mx} data-my={l.my}>
             <a href={l.href}>{l.name}</a>
-            {l.sub && <small>{l.sub}</small>}
+            {l.sub && <small>{l.pre}<span class="rng"><span>{l.sub[0]}</span><wbr /><span>{l.sub[1]}</span></span></small>}
             {l.subs && l.subs.length > 0 && <span class="vl-moons">{l.out ? 'Moon: ' : 'Moons: '}{l.subs.map((m, i) => <>{i > 0 && ', '}<a class:list={[{ w: m.w }]} href={`/worlds/${m.id}`}>{m.name}</a></>)}</span>}
           </li>
         ))}
@@ -146,6 +153,27 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   </dl>
   <p class="w-more">Further out still, the Oort cloud is thought to wrap the whole Solar System in a thin shell of icy bodies; you can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>. Stars have their own pages under <a href="/stars">Stars</a>.</p>
 </Reading>
+
+<script>
+  // The label positions above are worked out before the page knows how wide the phone is, so a long name can wrap
+  // more than guessed. Here each label is measured as drawn and the stack is pushed down where two would touch.
+  function stack(): void {
+    const box = document.querySelector<HTMLElement>('.wm-v');
+    if (!box || box.offsetParent === null) return;
+    const lx = Number(box.dataset.lx), leads = box.querySelectorAll<SVGPathElement>('.vlead');
+    let floor = 0;
+    box.querySelectorAll<HTMLElement>('.wm-vl li').forEach((li, i) => {
+      const y = Math.max(Number(li.dataset.y), floor), mx = Number(li.dataset.mx), my = Number(li.dataset.my);
+      li.style.top = `${y}px`;
+      floor = y + li.offsetHeight + 3;
+      leads[i]?.setAttribute('d', `M${mx + 3} ${my} C ${lx - 14} ${my}, ${lx - 18} ${y + 12}, ${lx} ${y + 12}`);
+    });
+    box.style.setProperty('--vh', `${Math.max(Number(box.dataset.min), floor + 20)}px`);
+  }
+  stack();
+  document.fonts?.ready.then(stack);
+  addEventListener('resize', stack);
+</script>
 
 <style>
   .w-head { max-width: 60rem; margin-bottom: clamp(20px, 3vw, 32px); }
@@ -172,7 +200,7 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
   .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
   .wm-planets > li.shift .wp-moons { left: .4rem; }
   .wm-planets > li.low .wp-au { top: calc(var(--d) / 2 + 1.1rem); }
-  .wm-planets > li.low .wp-moons { top: calc(var(--d) / 2 + 2.1rem); }
+  .wm-planets > li.low .wp-moons { top: calc(var(--d) / 2 + 2.6rem); }
   /* Jupiter's long list of moons reads to the left, so it clears Saturn's */
   .wm-planets > li.flip .wp-moons { left: auto; right: -.5rem; padding: calc(var(--skip) * 1.5rem) .5rem 0 0; border-left: 0; border-right: 1px solid rgba(233,196,138,.25); justify-items: end; }
   .wm-planets > li.flip .wp-moons a { flex-direction: row-reverse; }
@@ -217,14 +245,16 @@ const VTOTAL = Math.max(VEND + 30, floor + 20);
     .vm circle { fill: #0b0b0c; stroke: rgba(233,196,138,.9); stroke-width: 1; }
     .vlead { fill: none; stroke: rgba(236,231,220,.16); stroke-width: .8; }
     .wm-vl { list-style: none; margin: 0; padding: 0; position: absolute; left: 200px; right: 0; top: 0; }
-    .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/17px var(--r-serif); }
-    .wm-vl li > a { color: var(--ink); display: inline-block; padding: 4px 0; margin: -4px 0; }
+    .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/24px var(--r-serif); }
+    .wm-vl li > a { color: var(--ink); display: inline-block; min-width: 24px; }
     .wm-vl li.out > a { text-decoration: underline dashed rgba(233,196,138,.5); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-    .wm-vl small { margin-left: .4rem; font: 400 .8125rem/16px var(--r-mono); color: var(--ink-faint); }
-    .wm-vl .vl-moons { display: block; font: 300 .8125rem/14px var(--r-serif); color: var(--ink-faint); }
+    .wm-vl small { margin-left: .4rem; font: 400 .8125rem/24px var(--r-mono); color: var(--ink-faint); }
+    .wm-vl .rng, .wm-vl .rng span { white-space: nowrap; }
+    .wm-vl .vl-moons { display: block; font: 300 .8125rem/24px var(--r-serif); color: var(--ink-faint); }
     .wm-vl .vl-moons a { color: var(--ink-soft); }
     .wm-vl .vl-moons a.w { color: var(--ink); font-weight: 400; }
     .wm-key { grid-template-columns: minmax(0, 1fr); }
     .v-note { display: inline; }
   }
+  @media (max-width: 340px) { .wm-vl .rng { white-space: normal; } .wm-vl li { right: 4px; } }
 </style>

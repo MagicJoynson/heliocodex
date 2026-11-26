@@ -42,9 +42,13 @@ export const GET: APIRoute = async () => {
   for (const s of sections) out.push([s.label, 'Page', s.href]);
   out.push(['A fact at a time', 'Page', '/learn/facts/random', 'random fact surprising']);
   for (const s of pageStars()) {
-    const also = [s.catalogue, s.hip ? `HIP ${s.hip}` : '', s.hd ? `HD ${s.hd}` : ''].filter((x) => x && x !== s.name).join(' ');
+    // "Alpha-1 Centauri" is also found as "Alpha Centauri", the way people type a double star's name
+    const plain = s.catalogue?.replace(/^(\w+)-\d+ /, '$1 ');
+    const also = [...new Set([s.catalogue, plain])].filter((x) => x && x !== s.name).concat([s.hip ? `HIP ${s.hip}` : '', s.hd ? `HD ${s.hd}` : '']).filter(Boolean).join(' ');
     out.push([s.name, s.proper ? 'Star' : 'Star (catalogue)', `/stars/${s.slug}`, also || undefined, undefined, goStar(s.index)]);
   }
+  // The nebula the 3D view flies to. Its page is the lesson about star birth, which is about it.
+  out.push(['Orion Nebula', 'Nebula', '/learn/nebulae-and-star-birth', 'M42 Messier 42 great nebula', undefined, 'orion-nebula', 'nebulae-and-star-birth']);
   // The Atlas's landmarks: the Pleiades, the Magellanic Cloud, Andromeda, the Milky Way's black hole. Each opens its entry in the Atlas.
   const ALSO: Record<string, string> = {
     pleiades: 'Seven Sisters M45', andromeda: 'M31 Messier 31', m87: 'Messier 87 Virgo A', 'large-magellanic-cloud': 'LMC',

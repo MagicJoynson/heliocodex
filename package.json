@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/check-budget.mjs",
+    "build": "astro build && node scripts/responsive-images.mjs && node scripts/check-budget.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "facts": "python3 -I scripts/build-facts.py",

@@ -128,7 +128,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
 <script>
   import { draw, load, wayOf, heightOf, PLANET_NAMES, wholeSky, type Mark, type SkyData, type View, type Room } from '../lib/sky/chart';
   import { moment, toSky, sunFromEarth, planetFromEarth, moonSky, PLANETS, type Moment } from '../lib/sky/place';
-  import { CITIES, guess } from '../lib/sky/cities';
+  import { CITIES, guess, zoneOf, clockIn, dayIn, clocksDiffer } from '../lib/sky/cities';
   import { readPlace, keepPlace, forgetPlace } from '../lib/sky/remember';
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -146,7 +146,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   const calm = matchMedia('(prefers-reduced-motion: reduce)');
 
   let data: SkyData | null = null, marks: Mark[] = [], picked: Mark | null = null;
-  let where = { name: '', lat: 0, lon: 0 }, dayShift = 0, w = 0, h = 0;
+  let where = { name: '', lat: 0, lon: 0, zone: 'Europe/London' }, dayShift = 0, w = 0, h = 0;
   let view: View = { azDeg: 180, altDeg: 30, fovDeg: 100 };
   let linkView: View | null = null;
   let mom: Moment | null = null, momKey = '';
@@ -165,7 +165,8 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   function paint(): void {
     due = 0;
     const t = when(), offset = Number(shift.value) + dayShift;
-    line.textContent = `${where.name}, ${t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}, ${t.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}${offset === 0 ? ' (now)' : ''}`;
+    // the day and time as the clocks read at the place being shown, which need not be where the device is
+    line.textContent = `${where.name}, ${dayIn(t, where.zone)}, ${clockIn(t, where.zone)}${clocksDiffer(t, where.zone) ? ' local time' : ''}${offset === 0 ? '\u00a0(now)' : ''}`;
     if (!data || !w) return;
     const key = `${Math.floor(t.getTime() / 20000)}|${where.lat}|${where.lon}`;
     if (key !== momKey || !mom) { mom = moment(t, where.lat, where.lon); momKey = key; upNow(mom); }
@@ -346,16 +347,21 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
       { name: 'Moon', alt: moon.altDeg, az: moon.azDeg, kind: 'moon' },
       ...PLANETS.map((id) => { const k = toSky(planetFromEarth(id, m.T).dir, m); return { name: PLANET_NAMES[id], alt: k.altDeg, az: k.azDeg, kind: id === 'uranus' || id === 'neptune' ? 'faint' : 'planet' }; }),
     ].sort((a, b) => a.az - b.az);
-    let lastX = -999, lastLift = 0;
+    // each name goes just above its mark, or is moved up (then below the mark) until it is clear of the names already placed
+    const placed: { a: number; b: number; t: number; u: number }[] = [];
+    const clear = (a: number, b: number, t: number, u: number) => placed.every((p) => b < p.a - 4 || a > p.b + 4 || u < p.t - 2 || t > p.u + 2);
     for (const it of items) {
       const x = X(it.az), y = Y(it.alt), below = it.alt < 0;
       const g = mk('g', { class: `r-${it.kind}${below ? ' below' : ''}` });
       g.append(mk('circle', { cx: x, cy: y, r: it.kind === 'sun' ? 11 : it.kind === 'moon' ? 9 : it.kind === 'faint' ? 3 : 5 }));
       // below the ground only the Sun and the Moon are named, to say where they will rise
       if (!below || it.kind === 'sun' || it.kind === 'moon') {
-        const lift = x - lastX < 64 ? lastLift + 17 : 0; lastX = x; lastLift = lift;
         const anchor = x < L + 30 ? 'start' : x > R - 30 ? 'end' : 'middle';
-        g.append(mk('text', { x, y: y - 14 - lift, 'text-anchor': anchor }, it.name));
+        const w = it.name.length * 7.6 + 4, a0 = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2;
+        const tries = [0, 1, 2, 3, 4].map((n) => y - 14 - n * 17).concat([y + 26, y + 43]);
+        const ty = tries.find((t) => clear(a0, a0 + w, t - 12, t + 3)) ?? tries[0];
+        placed.push({ a: a0, b: a0 + w, t: ty - 12, u: ty + 3 });
+        g.append(mk('text', { x, y: ty, 'text-anchor': anchor }, it.name));
       }
       parts.push(g);
     }
@@ -375,8 +381,8 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
 
   // ---- place and time
   function setPlace(name: string, la: number, lo: number, why: string, chosen = true): void {
-    where = { name, lat: la, lon: lo };
-    if (chosen) keepPlace(where);
+    where = { name, lat: la, lon: lo, zone: zoneOf(name, la, lo) };
+    if (chosen) keepPlace({ name, lat: la, lon: lo });
     $('sky-forget').hidden = !readPlace();
     lat.value = la.toFixed(2); lon.value = lo.toFixed(2);
     note.textContent = why; $('sky-where-name').textContent = name;
@@ -467,6 +473,11 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   }
   // by day the page opens on tonight's sky, since that is what people come for
   if (!linkTime()) tonight(true);
+  // "Change place" on other pages links here with #where: open the place chooser straight away
+  if (location.hash === '#where') {
+    if (matchMedia('(max-width: 560px) and (min-height: 480px)').matches) openSheet('where'); else ($('pop-where') as HTMLDetailsElement).open = true;
+    $<HTMLSelectElement>('sky-place').focus({ preventScroll: true });
+  }
 
   // ---- a link to this view: place, moment, direction and the thing picked, all in the address. Nothing is stored.
   const shareNote = $('sky-share-note');
@@ -582,6 +593,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   .pop-body { position: absolute; right: 0; bottom: calc(100% + .6rem); width: min(19rem, calc(100vw - 2 * var(--gutter))); background: rgba(9, 10, 14, .97); border: 1px solid var(--rule); border-top-color: var(--accent); padding: 1rem 1.1rem 1.1rem; display: grid; gap: .7rem; z-index: 3; }
   .sky select, .sky input[type='number'] { font: 300 1.02rem var(--r-serif); color: var(--ink); background: #131315; border: 1px solid var(--rule); border-radius: 2px; padding: .5rem .6rem; width: 100%; min-height: 44px; }
   .pop-body button { justify-self: start; }
+  .pop-body button[hidden] { display: none; }
   .hint { font: italic 300 .9rem/1.4 var(--r-serif); color: var(--ink-faint); margin: 0; }
   .hint:empty { display: none; }
   .pair { display: grid; gap: .6rem; }
@@ -618,6 +630,15 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   @media (max-width: 760px) { .up, .colophon { grid-template-columns: minmax(0, 1fr); } }
 
 
+  /* on a wide screen the controls are one bar: the time slider runs right across, and under it the time buttons, which way to face, and place and display */
+  @media (min-width: 981px) {
+    .sky-bar { grid-template-columns: auto minmax(0, 1fr) auto; grid-template-areas: 'time slide slide' 'look look more'; row-gap: .6rem; padding-top: 2.6rem; }
+    .bar-when { display: contents; }
+    .bar-when input { grid-area: slide; align-self: center; }
+    .bar-row { grid-area: time; flex-wrap: nowrap; }
+    .bar-look { grid-area: look; flex-wrap: nowrap; }
+    .bar-more { grid-area: more; flex-wrap: nowrap; justify-content: end; }
+  }
   @media (max-width: 980px) {
     .sky-bar { grid-template-columns: minmax(0, 1fr) auto; padding-bottom: .5rem; }
     .bar-when { grid-column: 1 / -1; }

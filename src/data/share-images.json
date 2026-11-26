@@ -5,6 +5,12 @@
   "from": "/img/earth-blue-marble.jpg",
   "mode": "whole"
  },
+ "/jupiter": {
+  "src": "/img/share/jupiter.jpg",
+  "alt": "A globe banded in cream, orange and rust, with the round Great Red Spot below the middle.",
+  "from": "/img/bodies/jupiter.jpg",
+  "mode": "whole"
+ },
  "/learn/active-galaxies-and-quasars": {
   "src": "/img/share/learn-active-galaxies-and-quasars.jpg",
   "alt": "A glowing orange ring round a dark centre",
@@ -533,6 +539,12 @@
   "from": "/img/learn/star-trails-paranal-eso.jpg",
   "mode": "fill"
  },
+ "/mars": {
+  "src": "/img/share/mars.jpg",
+  "alt": "A rust-orange globe with dark markings, a white polar cap and a long canyon across its middle.",
+  "from": "/img/bodies/mars.jpg",
+  "mode": "whole"
+ },
  "/mercury": {
   "src": "/img/share/mercury.jpg",
   "alt": "Mercury's north polar region seen from above, grey and cratered, with shadowed crater floors shaded red.",
@@ -778,5 +790,3245 @@
   "alt": "A grey, battered, not quite round world covered in craters, with long grooves running round its middle.",
   "from": "/img/learn/vesta-dawn-2011.jpg",
   "mode": "whole"
+ },
+ "/stars/sirius": {
+  "src": "/img/share/stars/sirius.jpg",
+  "alt": "Sirius, drawn as a glow in its own colour, 8.6 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/canopus": {
+  "src": "/img/share/stars/canopus.jpg",
+  "alt": "Canopus, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/arcturus": {
+  "src": "/img/share/stars/arcturus.jpg",
+  "alt": "Arcturus, drawn as a glow in its own colour, 37 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rigil-kentaurus": {
+  "src": "/img/share/stars/rigil-kentaurus.jpg",
+  "alt": "Rigil Kentaurus, drawn as a glow in its own colour, 4.3 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/vega": {
+  "src": "/img/share/stars/vega.jpg",
+  "alt": "Vega, drawn as a glow in its own colour, 25 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/capella": {
+  "src": "/img/share/stars/capella.jpg",
+  "alt": "Capella, drawn as a glow in its own colour, 43 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rigel": {
+  "src": "/img/share/stars/rigel.jpg",
+  "alt": "Rigel, drawn as a glow in its own colour, 860 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/procyon": {
+  "src": "/img/share/stars/procyon.jpg",
+  "alt": "Procyon, drawn as a glow in its own colour, 11 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/betelgeuse": {
+  "src": "/img/share/stars/betelgeuse.jpg",
+  "alt": "Betelgeuse, drawn as a glow in its own colour, 550 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/achernar": {
+  "src": "/img/share/stars/achernar.jpg",
+  "alt": "Achernar, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hadar": {
+  "src": "/img/share/stars/hadar.jpg",
+  "alt": "Hadar, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/altair": {
+  "src": "/img/share/stars/altair.jpg",
+  "alt": "Altair, drawn as a glow in its own colour, 17 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/acrux": {
+  "src": "/img/share/stars/acrux.jpg",
+  "alt": "Acrux, drawn as a glow in its own colour, 320 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aldebaran": {
+  "src": "/img/share/stars/aldebaran.jpg",
+  "alt": "Aldebaran, drawn as a glow in its own colour, 67 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/spica": {
+  "src": "/img/share/stars/spica.jpg",
+  "alt": "Spica, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/antares": {
+  "src": "/img/share/stars/antares.jpg",
+  "alt": "Antares, drawn as a glow in its own colour, 550 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pollux": {
+  "src": "/img/share/stars/pollux.jpg",
+  "alt": "Pollux, drawn as a glow in its own colour, 34 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fomalhaut": {
+  "src": "/img/share/stars/fomalhaut.jpg",
+  "alt": "Fomalhaut, drawn as a glow in its own colour, 25 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/deneb": {
+  "src": "/img/share/stars/deneb.jpg",
+  "alt": "Deneb, drawn as a glow in its own colour, 1,400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mimosa": {
+  "src": "/img/share/stars/mimosa.jpg",
+  "alt": "Mimosa, drawn as a glow in its own colour, 280 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/toliman": {
+  "src": "/img/share/stars/toliman.jpg",
+  "alt": "Toliman, drawn as a glow in its own colour, 4.3 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/regulus": {
+  "src": "/img/share/stars/regulus.jpg",
+  "alt": "Regulus, drawn as a glow in its own colour, 79 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/adhara": {
+  "src": "/img/share/stars/adhara.jpg",
+  "alt": "Adhara, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/castor": {
+  "src": "/img/share/stars/castor.jpg",
+  "alt": "Castor, drawn as a glow in its own colour, 51 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gacrux": {
+  "src": "/img/share/stars/gacrux.jpg",
+  "alt": "Gacrux, drawn as a glow in its own colour, 89 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shaula": {
+  "src": "/img/share/stars/shaula.jpg",
+  "alt": "Shaula, drawn as a glow in its own colour, 570 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bellatrix": {
+  "src": "/img/share/stars/bellatrix.jpg",
+  "alt": "Bellatrix, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/elnath": {
+  "src": "/img/share/stars/elnath.jpg",
+  "alt": "Elnath, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/miaplacidus": {
+  "src": "/img/share/stars/miaplacidus.jpg",
+  "alt": "Miaplacidus, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alnilam": {
+  "src": "/img/share/stars/alnilam.jpg",
+  "alt": "Alnilam, drawn as a glow in its own colour, 2,000 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alnair": {
+  "src": "/img/share/stars/alnair.jpg",
+  "alt": "Alnair, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alnitak": {
+  "src": "/img/share/stars/alnitak.jpg",
+  "alt": "Alnitak, drawn as a glow in its own colour, 740 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alioth": {
+  "src": "/img/share/stars/alioth.jpg",
+  "alt": "Alioth, drawn as a glow in its own colour, 83 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mirfak": {
+  "src": "/img/share/stars/mirfak.jpg",
+  "alt": "Mirfak, drawn as a glow in its own colour, 510 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaus-australis": {
+  "src": "/img/share/stars/kaus-australis.jpg",
+  "alt": "Kaus Australis, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dubhe": {
+  "src": "/img/share/stars/dubhe.jpg",
+  "alt": "Dubhe, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/wezen": {
+  "src": "/img/share/stars/wezen.jpg",
+  "alt": "Wezen, drawn as a glow in its own colour, 1,600 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alkaid": {
+  "src": "/img/share/stars/alkaid.jpg",
+  "alt": "Alkaid, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sargas": {
+  "src": "/img/share/stars/sargas.jpg",
+  "alt": "Sargas, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/avior": {
+  "src": "/img/share/stars/avior.jpg",
+  "alt": "Avior, drawn as a glow in its own colour, 610 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/menkalinan": {
+  "src": "/img/share/stars/menkalinan.jpg",
+  "alt": "Menkalinan, drawn as a glow in its own colour, 81 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/atria": {
+  "src": "/img/share/stars/atria.jpg",
+  "alt": "Atria, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alhena": {
+  "src": "/img/share/stars/alhena.jpg",
+  "alt": "Alhena, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alsephina": {
+  "src": "/img/share/stars/alsephina.jpg",
+  "alt": "Alsephina, drawn as a glow in its own colour, 81 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/peacock": {
+  "src": "/img/share/stars/peacock.jpg",
+  "alt": "Peacock, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/polaris": {
+  "src": "/img/share/stars/polaris.jpg",
+  "alt": "Polaris, drawn as a glow in its own colour, 430 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mirzam": {
+  "src": "/img/share/stars/mirzam.jpg",
+  "alt": "Mirzam, drawn as a glow in its own colour, 490 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alphard": {
+  "src": "/img/share/stars/alphard.jpg",
+  "alt": "Alphard, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/algieba": {
+  "src": "/img/share/stars/algieba.jpg",
+  "alt": "Algieba, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hamal": {
+  "src": "/img/share/stars/hamal.jpg",
+  "alt": "Hamal, drawn as a glow in its own colour, 66 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/diphda": {
+  "src": "/img/share/stars/diphda.jpg",
+  "alt": "Diphda, drawn as a glow in its own colour, 96 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nunki": {
+  "src": "/img/share/stars/nunki.jpg",
+  "alt": "Nunki, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/menkent": {
+  "src": "/img/share/stars/menkent.jpg",
+  "alt": "Menkent, drawn as a glow in its own colour, 59 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/saiph": {
+  "src": "/img/share/stars/saiph.jpg",
+  "alt": "Saiph, drawn as a glow in its own colour, 650 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mirach": {
+  "src": "/img/share/stars/mirach.jpg",
+  "alt": "Mirach, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alpheratz": {
+  "src": "/img/share/stars/alpheratz.jpg",
+  "alt": "Alpheratz, drawn as a glow in its own colour, 97 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kochab": {
+  "src": "/img/share/stars/kochab.jpg",
+  "alt": "Kochab, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tiaki": {
+  "src": "/img/share/stars/tiaki.jpg",
+  "alt": "Tiaki, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rasalhague": {
+  "src": "/img/share/stars/rasalhague.jpg",
+  "alt": "Rasalhague, drawn as a glow in its own colour, 49 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/algol": {
+  "src": "/img/share/stars/algol.jpg",
+  "alt": "Algol, drawn as a glow in its own colour, 90 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/almach": {
+  "src": "/img/share/stars/almach.jpg",
+  "alt": "Almach, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/denebola": {
+  "src": "/img/share/stars/denebola.jpg",
+  "alt": "Denebola, drawn as a glow in its own colour, 36 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tiansi": {
+  "src": "/img/share/stars/tiansi.jpg",
+  "alt": "Tiansi, drawn as a glow in its own colour, 550 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aspidiske": {
+  "src": "/img/share/stars/aspidiske.jpg",
+  "alt": "Aspidiske, drawn as a glow in its own colour, 770 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/naos": {
+  "src": "/img/share/stars/naos.jpg",
+  "alt": "Naos, drawn as a glow in its own colour, 1,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alphecca": {
+  "src": "/img/share/stars/alphecca.jpg",
+  "alt": "Alphecca, drawn as a glow in its own colour, 75 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mizar": {
+  "src": "/img/share/stars/mizar.jpg",
+  "alt": "Mizar, drawn as a glow in its own colour, 86 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/suhail": {
+  "src": "/img/share/stars/suhail.jpg",
+  "alt": "Suhail, drawn as a glow in its own colour, 540 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sadr": {
+  "src": "/img/share/stars/sadr.jpg",
+  "alt": "Sadr, drawn as a glow in its own colour, 1,800 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/schedar": {
+  "src": "/img/share/stars/schedar.jpg",
+  "alt": "Schedar, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/eltanin": {
+  "src": "/img/share/stars/eltanin.jpg",
+  "alt": "Eltanin, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mintaka": {
+  "src": "/img/share/stars/mintaka.jpg",
+  "alt": "Mintaka, drawn as a glow in its own colour, 690 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/caph": {
+  "src": "/img/share/stars/caph.jpg",
+  "alt": "Caph, drawn as a glow in its own colour, 55 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/larawag": {
+  "src": "/img/share/stars/larawag.jpg",
+  "alt": "Larawag, drawn as a glow in its own colour, 64 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dschubba": {
+  "src": "/img/share/stars/dschubba.jpg",
+  "alt": "Dschubba, drawn as a glow in its own colour, 490 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/uridim": {
+  "src": "/img/share/stars/uridim.jpg",
+  "alt": "Uridim, drawn as a glow in its own colour, 460 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/merak": {
+  "src": "/img/share/stars/merak.jpg",
+  "alt": "Merak, drawn as a glow in its own colour, 80 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/izar": {
+  "src": "/img/share/stars/izar.jpg",
+  "alt": "Izar, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/enif": {
+  "src": "/img/share/stars/enif.jpg",
+  "alt": "Enif, drawn as a glow in its own colour, 690 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ankaa": {
+  "src": "/img/share/stars/ankaa.jpg",
+  "alt": "Ankaa, drawn as a glow in its own colour, 85 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/phecda": {
+  "src": "/img/share/stars/phecda.jpg",
+  "alt": "Phecda, drawn as a glow in its own colour, 83 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sabik": {
+  "src": "/img/share/stars/sabik.jpg",
+  "alt": "Sabik, drawn as a glow in its own colour, 88 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/scheat": {
+  "src": "/img/share/stars/scheat.jpg",
+  "alt": "Scheat, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aludra": {
+  "src": "/img/share/stars/aludra.jpg",
+  "alt": "Aludra, drawn as a glow in its own colour, 2,000 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alderamin": {
+  "src": "/img/share/stars/alderamin.jpg",
+  "alt": "Alderamin, drawn as a glow in its own colour, 49 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/markeb": {
+  "src": "/img/share/stars/markeb.jpg",
+  "alt": "Markeb, drawn as a glow in its own colour, 570 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aljanah": {
+  "src": "/img/share/stars/aljanah.jpg",
+  "alt": "Aljanah, drawn as a glow in its own colour, 73 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/markab": {
+  "src": "/img/share/stars/markab.jpg",
+  "alt": "Markab, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/menkar": {
+  "src": "/img/share/stars/menkar.jpg",
+  "alt": "Menkar, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/leepwal": {
+  "src": "/img/share/stars/leepwal.jpg",
+  "alt": "Leepwal, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/acrab": {
+  "src": "/img/share/stars/acrab.jpg",
+  "alt": "Acrab, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zosma": {
+  "src": "/img/share/stars/zosma.jpg",
+  "alt": "Zosma, drawn as a glow in its own colour, 58 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gienah": {
+  "src": "/img/share/stars/gienah.jpg",
+  "alt": "Gienah, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/arneb": {
+  "src": "/img/share/stars/arneb.jpg",
+  "alt": "Arneb, drawn as a glow in its own colour, 2,200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ascella": {
+  "src": "/img/share/stars/ascella.jpg",
+  "alt": "Ascella, drawn as a glow in its own colour, 88 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zubeneschamali": {
+  "src": "/img/share/stars/zubeneschamali.jpg",
+  "alt": "Zubeneschamali, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/unukalhai": {
+  "src": "/img/share/stars/unukalhai.jpg",
+  "alt": "Unukalhai, drawn as a glow in its own colour, 74 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sheratan": {
+  "src": "/img/share/stars/sheratan.jpg",
+  "alt": "Sheratan, drawn as a glow in its own colour, 59 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mahasim": {
+  "src": "/img/share/stars/mahasim.jpg",
+  "alt": "Mahasim, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kraz": {
+  "src": "/img/share/stars/kraz.jpg",
+  "alt": "Kraz, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/phact": {
+  "src": "/img/share/stars/phact.jpg",
+  "alt": "Phact, drawn as a glow in its own colour, 260 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ruchbah": {
+  "src": "/img/share/stars/ruchbah.jpg",
+  "alt": "Ruchbah, drawn as a glow in its own colour, 99 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/muphrid": {
+  "src": "/img/share/stars/muphrid.jpg",
+  "alt": "Muphrid, drawn as a glow in its own colour, 37 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hassaleh": {
+  "src": "/img/share/stars/hassaleh.jpg",
+  "alt": "Hassaleh, drawn as a glow in its own colour, 490 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lesath": {
+  "src": "/img/share/stars/lesath.jpg",
+  "alt": "Lesath, drawn as a glow in its own colour, 580 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaus-media": {
+  "src": "/img/share/stars/kaus-media.jpg",
+  "alt": "Kaus Media, drawn as a glow in its own colour, 350 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tarazed": {
+  "src": "/img/share/stars/tarazed.jpg",
+  "alt": "Tarazed, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/athebyne": {
+  "src": "/img/share/stars/athebyne.jpg",
+  "alt": "Athebyne, drawn as a glow in its own colour, 92 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/yed-prior": {
+  "src": "/img/share/stars/yed-prior.jpg",
+  "alt": "Yed Prior, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/porrima": {
+  "src": "/img/share/stars/porrima.jpg",
+  "alt": "Porrima, drawn as a glow in its own colour, 38 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kulou": {
+  "src": "/img/share/stars/kulou.jpg",
+  "alt": "Kulou, drawn as a glow in its own colour, 59 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zubenelgenubi": {
+  "src": "/img/share/stars/zubenelgenubi.jpg",
+  "alt": "Zubenelgenubi, drawn as a glow in its own colour, 76 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hatysa": {
+  "src": "/img/share/stars/hatysa.jpg",
+  "alt": "Hatysa, drawn as a glow in its own colour, 2,300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cebalrai": {
+  "src": "/img/share/stars/cebalrai.jpg",
+  "alt": "Cebalrai, drawn as a glow in its own colour, 82 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cursa": {
+  "src": "/img/share/stars/cursa.jpg",
+  "alt": "Cursa, drawn as a glow in its own colour, 89 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rasalgethi": {
+  "src": "/img/share/stars/rasalgethi.jpg",
+  "alt": "Rasalgethi, drawn as a glow in its own colour, 360 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kornephoros": {
+  "src": "/img/share/stars/kornephoros.jpg",
+  "alt": "Kornephoros, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rastaban": {
+  "src": "/img/share/stars/rastaban.jpg",
+  "alt": "Rastaban, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/imai": {
+  "src": "/img/share/stars/imai.jpg",
+  "alt": "Imai, drawn as a glow in its own colour, 350 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tianji": {
+  "src": "/img/share/stars/tianji.jpg",
+  "alt": "Tianji, drawn as a glow in its own colour, 35 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nihal": {
+  "src": "/img/share/stars/nihal.jpg",
+  "alt": "Nihal, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/paikauhale": {
+  "src": "/img/share/stars/paikauhale.jpg",
+  "alt": "Paikauhale, drawn as a glow in its own colour, 470 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaus-borealis": {
+  "src": "/img/share/stars/kaus-borealis.jpg",
+  "alt": "Kaus Borealis, drawn as a glow in its own colour, 78 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/algenib": {
+  "src": "/img/share/stars/algenib.jpg",
+  "alt": "Algenib, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tureis": {
+  "src": "/img/share/stars/tureis.jpg",
+  "alt": "Tureis, drawn as a glow in its own colour, 64 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/deneb-algedi": {
+  "src": "/img/share/stars/deneb-algedi.jpg",
+  "alt": "Deneb Algedi, drawn as a glow in its own colour, 39 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/vindemiatrix": {
+  "src": "/img/share/stars/vindemiatrix.jpg",
+  "alt": "Vindemiatrix, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/castor-b": {
+  "src": "/img/share/stars/castor-b.jpg",
+  "alt": "Castor B, drawn as a glow in its own colour, 52 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alcyone": {
+  "src": "/img/share/stars/alcyone.jpg",
+  "alt": "Alcyone, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fawaris": {
+  "src": "/img/share/stars/fawaris.jpg",
+  "alt": "Fawaris, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tejat": {
+  "src": "/img/share/stars/tejat.jpg",
+  "alt": "Tejat, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lang-exster": {
+  "src": "/img/share/stars/lang-exster.jpg",
+  "alt": "Lang-Exster, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/acamar": {
+  "src": "/img/share/stars/acamar.jpg",
+  "alt": "Acamar, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/albaldah": {
+  "src": "/img/share/stars/albaldah.jpg",
+  "alt": "Albaldah, drawn as a glow in its own colour, 510 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cor-caroli": {
+  "src": "/img/share/stars/cor-caroli.jpg",
+  "alt": "Cor Caroli, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fang": {
+  "src": "/img/share/stars/fang.jpg",
+  "alt": "Fang, drawn as a glow in its own colour, 590 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gomeisa": {
+  "src": "/img/share/stars/gomeisa.jpg",
+  "alt": "Gomeisa, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alniyat": {
+  "src": "/img/share/stars/alniyat.jpg",
+  "alt": "Alniyat, drawn as a glow in its own colour, 700 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aldu": {
+  "src": "/img/share/stars/aldu.jpg",
+  "alt": "Aldu, drawn as a glow in its own colour, 640 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sadalsuud": {
+  "src": "/img/share/stars/sadalsuud.jpg",
+  "alt": "Sadalsuud, drawn as a glow in its own colour, 540 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/matar": {
+  "src": "/img/share/stars/matar.jpg",
+  "alt": "Matar, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/algorab": {
+  "src": "/img/share/stars/algorab.jpg",
+  "alt": "Algorab, drawn as a glow in its own colour, 87 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sadalmelik": {
+  "src": "/img/share/stars/sadalmelik.jpg",
+  "alt": "Sadalmelik, drawn as a glow in its own colour, 520 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ras-elased-australis": {
+  "src": "/img/share/stars/ras-elased-australis.jpg",
+  "alt": "Ras Elased Australis, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zaurak": {
+  "src": "/img/share/stars/zaurak.jpg",
+  "alt": "Zaurak, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tianguan": {
+  "src": "/img/share/stars/tianguan.jpg",
+  "alt": "Tianguan, drawn as a glow in its own colour, 440 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alnasl": {
+  "src": "/img/share/stars/alnasl.jpg",
+  "alt": "Alnasl, drawn as a glow in its own colour, 97 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/naja": {
+  "src": "/img/share/stars/naja.jpg",
+  "alt": "Naja, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/okab": {
+  "src": "/img/share/stars/okab.jpg",
+  "alt": "Okab, drawn as a glow in its own colour, 83 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pherkad": {
+  "src": "/img/share/stars/pherkad.jpg",
+  "alt": "Pherkad, drawn as a glow in its own colour, 490 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/xamidimura": {
+  "src": "/img/share/stars/xamidimura.jpg",
+  "alt": "Xamidimura, drawn as a glow in its own colour, 500 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aldhanab": {
+  "src": "/img/share/stars/aldhanab.jpg",
+  "alt": "Aldhanab, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alaybasan": {
+  "src": "/img/share/stars/alaybasan.jpg",
+  "alt": "Alaybasan, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sarvvis": {
+  "src": "/img/share/stars/sarvvis.jpg",
+  "alt": "Sarvvis, drawn as a glow in its own colour, 520 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/furud": {
+  "src": "/img/share/stars/furud.jpg",
+  "alt": "Furud, drawn as a glow in its own colour, 360 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/almaaz": {
+  "src": "/img/share/stars/almaaz.jpg",
+  "alt": "Almaaz, drawn as a glow in its own colour, 2,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/seginus": {
+  "src": "/img/share/stars/seginus.jpg",
+  "alt": "Seginus, drawn as a glow in its own colour, 87 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/albireo": {
+  "src": "/img/share/stars/albireo.jpg",
+  "alt": "Albireo, drawn as a glow in its own colour, 430 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dabih": {
+  "src": "/img/share/stars/dabih.jpg",
+  "alt": "Dabih, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tania-australis": {
+  "src": "/img/share/stars/tania-australis.jpg",
+  "alt": "Tania Australis, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mebsuta": {
+  "src": "/img/share/stars/mebsuta.jpg",
+  "alt": "Mebsuta, drawn as a glow in its own colour, 840 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/altais": {
+  "src": "/img/share/stars/altais.jpg",
+  "alt": "Altais, drawn as a glow in its own colour, 97 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sarin": {
+  "src": "/img/share/stars/sarin.jpg",
+  "alt": "Sarin, drawn as a glow in its own colour, 75 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/wazn": {
+  "src": "/img/share/stars/wazn.jpg",
+  "alt": "Wazn, drawn as a glow in its own colour, 87 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/talitha": {
+  "src": "/img/share/stars/talitha.jpg",
+  "alt": "Talitha, drawn as a glow in its own colour, 47 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nuchuang": {
+  "src": "/img/share/stars/nuchuang.jpg",
+  "alt": "Nuchuang, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pipit": {
+  "src": "/img/share/stars/pipit.jpg",
+  "alt": "Pipit, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aldhibah": {
+  "src": "/img/share/stars/aldhibah.jpg",
+  "alt": "Aldhibah, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/xami": {
+  "src": "/img/share/stars/xami.jpg",
+  "alt": "Xami, drawn as a glow in its own colour, 54 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/haedus": {
+  "src": "/img/share/stars/haedus.jpg",
+  "alt": "Haedus, drawn as a glow in its own colour, 240 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fuyue": {
+  "src": "/img/share/stars/fuyue.jpg",
+  "alt": "Fuyue, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tabit": {
+  "src": "/img/share/stars/tabit.jpg",
+  "alt": "Tabit, drawn as a glow in its own colour, 26 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ping": {
+  "src": "/img/share/stars/ping.jpg",
+  "alt": "Ping, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/errai": {
+  "src": "/img/share/stars/errai.jpg",
+  "alt": "Errai, drawn as a glow in its own colour, 46 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/yed-posterior": {
+  "src": "/img/share/stars/yed-posterior.jpg",
+  "alt": "Yed Posterior, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alfirk": {
+  "src": "/img/share/stars/alfirk.jpg",
+  "alt": "Alfirk, drawn as a glow in its own colour, 690 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/antinous": {
+  "src": "/img/share/stars/antinous.jpg",
+  "alt": "Antinous, drawn as a glow in its own colour, 290 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/brachium": {
+  "src": "/img/share/stars/brachium.jpg",
+  "alt": "Brachium, drawn as a glow in its own colour, 290 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sulafat": {
+  "src": "/img/share/stars/sulafat.jpg",
+  "alt": "Sulafat, drawn as a glow in its own colour, 620 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/skat": {
+  "src": "/img/share/stars/skat.jpg",
+  "alt": "Skat, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/edasich": {
+  "src": "/img/share/stars/edasich.jpg",
+  "alt": "Edasich, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bade": {
+  "src": "/img/share/stars/bade.jpg",
+  "alt": "Bade, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/propus": {
+  "src": "/img/share/stars/propus.jpg",
+  "alt": "Propus, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/megrez": {
+  "src": "/img/share/stars/megrez.jpg",
+  "alt": "Megrez, drawn as a glow in its own colour, 81 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/chertan": {
+  "src": "/img/share/stars/chertan.jpg",
+  "alt": "Chertan, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rhombus": {
+  "src": "/img/share/stars/rhombus.jpg",
+  "alt": "Rhombus, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/azmidi": {
+  "src": "/img/share/stars/azmidi.jpg",
+  "alt": "Azmidi, drawn as a glow in its own colour, 1,200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alzirr": {
+  "src": "/img/share/stars/alzirr.jpg",
+  "alt": "Alzirr, drawn as a glow in its own colour, 59 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/segin": {
+  "src": "/img/share/stars/segin.jpg",
+  "alt": "Segin, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/muscida": {
+  "src": "/img/share/stars/muscida.jpg",
+  "alt": "Muscida, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/heze": {
+  "src": "/img/share/stars/heze.jpg",
+  "alt": "Heze, drawn as a glow in its own colour, 74 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ashlesha": {
+  "src": "/img/share/stars/ashlesha.jpg",
+  "alt": "Ashlesha, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/meissa": {
+  "src": "/img/share/stars/meissa.jpg",
+  "alt": "Meissa, drawn as a glow in its own colour, 1,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/minelauva": {
+  "src": "/img/share/stars/minelauva.jpg",
+  "alt": "Minelauva, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/chamukuy": {
+  "src": "/img/share/stars/chamukuy.jpg",
+  "alt": "Chamukuy, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bibing": {
+  "src": "/img/share/stars/bibing.jpg",
+  "alt": "Bibing, drawn as a glow in its own colour, 480 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/homam": {
+  "src": "/img/share/stars/homam.jpg",
+  "alt": "Homam, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/heng": {
+  "src": "/img/share/stars/heng.jpg",
+  "alt": "Heng, drawn as a glow in its own colour, 440 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mothallah": {
+  "src": "/img/share/stars/mothallah.jpg",
+  "alt": "Mothallah, drawn as a glow in its own colour, 63 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/adhafera": {
+  "src": "/img/share/stars/adhafera.jpg",
+  "alt": "Adhafera, drawn as a glow in its own colour, 270 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tania-borealis": {
+  "src": "/img/share/stars/tania-borealis.jpg",
+  "alt": "Tania Borealis, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/achird": {
+  "src": "/img/share/stars/achird.jpg",
+  "alt": "Achird, drawn as a glow in its own colour, 19 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/qigong": {
+  "src": "/img/share/stars/qigong.jpg",
+  "alt": "Qigong, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaffaljidhma": {
+  "src": "/img/share/stars/kaffaljidhma.jpg",
+  "alt": "Kaffaljidhma, drawn as a glow in its own colour, 80 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nganurganity": {
+  "src": "/img/share/stars/nganurganity.jpg",
+  "alt": "Nganurganity, drawn as a glow in its own colour, 1,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alula-borealis": {
+  "src": "/img/share/stars/alula-borealis.jpg",
+  "alt": "Alula Borealis, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nekkar": {
+  "src": "/img/share/stars/nekkar.jpg",
+  "alt": "Nekkar, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/wasat": {
+  "src": "/img/share/stars/wasat.jpg",
+  "alt": "Wasat, drawn as a glow in its own colour, 60 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sadalbari": {
+  "src": "/img/share/stars/sadalbari.jpg",
+  "alt": "Sadalbari, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/biham": {
+  "src": "/img/share/stars/biham.jpg",
+  "alt": "Biham, drawn as a glow in its own colour, 92 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/subra": {
+  "src": "/img/share/stars/subra.jpg",
+  "alt": "Subra, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sheliak": {
+  "src": "/img/share/stars/sheliak.jpg",
+  "alt": "Sheliak, drawn as a glow in its own colour, 960 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rana": {
+  "src": "/img/share/stars/rana.jpg",
+  "alt": "Rana, drawn as a glow in its own colour, 29 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tarf": {
+  "src": "/img/share/stars/tarf.jpg",
+  "alt": "Tarf, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ain": {
+  "src": "/img/share/stars/ain.jpg",
+  "alt": "Ain, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/darlugal": {
+  "src": "/img/share/stars/darlugal.jpg",
+  "alt": "Darlugal, drawn as a glow in its own colour, 70 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pipirima": {
+  "src": "/img/share/stars/pipirima.jpg",
+  "alt": "Pipirima, drawn as a glow in its own colour, 470 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alkaphrah": {
+  "src": "/img/share/stars/alkaphrah.jpg",
+  "alt": "Alkaphrah, drawn as a glow in its own colour, 360 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kalasungsang": {
+  "src": "/img/share/stars/kalasungsang.jpg",
+  "alt": "Kalasungsang, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/algedi": {
+  "src": "/img/share/stars/algedi.jpg",
+  "alt": "Algedi, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nembus": {
+  "src": "/img/share/stars/nembus.jpg",
+  "alt": "Nembus, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zavijava": {
+  "src": "/img/share/stars/zavijava.jpg",
+  "alt": "Zavijava, drawn as a glow in its own colour, 36 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ginan": {
+  "src": "/img/share/stars/ginan.jpg",
+  "alt": "Ginan, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bharani": {
+  "src": "/img/share/stars/bharani.jpg",
+  "alt": "Bharani, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alfarasalkamil": {
+  "src": "/img/share/stars/alfarasalkamil.jpg",
+  "alt": "Alfarasalkamil, drawn as a glow in its own colour, 690 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alpherg": {
+  "src": "/img/share/stars/alpherg.jpg",
+  "alt": "Alpherg, drawn as a glow in its own colour, 350 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/atlas": {
+  "src": "/img/share/stars/atlas.jpg",
+  "alt": "Atlas, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rotanev": {
+  "src": "/img/share/stars/rotanev.jpg",
+  "alt": "Rotanev, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zhou": {
+  "src": "/img/share/stars/zhou.jpg",
+  "alt": "Zhou, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/prima-hyadum": {
+  "src": "/img/share/stars/prima-hyadum.jpg",
+  "alt": "Prima Hyadum, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nusakan": {
+  "src": "/img/share/stars/nusakan.jpg",
+  "alt": "Nusakan, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/thuban": {
+  "src": "/img/share/stars/thuban.jpg",
+  "alt": "Thuban, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/safina": {
+  "src": "/img/share/stars/safina.jpg",
+  "alt": "Safina, drawn as a glow in its own colour, 270 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/saclateni": {
+  "src": "/img/share/stars/saclateni.jpg",
+  "alt": "Saclateni, drawn as a glow in its own colour, 790 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/taiyangshou": {
+  "src": "/img/share/stars/taiyangshou.jpg",
+  "alt": "Taiyangshou, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nashira": {
+  "src": "/img/share/stars/nashira.jpg",
+  "alt": "Nashira, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fulu": {
+  "src": "/img/share/stars/fulu.jpg",
+  "alt": "Fulu, drawn as a glow in its own colour, 590 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alshain": {
+  "src": "/img/share/stars/alshain.jpg",
+  "alt": "Alshain, drawn as a glow in its own colour, 45 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ran": {
+  "src": "/img/share/stars/ran.jpg",
+  "alt": "Ran, drawn as a glow in its own colour, 10 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bagu": {
+  "src": "/img/share/stars/bagu.jpg",
+  "alt": "Bagu, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/electra": {
+  "src": "/img/share/stars/electra.jpg",
+  "alt": "Electra, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/grumium": {
+  "src": "/img/share/stars/grumium.jpg",
+  "alt": "Grumium, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shatabhisha": {
+  "src": "/img/share/stars/shatabhisha.jpg",
+  "alt": "Shatabhisha, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/maenalus": {
+  "src": "/img/share/stars/maenalus.jpg",
+  "alt": "Maenalus, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/baten-kaitos": {
+  "src": "/img/share/stars/baten-kaitos.jpg",
+  "alt": "Baten Kaitos, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bake-eo": {
+  "src": "/img/share/stars/bake-eo.jpg",
+  "alt": "Bake-eo, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/stellio": {
+  "src": "/img/share/stars/stellio.jpg",
+  "alt": "Stellio, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/secunda-hyadum": {
+  "src": "/img/share/stars/secunda-hyadum.jpg",
+  "alt": "Secunda Hyadum, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/miram": {
+  "src": "/img/share/stars/miram.jpg",
+  "alt": "Miram, drawn as a glow in its own colour, 880 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sualocin": {
+  "src": "/img/share/stars/sualocin.jpg",
+  "alt": "Sualocin, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/albali": {
+  "src": "/img/share/stars/albali.jpg",
+  "alt": "Albali, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/misam": {
+  "src": "/img/share/stars/misam.jpg",
+  "alt": "Misam, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/praecipua": {
+  "src": "/img/share/stars/praecipua.jpg",
+  "alt": "Praecipua, drawn as a glow in its own colour, 95 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dalim": {
+  "src": "/img/share/stars/dalim.jpg",
+  "alt": "Dalim, drawn as a glow in its own colour, 46 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/udkadua": {
+  "src": "/img/share/stars/udkadua.jpg",
+  "alt": "Udkadua, drawn as a glow in its own colour, 86 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/baltesha": {
+  "src": "/img/share/stars/baltesha.jpg",
+  "alt": "Baltesha, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/theemin": {
+  "src": "/img/share/stars/theemin.jpg",
+  "alt": "Theemin, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/marfik": {
+  "src": "/img/share/stars/marfik.jpg",
+  "alt": "Marfik, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alrescha": {
+  "src": "/img/share/stars/alrescha.jpg",
+  "alt": "Alrescha, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/giausar": {
+  "src": "/img/share/stars/giausar.jpg",
+  "alt": "Giausar, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/paradys": {
+  "src": "/img/share/stars/paradys.jpg",
+  "alt": "Paradys, drawn as a glow in its own colour, 450 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/atik": {
+  "src": "/img/share/stars/atik.jpg",
+  "alt": "Atik, drawn as a glow in its own colour, 1,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tusizuo": {
+  "src": "/img/share/stars/tusizuo.jpg",
+  "alt": "Tusizuo, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sadachbia": {
+  "src": "/img/share/stars/sadachbia.jpg",
+  "alt": "Sadachbia, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sceptrum": {
+  "src": "/img/share/stars/sceptrum.jpg",
+  "alt": "Sceptrum, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/iklil": {
+  "src": "/img/share/stars/iklil.jpg",
+  "alt": "Iklil, drawn as a glow in its own colour, 470 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/maia": {
+  "src": "/img/share/stars/maia.jpg",
+  "alt": "Maia, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rasalas": {
+  "src": "/img/share/stars/rasalas.jpg",
+  "alt": "Rasalas, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mesarthim": {
+  "src": "/img/share/stars/mesarthim.jpg",
+  "alt": "Mesarthim, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/azha": {
+  "src": "/img/share/stars/azha.jpg",
+  "alt": "Azha, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zaniah": {
+  "src": "/img/share/stars/zaniah.jpg",
+  "alt": "Zaniah, drawn as a glow in its own colour, 270 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ukdah": {
+  "src": "/img/share/stars/ukdah.jpg",
+  "alt": "Ukdah, drawn as a glow in its own colour, 260 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zubenelhakrabi": {
+  "src": "/img/share/stars/zubenelhakrabi.jpg",
+  "alt": "Zubenelhakrabi, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/asuusiha": {
+  "src": "/img/share/stars/asuusiha.jpg",
+  "alt": "Asuusiha, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/khepdenreret": {
+  "src": "/img/share/stars/khepdenreret.jpg",
+  "alt": "Khepdenreret, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kitalpha": {
+  "src": "/img/share/stars/kitalpha.jpg",
+  "alt": "Kitalpha, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/wurren": {
+  "src": "/img/share/stars/wurren.jpg",
+  "alt": "Wurren, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/asellus-australis": {
+  "src": "/img/share/stars/asellus-australis.jpg",
+  "alt": "Asellus Australis, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gang": {
+  "src": "/img/share/stars/gang.jpg",
+  "alt": "Gang, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/arkab-prior": {
+  "src": "/img/share/stars/arkab-prior.jpg",
+  "alt": "Arkab Prior, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rukbat": {
+  "src": "/img/share/stars/rukbat.jpg",
+  "alt": "Rukbat, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/beemim": {
+  "src": "/img/share/stars/beemim.jpg",
+  "alt": "Beemim, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/menkib": {
+  "src": "/img/share/stars/menkib.jpg",
+  "alt": "Menkib, drawn as a glow in its own colour, 1,200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alcor": {
+  "src": "/img/share/stars/alcor.jpg",
+  "alt": "Alcor, drawn as a glow in its own colour, 82 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/jabbah": {
+  "src": "/img/share/stars/jabbah.jpg",
+  "alt": "Jabbah, drawn as a glow in its own colour, 470 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dajiangjunbei": {
+  "src": "/img/share/stars/dajiangjunbei.jpg",
+  "alt": "Dajiangjunbei, drawn as a glow in its own colour, 720 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mekbuda": {
+  "src": "/img/share/stars/mekbuda.jpg",
+  "alt": "Mekbuda, drawn as a glow in its own colour, 1,400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alchiba": {
+  "src": "/img/share/stars/alchiba.jpg",
+  "alt": "Alchiba, drawn as a glow in its own colour, 49 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/yuyu": {
+  "src": "/img/share/stars/yuyu.jpg",
+  "alt": "Yuyu, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/apdu": {
+  "src": "/img/share/stars/apdu.jpg",
+  "alt": "Apdu, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aldulfin": {
+  "src": "/img/share/stars/aldulfin.jpg",
+  "alt": "Aldulfin, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/beid": {
+  "src": "/img/share/stars/beid.jpg",
+  "alt": "Beid, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/syrma": {
+  "src": "/img/share/stars/syrma.jpg",
+  "alt": "Syrma, drawn as a glow in its own colour, 73 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/udang": {
+  "src": "/img/share/stars/udang.jpg",
+  "alt": "Udang, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alkes": {
+  "src": "/img/share/stars/alkes.jpg",
+  "alt": "Alkes, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shimu": {
+  "src": "/img/share/stars/shimu.jpg",
+  "alt": "Shimu, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gudja": {
+  "src": "/img/share/stars/gudja.jpg",
+  "alt": "Gudja, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/titawin": {
+  "src": "/img/share/stars/titawin.jpg",
+  "alt": "Titawin, drawn as a glow in its own colour, 44 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/muliphein": {
+  "src": "/img/share/stars/muliphein.jpg",
+  "alt": "Muliphein, drawn as a glow in its own colour, 440 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zhang": {
+  "src": "/img/share/stars/zhang.jpg",
+  "alt": "Zhang, drawn as a glow in its own colour, 260 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/meridiana": {
+  "src": "/img/share/stars/meridiana.jpg",
+  "alt": "Meridiana, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/merope": {
+  "src": "/img/share/stars/merope.jpg",
+  "alt": "Merope, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/guansuo": {
+  "src": "/img/share/stars/guansuo.jpg",
+  "alt": "Guansuo, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaffalmusalsala": {
+  "src": "/img/share/stars/kaffalmusalsala.jpg",
+  "alt": "Kaffalmusalsala, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ancha": {
+  "src": "/img/share/stars/ancha.jpg",
+  "alt": "Ancha, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kang": {
+  "src": "/img/share/stars/kang.jpg",
+  "alt": "Kang, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/xuange": {
+  "src": "/img/share/stars/xuange.jpg",
+  "alt": "Xuange, drawn as a glow in its own colour, 99 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/chara": {
+  "src": "/img/share/stars/chara.jpg",
+  "alt": "Chara, drawn as a glow in its own colour, 28 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tarandus": {
+  "src": "/img/share/stars/tarandus.jpg",
+  "alt": "Tarandus, drawn as a glow in its own colour, 280 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alsciaukat": {
+  "src": "/img/share/stars/alsciaukat.jpg",
+  "alt": "Alsciaukat, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/torcular": {
+  "src": "/img/share/stars/torcular.jpg",
+  "alt": "Torcular, drawn as a glow in its own colour, 280 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/junnanmen": {
+  "src": "/img/share/stars/junnanmen.jpg",
+  "alt": "Junnanmen, drawn as a glow in its own colour, 720 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bodu": {
+  "src": "/img/share/stars/bodu.jpg",
+  "alt": "Bodu, drawn as a glow in its own colour, 420 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kurhah": {
+  "src": "/img/share/stars/kurhah.jpg",
+  "alt": "Kurhah, drawn as a glow in its own colour, 97 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/acubens": {
+  "src": "/img/share/stars/acubens.jpg",
+  "alt": "Acubens, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/82-g-eri": {
+  "src": "/img/share/stars/82-g-eri.jpg",
+  "alt": "82 G. Eri, drawn as a glow in its own colour, 20 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gaja": {
+  "src": "/img/share/stars/gaja.jpg",
+  "alt": "Gaja, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/arkab-posterior": {
+  "src": "/img/share/stars/arkab-posterior.jpg",
+  "alt": "Arkab Posterior, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rasalnaqa": {
+  "src": "/img/share/stars/rasalnaqa.jpg",
+  "alt": "Rasalnaqa, drawn as a glow in its own colour, 500 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/taygeta": {
+  "src": "/img/share/stars/taygeta.jpg",
+  "alt": "Taygeta, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alkalurops": {
+  "src": "/img/share/stars/alkalurops.jpg",
+  "alt": "Alkalurops, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alterf": {
+  "src": "/img/share/stars/alterf.jpg",
+  "alt": "Alterf, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/diadem": {
+  "src": "/img/share/stars/diadem.jpg",
+  "alt": "Diadem, drawn as a glow in its own colour, 58 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alula-australis": {
+  "src": "/img/share/stars/alula-australis.jpg",
+  "alt": "Alula Australis, drawn as a glow in its own colour, 34 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/guniibuu": {
+  "src": "/img/share/stars/guniibuu.jpg",
+  "alt": "Guniibuu, drawn as a glow in its own colour, 19 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/yildun": {
+  "src": "/img/share/stars/yildun.jpg",
+  "alt": "Yildun, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/botein": {
+  "src": "/img/share/stars/botein.jpg",
+  "alt": "Botein, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ramus": {
+  "src": "/img/share/stars/ramus.jpg",
+  "alt": "Ramus, drawn as a glow in its own colour, 920 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sham": {
+  "src": "/img/share/stars/sham.jpg",
+  "alt": "Sham, drawn as a glow in its own colour, 430 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/custos": {
+  "src": "/img/share/stars/custos.jpg",
+  "alt": "Custos, drawn as a glow in its own colour, 800 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/yunu": {
+  "src": "/img/share/stars/yunu.jpg",
+  "alt": "Yunü, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kui": {
+  "src": "/img/share/stars/kui.jpg",
+  "alt": "Kui, drawn as a glow in its own colour, 230 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/maasym": {
+  "src": "/img/share/stars/maasym.jpg",
+  "alt": "Maasym, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/solitaire": {
+  "src": "/img/share/stars/solitaire.jpg",
+  "alt": "Solitaire, drawn as a glow in its own colour, 330 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alkarab": {
+  "src": "/img/share/stars/alkarab.jpg",
+  "alt": "Alkarab, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aladfar": {
+  "src": "/img/share/stars/aladfar.jpg",
+  "alt": "Aladfar, drawn as a glow in its own colour, 1,400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/keid": {
+  "src": "/img/share/stars/keid.jpg",
+  "alt": "Keid, drawn as a glow in its own colour, 16 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/anser": {
+  "src": "/img/share/stars/anser.jpg",
+  "alt": "Anser, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/minchir": {
+  "src": "/img/share/stars/minchir.jpg",
+  "alt": "Minchir, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/huagai": {
+  "src": "/img/share/stars/huagai.jpg",
+  "alt": "Huagai, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/genghe": {
+  "src": "/img/share/stars/genghe.jpg",
+  "alt": "Genghe, drawn as a glow in its own colour, 52 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fumalsamakah": {
+  "src": "/img/share/stars/fumalsamakah.jpg",
+  "alt": "Fumalsamakah, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tepiamenit": {
+  "src": "/img/share/stars/tepiamenit.jpg",
+  "alt": "Tepiamenit, drawn as a glow in its own colour, 51 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/khambalia": {
+  "src": "/img/share/stars/khambalia.jpg",
+  "alt": "Khambalia, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lilii-borea": {
+  "src": "/img/share/stars/lilii-borea.jpg",
+  "alt": "Lilii Borea, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/honores": {
+  "src": "/img/share/stars/honores.jpg",
+  "alt": "Honores, drawn as a glow in its own colour, 80 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hydor": {
+  "src": "/img/share/stars/hydor.jpg",
+  "alt": "Hydor, drawn as a glow in its own colour, 270 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tonglingxing": {
+  "src": "/img/share/stars/tonglingxing.jpg",
+  "alt": "Tonglingxing, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cujam": {
+  "src": "/img/share/stars/cujam.jpg",
+  "alt": "Cujam, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dziban": {
+  "src": "/img/share/stars/dziban.jpg",
+  "alt": "Dziban, drawn as a glow in its own colour, 74 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/salm": {
+  "src": "/img/share/stars/salm.jpg",
+  "alt": "Salm, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/matrchakre": {
+  "src": "/img/share/stars/matrchakre.jpg",
+  "alt": "Matrchakre, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shaowei": {
+  "src": "/img/share/stars/shaowei.jpg",
+  "alt": "Shaowei, drawn as a glow in its own colour, 360 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alya": {
+  "src": "/img/share/stars/alya.jpg",
+  "alt": "Alya, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/castula": {
+  "src": "/img/share/stars/castula.jpg",
+  "alt": "Castula, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/asellus-borealis": {
+  "src": "/img/share/stars/asellus-borealis.jpg",
+  "alt": "Asellus Borealis, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tegmine": {
+  "src": "/img/share/stars/tegmine.jpg",
+  "alt": "Tegmine, drawn as a glow in its own colour, 82 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alsafi": {
+  "src": "/img/share/stars/alsafi.jpg",
+  "alt": "Alsafi, drawn as a glow in its own colour, 19 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/apamvatsa": {
+  "src": "/img/share/stars/apamvatsa.jpg",
+  "alt": "Apamvatsa, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bunda": {
+  "src": "/img/share/stars/bunda.jpg",
+  "alt": "Bunda, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/azelfafage": {
+  "src": "/img/share/stars/azelfafage.jpg",
+  "alt": "Azelfafage, drawn as a glow in its own colour, 1,700 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/terebellum": {
+  "src": "/img/share/stars/terebellum.jpg",
+  "alt": "Terebellum, drawn as a glow in its own colour, 85 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/libertas": {
+  "src": "/img/share/stars/libertas.jpg",
+  "alt": "Libertas, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shangwei": {
+  "src": "/img/share/stars/shangwei.jpg",
+  "alt": "Shangwei, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/angetenar": {
+  "src": "/img/share/stars/angetenar.jpg",
+  "alt": "Angetenar, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alshat": {
+  "src": "/img/share/stars/alshat.jpg",
+  "alt": "Alshat, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alula-australis-b": {
+  "src": "/img/share/stars/alula-australis-b.jpg",
+  "alt": "Alula Australis B, drawn as a glow in its own colour, 34 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/zibal": {
+  "src": "/img/share/stars/zibal.jpg",
+  "alt": "Zibal, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/phyllon-kissinou": {
+  "src": "/img/share/stars/phyllon-kissinou.jpg",
+  "alt": "Phyllon Kissinou, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alrumh": {
+  "src": "/img/share/stars/alrumh.jpg",
+  "alt": "Alrumh, drawn as a glow in its own colour, 700 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/elgafar": {
+  "src": "/img/share/stars/elgafar.jpg",
+  "alt": "Elgafar, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/fafnir": {
+  "src": "/img/share/stars/fafnir.jpg",
+  "alt": "Fafnir, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/quadrans": {
+  "src": "/img/share/stars/quadrans.jpg",
+  "alt": "Quadrans, drawn as a glow in its own colour, 41 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/graffias": {
+  "src": "/img/share/stars/graffias.jpg",
+  "alt": "Graffias, drawn as a glow in its own colour, 79 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/deltoton": {
+  "src": "/img/share/stars/deltoton.jpg",
+  "alt": "Deltoton, drawn as a glow in its own colour, 35 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shangcheng": {
+  "src": "/img/share/stars/shangcheng.jpg",
+  "alt": "Shangcheng, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ainalrami": {
+  "src": "/img/share/stars/ainalrami.jpg",
+  "alt": "Ainalrami, drawn as a glow in its own colour, 1,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/adhil": {
+  "src": "/img/share/stars/adhil.jpg",
+  "alt": "Adhil, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/jishui": {
+  "src": "/img/share/stars/jishui.jpg",
+  "alt": "Jishui, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/acrab-b": {
+  "src": "/img/share/stars/acrab-b.jpg",
+  "alt": "Acrab B, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lumbung": {
+  "src": "/img/share/stars/lumbung.jpg",
+  "alt": "Lumbung, drawn as a glow in its own colour, 960 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/felis": {
+  "src": "/img/share/stars/felis.jpg",
+  "alt": "Felis, drawn as a glow in its own colour, 610 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/triminus": {
+  "src": "/img/share/stars/triminus.jpg",
+  "alt": "Triminus, drawn as a glow in its own colour, 290 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shakata": {
+  "src": "/img/share/stars/shakata.jpg",
+  "alt": "Shakata, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alya-b": {
+  "src": "/img/share/stars/alya-b.jpg",
+  "alt": "Alya B, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aurwandilsta": {
+  "src": "/img/share/stars/aurwandilsta.jpg",
+  "alt": "Aurwandilsta, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tengshe": {
+  "src": "/img/share/stars/tengshe.jpg",
+  "alt": "Tengshe, drawn as a glow in its own colour, 1,600 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/elkurud": {
+  "src": "/img/share/stars/elkurud.jpg",
+  "alt": "Elkurud, drawn as a glow in its own colour, 720 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/marsic": {
+  "src": "/img/share/stars/marsic.jpg",
+  "alt": "Marsic, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pherkad-minor": {
+  "src": "/img/share/stars/pherkad-minor.jpg",
+  "alt": "Pherkad Minor, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/chalawan": {
+  "src": "/img/share/stars/chalawan.jpg",
+  "alt": "Chalawan, drawn as a glow in its own colour, 46 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/situla": {
+  "src": "/img/share/stars/situla.jpg",
+  "alt": "Situla, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pleione": {
+  "src": "/img/share/stars/pleione.jpg",
+  "alt": "Pleione, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/guniibuu-b": {
+  "src": "/img/share/stars/guniibuu-b.jpg",
+  "alt": "Guniibuu B, drawn as a glow in its own colour, 20 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hoerikwaggo": {
+  "src": "/img/share/stars/hoerikwaggo.jpg",
+  "alt": "Hoerikwaggo, drawn as a glow in its own colour, 33 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lembu": {
+  "src": "/img/share/stars/lembu.jpg",
+  "alt": "Lembu, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/albireo-b": {
+  "src": "/img/share/stars/albireo-b.jpg",
+  "alt": "Albireo B, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cervantes": {
+  "src": "/img/share/stars/cervantes.jpg",
+  "alt": "Cervantes, drawn as a glow in its own colour, 51 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nahn": {
+  "src": "/img/share/stars/nahn.jpg",
+  "alt": "Nahn, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/revati": {
+  "src": "/img/share/stars/revati.jpg",
+  "alt": "Revati, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/veritate": {
+  "src": "/img/share/stars/veritate.jpg",
+  "alt": "Veritate, drawn as a glow in its own colour, 260 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rangifer": {
+  "src": "/img/share/stars/rangifer.jpg",
+  "alt": "Rangifer, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/taiyi": {
+  "src": "/img/share/stars/taiyi.jpg",
+  "alt": "Taiyi, drawn as a glow in its own colour, 96 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/intercrus": {
+  "src": "/img/share/stars/intercrus.jpg",
+  "alt": "Intercrus, drawn as a glow in its own colour, 280 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/la-superba": {
+  "src": "/img/share/stars/la-superba.jpg",
+  "alt": "La Superba, drawn as a glow in its own colour, 1,000 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tianyi": {
+  "src": "/img/share/stars/tianyi.jpg",
+  "alt": "Tianyi, drawn as a glow in its own colour, 740 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/helvetios": {
+  "src": "/img/share/stars/helvetios.jpg",
+  "alt": "Helvetios, drawn as a glow in its own colour, 51 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/polaris-australis": {
+  "src": "/img/share/stars/polaris-australis.jpg",
+  "alt": "Polaris Australis, drawn as a glow in its own colour, 280 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/celaeno": {
+  "src": "/img/share/stars/celaeno.jpg",
+  "alt": "Celaeno, drawn as a glow in its own colour, 380 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tianfu": {
+  "src": "/img/share/stars/tianfu.jpg",
+  "alt": "Tianfu, drawn as a glow in its own colour, 460 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/musica": {
+  "src": "/img/share/stars/musica.jpg",
+  "alt": "Musica, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/stephanos": {
+  "src": "/img/share/stars/stephanos.jpg",
+  "alt": "Stephanos, drawn as a glow in its own colour, 240 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cor-caroli-b": {
+  "src": "/img/share/stars/cor-caroli-b.jpg",
+  "alt": "Cor Caroli B, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alrakis": {
+  "src": "/img/share/stars/alrakis.jpg",
+  "alt": "Alrakis, drawn as a glow in its own colour, 76 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/96-g-psc": {
+  "src": "/img/share/stars/96-g-psc.jpg",
+  "alt": "96 G. Psc, drawn as a glow in its own colour, 24 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alruba": {
+  "src": "/img/share/stars/alruba.jpg",
+  "alt": "Alruba, drawn as a glow in its own colour, 530 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kamelos": {
+  "src": "/img/share/stars/kamelos.jpg",
+  "alt": "Kamelos, drawn as a glow in its own colour, 700 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/merga": {
+  "src": "/img/share/stars/merga.jpg",
+  "alt": "Merga, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/asterope": {
+  "src": "/img/share/stars/asterope.jpg",
+  "alt": "Asterope, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tonatiuh": {
+  "src": "/img/share/stars/tonatiuh.jpg",
+  "alt": "Tonatiuh, drawn as a glow in its own colour, 320 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/268-g-cet": {
+  "src": "/img/share/stars/268-g-cet.jpg",
+  "alt": "268 G. Cet, drawn as a glow in its own colour, 23 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dziban-b": {
+  "src": "/img/share/stars/dziban-b.jpg",
+  "alt": "Dziban B, drawn as a glow in its own colour, 75 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/piautos": {
+  "src": "/img/share/stars/piautos.jpg",
+  "alt": "Piautos, drawn as a glow in its own colour, 460 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/copernicus": {
+  "src": "/img/share/stars/copernicus.jpg",
+  "alt": "Copernicus, drawn as a glow in its own colour, 40 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/xihe": {
+  "src": "/img/share/stars/xihe.jpg",
+  "alt": "Xihe, drawn as a glow in its own colour, 450 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shengong": {
+  "src": "/img/share/stars/shengong.jpg",
+  "alt": "Shengong, drawn as a glow in its own colour, 320 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/marsic-b": {
+  "src": "/img/share/stars/marsic-b.jpg",
+  "alt": "Marsic B, drawn as a glow in its own colour, 2,100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gumala": {
+  "src": "/img/share/stars/gumala.jpg",
+  "alt": "Gumala, drawn as a glow in its own colour, 90 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/meleph": {
+  "src": "/img/share/stars/meleph.jpg",
+  "alt": "Meleph, drawn as a glow in its own colour, 590 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/citala": {
+  "src": "/img/share/stars/citala.jpg",
+  "alt": "Citalá, drawn as a glow in its own colour, 94 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/groombridge-1830": {
+  "src": "/img/share/stars/groombridge-1830.jpg",
+  "alt": "Groombridge 1830, drawn as a glow in its own colour, 30 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mago": {
+  "src": "/img/share/stars/mago.jpg",
+  "alt": "Mago, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/chechia": {
+  "src": "/img/share/stars/chechia.jpg",
+  "alt": "Chechia, drawn as a glow in its own colour, 210 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/revati-b": {
+  "src": "/img/share/stars/revati-b.jpg",
+  "alt": "Revati B, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/formosa": {
+  "src": "/img/share/stars/formosa.jpg",
+  "alt": "Formosa, drawn as a glow in its own colour, 400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mira": {
+  "src": "/img/share/stars/mira.jpg",
+  "alt": "Mira, drawn as a glow in its own colour, 300 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alkalurops-b": {
+  "src": "/img/share/stars/alkalurops-b.jpg",
+  "alt": "Alkalurops B, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kamuy": {
+  "src": "/img/share/stars/kamuy.jpg",
+  "alt": "Kamuy, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/inquill": {
+  "src": "/img/share/stars/inquill.jpg",
+  "alt": "Inquill, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bubup": {
+  "src": "/img/share/stars/bubup.jpg",
+  "alt": "Bubup, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lacaille-8760": {
+  "src": "/img/share/stars/lacaille-8760.jpg",
+  "alt": "Lacaille 8760, drawn as a glow in its own colour, 13 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/baekdu": {
+  "src": "/img/share/stars/baekdu.jpg",
+  "alt": "Baekdu, drawn as a glow in its own colour, 520 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/timir": {
+  "src": "/img/share/stars/timir.jpg",
+  "alt": "Timir, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tupa": {
+  "src": "/img/share/stars/tupa.jpg",
+  "alt": "Tupã, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/matza": {
+  "src": "/img/share/stars/matza.jpg",
+  "alt": "Matza, drawn as a glow in its own colour, 320 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/belenos": {
+  "src": "/img/share/stars/belenos.jpg",
+  "alt": "Bélénos, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tupi": {
+  "src": "/img/share/stars/tupi.jpg",
+  "alt": "Tupi, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dofida": {
+  "src": "/img/share/stars/dofida.jpg",
+  "alt": "Dofida, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/buna": {
+  "src": "/img/share/stars/buna.jpg",
+  "alt": "Buna, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lacaille-9352": {
+  "src": "/img/share/stars/lacaille-9352.jpg",
+  "alt": "Lacaille 9352, drawn as a glow in its own colour, 11 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aiolos": {
+  "src": "/img/share/stars/aiolos.jpg",
+  "alt": "Aiolos, drawn as a glow in its own colour, 290 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rapeto": {
+  "src": "/img/share/stars/rapeto.jpg",
+  "alt": "Rapeto, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/itonda": {
+  "src": "/img/share/stars/itonda.jpg",
+  "alt": "Itonda, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/uklun": {
+  "src": "/img/share/stars/uklun.jpg",
+  "alt": "Uklun, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lalande-21185": {
+  "src": "/img/share/stars/lalande-21185.jpg",
+  "alt": "Lalande 21185, drawn as a glow in its own colour, 8.3 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/belel": {
+  "src": "/img/share/stars/belel.jpg",
+  "alt": "Belel, drawn as a glow in its own colour, 360 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lionrock": {
+  "src": "/img/share/stars/lionrock.jpg",
+  "alt": "Lionrock, drawn as a glow in its own colour, 430 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/illyrian": {
+  "src": "/img/share/stars/illyrian.jpg",
+  "alt": "Illyrian, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nenque": {
+  "src": "/img/share/stars/nenque.jpg",
+  "alt": "Nenque, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cocibolca": {
+  "src": "/img/share/stars/cocibolca.jpg",
+  "alt": "Cocibolca, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/arcalis": {
+  "src": "/img/share/stars/arcalis.jpg",
+  "alt": "Arcalís, drawn as a glow in its own colour, 360 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ayeyarwady": {
+  "src": "/img/share/stars/ayeyarwady.jpg",
+  "alt": "Ayeyarwady, drawn as a glow in its own colour, 440 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/poerava": {
+  "src": "/img/share/stars/poerava.jpg",
+  "alt": "Poerava, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sika": {
+  "src": "/img/share/stars/sika.jpg",
+  "alt": "Sika, drawn as a glow in its own colour, 190 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/aniara": {
+  "src": "/img/share/stars/aniara.jpg",
+  "alt": "Aniara, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nikawiy": {
+  "src": "/img/share/stars/nikawiy.jpg",
+  "alt": "Nikawiy, drawn as a glow in its own colour, 320 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/rosaliadecastro": {
+  "src": "/img/share/stars/rosaliadecastro.jpg",
+  "alt": "Rosalíadecastro, drawn as a glow in its own colour, 200 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lucilinburhuc": {
+  "src": "/img/share/stars/lucilinburhuc.jpg",
+  "alt": "Lucilinburhuc, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mouhoun": {
+  "src": "/img/share/stars/mouhoun.jpg",
+  "alt": "Mouhoun, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/alasia": {
+  "src": "/img/share/stars/alasia.jpg",
+  "alt": "Alasia, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaveh": {
+  "src": "/img/share/stars/kaveh.jpg",
+  "alt": "Kaveh, drawn as a glow in its own colour, 410 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/stribor": {
+  "src": "/img/share/stars/stribor.jpg",
+  "alt": "Stribor, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/monch": {
+  "src": "/img/share/stars/monch.jpg",
+  "alt": "Mönch, drawn as a glow in its own colour, 100 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/liesma": {
+  "src": "/img/share/stars/liesma.jpg",
+  "alt": "Liesma, drawn as a glow in its own colour, 290 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nosaxa": {
+  "src": "/img/share/stars/nosaxa.jpg",
+  "alt": "Nosaxa, drawn as a glow in its own colour, 280 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hunahpu": {
+  "src": "/img/share/stars/hunahpu.jpg",
+  "alt": "Hunahpú, drawn as a glow in its own colour, 440 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/emiw": {
+  "src": "/img/share/stars/emiw.jpg",
+  "alt": "Emiw, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/flegetonte": {
+  "src": "/img/share/stars/flegetonte.jpg",
+  "alt": "Flegetonte, drawn as a glow in its own colour, 97 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/groombridge-34": {
+  "src": "/img/share/stars/groombridge-34.jpg",
+  "alt": "Groombridge 34, drawn as a glow in its own colour, 12 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/lusitania": {
+  "src": "/img/share/stars/lusitania.jpg",
+  "alt": "Lusitânia, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/tapecue": {
+  "src": "/img/share/stars/tapecue.jpg",
+  "alt": "Tapecue, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nervia": {
+  "src": "/img/share/stars/nervia.jpg",
+  "alt": "Nervia, drawn as a glow in its own colour, 140 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ogma": {
+  "src": "/img/share/stars/ogma.jpg",
+  "alt": "Ogma, drawn as a glow in its own colour, 260 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nushagak": {
+  "src": "/img/share/stars/nushagak.jpg",
+  "alt": "Nushagak, drawn as a glow in its own colour, 240 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/nasti": {
+  "src": "/img/share/stars/nasti.jpg",
+  "alt": "Násti, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/dingolay": {
+  "src": "/img/share/stars/dingolay.jpg",
+  "alt": "Dingolay, drawn as a glow in its own colour, 520 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/axolotl": {
+  "src": "/img/share/stars/axolotl.jpg",
+  "alt": "Axólotl, drawn as a glow in its own colour, 320 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kalausi": {
+  "src": "/img/share/stars/kalausi.jpg",
+  "alt": "Kalausi, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gakyid": {
+  "src": "/img/share/stars/gakyid.jpg",
+  "alt": "Gakyid, drawn as a glow in its own colour, 260 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/macondo": {
+  "src": "/img/share/stars/macondo.jpg",
+  "alt": "Macondo, drawn as a glow in its own colour, 91 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bosona": {
+  "src": "/img/share/stars/bosona.jpg",
+  "alt": "Bosona, drawn as a glow in its own colour, 630 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/citadelle": {
+  "src": "/img/share/stars/citadelle.jpg",
+  "alt": "Citadelle, drawn as a glow in its own colour, 520 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hoggar": {
+  "src": "/img/share/stars/hoggar.jpg",
+  "alt": "Hoggar, drawn as a glow in its own colour, 740 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/mahsati": {
+  "src": "/img/share/stars/mahsati.jpg",
+  "alt": "Mahsati, drawn as a glow in its own colour, 610 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sagarmatha": {
+  "src": "/img/share/stars/sagarmatha.jpg",
+  "alt": "Sagarmatha, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/natasha": {
+  "src": "/img/share/stars/natasha.jpg",
+  "alt": "Natasha, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/samaya": {
+  "src": "/img/share/stars/samaya.jpg",
+  "alt": "Sāmaya, drawn as a glow in its own colour, 350 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ebla": {
+  "src": "/img/share/stars/ebla.jpg",
+  "alt": "Ebla, drawn as a glow in its own colour, 93 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/karaka": {
+  "src": "/img/share/stars/karaka.jpg",
+  "alt": "Karaka, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/hunor": {
+  "src": "/img/share/stars/hunor.jpg",
+  "alt": "Hunor, drawn as a glow in its own colour, 370 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/bibha": {
+  "src": "/img/share/stars/bibha.jpg",
+  "alt": "Bibhā, drawn as a glow in its own colour, 310 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/funi": {
+  "src": "/img/share/stars/funi.jpg",
+  "alt": "Funi, drawn as a glow in its own colour, 220 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/cygnus-x-1": {
+  "src": "/img/share/stars/cygnus-x-1.jpg",
+  "alt": "Cygnus X-1, drawn as a glow in its own colour, 1,900 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/red-rectangle": {
+  "src": "/img/share/stars/red-rectangle.jpg",
+  "alt": "Red Rectangle, drawn as a glow in its own colour, 1,400 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kapteyn-s-star": {
+  "src": "/img/share/stars/kapteyn-s-star.jpg",
+  "alt": "Kapteyn's Star, drawn as a glow in its own colour, 13 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/struve-2398-a": {
+  "src": "/img/share/stars/struve-2398-a.jpg",
+  "alt": "Struve 2398 A, drawn as a glow in its own colour, 12 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/uruk": {
+  "src": "/img/share/stars/uruk.jpg",
+  "alt": "Uruk, drawn as a glow in its own colour, 390 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/amadioha": {
+  "src": "/img/share/stars/amadioha.jpg",
+  "alt": "Amadioha, drawn as a glow in its own colour, 180 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/shama": {
+  "src": "/img/share/stars/shama.jpg",
+  "alt": "Shama, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ceibo": {
+  "src": "/img/share/stars/ceibo.jpg",
+  "alt": "Ceibo, drawn as a glow in its own colour, 110 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/speedy-mic": {
+  "src": "/img/share/stars/speedy-mic.jpg",
+  "alt": "Speedy Mic, drawn as a glow in its own colour, 170 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/barnard-s-star": {
+  "src": "/img/share/stars/barnard-s-star.jpg",
+  "alt": "Barnard's Star, drawn as a glow in its own colour, 5.9 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kruger-60": {
+  "src": "/img/share/stars/kruger-60.jpg",
+  "alt": "Kruger 60, drawn as a glow in its own colour, 13 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/pincoya": {
+  "src": "/img/share/stars/pincoya.jpg",
+  "alt": "Pincoya, drawn as a glow in its own colour, 130 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/felixvarela": {
+  "src": "/img/share/stars/felixvarela.jpg",
+  "alt": "Felixvarela, drawn as a glow in its own colour, 120 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/struve-2398-b": {
+  "src": "/img/share/stars/struve-2398-b.jpg",
+  "alt": "Struve 2398 B, drawn as a glow in its own colour, 11 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/solaris": {
+  "src": "/img/share/stars/solaris.jpg",
+  "alt": "Solaris, drawn as a glow in its own colour, 160 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/uuba": {
+  "src": "/img/share/stars/uuba.jpg",
+  "alt": "Uúba, drawn as a glow in its own colour, 250 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/luyten-s-star": {
+  "src": "/img/share/stars/luyten-s-star.jpg",
+  "alt": "Luyten's Star, drawn as a glow in its own colour, 12 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/intan": {
+  "src": "/img/share/stars/intan.jpg",
+  "alt": "Intan, drawn as a glow in its own colour, 150 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/wolf-1061": {
+  "src": "/img/share/stars/wolf-1061.jpg",
+  "alt": "Wolf 1061, drawn as a glow in its own colour, 14 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ananuca": {
+  "src": "/img/share/stars/ananuca.jpg",
+  "alt": "Añañuca, drawn as a glow in its own colour, 32 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/koeia": {
+  "src": "/img/share/stars/koeia.jpg",
+  "alt": "Koeia, drawn as a glow in its own colour, 75 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ross-154": {
+  "src": "/img/share/stars/ross-154.jpg",
+  "alt": "Ross 154, drawn as a glow in its own colour, 9.7 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/noquisi": {
+  "src": "/img/share/stars/noquisi.jpg",
+  "alt": "Noquisi, drawn as a glow in its own colour, 33 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/proxima-centauri": {
+  "src": "/img/share/stars/proxima-centauri.jpg",
+  "alt": "Proxima Centauri, drawn as a glow in its own colour, 4.2 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/danfeng": {
+  "src": "/img/share/stars/danfeng.jpg",
+  "alt": "Danfeng, drawn as a glow in its own colour, 86 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ross-128": {
+  "src": "/img/share/stars/ross-128.jpg",
+  "alt": "Ross 128, drawn as a glow in its own colour, 11 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ross-614": {
+  "src": "/img/share/stars/ross-614.jpg",
+  "alt": "Ross 614, drawn as a glow in its own colour, 13 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/sharjah": {
+  "src": "/img/share/stars/sharjah.jpg",
+  "alt": "Sharjah, drawn as a glow in its own colour, 47 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/gar": {
+  "src": "/img/share/stars/gar.jpg",
+  "alt": "Gar, drawn as a glow in its own colour, 27 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ross-248": {
+  "src": "/img/share/stars/ross-248.jpg",
+  "alt": "Ross 248, drawn as a glow in its own colour, 10 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/kaewkosin": {
+  "src": "/img/share/stars/kaewkosin.jpg",
+  "alt": "Kaewkosin, drawn as a glow in its own colour, 76 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ross-687": {
+  "src": "/img/share/stars/ross-687.jpg",
+  "alt": "Ross 687, drawn as a glow in its own colour, 68 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/van-maanen-s-star": {
+  "src": "/img/share/stars/van-maanen-s-star.jpg",
+  "alt": "Van Maanen's Star, drawn as a glow in its own colour, 14 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ez-aqr": {
+  "src": "/img/share/stars/ez-aqr.jpg",
+  "alt": "EZ Aqr, drawn as a glow in its own colour, 11 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/ross-686": {
+  "src": "/img/share/stars/ross-686.jpg",
+  "alt": "Ross 686, drawn as a glow in its own colour, 80 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/wolf-359": {
+  "src": "/img/share/stars/wolf-359.jpg",
+  "alt": "Wolf 359, drawn as a glow in its own colour, 7.8 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/maru": {
+  "src": "/img/share/stars/maru.jpg",
+  "alt": "Maru, drawn as a glow in its own colour, 76 light years away",
+  "from": "drawn",
+  "mode": "drawn"
+ },
+ "/stars/onkaria": {
+  "src": "/img/share/stars/onkaria.jpg",
+  "alt": "Onkaria, drawn as a glow in its own colour, 42 light years away",
+  "from": "drawn",
+  "mode": "drawn"
  }
 }

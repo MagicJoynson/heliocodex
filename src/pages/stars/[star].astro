@@ -5,15 +5,20 @@ import '../../styles/reading.css';
 import '../../styles/star.css';
 import '../../styles/record.css';
 import { pageStars, type PageStar } from '../../lib/sky/starlist';
-import { starPage } from '../../lib/sky/star';
+import { starPage, slugOf } from '../../lib/sky/star';
+import { recordLd } from '../../lib/site';
+import { shareFor } from '../../lib/share';
 
 export function getStaticPaths() {
   return pageStars().map((star) => ({ params: { star: star.slug }, props: { star } }));
 }
 const { star } = Astro.props as { star: PageStar };
 const page = starPage(star);
+const share = shareFor(`/stars/${star.slug}`, Astro.site);
+const ld = recordLd({ path: `/stars/${star.slug}`, name: star.name, description: page.description, kind: star.constellation ? `A star in ${star.constellation}` : 'A star', image: share.own ? share.src : undefined,
+  trail: [['Stars', '/stars'], ...(star.constellation ? [[star.constellation, `/stars/in/${slugOf(star.constellation)}`] as [string, string]] : [])] });
 ---
-<Base title={page.title} path={`/stars/${star.slug}`} description={page.description}>
+<Base title={page.title} path={`/stars/${star.slug}`} description={page.description} jsonld={ld}>
   <article class="reading star rec" data-dir={star.dir.join(',')} data-name={star.name} data-rgb={page.rgb} data-lum={star.lumSun} set:html={page.html} />
 </Base>
 
