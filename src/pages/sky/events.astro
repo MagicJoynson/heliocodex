@@ -27,7 +27,7 @@ const built = start.toISOString();
     <p class="label"><a href="/sky">The sky tonight</a> · <a href="/sky/week">This week</a> · Two years ahead</p>
     <h1>Sky events</h1>
     <p class="lead">The moments worth planning a night around, from now to the end of {end.getUTCFullYear()}: planets at their best, pairs that pass close, and the Moon at its nearest and farthest.</p>
-    <p class="ev-how">Every time is Universal Time, the same instant everywhere on Earth: add your own offset to get the clock on your wall, and the date may change. None of it depends on where you stand, but whether you can see it does. Look at <a href="/sky">the sky map</a> for your place and <a href="/sky/week">Sky this week</a> for the week ahead. The eclipses are listed with their times on <a href="/sky/week#h-ecl">Sky this week</a>.</p>
+    <p class="ev-how">Each event is the same instant everywhere on Earth. Times are given in Universal Time (UT); where your browser can tell your time zone, the page shows your own clock first, with UT underneath, and the day may differ. Whether you can see an event depends on where you stand. Look at <a href="/sky">the sky map</a> for your place and <a href="/sky/week">Sky this week</a> for the week ahead. The eclipses are listed with their times on <a href="/sky/week#h-ecl">Sky this week</a>.</p>
   </header>
 
   <p class="ev-gone" id="ev-gone" hidden></p>
@@ -79,6 +79,20 @@ const built = start.toISOString();
     if (+s.dataset.ends < now) s.hidden = true;
     else if (!s.querySelector('.evi:not([hidden])') && s.querySelector('.evs')) s.querySelector('.evs').remove();
   });
+  // times in the visitor's own zone, named (BST, GMT, ...), with Universal Time kept underneath
+  document.querySelectorAll('.evi .when').forEach((t) => {
+    const at = new Date(t.dateTime), b = t.querySelector('b'), sp = t.querySelector('span');
+    if (!b || !sp || isNaN(+at)) return;
+    let day, clock;
+    try {
+      day = at.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).replace(',', '');
+      clock = at.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+    } catch { return; }
+    const ut = sp.textContent, utDay = b.textContent;
+    if (/\b(UTC|UT)\b/.test(clock) && day === utDay) return;
+    b.textContent = day; sp.textContent = clock;
+    const u = document.createElement('span'); u.className = 'ut'; u.textContent = (day === utDay ? '' : utDay + ' ') + ut; t.append(u);
+  });
   if (gone) { const g = document.getElementById('ev-gone'); g.textContent = 'This list was worked out when the site was last built, and what has already passed is hidden.'; g.hidden = false; }
 </script>
 
@@ -93,6 +107,7 @@ const built = start.toISOString();
   .evi:first-child { border-top: 0; padding-top: .2rem; }
   .evi[hidden] { display: none; }
   .evi .when { display: block; font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .evi .when .ut { display: block; text-transform: none; letter-spacing: .03em; opacity: .75; }
   .evi .when b { display: block; font-weight: 400; color: var(--accent); }
   .evi h3 { font: 400 1.4rem/1.25 var(--r-serif); margin: 0 0 .35rem; color: var(--ink); }
   .evi p { font: 300 1.08rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0; max-width: 40rem; }
