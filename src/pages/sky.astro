@@ -105,7 +105,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
           <p class="label">Using the picture</p>
           <p>The picture shows the sky as you would see it standing outside, facing the way written on the ground at the foot of the view. Drag the picture to turn round or to look higher. Pinch, or roll the mouse wheel, to look closer.</p>
           <p>Slide the bar to move through the night and watch the sky turn. Touch any bright star, a planet or the Moon to find out what it is.</p>
-          <p>"Whole sky" tips the view straight up, so the point overhead is in the middle and the horizon runs round the edge. East is then on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down.</p>
+          <p>"Whole sky" tips the view straight up, so the point overhead is in the middle and the horizon runs round the edge. East is then on the left and west on the right, the other way round from a map of the ground, because you are looking up and not down. The faint dots beyond the edge are stars below the horizon, drawn dimly in their real colours. You cannot see them from where you stand; they are there only so the picture has no hard edge.</p>
           <p>A bigger dot is a brighter star. The colours are real: blue-white stars are the hottest and orange ones the coolest. Things close to the ground may be hidden by houses, trees or haze.</p>
           <p><a href="/stars">Meet a star</a> has a page for every star on the map. <a href="/sky/week">Sky this week</a> says what to look for over the next seven days.</p>
         </div>
@@ -206,10 +206,12 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     cancelAnimationFrame(glide);
     if (calm.matches) { view = next; render(); return; }
     const from = { ...view }, began = performance.now();
+    // opening out to the whole sky, or closing back in, is given longer so the horizon is seen to sink and the dome to open
+    const long = Math.abs(next.fovDeg - from.fovDeg) > 40 ? 1300 : 700;
     // go the short way round
     const swing = ((next.azDeg - from.azDeg + 540) % 360) - 180;
     const step = (now: number) => {
-      const x = Math.min(1, (now - began) / 700), k = x * x * (3 - 2 * x);
+      const x = Math.min(1, (now - began) / long), k = x * x * (3 - 2 * x);
       view = { azDeg: (from.azDeg + swing * k + 360) % 360, altDeg: from.altDeg + (next.altDeg - from.altDeg) * k, fovDeg: from.fovDeg + (next.fovDeg - from.fovDeg) * k };
       render();
       if (x < 1) glide = requestAnimationFrame(step);
@@ -521,7 +523,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
       shift.value = String(held); dayShift = mins - held; dayNote.textContent = 'This is the moment in the link you opened. Choose Now to see the sky as it is at present.'; dayNote.hidden = false;
     }
     const n = (k: string, lo: number, hi: number) => { const v = Number(q.get(k)); return q.has(k) && /^-?\d{1,3}$/.test(q.get(k)!) && v >= lo && v <= hi ? v : NaN; };
-    const az = n('az', 0, 360), alt = n('alt', 4, 90), fov = n('fov', 30, 140);
+    const az = n('az', 0, 360), alt = n('alt', 4, 90), fov = n('fov', 30, 240);
     if (!Number.isNaN(az) && !Number.isNaN(alt) && !Number.isNaN(fov)) linkView = { azDeg: az % 360, altDeg: alt, fovDeg: fov };
   }
   const linked = ['lat', 'lon', 't', 'az', 'alt', 'fov', 'pick'].some((k) => new URLSearchParams(location.search).has(k));

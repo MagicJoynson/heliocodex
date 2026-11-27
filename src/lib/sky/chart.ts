@@ -97,14 +97,23 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const sunDir = sunFromEarth(m.T), sun = toSky(sunDir, m);
   // how much daylight: none with the Sun 12° or more under the horizon, full once it is up
   const day = Math.max(0, Math.min(1, (sun.altDeg + 12) / 12)), dusk = Math.max(0, 1 - Math.abs(sun.altDeg + 4) / 14);
+  // how far the view has opened out to the whole sky, 0 to 1, so every change of look between the two is smooth and nothing pops
+  const wk = Math.max(0, Math.min(1, (view.fovDeg - 90) / 60)), Wraw = wk * wk * (3 - 2 * wk);
+  // the whole-sky look comes in between blend 0.15 and 0.5: below that the view is the ordinary one, untouched
+  const V = Math.max(0, Math.min(1, (Wraw - 0.15) / 0.35)), VV = V * V * (3 - 2 * V), W = VV;
 
   // ---- the sky: darkest overhead, paler towards the horizon
   ctx.clearRect(0, 0, w, h);
   const top = put(0, 0, 1, -2)!, edge = place(0, view.azDeg, -2)!, reach = Math.max(Math.hypot(edge[0] - top[0], edge[1] - top[1]), 1);
-  const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach);
+  // the sky ends at the horizon: past it (ground, always covered or dark) nothing pale is painted, so the ground can fade in and out without a light slab showing
+  const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach * (1 + 0.05 * VV));
   const tone = (n: [number, number, number], d: [number, number, number]) => `rgb(${n.map((v, i) => Math.round(v + (d[i] - v) * day)).join(',')})`;
-  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55, tone([8, 11, 22], [58, 104, 164]));
-  air.addColorStop(0.86, tone([15, 20, 36], [104, 146, 190])); air.addColorStop(1, tone([27, 33, 52], [158, 184, 206]));
+  // looking at the whole sky it stays dark right out towards the edge and only brightens in a thin band at the skyline, as the real dome does
+  const mix3 = (a: [number, number, number], b: [number, number, number]): [number, number, number] => [a[0] + (b[0] - a[0]) * W, a[1] + (b[1] - a[1]) * W, a[2] + (b[2] - a[2]) * W];
+  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55 / (1 + 0.05 * VV), tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
+  air.addColorStop(0.86 / (1 + 0.05 * VV), tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [96, 138, 186]))); air.addColorStop(1 / (1 + 0.05 * VV), tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [170, 194, 214])));
+  // and past the horizon it goes dark, by as much as the whole-sky look is on; with it off the gradient ends exactly as it always did
+  air.addColorStop(1, tone(mix3([27, 33, 52], [7, 9, 15]), mix3([158, 184, 206], [26, 34, 38])));
   ctx.fillStyle = air; ctx.fillRect(0, 0, w, h);
   // the glow over where the Sun has set or is about to rise
   if (dusk > 0) {
@@ -121,14 +130,23 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   // fainter stars come in as the view closes in, so a wide view is not a blur of dots
   const faintest = Math.max(4.6, Math.min(6.5, 2.1 + 1.7 * Math.log10(S))), grow = Math.max(0.8, Math.min(1.5, Math.sqrt(S / 300)));
   const dim = 1 - 0.8 * day;
+  const open = VV > 0.001, beyond: [number, number, number, number, string][] = [];
 
   // ---- stars
   const { dirs, mags } = standing(data, m), n = mags.length, at = new Float32Array(n * 2), up = new Uint8Array(n);
   for (let i = 0; i < n; i++) {
     const e = dirs[i * 3], no = dirs[i * 3 + 1], z = dirs[i * 3 + 2];
-    if (z < -0.02) continue;
-    const p = put(e, no, z);
+    if (z < -0.02 && !(VV > 0.02 && z > -0.6)) continue;
+    const p = put(e, no, z, open ? -0.62 : undefined);
     if (!p) continue;
+    // beyond the horizon: the sky on the far side of the Earth, out of sight, shown only as a faint warm sprinkle so the picture has no edge
+    if (z < 0) {
+      if (mags[i] > faintest || !onScreen(p[0], p[1])) continue;
+      const a = Math.min(0.55, (faintest - mags[i]) * 0.16) * VV * dim * (1 + z * 1.2);
+      if (a <= 0.01) continue;
+      beyond.push([p[0], p[1], Math.max(0.55, 2.2 * Math.pow(10, -0.155 * mags[i])) * grow, a, tint(data.stars[i * 5 + 4])]);
+      continue;
+    }
     at[i * 2] = p[0]; at[i * 2 + 1] = p[1]; up[i] = 1;
     const mag = mags[i];
     if (mag > faintest || !onScreen(p[0], p[1])) continue;
@@ -180,92 +198,128 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     for (const s of marks) if (s.kind === 'star' && s.name && (s.mag ?? 9) < named) wanted.push({ text: s.name.toUpperCase(), x: s.x + s.r + 6, y: s.y + 1, font: starFont, colour: `rgba(${INK},.72)`, centred: false, rank: 2 + (s.mag ?? 0) / 10, back: 2 * (s.r + 6) });
   }
 
-  // ---- planets
-  const bodyFont = `400 ${Math.max(13, Math.min(17, S / 20))}px ${SERIF}`;
-  const seen = PLANETS.map((id) => { const p = planetFromEarth(id, m.T), s = toSky(p.dir, m); return { id, p, s, at: s.altDeg < 0 ? null : place(s.altDeg, s.azDeg) }; }).filter((k) => k.at);
-  for (const { id, p, s, at: [px, py] = [0, 0] } of seen as { id: string; p: { au: number }; s: { altDeg: number; azDeg: number }; at: [number, number] }[]) {
-    const eye = BY_EYE.has(id), rad = (eye ? 4 : 2.2) * grow;
-    if (eye && dim > 0.3) {
-      const halo = ctx.createRadialGradient(px, py, 0, px, py, rad * 4);
-      halo.addColorStop(0, 'rgba(255,236,200,.3)'); halo.addColorStop(1, 'rgba(255,236,200,0)');
-      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px, py, rad * 4, 0, Math.PI * 2); ctx.fill();
+  // the planets, Moon and Sun are drawn over the ground when the whole sky is in view (so the dark band never veils them), and under it otherwise
+  const bodies = () => {
+    // ---- planets
+    const bodyFont = `400 ${Math.max(13, Math.min(17, S / 20))}px ${SERIF}`;
+    const seen = PLANETS.map((id) => { const p = planetFromEarth(id, m.T), s = toSky(p.dir, m); return { id, p, s, at: s.altDeg < 0 ? null : place(s.altDeg, s.azDeg) }; }).filter((k) => k.at);
+    for (const { id, p, s, at: [px, py] = [0, 0] } of seen as { id: string; p: { au: number }; s: { altDeg: number; azDeg: number }; at: [number, number] }[]) {
+      const eye = BY_EYE.has(id), rad = (eye ? 4 : 2.2) * grow;
+      if (eye && dim > 0.3) {
+        const halo = ctx.createRadialGradient(px, py, 0, px, py, rad * 4);
+        halo.addColorStop(0, 'rgba(255,236,200,.3)'); halo.addColorStop(1, 'rgba(255,236,200,0)');
+        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px, py, rad * 4, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = PLANET_TINT[id]; ctx.beginPath(); ctx.arc(px, py, rad, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = ACCENT; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(px, py, rad + 4, 0, Math.PI * 2); ctx.stroke();
+      // another planet close on the right: this name goes on the left, so it does not sit on that planet's dot
+      const crowded = seen.some((k) => k.id !== id && Math.abs(k.at![1] - py) < 14 && k.at![0] > px && k.at![0] - px < 90);
+      wanted.push({ text: PLANET_NAMES[id], x: px + rad + 9, y: py, font: bodyFont, colour: eye ? ACCENT : 'rgba(233,196,138,.75)', centred: false, rank: eye ? 0 : 1, endAt: crowded ? px - rad - 9 : undefined, must: rad + 9 });
+      marks.push({ kind: 'planet', id, name: PLANET_NAMES[id], x: px, y: py, r: rad + 4, altDeg: s.altDeg, azDeg: s.azDeg, au: p.au });
     }
-    ctx.fillStyle = PLANET_TINT[id]; ctx.beginPath(); ctx.arc(px, py, rad, 0, Math.PI * 2); ctx.fill();
-    ctx.strokeStyle = ACCENT; ctx.lineWidth = 1; ctx.beginPath(); ctx.arc(px, py, rad + 4, 0, Math.PI * 2); ctx.stroke();
-    // another planet close on the right: this name goes on the left, so it does not sit on that planet's dot
-    const crowded = seen.some((k) => k.id !== id && Math.abs(k.at![1] - py) < 14 && k.at![0] > px && k.at![0] - px < 90);
-    wanted.push({ text: PLANET_NAMES[id], x: px + rad + 9, y: py, font: bodyFont, colour: eye ? ACCENT : 'rgba(233,196,138,.75)', centred: false, rank: eye ? 0 : 1, endAt: crowded ? px - rad - 9 : undefined, must: rad + 9 });
-    marks.push({ kind: 'planet', id, name: PLANET_NAMES[id], x: px, y: py, r: rad + 4, altDeg: s.altDeg, azDeg: s.azDeg, au: p.au });
-  }
 
-  // ---- the Moon, with the right amount of its face lit and the lit edge turned towards the Sun
-  const moon = moonSky(m), moonAt = moon.altDeg > -1 ? place(moon.altDeg, moon.azDeg) : null;
-  if (moonAt) {
-    const [px, py] = moonAt, rad = Math.max(8, S / 34);
-    const sunAt = place(sun.altDeg, sun.azDeg, -2)!, turn = Math.atan2(sunAt[1] - py, sunAt[0] - px);
-    if (dim > 0.3) {
-      const halo = ctx.createRadialGradient(px, py, rad * 0.8, px, py, rad * (2 + 4 * moon.lit));
-      halo.addColorStop(0, `rgba(239,233,218,${0.22 * moon.lit + 0.04})`); halo.addColorStop(1, 'rgba(239,233,218,0)');
-      ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px, py, rad * (2 + 4 * moon.lit), 0, Math.PI * 2); ctx.fill();
+    // ---- the Moon, with the right amount of its face lit and the lit edge turned towards the Sun
+    const moon = moonSky(m), moonAt = moon.altDeg > -1 ? place(moon.altDeg, moon.azDeg) : null;
+    if (moonAt) {
+      const [px, py] = moonAt, rad = Math.max(8, S / 34);
+      const sunAt = place(sun.altDeg, sun.azDeg, -2)!, turn = Math.atan2(sunAt[1] - py, sunAt[0] - px);
+      if (dim > 0.3) {
+        const halo = ctx.createRadialGradient(px, py, rad * 0.8, px, py, rad * (2 + 4 * moon.lit));
+        halo.addColorStop(0, `rgba(239,233,218,${0.22 * moon.lit + 0.04})`); halo.addColorStop(1, 'rgba(239,233,218,0)');
+        ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(px, py, rad * (2 + 4 * moon.lit), 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.save(); ctx.translate(px, py); ctx.rotate(turn);
+      ctx.fillStyle = '#26272b'; ctx.beginPath(); ctx.arc(0, 0, rad, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#efe9da'; ctx.beginPath();
+      ctx.arc(0, 0, rad, -Math.PI / 2, Math.PI / 2);
+      // the inner edge of the lit part is half an ellipse: thin for a crescent, bulging for a gibbous Moon
+      const k = 1 - 2 * moon.lit;
+      ctx.ellipse(0, 0, Math.abs(k) * rad, rad, 0, Math.PI / 2, -Math.PI / 2, k > 0);
+      ctx.fill(); ctx.restore();
+      wanted.push({ text: 'The Moon', x: px + rad + 8, y: py, font: bodyFont, colour: `rgb(${INK})`, centred: false, rank: -1, must: rad + 8 });
+      marks.push({ kind: 'moon', id: 'moon', name: 'The Moon', x: px, y: py, r: rad, altDeg: moon.altDeg, azDeg: moon.azDeg, lit: moon.lit, km: moon.km });
     }
-    ctx.save(); ctx.translate(px, py); ctx.rotate(turn);
-    ctx.fillStyle = '#26272b'; ctx.beginPath(); ctx.arc(0, 0, rad, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#efe9da'; ctx.beginPath();
-    ctx.arc(0, 0, rad, -Math.PI / 2, Math.PI / 2);
-    // the inner edge of the lit part is half an ellipse: thin for a crescent, bulging for a gibbous Moon
-    const k = 1 - 2 * moon.lit;
-    ctx.ellipse(0, 0, Math.abs(k) * rad, rad, 0, Math.PI / 2, -Math.PI / 2, k > 0);
-    ctx.fill(); ctx.restore();
-    wanted.push({ text: 'The Moon', x: px + rad + 8, y: py, font: bodyFont, colour: `rgb(${INK})`, centred: false, rank: -1, must: rad + 8 });
-    marks.push({ kind: 'moon', id: 'moon', name: 'The Moon', x: px, y: py, r: rad, altDeg: moon.altDeg, azDeg: moon.azDeg, lit: moon.lit, km: moon.km });
-  }
-  if (sun.altDeg > -1) {
-    const p = place(sun.altDeg, sun.azDeg);
-    if (p) {
-      const glow = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], S * 0.22);
-      glow.addColorStop(0, 'rgba(255,246,220,1)'); glow.addColorStop(0.12, 'rgba(255,226,160,.9)'); glow.addColorStop(0.4, 'rgba(255,190,110,.25)'); glow.addColorStop(1, 'rgba(255,170,80,0)');
-      ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(p[0], p[1], S * 0.22, 0, Math.PI * 2); ctx.fill();
-      wanted.push({ text: 'The Sun', x: p[0] + 22, y: p[1], font: bodyFont, colour: `rgb(${INK})`, centred: false, rank: -2, must: 22 });
-      marks.push({ kind: 'sun', id: 'sun', name: 'The Sun', x: p[0], y: p[1], r: 12, altDeg: sun.altDeg, azDeg: sun.azDeg });
+    if (sun.altDeg > -1) {
+      const p = place(sun.altDeg, sun.azDeg);
+      if (p) {
+        const glow = ctx.createRadialGradient(p[0], p[1], 0, p[0], p[1], S * 0.22);
+        glow.addColorStop(0, 'rgba(255,246,220,1)'); glow.addColorStop(0.12, 'rgba(255,226,160,.9)'); glow.addColorStop(0.4, 'rgba(255,190,110,.25)'); glow.addColorStop(1, 'rgba(255,170,80,0)');
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(p[0], p[1], S * 0.22, 0, Math.PI * 2); ctx.fill();
+        wanted.push({ text: 'The Sun', x: p[0] + 22, y: p[1], font: bodyFont, colour: `rgb(${INK})`, centred: false, rank: -2, must: 22 });
+        marks.push({ kind: 'sun', id: 'sun', name: 'The Sun', x: p[0], y: p[1], r: 12, altDeg: sun.altDeg, azDeg: sun.azDeg });
+      }
     }
-  }
+  };
+  if (!open) bodies();
 
   // ---- the ground: everything outside the line where the sky meets it
   const rim: [number, number][] = [];
   for (let az = 0; az < 360; az += 2) rim.push(place(0, az, -2)!);
   // a low, rolling skyline (a few slow waves, never a real place) so the horizon is land and not a drawn edge
   const lie = (az: number) => 0.5 + 0.34 * Math.sin(az * 0.061 + 1.3) + 0.22 * Math.sin(az * 0.173 + 4.1) + 0.12 * Math.sin(az * 0.47 + 0.6) + 0.06 * Math.sin(az * 1.31 + 2.2);
-  const land: [number, number][] = [];
-  const wide = view.fovDeg > 110, lift = wide ? 0.5 : 1;
-  for (let az = 0; az < 360; az += 3) land.push(place(lie(az) * lift, az, -2)!);
+  const land: [number, number][] = [], stepAz = 3;
+  for (let az = 0; az < 360; az += stepAz) land.push(place(Math.max(0.05, (1 - W) * lie(az)), az, -2)!);
   // airglow hugging the horizon: a soft band of light that thins upwards, pale at night, warmer towards the Sun's side at dusk
   // one gradient fill each, because stroking wide rings (or a blur filter) was slow to redraw
   const gc = `${Math.round(120 + 60 * dusk)},${Math.round(142 + 10 * dusk)},${Math.round(190 - 60 * dusk)}`;
   const glowBand = (alpha: number) => {
-    if (wide) {
-      const g = ctx.createRadialGradient(top[0], top[1], reach * 0.55, top[0], top[1], reach * 1.02);
-      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${alpha.toFixed(3)})`);
+    if (W > 0.01) {
+      const g = ctx.createRadialGradient(top[0], top[1], reach * 0.86, top[0], top[1], reach * 1.06);
+      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(0.75, `rgba(${gc},${(alpha * W * 1.7).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`);
       ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4);
-    } else {
+    }
+    if (W < 0.99) {
       const g = ctx.createLinearGradient(0, edge[1] - Math.max(30, S * 0.5), 0, edge[1] + 2);
-      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${alpha.toFixed(3)})`);
+      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${(alpha * (1 - W)).toFixed(3)})`);
       ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4);
     }
   };
   glowBand(0.2 * (1 - 0.6 * day) + 0.14 * dusk);
+  const outline = (pts: [number, number][]) => { ctx.beginPath(); ctx.rect(-2, -2, w + 4, h + 4); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath(); };
+  // with an open horizon the land and ridge give way to a soft dark band instead
+  const solid = 1 - VV;
   // the land, in nearly the colour of the page, so it falls away and the sky has no lid
-  ctx.beginPath(); ctx.rect(-2, -2, w + 4, h + 4);
-  land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
-  // whole sky: the ground is the ring outside the disc, darkest at the edge of the picture
-  const soil = wide ? ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.45) : ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
-  soil.addColorStop(0, tone([16, 19, 28], [26, 34, 38])); soil.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
-  if (!wide) { soil.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); }
-  ctx.fillStyle = soil; ctx.fill('evenodd');
-  // looking at the whole sky the ground is a ring round the edge: let the glow spill out over it so the sky fades into the dark and has no rim
-  if (wide) { const g = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.3); g.addColorStop(0, `rgba(${gc},${(0.1 * (1 - 0.6 * day) + 0.08 * dusk).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`); ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4); }
+  ctx.save(); ctx.globalAlpha = solid;
+  outline(land);
+  // whole sky: the ground is the ring outside the disc, darkest at the edge of the picture; facing, it is a band under the horizon
+  const soilRound = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.75);
+  soilRound.addColorStop(0, tone([17, 21, 32], [26, 34, 38])); soilRound.addColorStop(0.4, tone([10, 12, 19], [18, 24, 28])); soilRound.addColorStop(1, tone([6, 7, 11], [12, 16, 18]));
+  const soilFlat = ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
+  soilFlat.addColorStop(0, tone([16, 19, 28], [26, 34, 38])); soilFlat.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); soilFlat.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
+  ctx.fillStyle = W >= 0.5 ? soilRound : soilFlat; ctx.fill('evenodd');
+  ctx.globalAlpha = solid * (W >= 0.5 ? 1 - W : W); ctx.fillStyle = W >= 0.5 ? soilFlat : soilRound; ctx.fill('evenodd'); ctx.globalAlpha = solid;
+  // looking at the whole sky the ground is a ring round the edge: a faint glow spills over it so the sky fades into the dark and has no rim
+  if (W > 0.01) { const g = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.14); g.addColorStop(0, `rgba(${gc},${((0.05 * (1 - 0.6 * day) + 0.05 * dusk) * W).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`); ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4); }
   // a thin cool line along the very top of the land: light catching the edge, not a stroked rim
   ctx.beginPath(); land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
   ctx.strokeStyle = `rgba(${INK},.08)`; ctx.lineWidth = 1; ctx.stroke();
+  ctx.restore();
+  if (open) {
+    // the dark band: clear well inside the horizon, darkest at it, and thinning but never ending outside, so the stars beyond are faint and there is no line to see
+    const vs = VV * 0.96;
+    const veil = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.9);
+    // by day the ground is lit a little, most near the horizon, and falls to the dark of the page further out
+    const near = tone([7, 9, 15], [38, 50, 58]).replace('rgb(', '').replace(')', ''), far = tone([6, 8, 13], [15, 19, 23]).replace('rgb(', '').replace(')', '');
+    veil.addColorStop(0, `rgba(${near},0)`); veil.addColorStop(0.09, `rgba(${near},${vs.toFixed(3)})`); veil.addColorStop(0.4, `rgba(${far},${vs.toFixed(3)})`); veil.addColorStop(1, `rgba(${far},${vs.toFixed(3)})`);
+    ctx.fillStyle = veil; ctx.fillRect(-2, -2, w + 4, h + 4);
+    // a soft haze centred on the horizon, palest by day, so the edge of the sky is felt even with no line
+    const haze = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.1);
+    const ha = (0.045 + 0.13 * day) * VV;
+    haze.addColorStop(0, 'rgba(196,214,232,0)'); haze.addColorStop(0.5, `rgba(196,214,232,${ha.toFixed(3)})`); haze.addColorStop(1, 'rgba(196,214,232,0)');
+    ctx.fillStyle = haze; ctx.fillRect(-2, -2, w + 4, h + 4);
+    // then the stars below the horizon, faint and in their own colours, over the dark band, so the dark is not flat
+    for (const [x, y, r, a, rgb] of beyond) { ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+    bodies();
+    // said in the picture, where it is seen
+    const cap = Math.max(0, (Wraw - 0.55) / 0.45);
+    if (cap > 0.01 && beyond.length) {
+      // under the picture, clear of the dock; if the S of the compass is there, just above it
+      const south = place(-Math.min(5, view.fovDeg / 26), 180, -0.3);
+      let capY = room.foot - 46;
+      if (south && Math.abs(south[1] - capY) < 18) capY = south[1] - 18;
+      ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},${(0.55 * cap).toFixed(3)})`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, capY);
+    }
+  }
   // the eight ways, written on the ground under the horizon
   const wayFont = `400 ${Math.max(w < 600 ? 13 : 10, Math.min(12, S / 30))}px ${MONO}`, drop = Math.min(5, view.fovDeg / 26);
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -279,7 +333,9 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const taken: [number, number, number, number][] = [...room.clear, [0, room.foot - 24, w, h]];
   ctx.textBaseline = 'middle';
   // a name must not run down into the ground: it has to sit inside the line of the horizon
-  const below = (x: number, y: number) => {
+  const below = (x: number, y: number, soft = true) => {
+    // with the whole sky in view the edge is soft, so a name keeps well inside it and never sits in the fading band
+    if (soft && W > 0.5 && Math.hypot(x - top[0], y - top[1]) > reach * 0.93) return true;
     let inside = false;
     for (let i = 0, j = rim.length - 1; i < rim.length; j = i++) {
       const [xi, yi] = rim[i], [xj, yj] = rim[j];
@@ -297,8 +353,10 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     if (l.back !== undefined) spots.push([l.x - l.back - wide, l.y]);
     const boxOf = ([x, y]: [number, number]): [number, number, number, number] => [x - 3, y - 8, x + wide + 3, y + 8];
     const inside = ([x, y]: [number, number]) => x > 6 && x + wide < w - 6 && y > 12 && y < h - 12 && !below(x, y) && !below(x + wide, y);
+    // a planet, the Moon or the Sun is named even in the fading band
+    const insideLoose = ([x, y]: [number, number]) => x > 6 && x + wide < w - 6 && y > 12 && y < h - 12 && !below(x, y, false) && !below(x + wide, y, false);
     const free = (b: [number, number, number, number]) => !taken.some((t) => b[0] < t[2] && b[2] > t[0] && b[1] < t[3] && b[3] > t[1]);
-    const spot = spots.find((s) => inside(s) && free(boxOf(s))) ?? (l.must !== undefined ? spots.find(inside) : undefined);
+    const spot = spots.find((s) => inside(s) && free(boxOf(s))) ?? (l.must !== undefined ? spots.find(inside) ?? spots.find(insideLoose) : undefined);
     if (!spot) continue;
     taken.push(boxOf(spot));
     ctx.textAlign = 'left'; ctx.fillStyle = l.colour; ctx.fillText(l.text, spot[0], spot[1]);
