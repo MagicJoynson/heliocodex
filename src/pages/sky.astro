@@ -206,10 +206,12 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
     cancelAnimationFrame(glide);
     if (calm.matches) { view = next; render(); return; }
     const from = { ...view }, began = performance.now();
+    // opening out to the whole sky, or closing back in, is given longer so the horizon is seen to sink and the dome to open
+    const long = Math.abs(next.fovDeg - from.fovDeg) > 40 ? 1300 : 700;
     // go the short way round
     const swing = ((next.azDeg - from.azDeg + 540) % 360) - 180;
     const step = (now: number) => {
-      const x = Math.min(1, (now - began) / 700), k = x * x * (3 - 2 * x);
+      const x = Math.min(1, (now - began) / long), k = x * x * (3 - 2 * x);
       view = { azDeg: (from.azDeg + swing * k + 360) % 360, altDeg: from.altDeg + (next.altDeg - from.altDeg) * k, fovDeg: from.fovDeg + (next.fovDeg - from.fovDeg) * k };
       render();
       if (x < 1) glide = requestAnimationFrame(step);

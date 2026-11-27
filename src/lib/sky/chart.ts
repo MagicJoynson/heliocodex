@@ -97,14 +97,18 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const sunDir = sunFromEarth(m.T), sun = toSky(sunDir, m);
   // how much daylight: none with the Sun 12° or more under the horizon, full once it is up
   const day = Math.max(0, Math.min(1, (sun.altDeg + 12) / 12)), dusk = Math.max(0, 1 - Math.abs(sun.altDeg + 4) / 14);
+  // how far the view has opened out to the whole sky, 0 to 1, so every change of look between the two is smooth and nothing pops
+  const wk = Math.max(0, Math.min(1, (view.fovDeg - 90) / 60)), W = wk * wk * (3 - 2 * wk);
 
   // ---- the sky: darkest overhead, paler towards the horizon
   ctx.clearRect(0, 0, w, h);
   const top = put(0, 0, 1, -2)!, edge = place(0, view.azDeg, -2)!, reach = Math.max(Math.hypot(edge[0] - top[0], edge[1] - top[1]), 1);
   const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach);
   const tone = (n: [number, number, number], d: [number, number, number]) => `rgb(${n.map((v, i) => Math.round(v + (d[i] - v) * day)).join(',')})`;
-  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55, tone([8, 11, 22], [58, 104, 164]));
-  air.addColorStop(0.86, tone([15, 20, 36], [104, 146, 190])); air.addColorStop(1, tone([27, 33, 52], [158, 184, 206]));
+  // looking at the whole sky it stays dark right out towards the edge and only brightens in a thin band at the skyline, as the real dome does
+  const mix3 = (a: [number, number, number], b: [number, number, number]): [number, number, number] => [a[0] + (b[0] - a[0]) * W, a[1] + (b[1] - a[1]) * W, a[2] + (b[2] - a[2]) * W];
+  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55, tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
+  air.addColorStop(0.86, tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [78, 122, 176]))); air.addColorStop(1, tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [128, 160, 196])));
   ctx.fillStyle = air; ctx.fillRect(0, 0, w, h);
   // the glow over where the Sun has set or is about to rise
   if (dusk > 0) {
@@ -235,34 +239,43 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   for (let az = 0; az < 360; az += 2) rim.push(place(0, az, -2)!);
   // a low, rolling skyline (a few slow waves, never a real place) so the horizon is land and not a drawn edge
   const lie = (az: number) => 0.5 + 0.34 * Math.sin(az * 0.061 + 1.3) + 0.22 * Math.sin(az * 0.173 + 4.1) + 0.12 * Math.sin(az * 0.47 + 0.6) + 0.06 * Math.sin(az * 1.31 + 2.2);
-  const land: [number, number][] = [];
-  const wide = view.fovDeg > 110, lift = wide ? 0.5 : 1;
-  for (let az = 0; az < 360; az += 3) land.push(place(lie(az) * lift, az, -2)!);
+  // finer, tree-like ragged edge, used only once the whole sky is in view where the skyline is a ring and must not read as a drawn circle
+  const tri = (x: number) => 1 - Math.abs(2 * (x - Math.floor(x)) - 1);
+  const ragged = (az: number) => 1.5 * tri(az / 3.1 + 0.2) ** 2 * (0.4 + lie(az)) + 0.7 * tri(az / 1.7 + 0.55) + 0.3 * Math.sin(az * 5.9 + 2.0);
+  const land: [number, number][] = [], stepAz = W > 0.05 ? 1.5 : 3;
+  for (let az = 0; az < 360; az += stepAz) land.push(place(Math.max(0.05, (1 - W) * lie(az) + W * (0.6 + 2.4 * lie(az) + 1.0 * ragged(az))), az, -2)!);
+  // a farther ridge behind it, paler with haze, so the ground has depth and the sky has something to stand behind
+  const far: [number, number][] = [];
+  if (W > 0.02) for (let az = 0; az < 360; az += 3) far.push(place(2.4 + 2.6 * (0.5 + 0.4 * Math.sin(az * 0.043 + 0.7) + 0.25 * Math.sin(az * 0.11 + 3.3) + 0.1 * Math.sin(az * 0.29 + 1.1)), az, -2)!);
   // airglow hugging the horizon: a soft band of light that thins upwards, pale at night, warmer towards the Sun's side at dusk
   // one gradient fill each, because stroking wide rings (or a blur filter) was slow to redraw
   const gc = `${Math.round(120 + 60 * dusk)},${Math.round(142 + 10 * dusk)},${Math.round(190 - 60 * dusk)}`;
   const glowBand = (alpha: number) => {
-    if (wide) {
-      const g = ctx.createRadialGradient(top[0], top[1], reach * 0.55, top[0], top[1], reach * 1.02);
-      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${alpha.toFixed(3)})`);
+    if (W > 0.01) {
+      const g = ctx.createRadialGradient(top[0], top[1], reach * 0.86, top[0], top[1], reach * 1.03);
+      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${(alpha * W * 1.7).toFixed(3)})`);
       ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4);
-    } else {
+    }
+    if (W < 0.99) {
       const g = ctx.createLinearGradient(0, edge[1] - Math.max(30, S * 0.5), 0, edge[1] + 2);
-      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${alpha.toFixed(3)})`);
+      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${(alpha * (1 - W)).toFixed(3)})`);
       ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4);
     }
   };
   glowBand(0.2 * (1 - 0.6 * day) + 0.14 * dusk);
+  const outline = (pts: [number, number][]) => { ctx.beginPath(); ctx.rect(-2, -2, w + 4, h + 4); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath(); };
+  if (far.length) { outline(far); ctx.globalAlpha = W; ctx.fillStyle = tone([13, 17, 28], [34, 46, 58]); ctx.fill('evenodd'); ctx.globalAlpha = 1; }
   // the land, in nearly the colour of the page, so it falls away and the sky has no lid
-  ctx.beginPath(); ctx.rect(-2, -2, w + 4, h + 4);
-  land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
-  // whole sky: the ground is the ring outside the disc, darkest at the edge of the picture
-  const soil = wide ? ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.45) : ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
-  soil.addColorStop(0, tone([16, 19, 28], [26, 34, 38])); soil.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
-  if (!wide) { soil.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); }
-  ctx.fillStyle = soil; ctx.fill('evenodd');
-  // looking at the whole sky the ground is a ring round the edge: let the glow spill out over it so the sky fades into the dark and has no rim
-  if (wide) { const g = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.3); g.addColorStop(0, `rgba(${gc},${(0.1 * (1 - 0.6 * day) + 0.08 * dusk).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`); ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4); }
+  outline(land);
+  // whole sky: the ground is the ring outside the disc, darkest at the edge of the picture; facing, it is a band under the horizon
+  const soilRound = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.75);
+  soilRound.addColorStop(0, tone([17, 21, 32], [26, 34, 38])); soilRound.addColorStop(0.4, tone([10, 12, 19], [18, 24, 28])); soilRound.addColorStop(1, tone([6, 7, 11], [12, 16, 18]));
+  const soilFlat = ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
+  soilFlat.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); soilFlat.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
+  ctx.fillStyle = W >= 0.5 ? soilRound : soilFlat; ctx.fill('evenodd');
+  ctx.globalAlpha = W >= 0.5 ? 1 - W : W; ctx.fillStyle = W >= 0.5 ? soilFlat : soilRound; ctx.fill('evenodd'); ctx.globalAlpha = 1;
+  // looking at the whole sky the ground is a ring round the edge: a faint glow spills over it so the sky fades into the dark and has no rim
+  if (W > 0.01) { const g = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.14); g.addColorStop(0, `rgba(${gc},${((0.05 * (1 - 0.6 * day) + 0.05 * dusk) * W).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`); ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4); }
   // a thin cool line along the very top of the land: light catching the edge, not a stroked rim
   ctx.beginPath(); land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
   ctx.strokeStyle = `rgba(${INK},.08)`; ctx.lineWidth = 1; ctx.stroke();
