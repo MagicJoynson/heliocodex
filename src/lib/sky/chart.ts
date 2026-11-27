@@ -131,6 +131,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const faintest = Math.max(4.6, Math.min(6.5, 2.1 + 1.7 * Math.log10(S))), grow = Math.max(0.8, Math.min(1.5, Math.sqrt(S / 300)));
   const dim = 1 - 0.8 * day;
   const open = VV > 0.001, beyond: [number, number, number, number, string][] = [];
+  let capBox: [number, number, number, number] | null = null;
 
   // ---- stars
   const { dirs, mags } = standing(data, m), n = mags.length, at = new Float32Array(n * 2), up = new Uint8Array(n);
@@ -144,7 +145,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
       if (mags[i] > faintest || !onScreen(p[0], p[1])) continue;
       const a = Math.min(0.55, (faintest - mags[i]) * 0.16) * VV * dim * (1 + z * 1.2);
       if (a <= 0.01) continue;
-      beyond.push([p[0], p[1], Math.max(0.55, 2.2 * Math.pow(10, -0.155 * mags[i])) * grow, a, tint(data.stars[i * 5 + 4])]);
+      beyond.push([p[0], p[1], 0.55, a, tint(data.stars[i * 5 + 4])]);
       continue;
     }
     at[i * 2] = p[0]; at[i * 2 + 1] = p[1]; up[i] = 1;
@@ -315,9 +316,10 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     if (cap > 0.01 && beyond.length) {
       // under the picture, clear of the dock; if the S of the compass is there, just above it
       const south = place(-Math.min(5, view.fovDeg / 26), 180, -0.3);
-      let capY = room.foot - 46;
-      if (south && Math.abs(south[1] - capY) < 18) capY = south[1] - 18;
+      // one continuous rule (the higher of the two), so it never jumps as the view opens
+      const capY = south ? Math.min(room.foot - 46, south[1] - 18) : room.foot - 46;
       ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},${(0.55 * cap).toFixed(3)})`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, capY);
+      const cw = ctx.measureText('Faint dots beyond the edge are below the horizon').width; capBox = [w / 2 - cw / 2 - 6, capY - 9, w / 2 + cw / 2 + 6, capY + 9];
     }
   }
   // the eight ways, written on the ground under the horizon
@@ -331,6 +333,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
 
   // ---- names
   const taken: [number, number, number, number][] = [...room.clear, [0, room.foot - 24, w, h]];
+  if (capBox) taken.push(capBox);
   ctx.textBaseline = 'middle';
   // a name must not run down into the ground: it has to sit inside the line of the horizon
   const below = (x: number, y: number, soft = true) => {
