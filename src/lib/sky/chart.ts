@@ -166,10 +166,11 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   }
 
   // by day, looking at the whole sky: the air round the Sun scatters its light, a wide pale glow that fades into the blue, so the dome is not one flat colour
-  if (VV > 0.001 && day > 0.05 && sun.altDeg > -2) {
+  const sf = Math.max(0, Math.min(1, (sun.altDeg + 2) / 3)), sfade = sf * sf * (3 - 2 * sf); // fades out as the Sun sets, no step
+  if (VV > 0.001 && day > 0.05 && sfade > 0.001) {
     const sp = place(Math.max(sun.altDeg, 0.5), sun.azDeg, -0.9);
     if (sp) {
-      const rr = Math.max(reach * 0.8, 60), au = ctx.createRadialGradient(sp[0], sp[1], 0, sp[0], sp[1], rr), ka = (0.5 * day * VV).toFixed(3);
+      const rr = Math.max(reach * 0.8, 60), au = ctx.createRadialGradient(sp[0], sp[1], 0, sp[0], sp[1], rr), ka = (0.5 * day * VV * sfade).toFixed(3);
       au.addColorStop(0, `rgba(255,244,222,${ka})`); au.addColorStop(0.25, `rgba(236,232,226,${(0.5 * +ka).toFixed(3)})`); au.addColorStop(1, 'rgba(200,220,240,0)');
       ctx.save(); ctx.beginPath(); ctx.arc(top[0], top[1], reach, 0, Math.PI * 2); ctx.clip(); ctx.fillStyle = au; ctx.fillRect(0, 0, w, h); ctx.restore();
     }
