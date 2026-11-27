@@ -233,14 +233,32 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   // ---- the ground: everything outside the line where the sky meets it
   const rim: [number, number][] = [];
   for (let az = 0; az < 360; az += 2) rim.push(place(0, az, -2)!);
+  // a low, rolling skyline (a few slow waves, never a real place) so the horizon is land and not a drawn edge
+  const lie = (az: number) => 0.5 + 0.34 * Math.sin(az * 0.061 + 1.3) + 0.22 * Math.sin(az * 0.173 + 4.1) + 0.12 * Math.sin(az * 0.47 + 0.6) + 0.06 * Math.sin(az * 1.31 + 2.2);
+  const land: [number, number][] = [];
+  const wide = view.fovDeg > 110, lift = wide ? 0.5 : 1;
+  for (let az = 0; az < 360; az += 1) land.push(place(lie(az) * lift, az, -2)!);
+  // airglow hugging the horizon: a soft band of light that thins upwards, pale at night, warmer towards the Sun's side at dusk
+  // built from a few wide strokes, each fainter and narrower than the last, because a blur filter is slow to redraw
+  const glowRing = (width: number, alpha: number) => {
+    ctx.beginPath(); rim.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
+    ctx.lineJoin = 'round'; const c = `${Math.round(120 + 60 * dusk)},${Math.round(142 + 10 * dusk)},${Math.round(190 - 60 * dusk)}`;
+    for (let i = 0; i < 7; i++) { ctx.lineWidth = width * (1 - i / 7); ctx.strokeStyle = `rgba(${c},${(alpha / 7).toFixed(4)})`; ctx.stroke(); }
+  };
+  glowRing(Math.max(30, S * 0.5), 0.2 * (1 - 0.6 * day) + 0.14 * dusk);
+  // the land, in nearly the colour of the page, so it falls away and the sky has no lid
   ctx.beginPath(); ctx.rect(-2, -2, w + 4, h + 4);
-  rim.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
-  const soil = ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.5);
-  soil.addColorStop(0, tone([9, 10, 13], [30, 38, 40])); soil.addColorStop(1, tone([6, 6, 8], [16, 20, 22]));
+  land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
+  // whole sky: the ground is the ring outside the disc, darkest at the edge of the picture
+  const soil = wide ? ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.45) : ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
+  soil.addColorStop(0, tone([16, 19, 28], [26, 34, 38])); soil.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
+  if (!wide) { soil.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); }
   ctx.fillStyle = soil; ctx.fill('evenodd');
-  // haze where the two meet
-  ctx.beginPath(); rim.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
-  ctx.strokeStyle = `rgba(${INK},.3)`; ctx.lineWidth = 1; ctx.stroke();
+  // looking at the whole sky the ground is a ring round the edge: let the glow spill out over it so the sky fades into the dark and has no rim
+  if (wide) glowRing(S * 0.45, 0.1 * (1 - 0.6 * day) + 0.08 * dusk);
+  // a thin cool line along the very top of the land: light catching the edge, not a stroked rim
+  ctx.beginPath(); land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
+  ctx.strokeStyle = `rgba(${INK},.08)`; ctx.lineWidth = 1; ctx.stroke();
   // the eight ways, written on the ground under the horizon
   const wayFont = `400 ${Math.max(10, Math.min(12, S / 30))}px ${MONO}`, drop = Math.min(5, view.fovDeg / 26);
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
