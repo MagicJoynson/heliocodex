@@ -98,17 +98,21 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   // how much daylight: none with the Sun 12° or more under the horizon, full once it is up
   const day = Math.max(0, Math.min(1, (sun.altDeg + 12) / 12)), dusk = Math.max(0, 1 - Math.abs(sun.altDeg + 4) / 14);
   // how far the view has opened out to the whole sky, 0 to 1, so every change of look between the two is smooth and nothing pops
-  const wk = Math.max(0, Math.min(1, (view.fovDeg - 90) / 60)), W = wk * wk * (3 - 2 * wk);
+  const wk = Math.max(0, Math.min(1, (view.fovDeg - 90) / 60)), Wraw = wk * wk * (3 - 2 * wk);
+  // the whole-sky look comes in between blend 0.15 and 0.5: below that the view is the ordinary one, untouched
+  const V = Math.max(0, Math.min(1, (Wraw - 0.15) / 0.35)), VV = V * V * (3 - 2 * V), W = VV;
 
   // ---- the sky: darkest overhead, paler towards the horizon
   ctx.clearRect(0, 0, w, h);
   const top = put(0, 0, 1, -2)!, edge = place(0, view.azDeg, -2)!, reach = Math.max(Math.hypot(edge[0] - top[0], edge[1] - top[1]), 1);
-  const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach);
+  // the sky ends at the horizon: past it (ground, always covered or dark) nothing pale is painted, so the ground can fade in and out without a light slab showing
+  const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach * 1.05);
   const tone = (n: [number, number, number], d: [number, number, number]) => `rgb(${n.map((v, i) => Math.round(v + (d[i] - v) * day)).join(',')})`;
   // looking at the whole sky it stays dark right out towards the edge and only brightens in a thin band at the skyline, as the real dome does
   const mix3 = (a: [number, number, number], b: [number, number, number]): [number, number, number] => [a[0] + (b[0] - a[0]) * W, a[1] + (b[1] - a[1]) * W, a[2] + (b[2] - a[2]) * W];
-  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55, tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
-  air.addColorStop(0.86, tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [96, 138, 186]))); air.addColorStop(1, tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [170, 194, 214])));
+  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55 / 1.05, tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
+  air.addColorStop(0.86 / 1.05, tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [96, 138, 186]))); air.addColorStop(1 / 1.05, tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [170, 194, 214])));
+  air.addColorStop(1, tone([7, 9, 15], [26, 34, 38]));
   ctx.fillStyle = air; ctx.fillRect(0, 0, w, h);
   // the glow over where the Sun has set or is about to rise
   if (dusk > 0) {
@@ -125,8 +129,6 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   // fainter stars come in as the view closes in, so a wide view is not a blur of dots
   const faintest = Math.max(4.6, Math.min(6.5, 2.1 + 1.7 * Math.log10(S))), grow = Math.max(0.8, Math.min(1.5, Math.sqrt(S / 300)));
   const dim = 1 - 0.8 * day;
-  // the dark band that takes over the ground comes in between W 0.15 and 0.5, so the ground has gone before the band is needed and nothing shows between
-  const V = Math.max(0, Math.min(1, (W - 0.15) / 0.35)), VV = V * V * (3 - 2 * V);
   const open = VV > 0.001, beyond: [number, number, number, number, string][] = [];
 
   // ---- stars
@@ -261,8 +263,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const gc = `${Math.round(120 + 60 * dusk)},${Math.round(142 + 10 * dusk)},${Math.round(190 - 60 * dusk)}`;
   const glowBand = (alpha: number) => {
     if (W > 0.01) {
-      const g = ctx.createRadialGradient(top[0], top[1], reach * 0.86, top[0], top[1], reach * 1.03);
-      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(1, `rgba(${gc},${(alpha * W * 1.7).toFixed(3)})`);
+      const g = ctx.createRadialGradient(top[0], top[1], reach * 0.86, top[0], top[1], reach * 1.06);
+      g.addColorStop(0, `rgba(${gc},0)`); g.addColorStop(0.75, `rgba(${gc},${(alpha * W * 1.7).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`);
       ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4);
     }
     if (W < 0.99) {
@@ -293,8 +295,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   ctx.restore();
   if (open) {
     // the dark band: clear well inside the horizon, darkest at it, and thinning but never ending outside, so the stars beyond are faint and there is no line to see
-    // the dark band is up before the land has gone, so no light sky shows through between the two
-    const VA = Math.min(1, 3 * VV), vs = VA * VA * (3 - 2 * VA) * 0.96;
+    const vs = VV * 0.96;
     const veil = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.9);
     // by day the ground is lit a little, most near the horizon, and falls to the dark of the page further out
     const near = tone([7, 9, 15], [38, 50, 58]).replace('rgb(', '').replace(')', ''), far = tone([6, 8, 13], [15, 19, 23]).replace('rgb(', '').replace(')', '');
@@ -309,8 +310,14 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     for (const [x, y, r, a, rgb] of beyond) { ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
     bodies();
     // said in the picture, where it is seen
-    const cap = Math.max(0, (VV - 0.6) / 0.4);
-    if (cap > 0.01 && beyond.length) { ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},${(0.55 * cap).toFixed(3)})`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, room.foot - 40); }
+    const cap = Math.max(0, (Wraw - 0.55) / 0.45);
+    if (cap > 0.01 && beyond.length) {
+      // under the picture, clear of the dock; if the S of the compass is there, just above it
+      const south = place(-Math.min(5, view.fovDeg / 26), 180, -0.3);
+      let capY = room.foot - 40;
+      if (south && Math.abs(south[1] - capY) < 18) capY = south[1] - 18;
+      ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},${(0.55 * cap).toFixed(3)})`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, capY);
+    }
   }
   // the eight ways, written on the ground under the horizon
   const wayFont = `400 ${Math.max(w < 600 ? 13 : 10, Math.min(12, S / 30))}px ${MONO}`, drop = Math.min(5, view.fovDeg / 26);
