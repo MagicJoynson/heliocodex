@@ -1,0 +1,128 @@
+{
+ "source": "Eclipse Predictions by Fred Espenak and Jean Meeus, NASA's GSFC",
+ "url": "https://eclipse.gsfc.nasa.gov/OH/OH{year}.html",
+ "first": 2026,
+ "last": 2030,
+ "eclipses": [
+  {
+   "at": "2026-02-17T12:12:00Z",
+   "kind": "Annular Solar",
+   "magnitude": 0.96299
+  },
+  {
+   "at": "2026-03-03T11:34:00Z",
+   "kind": "Total Lunar",
+   "magnitude": 1.1507
+  },
+  {
+   "at": "2026-08-12T17:46:00Z",
+   "kind": "Total Solar",
+   "magnitude": 1.03863
+  },
+  {
+   "at": "2026-08-28T04:13:00Z",
+   "kind": "Partial Lunar",
+   "magnitude": 0.9299
+  },
+  {
+   "at": "2027-02-06T16:00:00Z",
+   "kind": "Annular Solar",
+   "magnitude": 0.92811
+  },
+  {
+   "at": "2027-02-20T23:13:00Z",
+   "kind": "Penumbral Lunar",
+   "magnitude": 0.9266
+  },
+  {
+   "at": "2027-07-18T16:03:00Z",
+   "kind": "Penumbral Lunar",
+   "magnitude": 0.0014
+  },
+  {
+   "at": "2027-08-02T10:07:00Z",
+   "kind": "Total Solar",
+   "magnitude": 1.07903
+  },
+  {
+   "at": "2027-08-17T07:14:00Z",
+   "kind": "Penumbral Lunar",
+   "magnitude": 0.5456
+  },
+  {
+   "at": "2028-01-12T04:13:00Z",
+   "kind": "Partial Lunar",
+   "magnitude": 0.0662
+  },
+  {
+   "at": "2028-01-26T15:08:00Z",
+   "kind": "Annular Solar",
+   "magnitude": 0.92079
+  },
+  {
+   "at": "2028-07-06T18:20:00Z",
+   "kind": "Partial Lunar",
+   "magnitude": 0.3892
+  },
+  {
+   "at": "2028-07-22T02:55:00Z",
+   "kind": "Total Solar",
+   "magnitude": 1.05602
+  },
+  {
+   "at": "2028-12-31T16:52:00Z",
+   "kind": "Total Lunar",
+   "magnitude": 1.2463
+  },
+  {
+   "at": "2029-01-14T17:13:00Z",
+   "kind": "Partial Solar",
+   "magnitude": 0.87138
+  },
+  {
+   "at": "2029-06-12T04:05:00Z",
+   "kind": "Partial Solar",
+   "magnitude": 0.45759
+  },
+  {
+   "at": "2029-06-26T03:22:00Z",
+   "kind": "Total Lunar",
+   "magnitude": 1.8436
+  },
+  {
+   "at": "2029-07-11T15:36:00Z",
+   "kind": "Partial Solar",
+   "magnitude": 0.23029
+  },
+  {
+   "at": "2029-12-05T15:03:00Z",
+   "kind": "Partial Solar",
+   "magnitude": 0.89106
+  },
+  {
+   "at": "2029-12-20T22:42:00Z",
+   "kind": "Total Lunar",
+   "magnitude": 1.1174
+  },
+  {
+   "at": "2030-06-01T06:28:00Z",
+   "kind": "Annular Solar",
+   "magnitude": 0.94426
+  },
+  {
+   "at": "2030-06-15T18:33:00Z",
+   "kind": "Partial Lunar",
+   "magnitude": 0.5025
+  },
+  {
+   "at": "2030-11-25T06:50:00Z",
+   "kind": "Total Solar",
+   "magnitude": 1.04684
+  },
+  {
+   "at": "2030-12-09T22:28:00Z",
+   "kind": "Penumbral Lunar",
+   "magnitude": 0.9416
+  }
+ ]
+}

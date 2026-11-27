@@ -8,20 +8,11 @@ import { SHOWERS } from '../../lib/sky/week';
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const span = (a: [number, number], b: [number, number]) => `${a[1]} ${MONTHS[a[0] - 1]} to ${b[1]} ${MONTHS[b[0] - 1]}`;
-// NASA Goddard eclipse pages for each year (Fred Espenak and Jean Meeus, Five Millennium Canon): greatest eclipse in Universal Time
-const ECLIPSES: [string, string, string, string][] = [
-  ['6 February 2027', 'Annular solar', '16:00', '0.928'],
-  ['20 February 2027', 'Penumbral lunar', '23:13', '0.927'],
-  ['18 July 2027', 'Penumbral lunar', '16:03', '0.001'],
-  ['2 August 2027', 'Total solar', '10:07', '1.079'],
-  ['17 August 2027', 'Penumbral lunar', '07:14', '0.546'],
-  ['12 January 2028', 'Partial lunar', '04:13', '0.066'],
-  ['26 January 2028', 'Annular solar', '15:08', '0.921'],
-  ['6 July 2028', 'Partial lunar', '18:20', '0.389'],
-  ['22 July 2028', 'Total solar', '02:55', '1.056'],
-  ['31 December 2028', 'Total lunar', '16:52', '1.246'],
-];
-const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 February 2027": "2027-02-20", "18 July 2027": "2027-07-18", "2 August 2027": "2027-08-02", "17 August 2027": "2027-08-17", "12 January 2028": "2028-01-12", "26 January 2028": "2028-01-26", "6 July 2028": "2028-07-06", "22 July 2028": "2028-07-22", "31 December 2028": "2028-12-31"};
+// every eclipse from src/data/eclipses.json (built by scripts/build-eclipses.py from NASA Goddard's year pages); the page shows the ones still to come
+import eclipses from '../../data/eclipses.json';
+const KINDS: Record<string, string> = { 'Annular Solar': 'Annular solar', 'Total Solar': 'Total solar', 'Partial Solar': 'Partial solar', 'Hybrid Solar': 'Hybrid solar', 'Total Lunar': 'Total lunar', 'Partial Lunar': 'Partial lunar', 'Penumbral Lunar': 'Penumbral lunar' };
+const FULL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const ROWS = eclipses.eclipses.map((e) => { const d = new Date(e.at); return { at: e.at, date: `${d.getUTCDate()} ${FULL_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`, kind: KINDS[e.kind], time: e.at.slice(11, 16), mag: e.magnitude.toFixed(3) }; });
 ---
 <Reading title="Sky this week" path="/sky/week" description="What to look for in the sky over the next seven days from where you are: Moon phases, planets, close pairings, meteor showers and the times the Sun and Moon rise and set. Worked out from real orbits.">
   <header class="reading-head">
@@ -72,6 +63,7 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
 
   <section class="row wide" aria-labelledby="h-met">
     <div class="hang"><h2 id="h-met">Meteor showers</h2><p class="note" id="wk-met-note">The year's main showers. The rate is what a keen observer would count in an hour under a perfect dark sky, with the radiant overhead. Real skies give fewer.</p></div>
+    <p class="swipe">Slide the table sideways to see every column.</p>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Meteor showers, scrolls sideways">
       <table class="met">
         <thead><tr><th scope="col">Shower</th><th scope="col">Active</th><th scope="col">Next peak</th><th scope="col">Moon at the peak</th><th scope="col">Rate an hour</th><th scope="col">Speed km/s</th></tr></thead>
@@ -84,14 +76,15 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
   </section>
 
   <section class="row wide" aria-labelledby="h-ecl">
-    <div class="hang"><h2 id="h-ecl">Eclipses ahead</h2><p class="note">The eclipses of the Sun and Moon still to come in 2027 and 2028, at the moment of greatest eclipse, in Universal Time. Where each can be seen is on NASA's page for the year.</p></div>
+    <div class="hang"><h2 id="h-ecl">Eclipses ahead</h2><p class="note">The next eclipses of the Sun and Moon, at the moment of greatest eclipse, in Universal Time. Where each can be seen is on NASA's page for the year.</p></div>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Eclipses, scrolls sideways">
       <table class="ecl">
         <thead><tr><th scope="col">Date</th><th scope="col">Kind</th><th scope="col">Greatest eclipse, UT</th><th scope="col">Magnitude</th></tr></thead>
-        <tbody>{ECLIPSES.map(([d, k, t, m]) => <tr data-day={ISO[d]}><th scope="row">{d}</th><td>{k}</td><td>{t}</td><td>{m}</td></tr>)}</tbody>
+        <tbody id="wk-ecl">{ROWS.map((r) => <tr data-at={r.at}><th scope="row">{r.date}</th><td>{r.kind}</td><td>{r.time}</td><td>{r.mag}</td></tr>)}</tbody>
       </table>
     </div>
-    <p class="fine">Predictions by Fred Espenak and Jean Meeus, from the Five Millennium Canon of Solar Eclipses and of Lunar Eclipses, as listed by NASA's Goddard Space Flight Center for <a href="https://eclipse.gsfc.nasa.gov/OH/OH2027.html" rel="noopener">2027</a> and <a href="https://eclipse.gsfc.nasa.gov/OH/OH2028.html" rel="noopener">2028</a>. Magnitude is the fraction of the Sun's width covered (solar), of the Moon's width inside the Earth's dark shadow (partial and total lunar), or inside its pale outer shadow (penumbral lunar). A penumbral lunar eclipse is a faint dimming that is hard to see by eye.</p>
+    <p class="fine" id="wk-ecl-none" hidden>No eclipse is listed after today: the list stops at the end of 2030. See NASA's eclipse site for later ones.</p>
+    <p class="fine">Predictions by Fred Espenak and Jean Meeus, from the Five Millennium Canon of Solar Eclipses and of Lunar Eclipses, as listed by NASA's Goddard Space Flight Center on its <a href="https://eclipse.gsfc.nasa.gov/OH/OH2027.html" rel="noopener">page for each year</a>. The list is kept to the end of 2030, where those pages stop. Magnitude is the fraction of the Sun's width covered (solar), of the Moon's width inside the Earth's dark shadow (partial and total lunar), or inside its pale outer shadow (penumbral lunar). A penumbral lunar eclipse is a faint dimming that is hard to see by eye.</p>
   </section>
 
   <section class="row wide how" aria-labelledby="h-how">
@@ -221,7 +214,10 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
       row.append(m); dbox.append(row);
     }
 
-    document.querySelectorAll<HTMLElement>('table.ecl tbody tr').forEach((r) => { r.hidden = new Date(`${r.dataset.day}T23:59:59Z`) < start; });
+    const ecl = [...document.querySelectorAll<HTMLElement>('#wk-ecl tr')];
+    let shownEcl = 0;
+    ecl.forEach((r) => { const ahead = new Date(r.dataset.at!) >= start && shownEcl < 12; if (ahead) shownEcl++; r.hidden = !ahead; });
+    $('wk-ecl-none').hidden = shownEcl > 0;
     // ---- meteor showers
     const rows = new Map<string, HTMLElement>();
     document.querySelectorAll<HTMLElement>('#wk-met tr').forEach((r) => rows.set(r.dataset.shower!, r));
@@ -337,10 +333,13 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
   table.met td, table.ecl td { font: 300 1.02rem/1.4 var(--r-serif); color: var(--ink-soft); padding: .65rem 1rem .65rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
   table.met tr.on th { color: var(--accent); }
   table.met tr.on th::after { content: ' · active now'; font: 400 .8125rem/1 var(--r-mono); letter-spacing: .04em; color: var(--accent); }
+  .swipe { display: none; font: 400 .8125rem/1.4 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin: 0; }
+  .table-scroll { background: linear-gradient(to right, #0b0b0c 30%, transparent), linear-gradient(to left, #0b0b0c 30%, transparent) 100% 0, radial-gradient(farthest-side at 0 50%, rgba(233,196,138,.28), transparent), radial-gradient(farthest-side at 100% 50%, rgba(233,196,138,.28), transparent) 100% 0; background-repeat: no-repeat; background-size: 2.4rem 100%, 2.4rem 100%, .9rem 100%, .9rem 100%; background-attachment: local, local, scroll, scroll; }
   .fine { font: 300 .98rem/1.55 var(--r-serif); color: var(--ink-faint); max-width: 48rem; margin: 0; }
   .how .prose { max-width: 44rem; }
 
   @media (max-width: 760px) {
+    .swipe { display: block; }
     .ev { grid-template-columns: minmax(0, 1fr); gap: .35rem; }
     .dusk { grid-template-columns: minmax(0, 1fr); }
     .dy { grid-template-columns: minmax(0, 1fr); gap: .5rem; padding: 1.1rem 0; }
