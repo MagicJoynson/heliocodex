@@ -18,7 +18,7 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
       <p class="sky-hold" id="sky-hold">Fetching the stars…</p>
 
       <header class="sky-head">
-        <p class="label">The sky tonight</p>
+        <p class="label" id="sky-label">The sky tonight</p>
         <h1>Look up</h1>
         <p class="sky-line" id="sky-line"></p>
         <p class="sky-note" id="sky-note" hidden></p>
@@ -317,6 +317,8 @@ const newer = Object.fromEntries(pageStars().filter((s) => MODERN[s.slug]).map((
   /** What is above the horizon, all round, in words. Worked out from the sums, not read off the picture, so it does not depend on which way the view is turned. */
   function upNow(m: Moment): void {
     const sun = toSky(sunFromEarth(m.T), m), moon = moonSky(m), out: string[] = [];
+    // the heading follows the hour: by day it is not 'tonight'
+    $('sky-label').textContent = sun.altDeg > 0 ? (Number(shift.value) + dayShift === 0 ? 'The sky now' : 'The sky by day') : 'The sky tonight';
     if (sun.altDeg > 0) out.push(`The Sun is up, ${whereabouts(sun)}, so the stars are hidden by daylight. The picture shows what is behind the blue. Choose "Tonight" to see the sky after dark.`);
     const eye = PLANETS.filter((id) => id !== 'uranus' && id !== 'neptune').map((id) => ({ id, ...toSky(planetFromEarth(id, m.T).dir, m) })).filter((k) => k.altDeg > 3);
     out.push(eye.length ? `Planets you can see by eye: ${eye.map((k) => `${PLANET_NAMES[k.id]}, ${whereabouts(k)}`).join('; ')}.` : 'No planet bright enough to see by eye is above the horizon at this moment.');
