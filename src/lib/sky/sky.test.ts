@@ -96,5 +96,64 @@ test('Distances in lessons, facts, glossary and 3D captions match the star pages
   if (bad.length) throw new Error(bad.join('\n'));
 });
 
+
+// ---- Sky this week (week.ts) ----
+import { events, moonLit, planetLook, sunAt, localMidnight, day, SHOWERS } from './week';
+const at = (s: string) => new Date(s);
+const find = (list: ReturnType<typeof events>, title: string) => list.find((e) => e.title === title);
+
+test('Week: Moon phases fall within 15 minutes of USNO times (New 2025-11-20 06:47 UT, Full 2025-12-04 23:14 UT)', () => {
+  const e = events(at('2025-11-15T00:00:00Z'), at('2025-12-08T00:00:00Z'));
+  near(find(e, 'New Moon')!.at.getTime() / 60000, at('2025-11-20T06:47:00Z').getTime() / 60000, 15, 'new moon (minutes)');
+  near(find(e, 'Full Moon')!.at.getTime() / 60000, at('2025-12-04T23:14:00Z').getTime() / 60000, 15, 'full moon (minutes)');
+});
+test('Week: oppositions land within a day of the almanac (Mars 2025-01-16, Saturn 2025-09-21, Jupiter 2026-01-10)', () => {
+  for (const [id, when, from, to] of [['Mars', '2025-01-16T00:00:00Z', '2025-01-01', '2025-02-01'], ['Saturn', '2025-09-21T00:00:00Z', '2025-09-05', '2025-10-05'], ['Jupiter', '2026-01-10T00:00:00Z', '2025-12-28', '2026-01-25']]) {
+    const e = find(events(at(from), at(to)), `${id} at opposition`);
+    if (!e) throw new Error(`no ${id} opposition found`);
+    near(e.at.getTime() / 86400000, at(when).getTime() / 86400000, 1.5, `${id} opposition (days)`);
+  }
+});
+test('Week: Venus greatest elongation west 2025-06-01 (45.9 degrees) within two days', () => {
+  const e = find(events(at('2025-05-20'), at('2025-06-15')), 'Venus at greatest elongation west');
+  if (!e) throw new Error('not found');
+  near(e.at.getTime() / 86400000, at('2025-06-01T00:00:00Z').getTime() / 86400000, 2.5, 'days');
+  near(planetLook('venus', e.at).elongDeg, 45.9, 0.5, 'elongation');
+});
+test('Week: brightness of the planets is in the right range', () => {
+  near(planetLook('venus', at('2025-06-01')).mag, -4.2, 0.4, 'Venus');
+  near(planetLook('jupiter', at('2025-12-07')).mag, -2.7, 0.3, 'Jupiter at opposition');
+  near(planetLook('mars', at('2025-01-16')).mag, -1.4, 0.3, 'Mars at opposition');
+  near(planetLook('saturn', at('2025-09-21')).mag, 0.7, 0.5, 'Saturn');
+});
+test('Week: the solstice is on 21 Dec 2025 at about 15:03 UT', () => {
+  const e = find(events(at('2025-12-18'), at('2025-12-24')), 'December solstice')!;
+  near(e.at.getTime() / 60000, at('2025-12-21T15:03:00Z').getTime() / 60000, 30, 'minutes');
+});
+test('Week: the equinoxes and solstices fall within fifteen minutes of USNO (2026: Mar 20 14:46, Jun 21 08:24, Sep 23 00:05, Dec 21 20:50 UT)', () => {
+  for (const [name, when] of [['March equinox', '2026-03-20T14:46:00Z'], ['June solstice', '2026-06-21T08:24:00Z'], ['September equinox', '2026-09-23T00:05:00Z'], ['December solstice', '2026-12-21T20:50:00Z']]) {
+    const e = find(events(new Date(new Date(when).getTime() - 3 * 86400000), new Date(new Date(when).getTime() + 3 * 86400000)), name);
+    if (!e) throw new Error(`${name} not found`);
+    near(e.at.getTime() / 60000, new Date(when).getTime() / 60000, 15, name);
+  }
+});
+test('Week: Geminids 2026 within 3 hours of the IMO (14 Dec, about 14h UT) and Leonids 2026 near 17 Nov 23h UT', () => {
+  const g = sunAt(SHOWERS.find((s) => s.name === 'Geminids')!.peakLon, at('2026-12-01')).getTime();
+  near(g / 3600000, at('2026-12-14T14:00:00Z').getTime() / 3600000, 3, 'Geminids (hours)');
+  const l = sunAt(SHOWERS.find((s) => s.name === 'Leonids')!.peakLon, at('2026-11-01')).getTime();
+  near(l / 3600000, at('2026-11-17T23:45:00Z').getTime() / 3600000, 3, 'Leonids (hours)');
+});
+test('Week: London sunrise and sunset on 21 Dec 2025 are about 08:04 and 15:53 GMT', () => {
+  const d = day(localMidnight(at('2025-12-21T12:00:00Z'), 'Europe/London'), 51.51, -0.13);
+  near(d.sunrise!.getUTCHours() * 60 + d.sunrise!.getUTCMinutes(), 8 * 60 + 4, 4, 'sunrise');
+  near(d.sunset!.getUTCHours() * 60 + d.sunset!.getUTCMinutes(), 15 * 60 + 53, 4, 'sunset');
+});
+test('Week: local midnight survives the clocks changing (London, 26 Oct 2025, 25 hours long)', () => {
+  const a = localMidnight(at('2025-10-26T12:00:00Z'), 'Europe/London'), b = localMidnight(at('2025-10-26T12:00:00Z'), 'Europe/London', 1);
+  near((b.getTime() - a.getTime()) / 3600000, 25, 0.001, 'hours');
+});
+test('Week: Moon lit fraction near 0 at new Moon and near 1 at full', () => {
+  near(moonLit(at('2025-11-20T06:47:00Z')).lit, 0, 0.01, 'new'); near(moonLit(at('2025-12-04T23:14:00Z')).lit, 1, 0.01, 'full');
+});
 console.log(failed.length ? `\n${failed.length} failed` : '\nall passed');
 if (failed.length) throw new Error(`${failed.length} sky tests failed`);
