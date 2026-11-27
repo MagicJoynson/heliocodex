@@ -79,7 +79,7 @@ for (const it of pick('pair', 3)) {
     return { t: when(r[0]).getTime(), y: Math.acos(Math.min(1, Math.sin(d1) * Math.sin(d2) + Math.cos(d1) * Math.cos(d2) * Math.cos(ra1 - ra2))) * 180 / Math.PI };
   });
   const p = peak(sep, -1);
-  rows.push({ what: `${it.title} (${it.figure})`, ours: iso(it.at), theirs: `${iso(new Date(p.t))}, ${(-p.y).toFixed(2)}° apart`, diff: hm((it.at.getTime() - p.t) / 60000) });
+  rows.push({ what: `${it.title} (${it.figure})`, ours: iso(it.at), theirs: `${iso(new Date(p.t))}, ${Math.abs(p.y).toFixed(2)}° apart`, diff: hm((it.at.getTime() - p.t) / 60000) });
 }
 for (const [kind, sign] of [['near', 1], ['far', -1]] as const) for (const it of pick(kind, 3)) {
   const a = new Date(it.at.getTime() - 24 * 3600000), b = new Date(it.at.getTime() + 24 * 3600000);
