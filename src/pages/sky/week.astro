@@ -174,7 +174,8 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
       const body = el('div', 'what');
       // a pairing with the Moon at midday cannot be seen then: say so
       const dm = moment(e.at, p.lat, p.lon), daylight = toSky(sunFromEarth(dm.T), dm).altDeg > -6;
-      const extra = daylight && e.title.startsWith('Moon near') ? ' It is daylight where you are then, so look the evening before or after.' : '';
+      const moonUp = moonSky(dm).altDeg > 0;
+      const extra = !e.title.startsWith('Moon near') ? '' : !moonUp ? ' The Moon is below the horizon where you are at that moment.' : daylight ? ' The sky is still light where you are at that moment, so it is hard to see.' : '';
       body.append(el('h3', undefined, e.title), el('p', undefined, e.text + extra));
       li.append(time, body); ol.append(li);
     }
@@ -182,10 +183,11 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
     // ---- once it is dark
     const edges = nightEdges(start, p.lat, p.lon), pw = planetsWeek(start, p.lat, p.lon, edges);
     $('wk-dusk-note').textContent = edges.dark ? `${edges.evening.getTime() - start.getTime() < 60000 ? 'Now' : `Around ${at(edges.evening)}`}, when it is dark enough to look. The planets are listed for that moment and again before dawn.` : 'The Sun does not get far enough below the horizon here this week for a dark sky.';
+    document.querySelectorAll<HTMLElement>('.ring').forEach((f) => { f.hidden = !edges.dark; });
     drawRing('wk-ring', p.lat, p.lon, edges.evening, pw);
     drawRing('wk-ring2', p.lat, p.lon, edges.morning, pw);
-    $('wk-ring-cap').textContent = `${edges.dark ? at(edges.evening) : ''} The evening: the whole horizon unrolled, north at both ends. Height above the ground goes up the side.`.trim();
-    $('wk-ring2-cap').textContent = `Before dawn${edges.dark ? `, about ${at(edges.morning)}` : ''}, the same way round.`;
+    $('wk-ring-cap').textContent = `The evening, about ${at(edges.evening)}: the whole horizon unrolled, north at both ends. Height above the ground goes up the side.`;
+    $('wk-ring2-cap').textContent = `Before dawn, about ${at(edges.morning)}: the same way round.`;
     const box = $('wk-planets'); box.replaceChildren();
     if (!edges.dark) box.append(el('p', 'sub', 'The sky does not get dark here this week, so the planets are not listed. The sky map shows where they stand.'));
     else for (const k of pw) {
@@ -198,7 +200,7 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
       if (eve && morn) line = `Up all night. In the evening ${pos(k.evening)}, and before dawn ${pos(k.morning)}.`;
       else if (eve) line = `In the evening sky, ${pos(k.evening)}${k.sets ? `, setting at ${at(k.sets)}` : ''}.`;
       else if (morn) line = `In the morning sky before dawn, ${pos(k.morning)}${k.rises ? `, rising at ${at(k.rises)}` : ''}.`;
-      else if (k.elongDeg < 20) line = 'Too close to the Sun to see.';
+      else if (k.elongDeg < 20) line = 'Close to the Sun, so hard to see.';
       else line = 'Not up in the dark hours.';
       const sub = `${Math.round(k.elongDeg)}° from the Sun, ${(k.id === 'mercury' || k.id === 'venus') ? `${(k.lit * 100).toFixed(0)}% lit, ` : ''}${k.au.toFixed(2)} au away.`;
       row.append(head, el('p', 'where', line), el('p', 'sub', sub));
@@ -251,19 +253,25 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
     for (const [az, w] of [[0, 'N'], [45, 'NE'], [90, 'E'], [135, 'SE'], [180, 'S'], [225, 'SW'], [270, 'W'], [315, 'NW'], [360, 'N']] as const) {
       s.append(svg('text', { x: x(az), y: H - 14, class: 'ax', 'text-anchor': az === 0 ? 'start' : az === 360 ? 'end' : 'middle' }, w));
     }
-    // placed in order of bearing; a name that would sit on the one before moves up
-    const boxes: [number, number, number, number][] = [];
-    for (const k of marks) {
-      const cx = x(k.az), cy = y(k.alt), wide = k.name.length * 23 + 12, right = cx + wide + k.r < W - R;
-      let ty = cy + 12;
-      const clash = (yy: number) => boxes.some((b) => !(b[2] < (right ? cx + k.r : cx - k.r - wide) || b[0] > (right ? cx + k.r + wide : cx - k.r) || b[3] < yy - 40 || b[1] > yy + 8));
-      for (let t = 0; t < 8 && clash(ty); t++) ty -= 48;
-      const tx = right ? cx + k.r + 10 : cx - k.r - 10;
-      boxes.push([right ? tx : tx - wide, ty - 40, right ? tx + wide : tx, ty + 8]);
+    // every dot is an obstacle; each name tries right, then left, level, then below and above, and takes the first spot that is clear and inside the chart
+    const boxes: [number, number, number, number][] = marks.map((k) => [x(k.az) - k.r - 4, y(k.alt) - k.r - 4, x(k.az) + k.r + 4, y(k.alt) + k.r + 4]);
+    const hit = (a: number[], b: number[]) => !(a[2] < b[0] || a[0] > b[2] || a[3] < b[1] || a[1] > b[3]);
+    marks.forEach((k, i) => {
+      const cx = x(k.az), cy = y(k.alt), wide = k.name.length * 23 + 12;
+      let best: { tx: number; ty: number; right: boolean } | null = null;
+      search: for (const dy of [12, 60, -36, 108, -84]) for (const right of [true, false]) {
+        const tx = right ? cx + k.r + 10 : cx - k.r - 10, ty = cy + dy;
+        const box = [right ? tx : tx - wide, ty - 36, right ? tx + wide : tx, ty + 10];
+        if (box[0] < L || box[2] > W - R || box[1] < T || box[3] > H - B) continue;
+        if (boxes.some((o, j) => j !== i && hit(box, o))) continue;
+        best = { tx, ty, right }; break search;
+      }
+      if (!best) best = { tx: cx + k.r + 10, ty: cy + 12, right: cx + wide + k.r < W - R };
+      boxes.push([best.right ? best.tx : best.tx - wide, best.ty - 36, best.right ? best.tx + wide : best.tx, best.ty + 10]);
       const g = svg('g', { class: k.kind });
-      g.append(svg('circle', { cx, cy, r: k.r }), svg('text', { x: tx, y: ty, 'text-anchor': right ? 'start' : 'end' }, k.name));
+      g.append(svg('circle', { cx, cy, r: k.r }), svg('text', { x: best.tx, y: best.ty, 'text-anchor': best.right ? 'start' : 'end' }, k.name));
       s.append(g);
-    }
+    });
     if (!marks.length) s.append(svg('text', { x: W / 2, y: H / 2 - 10, class: 'ax', 'text-anchor': 'middle' }, 'Nothing bright is above the horizon'));
   }
 
@@ -294,6 +302,7 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
   .dusk { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem 3rem; align-items: start; }
   .rings { display: grid; gap: 1.4rem; }
   .ring { margin: 0; }
+  .ring[hidden] { display: none; }
   .ring svg { display: block; width: 100%; height: auto; background: #0e0e10; border: 1px solid var(--rule); border-radius: 4px; }
   .ring figcaption { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
   .ring .sky { fill: #0b0d14; }
