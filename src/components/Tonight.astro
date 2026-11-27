@@ -2,8 +2,13 @@
 // "Tonight" strip for the home page. Filled in by the visitor's own device from the sky sums
 // (src/lib/sky/tonight.ts), for the same place every other page uses (src/lib/sky/remember.ts herePlace),
 // with times as the clocks read there. Nothing is sent anywhere.
+import { upcoming } from '../lib/sky/upcoming';
+// the next few events worth looking up for, worked out when the site is built; the page picks the first one still ahead
+const t0 = new Date();
+const ahead = upcoming(t0, new Date(t0.getTime() + 400 * 86400000)).filter((i) => !['sun', 'near', 'far'].includes(i.kind)).slice(0, 12)
+  .map((i) => ({ at: i.at.toISOString(), title: i.title }));
 ---
-<section class="tonight" aria-labelledby="tn-h" data-tonight>
+<section class="tonight" aria-labelledby="tn-h" data-tonight data-ahead={JSON.stringify(ahead)}>
   <noscript><style>.tonight .tn-where, .tonight .tn-moon svg { display: none; }</style></noscript>
   <div class="tn-where"><h2 id="tn-h">Tonight from <span data-tn-place>London</span></h2><a class="tn-change" href="/sky#where" data-tn-change>Change place</a></div>
   <div class="tn-item tn-moon">
@@ -12,7 +17,9 @@
   </div>
   <div class="tn-item"><div><b data-tn-planets>The planets</b><span data-tn-planets-sub>Which are up tonight is on the sky map</span></div></div>
   <a class="tn-go" href="/sky">Open tonight’s sky</a>
-  <a class="tn-go" href="/sky/week">The week ahead</a>
+  <a class="tn-go" href="/sky/week">Sky this week</a>
+  <a class="tn-go" href="/sky/events">Sky events</a>
+  <p class="tn-next" data-tn-next hidden>Next up: <a href="/sky/events" data-tn-next-t></a>, <span data-tn-next-d></span></p>
 </section>
 
 <script>
@@ -50,6 +57,17 @@
       const flip = t.moon.waxing === (p.lat >= 0);
       path.setAttribute('transform', flip ? '' : 'scale(-1 1)');
     }
+    // the next event, from the list made at build time, shown in the visitor's own day
+    try {
+      const now = Date.now();
+      const nx = (JSON.parse(root.dataset.ahead ?? '[]') as { at: string; title: string }[]).find((e) => Date.parse(e.at) > now);
+      const box = root.querySelector<HTMLElement>('[data-tn-next]');
+      if (nx && box) {
+        text('tn-next-t', nx.title);
+        text('tn-next-d', new Date(nx.at).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }));
+        box.hidden = false;
+      }
+    } catch { /* the line is an extra: leave it out */ }
     root.setAttribute('data-ready', '');
   }
   fill();
@@ -69,5 +87,9 @@
   .tn-moon svg .dark { fill: #14161f; stroke: #2c3145; }
   .tn-moon svg .lit { fill: var(--ink); }
   .tn-go { font: 400 .8125rem/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid rgba(255, 179, 71, .5); text-decoration: none; padding-bottom: 3px; }
+  .tn-next { margin: 0; font: 400 .8125rem/1.4 var(--serif); color: var(--ink-faint); }
+  .tn-next[hidden] { display: none; }
+  .tn-next a { color: var(--ink-soft); text-decoration: underline; text-decoration-color: rgba(236,231,220,.35); text-underline-offset: .2em; }
+  .tn-next a:hover, .tn-next a:focus-visible { color: var(--accent); }
   @media (max-width: 760px) { .tonight { min-height: 250px; flex-direction: column; align-items: flex-start; } }
 </style>
