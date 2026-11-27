@@ -130,9 +130,11 @@ test('Week: the solstice is on 21 Dec 2025 at about 15:03 UT', () => {
   const e = find(events(at('2025-12-18'), at('2025-12-24')), 'December solstice')!;
   near(e.at.getTime() / 60000, at('2025-12-21T15:03:00Z').getTime() / 60000, 30, 'minutes');
 });
-test('Week: Geminids peak on the night of 13-14 December 2025', () => {
-  const t = sunAt(SHOWERS.find((s) => s.name === 'Geminids')!.peakLon, at('2025-12-01'));
-  if (t < at('2025-12-13T12:00:00Z') || t > at('2025-12-14T12:00:00Z')) throw new Error(t.toISOString());
+test('Week: Geminids 2026 within 3 hours of the IMO (14 Dec, about 14h UT) and Leonids 2026 near 17 Nov 23h UT', () => {
+  const g = sunAt(SHOWERS.find((s) => s.name === 'Geminids')!.peakLon, at('2026-12-01')).getTime();
+  near(g / 3600000, at('2026-12-14T14:00:00Z').getTime() / 3600000, 3, 'Geminids (hours)');
+  const l = sunAt(SHOWERS.find((s) => s.name === 'Leonids')!.peakLon, at('2026-11-01')).getTime();
+  near(l / 3600000, at('2026-11-17T23:45:00Z').getTime() / 3600000, 3, 'Leonids (hours)');
 });
 test('Week: London sunrise and sunset on 21 Dec 2025 are about 08:04 and 15:53 GMT', () => {
   const d = day(localMidnight(at('2025-12-21T12:00:00Z'), 'Europe/London'), 51.51, -0.13);

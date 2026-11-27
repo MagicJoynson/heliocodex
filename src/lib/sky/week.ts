@@ -30,6 +30,8 @@ function lonLat(v: Vec, T: number): [number, number] {
   return [norm(Math.atan2(v[1], v[0]) / RAD + slideOf(T)), Math.atan2(v[2], Math.hypot(v[0], v[1])) / RAD];
 }
 export const sunLon = (d: Date) => lonLat(sunFromEarth(T_(d)), T_(d))[0];
+/** The Sun's longitude on the ecliptic and equinox of 2000.0, the frame the IMO gives shower maxima in. */
+const sunLon2000 = (d: Date) => lonLat(sunFromEarth(T_(d)), 0)[0];
 export const moonLon = (d: Date) => moonPlace(T_(d)).lonDeg;
 function apart(a: [number, number], b: [number, number]): number {
   const c = Math.sin(a[1] * RAD) * Math.sin(b[1] * RAD) + Math.cos(a[1] * RAD) * Math.cos(b[1] * RAD) * Math.cos((a[0] - b[0]) * RAD);
@@ -125,7 +127,7 @@ export const SHOWERS: Shower[] = [
 /** The moment the Sun is at a given longitude, nearest to a date, searching a year either side of it. */
 export function sunAt(lon: number, near: Date): Date {
   // step through the year after `near` and take the first pass
-  const f = passes(sunLon, lon);
+  const f = passes(sunLon2000, lon);
   const c = crossings(f, new Date(near.getTime() - 2 * DAY), new Date(near.getTime() + 368 * DAY), 12 * 3600000).filter((x) => x.up);
   return c[0].at;
 }
@@ -165,13 +167,13 @@ export function events(from: Date, to: Date): Event[] {
   for (const id of NAKED) {
     const gap = (d: Date) => apart(moonLL(d), planetLL(id, d));
     const m = lowest(gap, new Date(from.getTime() - 6 * 3600000), new Date(to.getTime() + 6 * 3600000), 30 * MIN);
-    if (m && m.v < 6 && m.at >= from && m.at <= to) out.push({ at: m.at, kind: 'planets', title: `Moon near ${NAME[id]}`, text: `The Moon passes ${degs(m.v)} from ${NAME[id]}, measured from the centre of the Earth. From where you stand the gap can differ by up to a degree, because the Moon is so close.` });
+    if (m && m.v < 5 && m.at >= from && m.at <= to) out.push({ at: m.at, kind: 'planets', title: `Moon near ${NAME[id]}`, text: `The Moon passes ${degs(m.v)} from ${NAME[id]}, measured from the centre of the Earth. From where you stand the gap can differ by up to a degree, because the Moon is so close.` });
   }
   // two planets close together
   for (let i = 0; i < NAKED.length; i++) for (let j = i + 1; j < NAKED.length; j++) {
     const a = NAKED[i], b = NAKED[j], gap = (d: Date) => apart(planetLL(a, d), planetLL(b, d));
     const m = lowest(gap, new Date(from.getTime() - DAY), new Date(to.getTime() + DAY), 6 * 3600000);
-    if (m && m.v < 4 && m.at >= from && m.at <= to) out.push({ at: m.at, kind: 'planets', title: `${NAME[a]} and ${NAME[b]} close`, text: `${NAME[a]} and ${NAME[b]} are ${degs(m.v)} apart, at their closest. They look close, but are hundreds of millions of kilometres from each other.` });
+    if (m && m.v < 4 && m.at >= from && m.at <= to) out.push({ at: m.at, kind: 'planets', title: `${NAME[a]} and ${NAME[b]} close`, text: `${NAME[a]} and ${NAME[b]} are ${degs(m.v)} apart, at their closest. They look close, but are millions of kilometres apart.` });
   }
   // a planet at opposition, behind the Sun, or at its widest from the Sun
   for (const id of NAKED) {
@@ -179,7 +181,7 @@ export function events(from: Date, to: Date): Event[] {
     if (id === 'mars' || id === 'jupiter' || id === 'saturn') {
       const diff = (d: Date) => planetLL(id, d)[0] - sunLon(d);
       for (const c of crossings(passes(diff, 180), from, to, 12 * 3600000)) {
-        out.push({ at: c.at, kind: 'planets', title: `${NAME[id]} at opposition`, text: `${NAME[id]} is directly opposite the Sun: rising at sunset, highest at midnight, and at its closest and brightest of the year.` });
+        out.push({ at: c.at, kind: 'planets', title: `${NAME[id]} at opposition`, text: `${NAME[id]} is directly opposite the Sun: rising at sunset, highest at midnight, and close to its nearest and brightest of the year.` });
       }
     }
     for (const c of crossings(e, from, to, 12 * 3600000)) {
@@ -202,7 +204,7 @@ export function events(from: Date, to: Date): Event[] {
     for (const c of crossings(passes(sunLon, lon), from, to, 12 * 3600000)) if (c.up) out.push({ at: c.at, kind: 'sun', title: name, text });
   }
   // meteor shower peaks
-  for (const s of SHOWERS) for (const c of crossings(passes(sunLon, s.peakLon), from, to, 12 * 3600000)) if (c.up) out.push({ at: c.at, kind: 'meteors', title: `${s.name} peak`, text: `Up to about ${s.zhr} an hour under a perfect dark sky, at ${s.kms} km/s. The peak is known only to within about a day.` });
+  for (const s of SHOWERS) for (const c of crossings(passes(sunLon2000, s.peakLon), from, to, 12 * 3600000)) if (c.up) out.push({ at: c.at, kind: 'meteors', title: `${s.name} peak`, text: `Up to about ${s.zhr} an hour under a perfect dark sky, at ${s.kms} km/s. The peak is known only to within about a day.` });
   return out.sort((a, b) => a.at.getTime() - b.at.getTime());
 }
 
