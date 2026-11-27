@@ -1,0 +1,323 @@
+---
+// Sky this week: what happens in the sky over the next seven days, for the visitor's place. Worked out in the
+// page from the same sums as the sky map (src/lib/sky/week.ts), so nothing is fetched and nothing is stored beyond
+// the place the visitor already chose on the sky map. The tables of meteor showers and eclipses are written here, with their sources.
+import Reading from '../../layouts/Reading.astro';
+import { CITIES } from '../../lib/sky/cities';
+import { SHOWERS } from '../../lib/sky/week';
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const span = (a: [number, number], b: [number, number]) => `${a[1]} ${MONTHS[a[0] - 1]} to ${b[1]} ${MONTHS[b[0] - 1]}`;
+// NASA Goddard eclipse pages for each year (Fred Espenak and Jean Meeus, Five Millennium Canon): greatest eclipse in Universal Time
+const ECLIPSES: [string, string, string, string][] = [
+  ['6 February 2027', 'Annular solar', '16:00', '0.928'],
+  ['20 February 2027', 'Penumbral lunar', '23:13', '0.927'],
+  ['18 July 2027', 'Penumbral lunar', '16:03', '0.001'],
+  ['2 August 2027', 'Total solar', '10:07', '1.079'],
+  ['17 August 2027', 'Penumbral lunar', '07:14', '0.546'],
+  ['12 January 2028', 'Partial lunar', '04:13', '0.066'],
+  ['26 January 2028', 'Annular solar', '15:08', '0.921'],
+  ['6 July 2028', 'Partial lunar', '18:20', '0.389'],
+  ['22 July 2028', 'Total solar', '02:55', '1.056'],
+  ['31 December 2028', 'Total lunar', '16:52', '1.246'],
+];
+---
+<Reading title="Sky this week" path="/sky/week" description="What to look for in the sky over the next seven days from where you are: Moon phases, planets, close pairings, meteor showers and the times the Sun and Moon rise and set. Worked out from real orbits.">
+  <header class="reading-head">
+    <p class="label"><a href="/sky">The sky tonight</a> · Seven days ahead</p>
+    <h1>Sky this week</h1>
+    <p class="lead" id="wk-lead">The Moon, the planets and anything else worth stepping outside for, worked out for your place and for the seven days from now.</p>
+    <form class="wk-place" id="wk-place-form">
+      <label class="label" for="wk-place">Place</label>
+      <select id="wk-place">
+        {CITIES.map(([name], i) => <option value={i}>{name}</option>)}
+        <option value="kept" hidden>The place chosen on the sky map</option>
+      </select>
+      <span class="wk-where" id="wk-where"></span>
+    </form>
+    <noscript><p class="wk-nojs">This page works out the week in your browser, so it needs JavaScript. The <a href="/sky">sky map</a> needs it too. The meteor showers and eclipses further down are listed here without it.</p></noscript>
+  </header>
+
+  <section class="row wide" aria-labelledby="h-events">
+    <div class="hang"><h2 id="h-events">What to look for</h2><p class="note" id="wk-events-note">In time order, with the day and the time as the clocks read where you are.</p></div>
+    <ol class="events" id="wk-events"><li class="wait">Working it out…</li></ol>
+  </section>
+
+  <section class="row wide" aria-labelledby="h-dusk">
+    <div class="hang"><h2 id="h-dusk">The sky once it is dark</h2><p class="note" id="wk-dusk-note"></p></div>
+    <div class="dusk">
+      <figure class="ring">
+        <svg id="wk-ring" viewBox="0 0 1000 520" role="img" aria-labelledby="wk-ring-t">
+          <title id="wk-ring-t">The horizon all the way round, with the Moon and the planets that are up placed at their height and direction</title>
+        </svg>
+        <figcaption>The whole horizon unrolled, north at both ends. Height above the ground goes up the side. Anything on the line is on the horizon.</figcaption>
+      </figure>
+      <div class="planets" id="wk-planets"></div>
+    </div>
+  </section>
+
+  <section class="row wide" aria-labelledby="h-days">
+    <div class="hang"><h2 id="h-days">Day by day</h2><p class="note">When the Sun and Moon rise and set, and when the sky is fully dark: the Sun more than 18 degrees below the horizon.</p></div>
+    <div class="days" id="wk-days" role="list"></div>
+  </section>
+
+  <section class="row wide" aria-labelledby="h-met">
+    <div class="hang"><h2 id="h-met">Meteor showers</h2><p class="note" id="wk-met-note">The year's main showers. The rate is what a keen observer would count in an hour under a perfect dark sky, with the radiant overhead. Real skies give fewer.</p></div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Meteor showers, scrolls sideways">
+      <table class="met">
+        <thead><tr><th scope="col">Shower</th><th scope="col">Active</th><th scope="col">Next peak</th><th scope="col">Moon at the peak</th><th scope="col">Rate an hour</th><th scope="col">Speed km/s</th></tr></thead>
+        <tbody id="wk-met">
+          {SHOWERS.map((s) => <tr data-shower={s.name}><th scope="row">{s.name}</th><td>{span(s.from, s.to)}</td><td data-peak>Around solar longitude {s.peakLon}°</td><td data-moon>Worked out in the page</td><td>{s.zhr}</td><td>{s.kms}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">Active dates, rates, speeds and the solar longitude of each peak are from the International Meteor Organization's <a href="https://www.imo.net/files/meteor-shower/cal2026.pdf" rel="noopener">2026 Meteor Shower Calendar</a>, Table 5, the Working List of Visual Meteor Showers. A peak is known only to about a degree of solar longitude, which is about a day, and the real rate changes from year to year. The page turns each solar longitude into a date and time by finding when the Sun reaches it.</p>
+  </section>
+
+  <section class="row wide" aria-labelledby="h-ecl">
+    <div class="hang"><h2 id="h-ecl">Eclipses ahead</h2><p class="note">Every eclipse of the Sun and Moon in 2027 and 2028, at the moment of greatest eclipse, in Universal Time. Where each can be seen is on NASA's page for the year.</p></div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Eclipses, scrolls sideways">
+      <table class="ecl">
+        <thead><tr><th scope="col">Date</th><th scope="col">Kind</th><th scope="col">Greatest eclipse, UT</th><th scope="col">Magnitude</th></tr></thead>
+        <tbody>{ECLIPSES.map(([d, k, t, m]) => <tr><th scope="row">{d}</th><td>{k}</td><td>{t}</td><td>{m}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <p class="fine">Predictions by Fred Espenak and Jean Meeus, from the Five Millennium Canon of Solar Eclipses and of Lunar Eclipses, as listed by NASA's Goddard Space Flight Center for <a href="https://eclipse.gsfc.nasa.gov/OH/OH2027.html" rel="noopener">2027</a> and <a href="https://eclipse.gsfc.nasa.gov/OH/OH2028.html" rel="noopener">2028</a>. Magnitude is the fraction of the Sun's width covered (solar) or of the Moon's width inside the Earth's shadow (lunar). A penumbral lunar eclipse is a faint dimming that is hard to see by eye.</p>
+  </section>
+
+  <section class="row wide how" aria-labelledby="h-how">
+    <div class="hang"><h2 id="h-how">How it is worked out</h2></div>
+    <div class="prose">
+      <p>Nothing on this page is looked up from a service. Your browser works out the week from your place and the clock on your device, with the same sums as the <a href="/sky">sky map</a>.</p>
+      <ul>
+        <li>The Moon: the largest terms of the series in Jean Meeus, <cite>Astronomical Algorithms</cite>, chapter 47. Phases fall within a few minutes of the almanacs.</li>
+        <li>The planets and the Sun: orbits from NASA/JPL Solar System Dynamics (approximate positions of the major planets). They are good to a few arcminutes, so a planet's timing is good to a few hours, and the Moon's passes of a planet to a few minutes. The Moon's gap from a planet is measured from the centre of the Earth; from where you stand it can differ by up to a degree.</li>
+        <li>Brightness (magnitude, where a smaller number is brighter): the formulas in the Astronomical Almanac, as set out in <cite>Astronomical Algorithms</cite>, chapter 41. Saturn's figure includes the light from its rings, which depends on their tilt.</li>
+        <li>Rise and set: the top edge of the Sun or Moon on a flat horizon, with the usual bending of light by the air. Hills and buildings change what you see.</li>
+        <li>Times are as the clocks read in the place you chose.</li>
+      </ul>
+      <p>Your place is the one chosen on the <a href="/sky">sky map</a>, kept on your device and never sent to us (see <a href="/cookies">what is kept on your device</a>). Choosing a place here changes it there too.</p>
+    </div>
+  </section>
+</Reading>
+
+<script>
+  import { herePlace, keepPlace } from '../../lib/sky/remember';
+  import { moment, toSky, sunFromEarth, planetFromEarth, moonSky } from '../../lib/sky/place';
+  import { CITIES, clockIn, clocksDiffer } from '../../lib/sky/cities';
+  import { wayOf, heightOf } from '../../lib/sky/words';
+  import { events, day, planetsWeek, nightEdges, localMidnight, moonLit, sunAt, SHOWERS, showerActive } from '../../lib/sky/week';
+
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const el = (tag: string, cls?: string, text?: string) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = (tag: string, attrs: Record<string, string | number>, text?: string) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, String(attrs[k])); if (text !== undefined) e.textContent = text; return e; };
+  const list = (a: string[]) => (a.length < 2 ? a[0] ?? '' : `${a.slice(0, -1).join(', ')} and ${a[a.length - 1]}`);
+
+  const select = $<HTMLSelectElement>('wk-place');
+  const place = herePlace();
+  // the select shows the listed city when the kept place is one; otherwise the kept place under its own name
+  const idx = CITIES.findIndex((c) => c[0] === place.name);
+  if (idx >= 0) select.value = String(idx); else { const o = select.querySelector<HTMLOptionElement>('option[value="kept"]')!; o.hidden = false; o.textContent = place.guessed ? place.name : place.from[0].toUpperCase() + place.from.slice(1); select.value = 'kept'; }
+  select.addEventListener('change', () => {
+    const c = CITIES[+select.value];
+    if (!c) return;
+    keepPlace({ name: c[0], lat: c[1], lon: c[2] });
+    render();
+  });
+
+  const now = () => new Date();
+  const dayLabel = (d: Date, zone: string) => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: zone });
+  const longDay = (d: Date, zone: string) => d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: zone });
+  const mag = (m: number) => (m < 0 ? `−${Math.abs(m).toFixed(1)}` : m.toFixed(1));
+
+  function moonIcon(lit: number, waxing: boolean, north: boolean): SVGSVGElement {
+    const s = svg('svg', { width: 34, height: 34, viewBox: '-17 -17 34 34', 'aria-hidden': 'true', focusable: 'false', class: 'moon' }) as SVGSVGElement;
+    const r = 15, k = 1 - 2 * lit;
+    s.append(svg('circle', { r, class: 'dark' }));
+    const p = svg('path', { class: 'lit', d: `M0 ${-r} A${r} ${r} 0 0 1 0 ${r} A${Math.abs(k) * r} ${r} 0 0 ${k > 0 ? 0 : 1} 0 ${-r}Z` });
+    if (waxing !== north) p.setAttribute('transform', 'scale(-1 1)');
+    s.append(p);
+    return s;
+  }
+
+  function render(): void {
+    const p = herePlace(), zone = p.zone, start = now();
+    const at = (d: Date) => clockIn(d, zone) + (clocksDiffer(d, zone) ? ' local time' : '');
+    const end = new Date(start.getTime() + 7 * 86400000);
+    const sel = $<HTMLSelectElement>('wk-place');
+    const i = CITIES.findIndex((c) => c[0] === p.name);
+    if (i >= 0) sel.value = String(i);
+    $('wk-where').textContent = p.guessed ? 'A guess from your clock. Choose your own.' : '';
+    $('wk-lead').textContent = `The seven days from ${longDay(start, zone)}, for ${p.from}. Every time is as the clocks read there.`;
+
+    // ---- what to look for
+    const ev = events(start, end);
+    const ol = $('wk-events'); ol.replaceChildren();
+    if (!ev.length) ol.append(el('li', 'wait', 'A quiet week: no phase, pairing or peak falls in it. Look at the planets below.'));
+    for (const e of ev) {
+      const li = el('li', `ev ev-${e.kind}`);
+      const time = el('time', 'when'); time.setAttribute('datetime', e.at.toISOString());
+      time.append(el('b', undefined, dayLabel(e.at, zone)), el('span', undefined, at(e.at)));
+      const body = el('div', 'what');
+      // a pairing with the Moon at midday cannot be seen then: say so
+      const dm = moment(e.at, p.lat, p.lon), daylight = toSky(sunFromEarth(dm.T), dm).altDeg > -6;
+      const extra = daylight && e.title.startsWith('Moon near') ? ' It is daylight where you are then, so look the evening before or after.' : '';
+      body.append(el('h3', undefined, e.title), el('p', undefined, e.text + extra));
+      li.append(time, body); ol.append(li);
+    }
+
+    // ---- once it is dark
+    const edges = nightEdges(start, p.lat, p.lon), pw = planetsWeek(start, p.lat, p.lon, edges);
+    $('wk-dusk-note').textContent = edges.dark ? `${edges.evening.getTime() - start.getTime() < 60000 ? 'Now' : `Around ${at(edges.evening)}`}, when it is dark enough to look. The planets are listed for that moment and again before dawn.` : 'The Sun does not get far enough below the horizon here this week for a dark sky.';
+    drawRing(p.lat, p.lon, edges.evening, pw);
+    const box = $('wk-planets'); box.replaceChildren();
+    for (const k of pw) {
+      const row = el('div', 'pl');
+      const head = el('h3', undefined, k.name);
+      head.append(el('span', 'mag', ` ${mag(k.mag)}`));
+      const eve = k.evening.altDeg > 5, morn = k.morning.altDeg > 5;
+      const pos = (a: { altDeg: number; azDeg: number }) => `${heightOf(a.altDeg)} in the ${wayOf(a.azDeg)}`;
+      let line: string;
+      if (eve && morn) line = `Up all night. In the evening ${pos(k.evening)}, and before dawn ${pos(k.morning)}.`;
+      else if (eve) line = `In the evening sky, ${pos(k.evening)}${k.sets ? `, setting at ${at(k.sets)}` : ''}.`;
+      else if (morn) line = `In the morning sky before dawn, ${pos(k.morning)}${k.rises ? `, rising at ${at(k.rises)}` : ''}.`;
+      else if (k.elongDeg < 20) line = 'Too close to the Sun to see.';
+      else line = 'Not up in the dark hours.';
+      const sub = `${Math.round(k.elongDeg)}° from the Sun, ${(k.id === 'mercury' || k.id === 'venus') ? `${(k.lit * 100).toFixed(0)}% lit, ` : ''}${k.au.toFixed(2)} au away.`;
+      row.append(head, el('p', 'where', line), el('p', 'sub', sub));
+      box.append(row);
+    }
+
+    // ---- day by day
+    const dbox = $('wk-days'); dbox.replaceChildren();
+    for (let n = 0; n < 7; n++) {
+      const d = day(localMidnight(new Date(start.getTime() + n * 86400000), zone), p.lat, p.lon);
+      const row = el('div', 'dy'); row.setAttribute('role', 'listitem');
+      row.append(el('h3', 'dname', dayLabel(d.start, zone)));
+      const cell = (label: string, text: string) => { const c = el('p', 'cell'); c.append(el('span', undefined, label), document.createTextNode(text)); return c; };
+      const hm = (t: Date | null) => (t ? clockIn(t, zone) : 'none');
+      row.append(cell('Sun', d.sunNote || `rises ${hm(d.sunrise)}, sets ${hm(d.sunset)}`));
+      row.append(cell('Dark', d.darkFrom && d.darkTo ? `${hm(d.darkFrom)} to ${hm(d.darkTo)}` : d.sunNote === 'The Sun stays up all day' ? 'never' : 'not fully dark'));
+      const m = el('p', 'cell moonc'); m.append(moonIcon(d.moon.lit, d.moon.waxing, p.lat >= 0), el('span', 'mt', `${d.moon.name}, ${Math.round(d.moon.lit * 100)}% lit. ${d.moon.rises ? `Rises ${hm(d.moon.rises)}` : 'No moonrise'}${d.moon.sets ? `, sets ${hm(d.moon.sets)}` : ''}.`));
+      row.append(m); dbox.append(row);
+    }
+
+    // ---- meteor showers
+    const rows = new Map<string, HTMLElement>();
+    document.querySelectorAll<HTMLElement>('#wk-met tr').forEach((r) => rows.set(r.dataset.shower!, r));
+    for (const s of SHOWERS) {
+      const r = rows.get(s.name); if (!r) continue;
+      const t = sunAt(s.peakLon, start), l = moonLit(t).lit;
+      r.querySelector('[data-peak]')!.textContent = `${t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: zone })}, about ${clockIn(t, zone)}`;
+      r.querySelector('[data-moon]')!.textContent = `${Math.round(l * 100)}% lit, ${moonLit(t).waxing ? 'waxing' : 'waning'}`;
+      r.classList.toggle('on', showerActive(s, start, zone));
+      r.querySelector('th')!.dataset.on = showerActive(s, start, zone) ? 'Active now' : '';
+    }
+    $('wk-met-note').textContent = `The year's main showers. ${SHOWERS.filter((s) => showerActive(s, start, zone)).length ? `Active this week: ${list(SHOWERS.filter((s) => showerActive(s, start, zone)).map((s) => s.name))}. ` : 'None of them is active this week. '}The rate is what a keen observer would count in an hour under a perfect dark sky, with the radiant overhead. Real skies give fewer.`;
+  }
+
+  function drawRing(lat: number, lon: number, when: Date, pw: ReturnType<typeof planetsWeek>): void {
+    const s = $('wk-ring'); s.querySelectorAll(':scope > :not(title)').forEach((n) => n.remove());
+    const W = 1000, H = 520, L = 84, R = 20, T = 20, B = 52, top = 60;
+    const x = (az: number) => L + (az / 360) * (W - L - R), y = (a: number) => T + (1 - Math.max(0, a) / top) * (H - T - B);
+    s.append(svg('rect', { x: L, y: T, width: W - L - R, height: H - T - B, class: 'sky' }));
+    for (const a of [15, 30, 45]) { s.append(svg('line', { x1: L, x2: W - R, y1: y(a), y2: y(a), class: 'grid' })); s.append(svg('text', { x: L - 10, y: y(a) + 13, class: 'ax', 'text-anchor': 'end' }, `${a}°`)); }
+    s.append(svg('line', { x1: L, x2: W - R, y1: y(0), y2: y(0), class: 'horizon' }));
+    for (const [az, w] of [[0, 'N'], [45, 'NE'], [90, 'E'], [135, 'SE'], [180, 'S'], [225, 'SW'], [270, 'W'], [315, 'NW'], [360, 'N']] as const) {
+      s.append(svg('text', { x: x(az), y: H - 14, class: 'ax', 'text-anchor': az === 0 ? 'start' : az === 360 ? 'end' : 'middle' }, w));
+    }
+    // placed in order of bearing; a name that would sit on the one before moves up
+    const marks: { az: number; alt: number; name: string; kind: string; r: number }[] = [];
+    {
+      const m = moment(when, lat, lon), moon = moonSky(m);
+      if (moon.altDeg > 0) marks.push({ az: moon.azDeg, alt: moon.altDeg, name: 'Moon', kind: 'moon', r: 15 });
+      for (const k of pw) { const a = toSky(planetFromEarth(k.id, m.T).dir, m); if (a.altDeg > 0) marks.push({ az: a.azDeg, alt: a.altDeg, name: k.name, kind: 'planet', r: Math.max(6, Math.min(13, 9 - k.mag * 1.2)) }); }
+      marks.sort((a, b) => a.az - b.az);
+      const boxes: [number, number, number, number][] = [];
+      for (const k of marks) {
+        const cx = x(k.az), cy = y(k.alt), wide = k.name.length * 23 + 12, right = cx + wide + k.r < W - R;
+        let ty = cy + 12;
+        const clash = (yy: number) => boxes.some((b) => !(b[2] < (right ? cx + k.r : cx - k.r - wide) || b[0] > (right ? cx + k.r + wide : cx - k.r) || b[3] < yy - 40 || b[1] > yy + 8));
+        for (let t = 0; t < 8 && clash(ty); t++) ty -= 48;
+        const tx = right ? cx + k.r + 10 : cx - k.r - 10;
+        boxes.push([right ? tx : tx - wide, ty - 40, right ? tx + wide : tx, ty + 8]);
+        const g = svg('g', { class: k.kind });
+        g.append(svg('circle', { cx, cy, r: k.r }), svg('text', { x: tx, y: ty, 'text-anchor': right ? 'start' : 'end' }, k.name));
+        s.append(g);
+      }
+      if (!marks.length) s.append(svg('text', { x: W / 2, y: H / 2 - 10, class: 'ax', 'text-anchor': 'middle' }, 'Nothing bright is above the horizon'));
+    }
+  }
+
+  render();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
+</script>
+
+<style is:global>
+  .wk-place { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; margin-top: 1.5rem; }
+  .wk-place select { font: 400 1rem/1.3 var(--r-serif); color: var(--ink); background: #121214; border: 1px solid var(--ink-faint); border-radius: 3px; padding: .5rem .8rem; min-height: 44px; }
+  .wk-place select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wk-where, .wk-nojs { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin: 0; }
+
+  .events { list-style: none; margin: 0; padding: 0; max-width: 52rem; }
+  .events .wait { color: var(--ink-faint); font: 300 1.1rem/1.5 var(--r-serif); }
+  .ev { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: .4rem 2.2rem; padding: 1.35rem 0 1.5rem; border-top: 1px solid var(--rule); position: relative; }
+  .ev:first-child { border-top: 0; padding-top: .2rem; }
+  .ev .when { display: block; font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .ev .when b { display: block; font-weight: 400; color: var(--accent); }
+  .ev h3 { font: 400 1.4rem/1.25 var(--r-serif); margin: 0 0 .35rem; color: var(--ink); }
+  .ev p { font: 300 1.08rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0; max-width: 40rem; }
+  .ev-meteors h3::before, .ev-moon h3::before, .ev-planets h3::before, .ev-sun h3::before, .ev-orbit h3::before { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; margin-right: .6rem; vertical-align: .08em; content: ''; background: var(--ink-faint); }
+  .ev-moon h3::before { background: #ece7dc; }
+  .ev-planets h3::before { background: var(--accent); }
+  .ev-meteors h3::before { background: transparent; border: 1.5px solid var(--accent); }
+  .ev-sun h3::before { background: transparent; border: 1.5px solid #ece7dc; }
+
+  .dusk { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem 3rem; align-items: start; }
+  .ring { margin: 0; }
+  .ring svg { display: block; width: 100%; height: auto; background: #0e0e10; border: 1px solid var(--rule); border-radius: 4px; }
+  .ring figcaption { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }
+  .ring .sky { fill: #0b0d14; }
+  .ring .grid { stroke: rgba(236, 231, 220, .1); stroke-width: 1; }
+  .ring .horizon { stroke: rgba(236, 231, 220, .45); stroke-width: 2; }
+  .ring text { font: 400 40px 'Spectral', Georgia, serif; fill: #ece7dc; }
+  .ring text.ax { font: 400 38px 'IBM Plex Mono', monospace; fill: #a8a296; }
+  .ring .planet circle { fill: #ffb347; }
+  .ring .moon circle { fill: #ece7dc; }
+  .pl { padding: .9rem 0 1rem; border-top: 1px solid var(--rule); }
+  .pl:first-child { border-top: 0; padding-top: 0; }
+  .pl h3 { font: 400 1.3rem/1.25 var(--r-serif); margin: 0 0 .25rem; color: var(--ink); }
+  .pl .mag { font: 400 .8125rem/1 var(--r-mono); color: var(--accent); letter-spacing: .04em; }
+  .pl p { margin: 0; font: 300 1.05rem/1.5 var(--r-serif); color: var(--ink-soft); }
+  .pl .sub { font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .03em; color: var(--ink-faint); margin-top: .2rem; }
+
+  .days { max-width: 70rem; }
+  .dy { display: grid; grid-template-columns: 8rem minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); gap: .3rem 1.6rem; padding: .95rem 0; border-top: 1px solid var(--rule); align-items: start; }
+  .dy h3 { font: 400 .875rem/1.5 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin: .1rem 0 0; }
+  .dy .cell { margin: 0; font: 300 1.02rem/1.45 var(--r-serif); color: var(--ink-soft); }
+  .dy .cell span:first-child { display: block; font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .dy .moonc { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: .8rem; align-items: center; }
+  .dy .moonc .mt { display: block; font: 300 1.02rem/1.45 var(--r-serif); text-transform: none; letter-spacing: 0; color: var(--ink-soft); }
+  svg.moon .dark { fill: #14161f; stroke: #2c3145; }
+  svg.moon .lit { fill: #ece7dc; }
+
+  table.met th, table.met td, table.ecl th, table.ecl td { text-align: left; }
+  table.met { width: 100%; border-collapse: collapse; min-width: 44rem; }
+  table.ecl { width: 100%; border-collapse: collapse; min-width: 28rem; }
+  table.met th, table.ecl th { font: 400 .8125rem/1.4 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); padding: 0 1rem .6rem 0; border-bottom: 1px solid var(--rule); }
+  table.met tbody th, table.ecl tbody th { font: 400 1.05rem/1.4 var(--r-serif); text-transform: none; letter-spacing: 0; color: var(--ink); border-bottom: 1px solid var(--rule); padding: .65rem 1rem .65rem 0; }
+  table.met td, table.ecl td { font: 300 1.02rem/1.4 var(--r-serif); color: var(--ink-soft); padding: .65rem 1rem .65rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  table.met tr.on th { color: var(--accent); }
+  table.met tr.on th::after { content: ' · active now'; font: 400 .8125rem/1 var(--r-mono); letter-spacing: .04em; color: var(--accent); }
+  .fine { font: 300 .98rem/1.55 var(--r-serif); color: var(--ink-faint); max-width: 48rem; margin: 0; }
+  .how .prose { max-width: 44rem; }
+
+  @media (max-width: 760px) {
+    .ev { grid-template-columns: minmax(0, 1fr); gap: .35rem; }
+    .dusk { grid-template-columns: minmax(0, 1fr); }
+    .dy { grid-template-columns: minmax(0, 1fr); gap: .5rem; padding: 1.1rem 0; }
+    .dy .cell span:first-child { display: inline; margin-right: .6rem; }
+    .dy .moonc { grid-template-columns: 34px minmax(0, 1fr); }
+  }
+</style>
