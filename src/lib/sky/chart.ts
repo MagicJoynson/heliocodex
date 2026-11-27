@@ -111,7 +111,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   // looking at the whole sky it stays dark right out towards the edge and only brightens in a thin band at the skyline, as the real dome does
   const mix3 = (a: [number, number, number], b: [number, number, number]): [number, number, number] => [a[0] + (b[0] - a[0]) * W, a[1] + (b[1] - a[1]) * W, a[2] + (b[2] - a[2]) * W];
   air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55 / (1 + 0.05 * VV), tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
-  air.addColorStop(0.86 / (1 + 0.05 * VV), tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [96, 138, 186]))); air.addColorStop(1 / (1 + 0.05 * VV), tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [170, 194, 214])));
+  air.addColorStop(0.86 / (1 + 0.05 * VV), tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [84, 124, 176]))); air.addColorStop(1 / (1 + 0.05 * VV), tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [112, 150, 192])));
   // and past the horizon it goes dark, by as much as the whole-sky look is on; with it off the gradient ends exactly as it always did
   air.addColorStop(1, tone(mix3([27, 33, 52], [7, 9, 15]), mix3([158, 184, 206], [26, 34, 38])));
   ctx.fillStyle = air; ctx.fillRect(0, 0, w, h);
@@ -129,7 +129,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const wanted: { text: string; x: number; y: number; font: string; colour: string; centred: boolean; rank: number; endAt?: number; must?: number; back?: number }[] = [];
   // fainter stars come in as the view closes in, so a wide view is not a blur of dots
   const faintest = Math.max(4.6, Math.min(6.5, 2.1 + 1.7 * Math.log10(S))), grow = Math.max(0.8, Math.min(1.5, Math.sqrt(S / 300)));
-  const dim = 1 - 0.8 * day;
+  // by day the stars are all but lost in the blue: far fainter, and so are their names and lines; planets, Moon and Sun stay clear
+  const dim = 1 - 0.88 * day;
   const open = VV > 0.001, beyond: [number, number, number, number, string][] = [];
   let capBox: [number, number, number, number] | null = null;
 
@@ -165,6 +166,17 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     if (mag < 4.8 && z > 0) marks.push({ kind: 'star', id: `star:${i}`, index: i, name: data.names.get(i) ?? '', x: p[0], y: p[1], r: size, altDeg: Math.asin(z) / RAD, azDeg: ((Math.atan2(e, no) / RAD) + 360) % 360, mag, ly: Math.hypot(data.stars[i * 5], data.stars[i * 5 + 1], data.stars[i * 5 + 2]) * LY_PER_PC, colour: data.stars[i * 5 + 4], suns: Math.pow(10, (4.83 - data.stars[i * 5 + 3]) / 2.5) });
   }
 
+  // by day, looking at the whole sky: the air round the Sun scatters its light, a wide pale glow that fades into the blue, so the dome is not one flat colour
+  const sf = Math.max(0, Math.min(1, (sun.altDeg + 2) / 3)), sfade = sf * sf * (3 - 2 * sf); // fades out as the Sun sets, no step
+  if (VV > 0.001 && day > 0.05 && sfade > 0.001) {
+    const sp = place(Math.max(sun.altDeg, 0.5), sun.azDeg, -0.9);
+    if (sp) {
+      const rr = Math.max(reach * 0.8, 60), au = ctx.createRadialGradient(sp[0], sp[1], 0, sp[0], sp[1], rr), ka = (0.5 * day * VV * sfade).toFixed(3);
+      au.addColorStop(0, `rgba(255,244,222,${ka})`); au.addColorStop(0.25, `rgba(236,232,226,${(0.5 * +ka).toFixed(3)})`); au.addColorStop(1, 'rgba(200,220,240,0)');
+      ctx.save(); ctx.beginPath(); ctx.arc(top[0], top[1], reach, 0, Math.PI * 2); ctx.clip(); ctx.fillStyle = au; ctx.fillRect(0, 0, w, h); ctx.restore();
+    }
+  }
+
   // ---- the path the Sun, Moon and planets keep to
   if (shown.path) {
     ctx.strokeStyle = 'rgba(233,196,138,.3)'; ctx.lineWidth = 1; ctx.setLineDash([2, 6]); ctx.beginPath();
@@ -180,7 +192,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
 
   // ---- the figures, and a name where enough of a figure is in sight
   const labels: { name: string; x: number; y: number }[] = [];
-  ctx.strokeStyle = `rgba(${INK},${0.22 * (1 - 0.5 * day)})`; ctx.lineWidth = 1;
+  ctx.strokeStyle = `rgba(${INK},${0.22 * (1 - 0.85 * day)})`; ctx.lineWidth = 1;
   for (const fig of data.figures) {
     let sx = 0, sy = 0, count = 0, total = 0;
     ctx.beginPath();
@@ -196,8 +208,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   if (shown.names) {
     const phone = w < 600, figureFont = `italic 300 ${Math.max(phone ? 13 : 12, Math.min(17, S / 22))}px ${SERIF}`, starFont = `400 ${Math.max(phone ? 13 : 9.5, Math.min(11.5, S / 34))}px ${MONO}`;
     const named = S > 260 ? 2.7 : 2.1;
-    for (const l of labels) if (onScreen(l.x, l.y, -20)) wanted.push({ text: l.name, x: l.x, y: l.y, font: figureFont, colour: `rgba(${INK},.5)`, centred: true, rank: 3 });
-    for (const s of marks) if (s.kind === 'star' && s.name && (s.mag ?? 9) < named) wanted.push({ text: s.name.toUpperCase(), x: s.x + s.r + 6, y: s.y + 1, font: starFont, colour: `rgba(${INK},.72)`, centred: false, rank: 2 + (s.mag ?? 0) / 10, back: 2 * (s.r + 6) });
+    for (const l of labels) if (onScreen(l.x, l.y, -20)) wanted.push({ text: l.name, x: l.x, y: l.y, font: figureFont, colour: `rgba(${INK},${(0.5 * (1 - 0.8 * day)).toFixed(3)})`, centred: true, rank: 3 });
+    for (const s of marks) if (s.kind === 'star' && s.name && (s.mag ?? 9) < named) wanted.push({ text: s.name.toUpperCase(), x: s.x + s.r + 6, y: s.y + 1, font: starFont, colour: `rgba(${INK},${(0.72 * (1 - 0.8 * day)).toFixed(3)})`, centred: false, rank: 2 + (s.mag ?? 0) / 10, back: 2 * (s.r + 6) });
   }
 
   // the planets, Moon and Sun are drawn over the ground when the whole sky is in view (so the dark band never veils them), and under it otherwise
@@ -299,15 +311,17 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   if (open) {
     // the dark band: clear well inside the horizon, darkest at it, and thinning but never ending outside, so the stars beyond are faint and there is no line to see
     const vs = VV * 0.96;
-    const veil = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.9);
+    // by day the blue starts to thin well inside the horizon so it fades out into the page, with no bright rim
+    const r0 = reach * (0.9 - 0.14 * day), veil = ctx.createRadialGradient(top[0], top[1], r0, top[0], top[1], reach * 1.9), vk = (reach * 1.0 - r0) / (reach * 1.9 - r0);
     // by day the ground is lit a little, most near the horizon, and falls to the dark of the page further out
-    const near = tone([7, 9, 15], [38, 50, 58]).replace('rgb(', '').replace(')', ''), far = tone([6, 8, 13], [15, 19, 23]).replace('rgb(', '').replace(')', '');
-    veil.addColorStop(0, `rgba(${near},0)`); veil.addColorStop(0.09, `rgba(${near},${vs.toFixed(3)})`); veil.addColorStop(0.4, `rgba(${far},${vs.toFixed(3)})`); veil.addColorStop(1, `rgba(${far},${vs.toFixed(3)})`);
+    const near = tone([7, 9, 15], [12, 18, 28]).replace('rgb(', '').replace(')', ''), far = tone([6, 8, 13], [15, 19, 23]).replace('rgb(', '').replace(')', '');
+    veil.addColorStop(0, `rgba(${near},0)`); veil.addColorStop(vk, `rgba(${near},${vs.toFixed(3)})`); veil.addColorStop(0.4, `rgba(${far},${vs.toFixed(3)})`); veil.addColorStop(1, `rgba(${far},${vs.toFixed(3)})`);
     ctx.fillStyle = veil; ctx.fillRect(-2, -2, w + 4, h + 4);
     // a soft haze centred on the horizon, palest by day, so the edge of the sky is felt even with no line
-    const haze = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.1);
-    const ha = (0.045 + 0.13 * day) * VV;
-    haze.addColorStop(0, 'rgba(196,214,232,0)'); haze.addColorStop(0.5, `rgba(196,214,232,${ha.toFixed(3)})`); haze.addColorStop(1, 'rgba(196,214,232,0)');
+    const haze = ctx.createRadialGradient(top[0], top[1], reach * 0.78, top[0], top[1], reach * 1.07);
+    const ha = (0.045 - 0.005 * day) * VV;
+    // the pale of the air is thickest at the horizon and builds up towards it from inside, then ends quickly, so it reads as haze on the sky and not as a ring round it
+    haze.addColorStop(0, 'rgba(196,214,232,0)'); haze.addColorStop(0.72, `rgba(196,214,232,${(ha * 0.9).toFixed(3)})`); haze.addColorStop(0.8, `rgba(196,214,232,${ha.toFixed(3)})`); haze.addColorStop(1, 'rgba(196,214,232,0)');
     ctx.fillStyle = haze; ctx.fillRect(-2, -2, w + 4, h + 4);
     // then the stars below the horizon, faint and in their own colours, over the dark band, so the dark is not flat
     for (const [x, y, r, a, rgb] of beyond) { ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
