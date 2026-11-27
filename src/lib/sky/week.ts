@@ -20,10 +20,10 @@ export const NAKED = ['mercury', 'venus', 'mars', 'jupiter', 'saturn'] as const;
 export type Naked = typeof NAKED[number];
 export const NAME: Record<string, string> = { mercury: 'Mercury', venus: 'Venus', mars: 'Mars', jupiter: 'Jupiter', saturn: 'Saturn' };
 
-const norm = (d: number) => ((d % 360) + 360) % 360;
-const signed = (d: number) => { const n = norm(d); return n > 180 ? n - 360 : n; };
+export const norm = (d: number) => ((d % 360) + 360) % 360;
+export const signed = (d: number) => { const n = norm(d); return n > 180 ? n - 360 : n; };
 const slideOf = (T: number) => (5028.796195 * T + 1.1054348 * T * T) / 3600; // degrees
-const T_ = (d: Date) => centuriesSinceJ2000(d);
+export const T_ = (d: Date) => centuriesSinceJ2000(d);
 
 /** Ecliptic longitude and latitude of the date, degrees, from a direction in the ecliptic frame of 2000. */
 function lonLat(v: Vec, T: number): [number, number] {
@@ -31,15 +31,15 @@ function lonLat(v: Vec, T: number): [number, number] {
 }
 export const sunLon = (d: Date) => lonLat(sunFromEarth(T_(d)), T_(d))[0];
 /** The Sun as it looks, 20.5 arcseconds behind where it is, because light takes time to arrive and the Earth moves meanwhile (aberration). The seasons are timed by this. */
-const apparentSunLon = (d: Date) => sunLon(d) - 0.00569;
+export const apparentSunLon = (d: Date) => sunLon(d) - 0.00569;
 /** The Sun's longitude on the ecliptic and equinox of 2000.0, the frame the IMO gives shower maxima in. */
 const sunLon2000 = (d: Date) => lonLat(sunFromEarth(T_(d)), 0)[0];
 export const moonLon = (d: Date) => moonPlace(T_(d)).lonDeg;
-function apart(a: [number, number], b: [number, number]): number {
+export function apart(a: [number, number], b: [number, number]): number {
   const c = Math.sin(a[1] * RAD) * Math.sin(b[1] * RAD) + Math.cos(a[1] * RAD) * Math.cos(b[1] * RAD) * Math.cos((a[0] - b[0]) * RAD);
   return Math.acos(Math.max(-1, Math.min(1, c))) / RAD;
 }
-const planetLL = (id: string, d: Date) => lonLat(planetFromEarth(id, T_(d)).dir, T_(d));
+export const planetLL = (id: string, d: Date) => lonLat(planetFromEarth(id, T_(d)).dir, T_(d));
 const moonLL = (d: Date): [number, number] => { const p = moonPlace(T_(d)); return [p.lonDeg, p.latDeg]; };
 
 /** The angle between the Moon and the Sun along the ecliptic, 0 at new Moon, 180 at full. */
@@ -68,7 +68,7 @@ export function crossings(f: (d: Date) => number, from: Date, to: Date, step: nu
   return out;
 }
 /** Where a function that turns round at 360 passes a target angle. */
-const passes = (f: (d: Date) => number, target: number) => (d: Date) => signed(f(d) - target);
+export const passes = (f: (d: Date) => number, target: number) => (d: Date) => signed(f(d) - target);
 
 /** The smallest value of f in [from, to] if it falls inside (not at an end), found to about ten minutes. */
 function lowest(f: (d: Date) => number, from: Date, to: Date, step: number, sign = 1): { at: Date; v: number } | null {

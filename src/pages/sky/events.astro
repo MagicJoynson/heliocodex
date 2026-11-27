@@ -1,0 +1,107 @@
+---
+// Sky events: the planet events worth planning for over the next two years, month by month. Worked out when the
+// site is built, from the same sums as the sky map and Sky this week (src/lib/sky/calendar.ts); nothing is fetched
+// and nothing is stored. The page hides what has already passed when it loads.
+import Reading from '../../layouts/Reading.astro';
+import { calendar, type Item } from '../../lib/sky/calendar';
+
+const start = new Date(Date.now() - 2 * 86400000), end = new Date(start.getTime() + 2 * 365.25 * 86400000);
+const all = calendar(start, end);
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const day = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()].slice(0, 3)}`;
+const clock = (d: Date) => `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')} UT`;
+
+interface Month { key: string; name: string; year: number; ends: number; list: Item[]; moon: Item[] }
+const months: Month[] = [];
+for (const it of all) {
+  const key = `${it.at.getUTCFullYear()}-${it.at.getUTCMonth()}`;
+  let m = months.find((x) => x.key === key);
+  if (!m) { m = { key, name: MONTHS[it.at.getUTCMonth()], year: it.at.getUTCFullYear(), ends: Date.UTC(it.at.getUTCFullYear(), it.at.getUTCMonth() + 1, 1), list: [], moon: [] }; months.push(m); }
+  (it.kind === 'near' || it.kind === 'far' ? m.moon : m.list).push(it);
+}
+const moonLine = (m: Month) => m.moon.map((i) => `${i.kind === 'near' ? 'nearest' : 'farthest'} ${i.at.getUTCDate()} ${m.name.slice(0, 3)}, ${i.figure}`).join(' · ');
+const built = start.toISOString();
+---
+<Reading title="Sky events" path="/sky/events" description="Planet oppositions, greatest elongations, close pairings and the Moon's nearest and farthest points over the next two years, worked out from real orbits and checked against NASA/JPL Horizons.">
+  <header class="reading-head">
+    <p class="label"><a href="/sky">The sky tonight</a> · <a href="/sky/week">This week</a> · Two years ahead</p>
+    <h1>Sky events</h1>
+    <p class="lead">The moments worth planning a night around, from now to the end of {end.getUTCFullYear()}: planets at their best, pairs that pass close, and the Moon at its nearest and farthest.</p>
+    <p class="ev-how">Every time is Universal Time, the same instant everywhere on Earth: add your own offset to get the clock on your wall, and the date may change. None of it depends on where you stand, but whether you can see it does. Look at <a href="/sky">the sky map</a> for your place and <a href="/sky/week">Sky this week</a> for the week ahead. The eclipses are listed with their times on <a href="/sky/week#h-ecl">Sky this week</a>.</p>
+  </header>
+
+  <p class="ev-gone" id="ev-gone" hidden></p>
+
+  {months.map((m) => (
+    <section class={`row wide ev-month${m.list.length ? '' : ' ev-quiet'}`} data-ends={m.ends} aria-labelledby={`m-${m.key}`}>
+      <div class="hang">
+        <h2 id={`m-${m.key}`}>{m.name} <span>{m.year}</span></h2>
+        {m.moon.length > 0 && <p class="note moonline">Moon: {moonLine(m)}</p>}
+      </div>
+      {m.list.length > 0 ? (
+        <ol class="evs">
+          {m.list.map((e) => (
+            <li class={`evi evi-${e.kind}`} data-at={e.at.getTime()}>
+              <time class="when" datetime={e.at.toISOString()}><b>{day(e.at)}</b><span>{clock(e.at)}</span></time>
+              <div class="what">
+                <h3>{e.title}</h3>
+                <p>{e.text}</p>
+                {e.figure && <p class="fig">{e.figure}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      ) : null}
+    </section>
+  ))}
+
+  <section class="row wide" aria-labelledby="h-how">
+    <div class="hang"><h2 id="h-how">How it is worked out</h2></div>
+    <div class="prose">
+      <p>Nothing here is looked up from a service. The planets' places come from the NASA/JPL approximate orbital elements, the same sums as the rest of this site, and the Moon from the largest terms of the series in Jean Meeus, <cite>Astronomical Algorithms</cite>, chapter 47. These are good to a few arcminutes, which for a slow planet is a few hours. The times here were checked against NASA/JPL Horizons, the reference ephemeris.</p>
+      <ul>
+        <li>An opposition is the moment a planet is exactly opposite the Sun along the ecliptic. The planet is then at its nearest to us this time round, though the closest approach can fall a day or so away.</li>
+        <li>A greatest elongation is when Mercury or Venus is farthest from the Sun in the sky. The time is the least certain thing here, because the angle hardly changes for a day or two on either side.</li>
+        <li>Two planets are "close" when they come within 3 degrees. The angle is measured from the centre of the Earth, and pairs lost in the Sun's glare are left out.</li>
+        <li>The Moon's nearest and farthest points are its distance from the centre of the Earth, and are given to the nearest 100 km.</li>
+      </ul>
+      <p>Compared with Horizons, the planet events here fall within about two and a half hours (most within an hour), and the Moon's nearest and farthest points within about forty minutes and 130 km.</p>
+    </div>
+  </section>
+</Reading>
+
+<script define:vars={{ built }}>
+  // what has gone by is hidden; the list was made when the site was built, so it may start a little before today
+  const now = Date.now();
+  let gone = 0;
+  document.querySelectorAll('.ev-month').forEach((s) => {
+    s.querySelectorAll('.evi').forEach((li) => { if (+li.dataset.at < now) { li.hidden = true; gone++; } });
+    if (+s.dataset.ends < now) s.hidden = true;
+    else if (!s.querySelector('.evi:not([hidden])') && s.querySelector('.evs')) s.querySelector('.evs').remove();
+  });
+  if (gone) { const g = document.getElementById('ev-gone'); g.textContent = 'This list was worked out when the site was last built, and what has already passed is hidden.'; g.hidden = false; }
+</script>
+
+<style is:global>
+  .ev-how { font: 300 1rem/1.55 var(--r-serif); color: var(--ink-soft); max-width: 44rem; margin: 1.2rem 0 0; }
+  .ev-how a, .ev-gone a { color: var(--ink); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; }
+  .ev-gone { font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .04em; color: var(--ink-faint); margin: 0 0 1.6rem; }
+  .ev-month h2 span { color: var(--ink-faint); font-weight: 300; }
+  .ev-month .moonline { font: 400 .8125rem/1.6 var(--r-mono); letter-spacing: .03em; color: var(--ink-faint); margin: .8rem 0 0; }
+  .evs { list-style: none; margin: 0; padding: 0; max-width: 52rem; }
+  .evi { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: .3rem 2.2rem; padding: 1.2rem 0 1.35rem; border-top: 1px solid var(--rule); }
+  .evi:first-child { border-top: 0; padding-top: .2rem; }
+  .evi[hidden] { display: none; }
+  .evi .when { display: block; font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .evi .when b { display: block; font-weight: 400; color: var(--accent); }
+  .evi h3 { font: 400 1.4rem/1.25 var(--r-serif); margin: 0 0 .35rem; color: var(--ink); }
+  .evi p { font: 300 1.08rem/1.6 var(--r-serif); color: var(--ink-soft); margin: 0; max-width: 40rem; }
+  .evi p.fig { font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .04em; color: var(--accent); margin-top: .4rem; }
+  .evi h3::before { display: inline-block; width: .55rem; height: .55rem; border-radius: 50%; margin-right: .6rem; vertical-align: .08em; content: ''; background: var(--accent); }
+  .evi-opposition h3::before { width: .8rem; height: .8rem; vertical-align: 0; }
+  .evi-sun h3::before { background: transparent; border: 1.5px solid #ece7dc; }
+  .evi-elongation h3::before { background: transparent; border: 1.5px solid var(--accent); }
+  .ev-quiet { padding-block: 1.2rem; }
+  .quiet { font: 300 1.05rem/1.5 var(--r-serif); color: var(--ink-faint); margin: .2rem 0 0; }
+  @media (max-width: 640px) { .evi { grid-template-columns: minmax(0, 1fr); gap: .2rem; } }
+</style>

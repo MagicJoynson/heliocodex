@@ -99,8 +99,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const day = Math.max(0, Math.min(1, (sun.altDeg + 12) / 12)), dusk = Math.max(0, 1 - Math.abs(sun.altDeg + 4) / 14);
   // how far the view has opened out to the whole sky, 0 to 1, so every change of look between the two is smooth and nothing pops
   const wk = Math.max(0, Math.min(1, (view.fovDeg - 90) / 60)), Wraw = wk * wk * (3 - 2 * wk);
-  // the whole-sky look comes in between blend 0.15 and 0.5: below that the view is the ordinary one, untouched
-  const V = Math.max(0, Math.min(1, (Wraw - 0.15) / 0.35)), VV = V * V * (3 - 2 * V), W = VV;
+  // the whole-sky look comes in between blend 0.15 and 0.75, so by day the sky darkens gently: below that the view is the ordinary one, untouched
+  const V = Math.max(0, Math.min(1, (Wraw - 0.15) / 0.6)), VV = V * V * (3 - 2 * V), W = VV;
 
   // ---- the sky: darkest overhead, paler towards the horizon
   ctx.clearRect(0, 0, w, h);
