@@ -143,7 +143,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     // beyond the horizon: the sky on the far side of the Earth, out of sight, shown only as a faint warm sprinkle so the picture has no edge
     if (z < 0) {
       if (mags[i] > faintest || !onScreen(p[0], p[1])) continue;
-      const a = Math.min(0.55, (faintest - mags[i]) * 0.16) * VV * dim * (1 + z * 1.2);
+      // never brighter than the faintest star that is really up (0.34 * 0.45 of full), so none can pass for one
+      const a = Math.min(0.15, (faintest - mags[i]) * 0.05) * VV * dim * (1 + z * 1.2);
       if (a <= 0.01) continue;
       beyond.push([p[0], p[1], 0.55, a, tint(data.stars[i * 5 + 4])]);
       continue;
