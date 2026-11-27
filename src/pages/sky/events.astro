@@ -4,9 +4,14 @@
 // and nothing is stored. The page hides what has already passed when it loads.
 import Reading from '../../layouts/Reading.astro';
 import { calendar, type Item } from '../../lib/sky/calendar';
+import eclipseData from '../../data/eclipses.json';
 
 const start = new Date(Date.now() - 2 * 86400000), end = new Date(start.getTime() + 2 * 365.25 * 86400000);
-const all = calendar(start, end);
+const KIND: Record<string, string> = { 'Annular Solar': 'Annular solar eclipse', 'Total Solar': 'Total solar eclipse', 'Partial Solar': 'Partial solar eclipse', 'Hybrid Solar': 'Hybrid solar eclipse', 'Total Lunar': 'Total lunar eclipse', 'Partial Lunar': 'Partial lunar eclipse', 'Penumbral Lunar': 'Penumbral lunar eclipse' };
+// eclipses, from NASA Goddard's predictions (src/data/eclipses.json): the moment of greatest eclipse
+const eclipses: Item[] = eclipseData.eclipses.map((e) => ({ at: new Date(e.at), kind: 'eclipse' as const, title: KIND[e.kind] ?? `${e.kind} eclipse`, text: `At the moment of greatest eclipse. Whether you can see it, and how much of it, depends on where you are on Earth.`, figure: `Magnitude ${e.magnitude.toFixed(3)}` })).filter((e) => e.at >= start && e.at <= end);
+const all = [...calendar(start, end), ...eclipses].sort((a, b) => a.at.getTime() - b.at.getTime());
+const first = all.find((i) => i.at.getTime() >= Date.now() && !['sun', 'near', 'far'].includes(i.kind));
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const day = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()].slice(0, 3)}`;
 const clock = (d: Date) => `${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')} UT`;
@@ -19,19 +24,31 @@ for (const it of all) {
   if (!m) { m = { key, name: MONTHS[it.at.getUTCMonth()], year: it.at.getUTCFullYear(), ends: Date.UTC(it.at.getUTCFullYear(), it.at.getUTCMonth() + 1, 1), list: [], moon: [] }; months.push(m); }
   (it.kind === 'near' || it.kind === 'far' ? m.moon : m.list).push(it);
 }
+// a month with no planet event is left out: the Moon's line alone is not worth a heading
+const shown = months.filter((m) => m.list.length > 0);
 const built = start.toISOString();
 ---
-<Reading title="Sky events" path="/sky/events" description="Planet oppositions, greatest elongations, close pairings and the Moon's nearest and farthest points over the next two years, worked out from real orbits and checked against NASA/JPL Horizons.">
+<Reading title="Sky events" path="/sky/events" description="Planet oppositions, greatest elongations, close pairings, eclipses and the Moon's nearest and farthest points over the next two years, worked out from real orbits and checked against NASA/JPL Horizons.">
   <header class="reading-head">
     <p class="label"><a href="/sky">The sky tonight</a> · <a href="/sky/week">This week</a> · Two years ahead</p>
     <h1>Sky events</h1>
-    <p class="lead">The moments worth planning a night around, for the next two years: planets at their best, pairs that pass close, and the Moon at its nearest and farthest.</p>
-    <p class="ev-how">Each event is the same instant everywhere on Earth. Times are given in Universal Time (UT); where your browser can tell your time zone, the page shows your own clock first, with UT underneath, and the day may differ. Whether you can see an event depends on where you stand. Look at <a href="/sky">the sky map</a> for your place and <a href="/sky/week">Sky this week</a> for the week ahead. The eclipses are listed with their times on <a href="/sky/week#h-ecl">Sky this week</a>.</p>
+    <p class="lead">The moments worth planning a night around over the next two years: planets at their best, pairs that pass close, eclipses, and the Moon at its nearest and farthest.</p>
+    <p class="ev-how">Whether you can see an event depends on where you stand: <a href="/sky">the sky map</a> and <a href="/sky/week">Sky this week</a> show your own sky.</p>
+    {first && (
+      <div class="ev-next" id="ev-next">
+        <p class="label">Next up</p>
+        <h2 id="ev-next-t">{first.title}</h2>
+        <time class="ev-next-when" id="ev-next-when" datetime={first.at.toISOString()}><b>{day(first.at)}</b> <span>{clock(first.at)}</span></time>
+        <p class="ev-next-why" id="ev-next-why">{first.text}</p>
+        {first.figure && <p class="fig" id="ev-next-fig">{first.figure}</p>}
+        <p class="ev-tz" id="ev-tz">Times are in Universal Time (UT); your own clock comes first where your browser knows it.</p>
+      </div>
+    )}
   </header>
 
   <p class="ev-gone" id="ev-gone" hidden></p>
 
-  {months.map((m) => (
+  {shown.map((m) => (
     <section class={`row wide ev-month${m.list.length ? '' : ' ev-quiet'}`} data-ends={m.ends} aria-labelledby={`m-${m.key}`}>
       <div class="hang">
         <h2 id={`m-${m.key}`}>{m.name} <span>{m.year}</span></h2>
@@ -62,6 +79,7 @@ const built = start.toISOString();
         <li>An opposition is the moment a planet is exactly opposite the Sun along the ecliptic. The planet is then at its nearest to us this time round, though the closest approach can fall a day or so away.</li>
         <li>A greatest elongation is when Mercury or Venus is farthest from the Sun in the sky. The time is the least certain thing here, because the angle hardly changes for a day or two on either side.</li>
         <li>Two planets are "close" when they come within 3 degrees. The angle is measured from the centre of the Earth, and pairs lost in the Sun's glare are left out.</li>
+        <li>Eclipses are NASA Goddard's predictions by Fred Espenak and Jean Meeus, at the moment of greatest eclipse; the sources are on <a href="/sky/week#h-ecl">Sky this week</a>.</li>
         <li>The Moon's nearest and farthest points are its distance from the centre of the Earth, and are given to the nearest 100 km.</li>
       </ul>
       <p>Compared with Horizons, the planet events here fall within about two and a half hours (most within an hour), and the Moon's nearest and farthest points within about fifty minutes and 130 km.</p>
@@ -94,13 +112,26 @@ const built = start.toISOString();
     const u = document.createElement('span'); u.className = 'ut'; u.textContent = (day === utDay ? '' : utDay + ' ') + ut; t.append(u);
   });
   // the Moon's line: what has passed is dropped, and the days are the visitor's own
+  // the next real event, up top: the first still to come that is not a Sun conjunction (those cannot be seen)
+  const nx = [...document.querySelectorAll('.evi:not([hidden]):not(.evi-sun)')][0];
+  const box = document.getElementById('ev-next');
+  if (nx && box) {
+    box.querySelector('#ev-next-t').textContent = nx.querySelector('h3').textContent;
+    box.querySelector('#ev-next-why').textContent = nx.querySelector('.what p').textContent;
+    const f = nx.querySelector('.fig'), ff = box.querySelector('#ev-next-fig');
+    if (f) { if (ff) ff.textContent = f.textContent; } else if (ff) ff.remove();
+    const w = box.querySelector('#ev-next-when'), t = nx.querySelector('.when');
+    w.replaceChildren(...[...t.children].map((c) => c.cloneNode(true)));
+    w.dateTime = t.dateTime;
+    const z = box.querySelector('#ev-tz'); if (z) z.textContent = t.querySelector('.ut') ? 'Shown on your own clock, with Universal Time (UT) underneath.' : 'Times are in Universal Time (UT).';
+  } else if (box) box.hidden = true;
   document.querySelectorAll('.mn').forEach((m) => {
     if (+m.dataset.at < now) { m.hidden = true; return; }
     try { const d = new Date(+m.dataset.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); m.textContent = (m.dataset.kind === 'near' ? 'nearest ' : 'farthest ') + d + ', ' + m.dataset.km; } catch { /* keep UT */ }
   });
   document.querySelectorAll('.moonline').forEach((p) => { if (!p.querySelector('.mn:not([hidden])')) p.hidden = true; });
-  // a month with nothing left to show goes
-  document.querySelectorAll('.ev-month').forEach((m) => { if (!m.querySelector('.evi:not([hidden])') && !m.querySelector('.moonline:not([hidden])')) m.hidden = true; });
+  // a month with no event left goes, whatever the Moon is doing
+  document.querySelectorAll('.ev-month').forEach((m) => { if (!m.querySelector('.evi:not([hidden])')) m.hidden = true; });
   if (gone) { const g = document.getElementById('ev-gone'); g.textContent = 'This list was worked out when the site was last built, and what has already passed is hidden.'; g.hidden = false; }
 </script>
 
@@ -108,6 +139,17 @@ const built = start.toISOString();
   .ev-how { font: 300 1rem/1.55 var(--r-serif); color: var(--ink-soft); max-width: 44rem; margin: 1.2rem 0 0; }
   .ev-how a, .ev-gone a { color: var(--ink); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; }
   .ev-gone { font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .04em; color: var(--ink-faint); margin: 0 0 1.6rem; }
+  .ev-next { margin: 2.2rem 0 2.6rem; padding: 1.6rem 0 0; border-top: 1px solid var(--rule); max-width: 46rem; }
+  .ev-next[hidden] { display: none; }
+  .ev-next h2 { font: 400 clamp(1.9rem, 4.5vw, 2.8rem)/1.15 var(--r-serif); color: var(--ink); margin: .3rem 0 .6rem; }
+  .ev-next-when { display: block; font: 400 .95rem/1.5 var(--r-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .ev-next-when b { font-weight: 400; color: var(--accent); margin-right: .9rem; }
+  .ev-next-when span { display: inline-block; margin-right: .8rem; }
+  .ev-next-when .ut { display: inline-block; text-transform: none; letter-spacing: .03em; opacity: .75; }
+  .ev-next-why { font: 300 1.2rem/1.6 var(--r-serif); color: var(--ink-soft); margin: .9rem 0 0; max-width: 38rem; }
+  .ev-next .fig { font: 400 .875rem/1.5 var(--r-mono); letter-spacing: .04em; color: var(--accent); margin: .6rem 0 0; }
+  .ev-tz { font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .03em; color: var(--ink-faint); margin: 1.1rem 0 0; }
+  .evi-eclipse h3::before { background: #ece7dc; }
   .ev-month h2 span { color: var(--ink-faint); font-weight: 300; }
   .mn:not([hidden]) ~ .mn:not([hidden])::before, .mn:not([hidden]) + .mn:not([hidden])::before { content: ' · '; }
   .mn[hidden] { display: none; }

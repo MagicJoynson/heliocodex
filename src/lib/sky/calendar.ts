@@ -18,7 +18,7 @@ import { planetLook, sunLon, eastOfSun, planetLL, apart, passes, crossings, T_, 
 
 const HOUR = 3600000;
 
-export type Kind = 'opposition' | 'elongation' | 'sun' | 'pair' | 'near' | 'far';
+export type Kind = 'opposition' | 'elongation' | 'sun' | 'pair' | 'near' | 'far' | 'eclipse';
 export interface Item { at: Date; kind: Kind; title: string; text: string; figure?: string; unseen?: boolean }
 
 const NAMES: Record<string, string> = { ...NAKED_NAME, uranus: 'Uranus', neptune: 'Neptune' };
