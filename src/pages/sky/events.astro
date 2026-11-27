@@ -99,6 +99,8 @@ const built = start.toISOString();
     try { const d = new Date(+m.dataset.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); m.textContent = (m.dataset.kind === 'near' ? 'nearest ' : 'farthest ') + d + ', ' + m.dataset.km; } catch { /* keep UT */ }
   });
   document.querySelectorAll('.moonline').forEach((p) => { if (!p.querySelector('.mn:not([hidden])')) p.hidden = true; });
+  // a month with nothing left to show goes
+  document.querySelectorAll('.ev-month').forEach((m) => { if (!m.querySelector('.evi:not([hidden])') && !m.querySelector('.moonline:not([hidden])')) m.hidden = true; });
   if (gone) { const g = document.getElementById('ev-gone'); g.textContent = 'This list was worked out when the site was last built, and what has already passed is hidden.'; g.hidden = false; }
 </script>
 
