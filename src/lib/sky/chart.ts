@@ -106,13 +106,14 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   ctx.clearRect(0, 0, w, h);
   const top = put(0, 0, 1, -2)!, edge = place(0, view.azDeg, -2)!, reach = Math.max(Math.hypot(edge[0] - top[0], edge[1] - top[1]), 1);
   // the sky ends at the horizon: past it (ground, always covered or dark) nothing pale is painted, so the ground can fade in and out without a light slab showing
-  const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach * 1.05);
+  const air = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], reach * (1 + 0.05 * VV));
   const tone = (n: [number, number, number], d: [number, number, number]) => `rgb(${n.map((v, i) => Math.round(v + (d[i] - v) * day)).join(',')})`;
   // looking at the whole sky it stays dark right out towards the edge and only brightens in a thin band at the skyline, as the real dome does
   const mix3 = (a: [number, number, number], b: [number, number, number]): [number, number, number] => [a[0] + (b[0] - a[0]) * W, a[1] + (b[1] - a[1]) * W, a[2] + (b[2] - a[2]) * W];
-  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55 / 1.05, tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
-  air.addColorStop(0.86 / 1.05, tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [96, 138, 186]))); air.addColorStop(1 / 1.05, tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [170, 194, 214])));
-  air.addColorStop(1, tone([7, 9, 15], [26, 34, 38]));
+  air.addColorStop(0, tone([5, 7, 14], [38, 78, 138])); air.addColorStop(0.55 / (1 + 0.05 * VV), tone(mix3([8, 11, 22], [7, 9, 19]), mix3([58, 104, 164], [48, 92, 152])));
+  air.addColorStop(0.86 / (1 + 0.05 * VV), tone(mix3([15, 20, 36], [10, 14, 27]), mix3([104, 146, 190], [96, 138, 186]))); air.addColorStop(1 / (1 + 0.05 * VV), tone(mix3([27, 33, 52], [24, 31, 50]), mix3([158, 184, 206], [170, 194, 214])));
+  // and past the horizon it goes dark, by as much as the whole-sky look is on; with it off the gradient ends exactly as it always did
+  air.addColorStop(1, tone(mix3([27, 33, 52], [7, 9, 15]), mix3([158, 184, 206], [26, 34, 38])));
   ctx.fillStyle = air; ctx.fillRect(0, 0, w, h);
   // the glow over where the Sun has set or is about to rise
   if (dusk > 0) {
@@ -314,7 +315,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
     if (cap > 0.01 && beyond.length) {
       // under the picture, clear of the dock; if the S of the compass is there, just above it
       const south = place(-Math.min(5, view.fovDeg / 26), 180, -0.3);
-      let capY = room.foot - 40;
+      let capY = room.foot - 46;
       if (south && Math.abs(south[1] - capY) < 18) capY = south[1] - 18;
       ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},${(0.55 * cap).toFixed(3)})`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, capY);
     }
