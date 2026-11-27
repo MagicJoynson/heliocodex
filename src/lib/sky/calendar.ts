@@ -59,14 +59,14 @@ export function calendar(from: Date, to: Date): Item[] {
     for (const c of crossings(passes(diff, 180), from, to, 12 * HOUR)) {
       const au = planetFromEarth(id, T_(c.at)).au;
       const bright = id === 'uranus' || id === 'neptune' ? '' : `, magnitude ${(() => { const m = planetLook(id as Naked, c.at).mag; return (m < 0 ? '−' : '') + Math.abs(m).toFixed(1); })()}`;
-      out.push({ at: c.at, kind: 'opposition', title: `${NAMES[id]} at opposition`, text: `${NAMES[id]} is directly opposite the Sun. It rises at sunset, is highest at midnight, and is as close to us as it comes this time round, so the best time of its year to look.`, figure: `${au.toFixed(2)} au from Earth${bright}` });
+      out.push({ at: c.at, kind: 'opposition', title: `${NAMES[id]} at opposition`, text: `${NAMES[id]} is directly opposite the Sun. It rises at sunset, is highest at midnight, and is at or near its closest to us this time round, so the best time of its year to look.${id === 'uranus' || id === 'neptune' ? ' Best seen with binoculars or a telescope.' : ''}`, figure: `${au.toFixed(2)} au from Earth${bright}` });
     }
   }
   // Mercury and Venus: widest from the Sun, and in line with it
   for (const id of ['mercury', 'venus'] as const) {
     for (const w of turns((d) => elongation(id, d), from, to, 6 * HOUR, -1)) {
       const east = eastOfSun(id, w.at) > 0;
-      out.push({ at: w.at, kind: 'elongation', title: `${NAMES[id]} at greatest elongation ${east ? 'east' : 'west'}`, text: `${NAMES[id]} is as far from the Sun as it gets this time round, so it stands highest in the ${east ? 'evening' : 'morning'} sky, ${east ? 'after sunset' : 'before sunrise'}.`, figure: `${degs(Math.abs(w.v))} from the Sun` });
+      out.push({ at: w.at, kind: 'elongation', title: `${NAMES[id]} at greatest elongation ${east ? 'east' : 'west'}`, text: `${NAMES[id]} is as far from the Sun as it gets this time round, so it is best placed in the ${east ? 'evening' : 'morning'} sky, ${east ? 'after sunset' : 'before sunrise'}.`, figure: `${degs(Math.abs(w.v))} from the Sun` });
     }
   }
   for (const id of ['mercury', 'venus', ...OUTER] as const) {
@@ -74,7 +74,7 @@ export function calendar(from: Date, to: Date): Item[] {
     for (const c of crossings(e, from, to, 12 * HOUR)) {
       if (Math.abs(e(c.at)) > 10) continue;
       const inner = id === 'mercury' || id === 'venus', between = inner && planetFromEarth(id, T_(c.at)).au < 1;
-      out.push({ at: c.at, kind: 'sun', title: inner ? `${NAMES[id]} in ${between ? 'inferior' : 'superior'} conjunction` : `${NAMES[id]} in conjunction with the Sun`, text: `${NAMES[id]} passes ${between ? 'between us and the Sun' : 'behind the Sun'}, lost in its glare for some weeks.`, unseen: true });
+      out.push({ at: c.at, kind: 'sun', title: inner ? `${NAMES[id]} in ${between ? 'inferior' : 'superior'} conjunction` : `${NAMES[id]} in conjunction with the Sun`, text: `${NAMES[id]} passes ${between ? 'between us and the Sun' : 'behind the Sun'}, lost in its glare for weeks.`, unseen: true });
     }
   }
   // two planets close together
@@ -85,7 +85,7 @@ export function calendar(from: Date, to: Date): Item[] {
       if (m.v >= 3) continue;
       const near = Math.min(elongation(a, m.at), elongation(b, m.at)) < 15;
       if (near) continue; // too near the Sun to see: not worth a line
-      out.push({ at: m.at, kind: 'pair', title: `${NAMES[a]} and ${NAMES[b]} close`, text: `${NAMES[a]} and ${NAMES[b]} pass ${degs(m.v)} apart in the sky, at their closest. They look close, but are millions of kilometres apart.`, figure: `${degs(m.v)} apart` });
+      out.push({ at: m.at, kind: 'pair', title: `${NAMES[a]} and ${NAMES[b]} close`, text: `${NAMES[a]} and ${NAMES[b]} pass ${degs(m.v)} apart in the sky, at their closest. They look close, but are many millions of kilometres apart.`, figure: `${degs(m.v)} apart` });
     }
   }
   // the Moon's nearest and farthest points

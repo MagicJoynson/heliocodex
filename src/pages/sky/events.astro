@@ -19,14 +19,13 @@ for (const it of all) {
   if (!m) { m = { key, name: MONTHS[it.at.getUTCMonth()], year: it.at.getUTCFullYear(), ends: Date.UTC(it.at.getUTCFullYear(), it.at.getUTCMonth() + 1, 1), list: [], moon: [] }; months.push(m); }
   (it.kind === 'near' || it.kind === 'far' ? m.moon : m.list).push(it);
 }
-const moonLine = (m: Month) => m.moon.map((i) => `${i.kind === 'near' ? 'nearest' : 'farthest'} ${i.at.getUTCDate()} ${m.name.slice(0, 3)}, ${i.figure}`).join(' · ');
 const built = start.toISOString();
 ---
 <Reading title="Sky events" path="/sky/events" description="Planet oppositions, greatest elongations, close pairings and the Moon's nearest and farthest points over the next two years, worked out from real orbits and checked against NASA/JPL Horizons.">
   <header class="reading-head">
     <p class="label"><a href="/sky">The sky tonight</a> · <a href="/sky/week">This week</a> · Two years ahead</p>
     <h1>Sky events</h1>
-    <p class="lead">The moments worth planning a night around, from now to the end of {end.getUTCFullYear()}: planets at their best, pairs that pass close, and the Moon at its nearest and farthest.</p>
+    <p class="lead">The moments worth planning a night around, for the next two years: planets at their best, pairs that pass close, and the Moon at its nearest and farthest.</p>
     <p class="ev-how">Each event is the same instant everywhere on Earth. Times are given in Universal Time (UT); where your browser can tell your time zone, the page shows your own clock first, with UT underneath, and the day may differ. Whether you can see an event depends on where you stand. Look at <a href="/sky">the sky map</a> for your place and <a href="/sky/week">Sky this week</a> for the week ahead. The eclipses are listed with their times on <a href="/sky/week#h-ecl">Sky this week</a>.</p>
   </header>
 
@@ -36,7 +35,7 @@ const built = start.toISOString();
     <section class={`row wide ev-month${m.list.length ? '' : ' ev-quiet'}`} data-ends={m.ends} aria-labelledby={`m-${m.key}`}>
       <div class="hang">
         <h2 id={`m-${m.key}`}>{m.name} <span>{m.year}</span></h2>
-        {m.moon.length > 0 && <p class="note moonline">Moon: {moonLine(m)}</p>}
+        {m.moon.length > 0 && <p class="note moonline">Moon: {m.moon.map((i) => <span class="mn" data-at={i.at.getTime()} data-kind={i.kind} data-km={i.figure}>{i.kind === 'near' ? 'nearest' : 'farthest'} {i.at.getUTCDate()} {m.name.slice(0, 3)}, {i.figure}</span>)}</p>}
       </div>
       {m.list.length > 0 ? (
         <ol class="evs">
@@ -65,7 +64,7 @@ const built = start.toISOString();
         <li>Two planets are "close" when they come within 3 degrees. The angle is measured from the centre of the Earth, and pairs lost in the Sun's glare are left out.</li>
         <li>The Moon's nearest and farthest points are its distance from the centre of the Earth, and are given to the nearest 100 km.</li>
       </ul>
-      <p>Compared with Horizons, the planet events here fall within about two and a half hours (most within an hour), and the Moon's nearest and farthest points within about forty minutes and 130 km.</p>
+      <p>Compared with Horizons, the planet events here fall within about two and a half hours (most within an hour), and the Moon's nearest and farthest points within about fifty minutes and 130 km.</p>
     </div>
   </section>
 </Reading>
@@ -91,8 +90,15 @@ const built = start.toISOString();
     const ut = sp.textContent, utDay = b.textContent;
     if (/\b(UTC|UT)\b/.test(clock) && day === utDay) return;
     b.textContent = day; sp.textContent = clock;
+    if (at.getTimezoneOffset() === 0) return; // already the same clock as UT
     const u = document.createElement('span'); u.className = 'ut'; u.textContent = (day === utDay ? '' : utDay + ' ') + ut; t.append(u);
   });
+  // the Moon's line: what has passed is dropped, and the days are the visitor's own
+  document.querySelectorAll('.mn').forEach((m) => {
+    if (+m.dataset.at < now) { m.hidden = true; return; }
+    try { const d = new Date(+m.dataset.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); m.textContent = (m.dataset.kind === 'near' ? 'nearest ' : 'farthest ') + d + ', ' + m.dataset.km; } catch { /* keep UT */ }
+  });
+  document.querySelectorAll('.moonline').forEach((p) => { if (!p.querySelector('.mn:not([hidden])')) p.hidden = true; });
   if (gone) { const g = document.getElementById('ev-gone'); g.textContent = 'This list was worked out when the site was last built, and what has already passed is hidden.'; g.hidden = false; }
 </script>
 
@@ -101,6 +107,8 @@ const built = start.toISOString();
   .ev-how a, .ev-gone a { color: var(--ink); text-decoration-color: rgba(233,196,138,.5); text-underline-offset: .18em; }
   .ev-gone { font: 400 .8125rem/1.5 var(--r-mono); letter-spacing: .04em; color: var(--ink-faint); margin: 0 0 1.6rem; }
   .ev-month h2 span { color: var(--ink-faint); font-weight: 300; }
+  .mn:not([hidden]) ~ .mn:not([hidden])::before, .mn:not([hidden]) + .mn:not([hidden])::before { content: ' · '; }
+  .mn[hidden] { display: none; }
   .ev-month .moonline { font: 400 .8125rem/1.6 var(--r-mono); letter-spacing: .03em; color: var(--ink-faint); margin: .8rem 0 0; }
   .evs { list-style: none; margin: 0; padding: 0; max-width: 52rem; }
   .evi { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: .3rem 2.2rem; padding: 1.2rem 0 1.35rem; border-top: 1px solid var(--rule); }
@@ -117,6 +125,5 @@ const built = start.toISOString();
   .evi-sun h3::before { background: transparent; border: 1.5px solid #ece7dc; }
   .evi-elongation h3::before { background: transparent; border: 1.5px solid var(--accent); }
   .ev-quiet { padding-block: 1.2rem; }
-  .quiet { font: 300 1.05rem/1.5 var(--r-serif); color: var(--ink-faint); margin: .2rem 0 0; }
   @media (max-width: 640px) { .evi { grid-template-columns: minmax(0, 1fr); gap: .2rem; } }
 </style>
