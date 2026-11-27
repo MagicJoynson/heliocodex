@@ -282,7 +282,7 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const soilRound = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.75);
   soilRound.addColorStop(0, tone([17, 21, 32], [26, 34, 38])); soilRound.addColorStop(0.4, tone([10, 12, 19], [18, 24, 28])); soilRound.addColorStop(1, tone([6, 7, 11], [12, 16, 18]));
   const soilFlat = ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
-  soilFlat.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); soilFlat.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
+  soilFlat.addColorStop(0, tone([16, 19, 28], [26, 34, 38])); soilFlat.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); soilFlat.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
   ctx.fillStyle = W >= 0.5 ? soilRound : soilFlat; ctx.fill('evenodd');
   ctx.globalAlpha = solid * (W >= 0.5 ? 1 - W : W); ctx.fillStyle = W >= 0.5 ? soilFlat : soilRound; ctx.fill('evenodd'); ctx.globalAlpha = solid;
   // looking at the whole sky the ground is a ring round the edge: a faint glow spills over it so the sky fades into the dark and has no rim
@@ -293,20 +293,24 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   ctx.restore();
   if (open) {
     // the dark band: clear well inside the horizon, darkest at it, and thinning but never ending outside, so the stars beyond are faint and there is no line to see
+    // the dark band is up before the land has gone, so no light sky shows through between the two
+    const VA = Math.min(1, 3 * VV), vs = VA * VA * (3 - 2 * VA) * 0.96;
     const veil = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.9);
-    const g0 = tone([7, 9, 15], [16, 20, 24]).replace('rgb(', '').replace(')', '');
-    veil.addColorStop(0, `rgba(${g0},0)`); veil.addColorStop(0.09, `rgba(${g0},${(0.96 * VV).toFixed(3)})`); veil.addColorStop(1, `rgba(${g0},${(0.96 * VV).toFixed(3)})`);
+    // by day the ground is lit a little, most near the horizon, and falls to the dark of the page further out
+    const near = tone([7, 9, 15], [38, 50, 58]).replace('rgb(', '').replace(')', ''), far = tone([6, 8, 13], [15, 19, 23]).replace('rgb(', '').replace(')', '');
+    veil.addColorStop(0, `rgba(${near},0)`); veil.addColorStop(0.09, `rgba(${near},${vs.toFixed(3)})`); veil.addColorStop(0.4, `rgba(${far},${vs.toFixed(3)})`); veil.addColorStop(1, `rgba(${far},${vs.toFixed(3)})`);
     ctx.fillStyle = veil; ctx.fillRect(-2, -2, w + 4, h + 4);
     // a soft haze centred on the horizon, palest by day, so the edge of the sky is felt even with no line
     const haze = ctx.createRadialGradient(top[0], top[1], reach * 0.9, top[0], top[1], reach * 1.1);
-    const ha = (0.045 + 0.22 * day) * VV;
+    const ha = (0.045 + 0.13 * day) * VV;
     haze.addColorStop(0, 'rgba(196,214,232,0)'); haze.addColorStop(0.5, `rgba(196,214,232,${ha.toFixed(3)})`); haze.addColorStop(1, 'rgba(196,214,232,0)');
     ctx.fillStyle = haze; ctx.fillRect(-2, -2, w + 4, h + 4);
     // then the stars below the horizon, faint and in their own colours, over the dark band, so the dark is not flat
     for (const [x, y, r, a, rgb] of beyond) { ctx.fillStyle = `rgba(${rgb},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
     bodies();
     // said in the picture, where it is seen
-    if (VV > 0.9 && beyond.length) { ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},.5)`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, Math.min(room.foot - 12, top[1] + reach * 1.05 + 18)); }
+    const cap = Math.max(0, (VV - 0.6) / 0.4);
+    if (cap > 0.01 && beyond.length) { ctx.font = `400 ${w < 600 ? 11 : 11.5}px ${MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = `rgba(${INK},${(0.55 * cap).toFixed(3)})`; ctx.fillText('Faint dots beyond the edge are below the horizon', w / 2, room.foot - 40); }
   }
   // the eight ways, written on the ground under the horizon
   const wayFont = `400 ${Math.max(w < 600 ? 13 : 10, Math.min(12, S / 30))}px ${MONO}`, drop = Math.min(5, view.fovDeg / 26);
