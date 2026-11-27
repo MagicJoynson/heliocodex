@@ -125,14 +125,23 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   // fainter stars come in as the view closes in, so a wide view is not a blur of dots
   const faintest = Math.max(4.6, Math.min(6.5, 2.1 + 1.7 * Math.log10(S))), grow = Math.max(0.8, Math.min(1.5, Math.sqrt(S / 300)));
   const dim = 1 - 0.8 * day;
+  const open = W > 0.05, beyond: [number, number, number, number][] = [];
 
   // ---- stars
   const { dirs, mags } = standing(data, m), n = mags.length, at = new Float32Array(n * 2), up = new Uint8Array(n);
   for (let i = 0; i < n; i++) {
     const e = dirs[i * 3], no = dirs[i * 3 + 1], z = dirs[i * 3 + 2];
-    if (z < -0.02) continue;
-    const p = put(e, no, z);
+    if (z < -0.02 && !(open && z > -0.6)) continue;
+    const p = put(e, no, z, open ? -0.62 : undefined);
     if (!p) continue;
+    // beyond the horizon: the sky on the far side of the Earth, out of sight, shown only as a faint warm sprinkle so the picture has no edge
+    if (z < 0) {
+      if (mags[i] > faintest - 0.5 || !onScreen(p[0], p[1])) continue;
+      const a = Math.min(0.5, (faintest - 0.5 - mags[i]) * 0.14) * W * dim * (1 + z * 1.2);
+      if (a <= 0.01) continue;
+      beyond.push([p[0], p[1], Math.max(0.55, 2.2 * Math.pow(10, -0.155 * mags[i])) * grow, a]);
+      continue;
+    }
     at[i * 2] = p[0]; at[i * 2 + 1] = p[1]; up[i] = 1;
     const mag = mags[i];
     if (mag > faintest || !onScreen(p[0], p[1])) continue;
@@ -239,14 +248,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   for (let az = 0; az < 360; az += 2) rim.push(place(0, az, -2)!);
   // a low, rolling skyline (a few slow waves, never a real place) so the horizon is land and not a drawn edge
   const lie = (az: number) => 0.5 + 0.34 * Math.sin(az * 0.061 + 1.3) + 0.22 * Math.sin(az * 0.173 + 4.1) + 0.12 * Math.sin(az * 0.47 + 0.6) + 0.06 * Math.sin(az * 1.31 + 2.2);
-  // finer, tree-like ragged edge, used only once the whole sky is in view where the skyline is a ring and must not read as a drawn circle
-  const tri = (x: number) => 1 - Math.abs(2 * (x - Math.floor(x)) - 1);
-  const ragged = (az: number) => 1.5 * tri(az / 3.1 + 0.2) ** 2 * (0.4 + lie(az)) + 0.7 * tri(az / 1.7 + 0.55) + 0.3 * Math.sin(az * 5.9 + 2.0);
-  const land: [number, number][] = [], stepAz = W > 0.05 ? 1.5 : 3;
-  for (let az = 0; az < 360; az += stepAz) land.push(place(Math.max(0.05, (1 - W) * lie(az) + W * (0.6 + 2.4 * lie(az) + 1.0 * ragged(az))), az, -2)!);
-  // a farther ridge behind it, paler with haze, so the ground has depth and the sky has something to stand behind
-  const far: [number, number][] = [];
-  if (W > 0.02) for (let az = 0; az < 360; az += 3) far.push(place(2.4 + 2.6 * (0.5 + 0.4 * Math.sin(az * 0.043 + 0.7) + 0.25 * Math.sin(az * 0.11 + 3.3) + 0.1 * Math.sin(az * 0.29 + 1.1)), az, -2)!);
+  const land: [number, number][] = [], stepAz = 3;
+  for (let az = 0; az < 360; az += stepAz) land.push(place(Math.max(0.05, (1 - W) * lie(az)), az, -2)!);
   // airglow hugging the horizon: a soft band of light that thins upwards, pale at night, warmer towards the Sun's side at dusk
   // one gradient fill each, because stroking wide rings (or a blur filter) was slow to redraw
   const gc = `${Math.round(120 + 60 * dusk)},${Math.round(142 + 10 * dusk)},${Math.round(190 - 60 * dusk)}`;
@@ -264,8 +267,10 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   };
   glowBand(0.2 * (1 - 0.6 * day) + 0.14 * dusk);
   const outline = (pts: [number, number][]) => { ctx.beginPath(); ctx.rect(-2, -2, w + 4, h + 4); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath(); };
-  if (far.length) { outline(far); ctx.globalAlpha = W; ctx.fillStyle = tone([13, 17, 28], [34, 46, 58]); ctx.fill('evenodd'); ctx.globalAlpha = 1; }
+  // with an open horizon the land and ridge give way to a soft dark band instead
+  const solid = 1 - W;
   // the land, in nearly the colour of the page, so it falls away and the sky has no lid
+  ctx.save(); ctx.globalAlpha = solid;
   outline(land);
   // whole sky: the ground is the ring outside the disc, darkest at the edge of the picture; facing, it is a band under the horizon
   const soilRound = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.75);
@@ -273,12 +278,22 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   const soilFlat = ctx.createLinearGradient(0, edge[1], 0, edge[1] + S * 0.6);
   soilFlat.addColorStop(0, tone([6, 7, 11], [26, 34, 38])); soilFlat.addColorStop(1, tone([7, 8, 13], [14, 18, 20]));
   ctx.fillStyle = W >= 0.5 ? soilRound : soilFlat; ctx.fill('evenodd');
-  ctx.globalAlpha = W >= 0.5 ? 1 - W : W; ctx.fillStyle = W >= 0.5 ? soilFlat : soilRound; ctx.fill('evenodd'); ctx.globalAlpha = 1;
+  ctx.globalAlpha = solid * (W >= 0.5 ? 1 - W : W); ctx.fillStyle = W >= 0.5 ? soilFlat : soilRound; ctx.fill('evenodd'); ctx.globalAlpha = solid;
   // looking at the whole sky the ground is a ring round the edge: a faint glow spills over it so the sky fades into the dark and has no rim
   if (W > 0.01) { const g = ctx.createRadialGradient(top[0], top[1], reach * 0.98, top[0], top[1], reach * 1.14); g.addColorStop(0, `rgba(${gc},${((0.05 * (1 - 0.6 * day) + 0.05 * dusk) * W).toFixed(3)})`); g.addColorStop(1, `rgba(${gc},0)`); ctx.fillStyle = g; ctx.fillRect(-2, -2, w + 4, h + 4); }
   // a thin cool line along the very top of the land: light catching the edge, not a stroked rim
   ctx.beginPath(); land.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
   ctx.strokeStyle = `rgba(${INK},.08)`; ctx.lineWidth = 1; ctx.stroke();
+  ctx.restore();
+  if (open) {
+    // the dark band: clear well inside the horizon, darkest at it, and thinning but never ending outside, so the stars beyond are faint and there is no line to see
+    const veil = ctx.createRadialGradient(top[0], top[1], reach * 0.86, top[0], top[1], reach * 1.9);
+    const g0 = tone([7, 9, 15], [16, 20, 24]).replace('rgb(', '').replace(')', '');
+    veil.addColorStop(0, `rgba(${g0},0)`); veil.addColorStop(0.12, `rgba(${g0},${(0.96 * W).toFixed(3)})`); veil.addColorStop(1, `rgba(${g0},${(0.96 * W).toFixed(3)})`);
+    ctx.fillStyle = veil; ctx.fillRect(-2, -2, w + 4, h + 4);
+    // then the faint warm stars on the far side, over the dark band, so the dark is not flat
+    for (const [x, y, r, a] of beyond) { ctx.fillStyle = `rgba(255,214,170,${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+  }
   // the eight ways, written on the ground under the horizon
   const wayFont = `400 ${Math.max(w < 600 ? 13 : 10, Math.min(12, S / 30))}px ${MONO}`, drop = Math.min(5, view.fovDeg / 26);
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -293,6 +308,8 @@ export function draw(ctx: CanvasRenderingContext2D, w: number, h: number, data: 
   ctx.textBaseline = 'middle';
   // a name must not run down into the ground: it has to sit inside the line of the horizon
   const below = (x: number, y: number) => {
+    // with the whole sky in view the edge is soft, so a name keeps well inside it and never sits in the fading band
+    if (W > 0.5 && Math.hypot(x - top[0], y - top[1]) > reach * 0.93) return true;
     let inside = false;
     for (let i = 0, j = rim.length - 1; i < rim.length; j = i++) {
       const [xi, yi] = rim[i], [xj, yj] = rim[j];
