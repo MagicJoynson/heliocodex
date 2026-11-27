@@ -130,6 +130,13 @@ test('Week: the solstice is on 21 Dec 2025 at about 15:03 UT', () => {
   const e = find(events(at('2025-12-18'), at('2025-12-24')), 'December solstice')!;
   near(e.at.getTime() / 60000, at('2025-12-21T15:03:00Z').getTime() / 60000, 30, 'minutes');
 });
+test('Week: the equinoxes and solstices fall within fifteen minutes of USNO (2026: Mar 20 14:46, Jun 21 08:24, Sep 23 00:05, Dec 21 20:50 UT)', () => {
+  for (const [name, when] of [['March equinox', '2026-03-20T14:46:00Z'], ['June solstice', '2026-06-21T08:24:00Z'], ['September equinox', '2026-09-23T00:05:00Z'], ['December solstice', '2026-12-21T20:50:00Z']]) {
+    const e = find(events(new Date(new Date(when).getTime() - 3 * 86400000), new Date(new Date(when).getTime() + 3 * 86400000)), name);
+    if (!e) throw new Error(`${name} not found`);
+    near(e.at.getTime() / 60000, new Date(when).getTime() / 60000, 15, name);
+  }
+});
 test('Week: Geminids 2026 within 3 hours of the IMO (14 Dec, about 14h UT) and Leonids 2026 near 17 Nov 23h UT', () => {
   const g = sunAt(SHOWERS.find((s) => s.name === 'Geminids')!.peakLon, at('2026-12-01')).getTime();
   near(g / 3600000, at('2026-12-14T14:00:00Z').getTime() / 3600000, 3, 'Geminids (hours)');

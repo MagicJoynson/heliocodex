@@ -47,12 +47,20 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
   <section class="row wide" aria-labelledby="h-dusk">
     <div class="hang"><h2 id="h-dusk">The sky once it is dark</h2><p class="note" id="wk-dusk-note"></p></div>
     <div class="dusk">
-      <figure class="ring">
-        <svg id="wk-ring" viewBox="0 0 1000 520" role="img" aria-labelledby="wk-ring-t">
-          <title id="wk-ring-t">The horizon all the way round, with the Moon and the planets that are up placed at their height and direction</title>
-        </svg>
-        <figcaption>The whole horizon unrolled, north at both ends. Height above the ground goes up the side. Anything on the line is on the horizon.</figcaption>
-      </figure>
+      <div class="rings">
+        <figure class="ring">
+          <svg id="wk-ring" viewBox="0 0 1000 440" role="img" aria-labelledby="wk-ring-t">
+            <title id="wk-ring-t">The horizon all the way round once it is dark in the evening, with the Moon and the planets that are up placed at their height and direction</title>
+          </svg>
+          <figcaption id="wk-ring-cap">The evening. The whole horizon unrolled, north at both ends. Height above the ground goes up the side.</figcaption>
+        </figure>
+        <figure class="ring">
+          <svg id="wk-ring2" viewBox="0 0 1000 440" role="img" aria-labelledby="wk-ring2-t">
+            <title id="wk-ring2-t">The horizon all the way round before dawn, with the Moon and the planets that are up placed at their height and direction</title>
+          </svg>
+          <figcaption id="wk-ring2-cap">Before dawn, the same way round.</figcaption>
+        </figure>
+      </div>
       <div class="planets" id="wk-planets"></div>
     </div>
   </section>
@@ -95,7 +103,7 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
         <li>The planets and the Sun: orbits from NASA/JPL Solar System Dynamics (approximate positions of the major planets). They are good to a few arcminutes, so a planet's timing is good to a few hours, and the Moon's passes of a planet to a few minutes. The Moon's gap from a planet is measured from the centre of the Earth; from where you stand it can differ by up to a degree.</li>
         <li>Brightness (magnitude, where a smaller number is brighter): the formulas in the Astronomical Almanac, as set out in <cite>Astronomical Algorithms</cite>, chapter 41. Saturn's figure includes the light from its rings, which depends on their tilt.</li>
         <li>Rise and set: the top edge of the Sun or Moon on a flat horizon, with the usual bending of light by the air. Hills and buildings change what you see.</li>
-        <li>Times are as the clocks read in the place you chose.</li>
+        <li>Times are as the clocks read in the place you chose. The equinoxes and solstices are given to the hour, because these orbits place the Sun to a few seconds of arc and the moment can be a quarter of an hour out.</li>
       </ul>
       <p>Your place is the one chosen on the <a href="/sky">sky map</a>, kept on your device and never sent to us (see <a href="/cookies">what is kept on your device</a>). Choosing a place here changes it there too.</p>
     </div>
@@ -107,7 +115,7 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
   import { moment, toSky, sunFromEarth, planetFromEarth, moonSky } from '../../lib/sky/place';
   import { CITIES, clockIn, clocksDiffer } from '../../lib/sky/cities';
   import { wayOf, heightOf } from '../../lib/sky/words';
-  import { events, day, planetsWeek, nightEdges, localMidnight, moonLit, sunAt, SHOWERS, showerActive } from '../../lib/sky/week';
+  import { events, day, planetsWeek, nightEdges, localMidnight, offsetMin, moonLit, sunAt, SHOWERS, showerActive } from '../../lib/sky/week';
 
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const el = (tag: string, cls?: string, text?: string) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
@@ -159,7 +167,10 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
     for (const e of ev) {
       const li = el('li', `ev ev-${e.kind}`);
       const time = el('time', 'when'); time.setAttribute('datetime', e.at.toISOString());
-      time.append(el('b', undefined, dayLabel(e.at, zone)), el('span', undefined, at(e.at)));
+      // the seasons are only timed to about a quarter of an hour by these orbits, so they are given to the hour
+      let shown = e.at;
+      if (e.kind === 'sun') { const off = offsetMin(e.at, zone) * 60000; shown = new Date(Math.round((e.at.getTime() + off) / 3600000) * 3600000 - off); }
+      time.append(el('b', undefined, dayLabel(shown, zone)), el('span', undefined, (e.kind === 'sun' ? 'about ' : '') + at(shown)));
       const body = el('div', 'what');
       // a pairing with the Moon at midday cannot be seen then: say so
       const dm = moment(e.at, p.lat, p.lon), daylight = toSky(sunFromEarth(dm.T), dm).altDeg > -6;
@@ -171,7 +182,10 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
     // ---- once it is dark
     const edges = nightEdges(start, p.lat, p.lon), pw = planetsWeek(start, p.lat, p.lon, edges);
     $('wk-dusk-note').textContent = edges.dark ? `${edges.evening.getTime() - start.getTime() < 60000 ? 'Now' : `Around ${at(edges.evening)}`}, when it is dark enough to look. The planets are listed for that moment and again before dawn.` : 'The Sun does not get far enough below the horizon here this week for a dark sky.';
-    drawRing(p.lat, p.lon, edges.evening, pw);
+    drawRing('wk-ring', p.lat, p.lon, edges.evening, pw);
+    drawRing('wk-ring2', p.lat, p.lon, edges.morning, pw);
+    $('wk-ring-cap').textContent = `${edges.dark ? at(edges.evening) : ''} The evening: the whole horizon unrolled, north at both ends. Height above the ground goes up the side.`.trim();
+    $('wk-ring2-cap').textContent = `Before dawn${edges.dark ? `, about ${at(edges.morning)}` : ''}, the same way round.`;
     const box = $('wk-planets'); box.replaceChildren();
     if (!edges.dark) box.append(el('p', 'sub', 'The sky does not get dark here this week, so the planets are not listed. The sky map shows where they stand.'));
     else for (const k of pw) {
@@ -220,37 +234,37 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
     $('wk-met-note').textContent = `The year's main showers. ${SHOWERS.filter((s) => showerActive(s, start, zone)).length ? `Active this week: ${list(SHOWERS.filter((s) => showerActive(s, start, zone)).map((s) => s.name))}. ` : 'None of them is active this week. '}The rate is what a keen observer would count in an hour under a perfect dark sky, with the radiant overhead. Real skies give fewer.`;
   }
 
-  function drawRing(lat: number, lon: number, when: Date, pw: ReturnType<typeof planetsWeek>): void {
-    const s = $('wk-ring'); s.querySelectorAll(':scope > :not(title)').forEach((n) => n.remove());
-    const W = 1000, H = 520, L = 84, R = 20, T = 20, B = 52, top = 60;
+  function drawRing(id: string, lat: number, lon: number, when: Date, pw: ReturnType<typeof planetsWeek>): void {
+    const s = $(id); s.querySelectorAll(':scope > :not(title)').forEach((n) => n.remove());
+    const W = 1000, H = 440, L = 84, R = 20, T = 20, B = 52;
+    // the objects that are up, found first so the height of the chart fits them: no empty sky above the highest
+    const m = moment(when, lat, lon), moon = moonSky(m);
+    const marks: { az: number; alt: number; name: string; kind: string; r: number }[] = [];
+    if (moon.altDeg > 0) marks.push({ az: moon.azDeg, alt: moon.altDeg, name: 'Moon', kind: 'moon', r: 15 });
+    for (const k of pw) { const a = toSky(planetFromEarth(k.id, m.T).dir, m); if (a.altDeg > 0) marks.push({ az: a.azDeg, alt: a.altDeg, name: k.name, kind: 'planet', r: Math.max(6, Math.min(13, 9 - k.mag * 1.2)) }); }
+    marks.sort((a, b) => a.az - b.az);
+    const top = Math.min(90, Math.max(30, Math.ceil((Math.max(0, ...marks.map((k) => k.alt)) + 12) / 15) * 15));
     const x = (az: number) => L + (az / 360) * (W - L - R), y = (a: number) => T + (1 - Math.max(0, a) / top) * (H - T - B);
     s.append(svg('rect', { x: L, y: T, width: W - L - R, height: H - T - B, class: 'sky' }));
-    for (const a of [15, 30, 45]) { s.append(svg('line', { x1: L, x2: W - R, y1: y(a), y2: y(a), class: 'grid' })); s.append(svg('text', { x: L - 10, y: y(a) + 13, class: 'ax', 'text-anchor': 'end' }, `${a}°`)); }
+    for (let a = 15; a < top; a += 15) { s.append(svg('line', { x1: L, x2: W - R, y1: y(a), y2: y(a), class: 'grid' })); s.append(svg('text', { x: L - 10, y: y(a) + 13, class: 'ax', 'text-anchor': 'end' }, `${a}°`)); }
     s.append(svg('line', { x1: L, x2: W - R, y1: y(0), y2: y(0), class: 'horizon' }));
     for (const [az, w] of [[0, 'N'], [45, 'NE'], [90, 'E'], [135, 'SE'], [180, 'S'], [225, 'SW'], [270, 'W'], [315, 'NW'], [360, 'N']] as const) {
       s.append(svg('text', { x: x(az), y: H - 14, class: 'ax', 'text-anchor': az === 0 ? 'start' : az === 360 ? 'end' : 'middle' }, w));
     }
     // placed in order of bearing; a name that would sit on the one before moves up
-    const marks: { az: number; alt: number; name: string; kind: string; r: number }[] = [];
-    {
-      const m = moment(when, lat, lon), moon = moonSky(m);
-      if (moon.altDeg > 0) marks.push({ az: moon.azDeg, alt: moon.altDeg, name: 'Moon', kind: 'moon', r: 15 });
-      for (const k of pw) { const a = toSky(planetFromEarth(k.id, m.T).dir, m); if (a.altDeg > 0) marks.push({ az: a.azDeg, alt: a.altDeg, name: k.name, kind: 'planet', r: Math.max(6, Math.min(13, 9 - k.mag * 1.2)) }); }
-      marks.sort((a, b) => a.az - b.az);
-      const boxes: [number, number, number, number][] = [];
-      for (const k of marks) {
-        const cx = x(k.az), cy = y(k.alt), wide = k.name.length * 23 + 12, right = cx + wide + k.r < W - R;
-        let ty = cy + 12;
-        const clash = (yy: number) => boxes.some((b) => !(b[2] < (right ? cx + k.r : cx - k.r - wide) || b[0] > (right ? cx + k.r + wide : cx - k.r) || b[3] < yy - 40 || b[1] > yy + 8));
-        for (let t = 0; t < 8 && clash(ty); t++) ty -= 48;
-        const tx = right ? cx + k.r + 10 : cx - k.r - 10;
-        boxes.push([right ? tx : tx - wide, ty - 40, right ? tx + wide : tx, ty + 8]);
-        const g = svg('g', { class: k.kind });
-        g.append(svg('circle', { cx, cy, r: k.r }), svg('text', { x: tx, y: ty, 'text-anchor': right ? 'start' : 'end' }, k.name));
-        s.append(g);
-      }
-      if (!marks.length) s.append(svg('text', { x: W / 2, y: H / 2 - 10, class: 'ax', 'text-anchor': 'middle' }, 'Nothing bright is above the horizon'));
+    const boxes: [number, number, number, number][] = [];
+    for (const k of marks) {
+      const cx = x(k.az), cy = y(k.alt), wide = k.name.length * 23 + 12, right = cx + wide + k.r < W - R;
+      let ty = cy + 12;
+      const clash = (yy: number) => boxes.some((b) => !(b[2] < (right ? cx + k.r : cx - k.r - wide) || b[0] > (right ? cx + k.r + wide : cx - k.r) || b[3] < yy - 40 || b[1] > yy + 8));
+      for (let t = 0; t < 8 && clash(ty); t++) ty -= 48;
+      const tx = right ? cx + k.r + 10 : cx - k.r - 10;
+      boxes.push([right ? tx : tx - wide, ty - 40, right ? tx + wide : tx, ty + 8]);
+      const g = svg('g', { class: k.kind });
+      g.append(svg('circle', { cx, cy, r: k.r }), svg('text', { x: tx, y: ty, 'text-anchor': right ? 'start' : 'end' }, k.name));
+      s.append(g);
     }
+    if (!marks.length) s.append(svg('text', { x: W / 2, y: H / 2 - 10, class: 'ax', 'text-anchor': 'middle' }, 'Nothing bright is above the horizon'));
   }
 
   render();
@@ -278,6 +292,7 @@ const ISO: Record<string, string> = {"6 February 2027": "2027-02-06", "20 Februa
   .ev-sun h3::before { background: transparent; border: 1.5px solid #ece7dc; }
 
   .dusk { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 2rem 3rem; align-items: start; }
+  .rings { display: grid; gap: 1.4rem; }
   .ring { margin: 0; }
   .ring svg { display: block; width: 100%; height: auto; background: #0e0e10; border: 1px solid var(--rule); border-radius: 4px; }
   .ring figcaption { font: 300 .98rem/1.45 var(--r-serif); color: var(--ink-faint); margin-top: .6rem; }

@@ -30,6 +30,8 @@ function lonLat(v: Vec, T: number): [number, number] {
   return [norm(Math.atan2(v[1], v[0]) / RAD + slideOf(T)), Math.atan2(v[2], Math.hypot(v[0], v[1])) / RAD];
 }
 export const sunLon = (d: Date) => lonLat(sunFromEarth(T_(d)), T_(d))[0];
+/** The Sun as it looks, 20.5 arcseconds behind where it is, because light takes time to arrive and the Earth moves meanwhile (aberration). The seasons are timed by this. */
+const apparentSunLon = (d: Date) => sunLon(d) - 0.00569;
 /** The Sun's longitude on the ecliptic and equinox of 2000.0, the frame the IMO gives shower maxima in. */
 const sunLon2000 = (d: Date) => lonLat(sunFromEarth(T_(d)), 0)[0];
 export const moonLon = (d: Date) => moonPlace(T_(d)).lonDeg;
@@ -201,7 +203,7 @@ export function events(from: Date, to: Date): Event[] {
   }
   // equinox and solstice
   for (const [lon, name, text] of [[0, 'March equinox', 'Day and night are equal everywhere on Earth. The Sun crosses the equator going north.'], [90, 'June solstice', 'The Sun is at its farthest north: the longest day in the north and the shortest in the south.'], [180, 'September equinox', 'Day and night are equal everywhere on Earth. The Sun crosses the equator going south.'], [270, 'December solstice', 'The Sun is at its farthest south: the shortest day in the north and the longest in the south.']] as const) {
-    for (const c of crossings(passes(sunLon, lon), from, to, 12 * 3600000)) if (c.up) out.push({ at: c.at, kind: 'sun', title: name, text });
+    for (const c of crossings(passes(apparentSunLon, lon), from, to, 12 * 3600000)) if (c.up) out.push({ at: c.at, kind: 'sun', title: name, text });
   }
   // meteor shower peaks
   for (const s of SHOWERS) for (const c of crossings(passes(sunLon2000, s.peakLon), from, to, 12 * 3600000)) if (c.up) out.push({ at: c.at, kind: 'meteors', title: `${s.name} peak`, text: `Up to about ${s.zhr} an hour under a perfect dark sky, at ${s.kms} km/s. The peak is known only to within about a day.` });
