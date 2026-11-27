@@ -3,16 +3,11 @@
 // site is built, from the same sums as the sky map and Sky this week (src/lib/sky/calendar.ts); nothing is fetched
 // and nothing is stored. The page hides what has already passed when it loads.
 import Reading from '../../layouts/Reading.astro';
-import { calendar, type Item } from '../../lib/sky/calendar';
-import eclipseData from '../../data/eclipses.json';
+import { upcoming } from '../../lib/sky/upcoming';
+import type { Item } from '../../lib/sky/calendar';
 
 const start = new Date(Date.now() - 2 * 86400000), end = new Date(start.getTime() + 2 * 365.25 * 86400000);
-const KIND: Record<string, string> = { 'Annular Solar': 'Annular solar eclipse', 'Total Solar': 'Total solar eclipse', 'Partial Solar': 'Partial solar eclipse', 'Hybrid Solar': 'Hybrid solar eclipse', 'Total Lunar': 'Total lunar eclipse', 'Partial Lunar': 'Partial lunar eclipse', 'Penumbral Lunar': 'Penumbral lunar eclipse' };
-// eclipses, from NASA Goddard's predictions (src/data/eclipses.json): the moment of greatest eclipse
-const eclipses: Item[] = eclipseData.eclipses.map((e) => ({ at: new Date(e.at), kind: 'eclipse' as const, title: KIND[e.kind] ?? `${e.kind} eclipse`, text: `At the moment of greatest eclipse. Whether you can see it, and how much of it, depends on where you are on Earth.`, figure: `Magnitude ${e.magnitude.toFixed(3)}` })).filter((e) => e.at >= start && e.at <= end);
-// a penumbral eclipse of the Moon below magnitude 0.1 cannot be noticed by eye: leave it out
-const visibleEclipses = eclipses.filter((e) => !(e.title.startsWith('Penumbral') && parseFloat((e.figure ?? '').replace('Magnitude ', '')) < 0.1));
-const all = [...calendar(start, end), ...visibleEclipses].sort((a, b) => a.at.getTime() - b.at.getTime());
+const all = upcoming(start, end);
 const first = all.find((i) => i.at.getTime() >= Date.now() && !['sun', 'near', 'far'].includes(i.kind));
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const day = (d: Date) => `${d.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' })} ${d.getUTCDate()} ${MONTHS[d.getUTCMonth()].slice(0, 3)}`;
