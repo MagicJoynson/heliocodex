@@ -4,7 +4,7 @@
 // list) or worked out from those (light travel time, length of the year). Worlds with a full page are solid dots;
 // the rest have outline pages built from the same measured data.
 import Reading from '../../layouts/Reading.astro';
-import { outlineWorlds, IAU_DWARFS, PLANET_PAGES, sunAu, AU_KM, kindName, why } from '../../lib/worlds';
+import { outlineWorlds, PLANET_PAGES, sunAu, AU_KM, kindName, why } from '../../lib/worlds';
 import { body, smallSpread, smallFetched } from '../../data/bodies/index';
 import { moonCount, MOONS_AS_OF_TEXT } from '../../data/moon-counts';
 import facts from '../../data/facts.json';
@@ -18,6 +18,8 @@ const fmtAu = (a: number) => (a < 10 ? a.toFixed(2) : a < 100 ? a.toFixed(1) : M
 const fmtLight = (au: number) => { const s = au * LIGHT_S; return s < 7200 ? `${s < 600 ? (s / 60).toFixed(1) : Math.round(s / 60)} min` : s < 172800 ? `${(s / 3600).toFixed(1)} hr` : `${(s / 86400).toFixed(1)} days`; };
 const fmtYear = (au: number) => { const d = 365.25 * au ** 1.5; if (d < 1000) return `${Math.round(d)} days`; const y = d / 365.25; return `${y < 10 ? y.toFixed(1) : y < 1000 ? Math.round(y) : (Math.round(y / 10) * 10).toLocaleString('en-GB')} yr`; };
 const fmtKm = (r: number) => r < 1 ? `${Math.round(r * 1000)} m` : `${r < 10 ? r.toFixed(1) : Math.round(r).toLocaleString('en-GB')} km`;
+const KINDS: Record<string, string> = { 'near-earth': 'Near-Earth asteroid', 'main-belt': 'Asteroid', trojan: 'Jupiter Trojan asteroid', centaur: 'Centaur', 'kuiper-belt': 'Kuiper belt object' };
+const tidy = (t?: string) => t?.replace(/'/g, '’');
 const moonsOf = (id: string) => outlineWorlds.filter((b) => b.kind === 'moon' && b.parent === id)
   .sort((a, b) => ((a.orbit as { aKm: number }).aKm) - ((b.orbit as { aKm: number }).aKm));
 
@@ -29,7 +31,7 @@ for (const id of PLANET_PAGES.filter((p) => p !== 'sun')) {
 }
 for (const b of outlineWorlds.filter((w) => w.kind !== 'moon')) {
   const o = b.orbit as { aKm: number; e: number }, a = o.aKm / AU_KM, r = radius(b);
-  rows.push({ id: b.id, name: b.name, href: `/worlds/${b.id}`, solid: written(b.id), kind: kindName(b), a, q: a * (1 - o.e), Q: a * (1 + o.e), r, d: r ? Math.round(Math.min(12, 5 + Math.sqrt(r) / 3.5)) : 5, note: why(b.id)?.why, total: moonCount(b.id), moons: moonsOf(b.id).map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), planet: false });
+  rows.push({ id: b.id, name: tidy(b.name)!, href: `/worlds/${b.id}`, solid: written(b.id), kind: KINDS[why(b.id)?.group ?? ''] ?? kindName(b), a, q: a * (1 - o.e), Q: a * (1 + o.e), r, d: r ? Math.round(Math.min(12, 5 + Math.sqrt(r) / 3.5)) : 5, note: tidy(why(b.id)?.why), total: moonCount(b.id), moons: moonsOf(b.id).map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), planet: false });
 }
 rows.sort((p, q) => p.a - q.a);
 
@@ -45,8 +47,8 @@ const ZONES: Zone[] = [
     about: 'The rubble between Mars and Jupiter, and the short-period comets whose paths bring them into it. Jupiter’s pull has swept some orbits almost clear; the gaps show in the count below.' },
   { id: 'giants', name: 'Giant planets', from: 4.5, to: 31, min: 4, max: 36, ticks: [5, 10, 15, 20, 25, 30, 35], rows: giants,
     about: `Jupiter, Saturn, Uranus and Neptune, with nearly all of the Sun’s known moons. Sunlight takes ${lt(rows.find((w) => w.id === 'jupiter')!.a)} to reach Jupiter and ${lt(rows.find((w) => w.id === 'neptune')!.a)} to reach Neptune.` },
-  { id: 'kuiper', name: 'Kuiper belt', from: 31, to: 100, min: 28, max: 100, ticks: [30, 40, 50, 60, 70, 80, 90, 100], rows: kuiper,
-    about: 'Icy worlds beyond Neptune, among them Pluto and most of the other dwarf planets. Many keep time with Neptune: they go round twice for every three of its orbits, or once for every two.' },
+  { id: 'kuiper', name: 'Kuiper belt', from: 31, to: 100, min: 28, max: 70, ticks: [30, 40, 50, 60, 70], rows: kuiper,
+    about: 'Icy worlds beyond Neptune, among them Pluto and most of the other dwarf planets. Many keep time with Neptune. Plutinos, Pluto among them, go round twice for every three of its orbits; Twotinos go round once for every two.' },
   { id: 'far', name: 'Far out', from: 100, to: 1100, min: 0, max: 1100, ticks: [200, 400, 600, 800, 1000], rows: far,
     about: 'Past the Kuiper belt only a few bodies are known, on long stretched paths. Sunlight takes days, not hours, to reach the far end of Sedna’s.' },
 ];
@@ -72,7 +74,7 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
 <Reading title="The Solar System" path="/worlds" description="Every planet, moon, dwarf planet, asteroid and comet on the site, set out by its distance from the Sun, region by region, with the measured numbers for each.">
   <header class="w-head">
     <h1>The Solar System, by distance from the Sun</h1>
-    <p class="lead">Five regions, each drawn on its own scale so that nothing crowds. For every world: how far it is from the Sun, how long light takes to cross that gap, how long its year is and how big it is. Solid dots have a full page; hollow ones have an outline built from their measured numbers.</p>
+    <p class="lead">Five regions, each drawn on its own scale so that nothing crowds. For every world: how far it is from the Sun, how long light takes to cross that gap, how long its year is and how big it is.</p>
   </header>
 
   <figure class="ov" aria-label="The five regions of the Solar System on one scale of distance from the Sun, where each step is a multiple: inner planets, asteroid belt, giant planets, Kuiper belt and far out.">
@@ -99,7 +101,7 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
       <div class="zbox">
         <div class="zgrid" aria-hidden="true"><div class="t">{z.ticks.map((t) => <i style={`--x:${pct(z, t)}`} />)}</div></div>
         <div class="zrow zaxis" aria-hidden="true">
-          <span class="who">World</span>
+          <span class="who">World · axis in au</span>
           <div class="ch"><div class="t">{z.ticks.map((t) => <i style={`--x:${pct(z, t)}`}><b>{t.toLocaleString('en-GB')}{z.id === 'far' && <small>{fmtLight(t)}</small>}</b></i>)}<em>au</em></div></div>
           <span class="fg-h">Measured, or worked out from the orbit</span>
         </div>
@@ -113,7 +115,7 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
                 <svg viewBox="0 0 400 60" preserveAspectRatio="none" role="img" aria-label={`Known asteroids by orbit size, from ${inner.fromAu} to ${inner.toAu} au: most lie between 2 and 3.3 au, with gaps at 2.5, 2.8 and 3.3 au where Jupiter’s pull has cleared the orbits.`}><path d={histPath(inner)} />{beltMarks.map((m) => <line x1={(m.au - inner.fromAu) / (inner.toAu - inner.fromAu) * 400} x2={(m.au - inner.fromAu) / (inner.toAu - inner.fromAu) * 400} y1="0" y2="60" />)}</svg>
               </div>
             </div>
-            <p class="fg-note">{sum(inner).toLocaleString('en-GB')} asteroid orbits, JPL Small-Body Database, {FETCHED}. Marks: an orbit of that size goes round 3 times (3:1) while Jupiter goes round once.</p>
+            <p class="fg-note">{sum(inner).toLocaleString('en-GB')} asteroid orbits, JPL Small-Body Database, {FETCHED}. Marks: 3:1 means three trips round the Sun for each one of Jupiter’s; 5:2, 2:1 and 3:2 work the same way.</p>
           </div>
         )}
         {z.id === 'kuiper' && (
@@ -140,12 +142,12 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
                   <a class="nm" href={r.href}>{r.name}</a>
                   <span class="kd">{r.kind}</span>{!r.planet && <span class="kd">{fmtAu(r.q)}–{fmtAu(r.Q)} au</span>}
                 </div>
-                <div class="ch" aria-hidden="true"><div class="t">{z.ticks.map((t) => <i class="tk" style={`--x:${pct(z, t)}`} />)}<span class="rg" /><span class:list={['dt', { solid: r.solid }]} /></div></div>
+                <div class="ch" aria-hidden="true"><div class="t">{z.ticks.map((t) => <i class="tk" data-t={t.toLocaleString('en-GB')} style={`--x:${pct(z, t)}`} />)}<span class="rg" /><span class:list={['dt', { solid: r.solid }]} /></div></div>
                 <dl class="fg">
                   <div><dt>Distance</dt><dd>{fmtAu(r.a)} au</dd></div>
                   <div><dt>Light</dt><dd>{fmtLight(r.a)}</dd></div>
                   <div><dt>Year</dt><dd>{fmtYear(r.a)}</dd></div>
-                  {r.r ? <div><dt>Radius</dt><dd>{fmtKm(r.r)}</dd></div> : null}
+                  <div><dt>Radius</dt><dd>{r.r ? fmtKm(r.r) : '—'}</dd></div>
                 </dl>
                 {(r.note || r.total > 0) && (
                   <div class="more">
@@ -158,7 +160,7 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
           })}
         </ol>
       </div>
-      {z.id === 'far' && <p class="z-after">Beyond Sedna’s path, the Oort cloud is thought to wrap the whole Solar System in a thin shell of icy bodies, too far and too faint to have been mapped. You can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>.</p>}
+      {z.id === 'far' && <p class="z-after">Beyond Sedna’s path, the Oort cloud is thought to surround the whole Solar System as a vast, sparse region of icy bodies, too far and too faint to have been mapped. You can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>.</p>}
     </section>
   ))}
 
@@ -245,7 +247,7 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
   .more { padding: .35rem 1rem 0; max-width: 56rem; }
   .more p { margin: .15rem 0 0; font: 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); }
   .more .mo { color: var(--ink-soft); }
-  .more .mo a { color: var(--ink-soft); }
+  .more .mo a { color: var(--ink-soft); font: inherit; }
   .more .mo a.w { color: var(--ink); }
   .more .mo a:hover { color: var(--accent); }
 
@@ -269,7 +271,6 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
   @media (max-width: 860px) {
     .zbox { --who: 0px; --fg: 0px; }
     .z-head { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
-    ._x{}
     .ov-z span { display: none; }
     .ov-nav { grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--rule); }
     .ov-nav li { border-left: 0; border-bottom: 1px solid var(--rule); }
@@ -284,12 +285,14 @@ const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotino
     .zaxis .ch { min-height: 1.9rem; }
     .zaxis .t { inset: 0 .9rem; }
     #far .zaxis, #far .zaxis .ch { min-height: 3.2rem; }
-  .zaxis .t b small { display: block; margin-top: .3rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); opacity: .85; }
+    .zaxis .t b small { display: none; }
   .zaxis .t em { display: block; right: -.1rem; top: 1.1rem; }
     .zaxis .t b { top: .3rem; }
     .wrow { padding: .85rem 0; }
     .wrow > .who { padding: 0; }
-    .ch { min-height: 2rem; margin-top: .1rem; }
+    .ch { min-height: 3rem; margin-top: .1rem; }
+    .wrow .ch .t { inset: 0 .9rem 1.2rem; }
+    .tk::after { content: attr(data-t); position: absolute; top: 13px; left: 0; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); }
     .tk { display: block; position: absolute; left: calc(var(--x) * 1%); top: 50%; width: 1px; height: 9px; margin-top: -4px; background: rgba(236,231,220,.22); }
     .ch .t::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(236,231,220,.07); }
     .fg { padding: 0; margin-top: .1rem; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap: .5rem .5rem; }
