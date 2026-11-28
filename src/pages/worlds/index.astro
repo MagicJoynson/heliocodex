@@ -1,260 +1,306 @@
 ---
-// Every world the site knows, set out by distance from the Sun. Worlds with a full page are written in
-// full; the rest have outline pages built from their measured orbits, marked as outlines.
+// Every world the site knows, set out by distance from the Sun, one region at a time. Each region has its own
+// scale, so no two labels share a space; every figure is measured (JPL orbits and radii, the JPL satellite
+// list) or worked out from those (light travel time, length of the year). Worlds with a full page are solid dots;
+// the rest have outline pages built from the same measured data.
 import Reading from '../../layouts/Reading.astro';
-import { outlineWorlds, IAU_DWARFS, PLANET_PAGES, sunAu, AU_KM } from '../../lib/worlds';
-import { SHOW_OUTLINES } from '../../lib/site';
-import { body } from '../../data/bodies/index';
-import { moonCount } from '../../data/moon-counts';
+import { outlineWorlds, PLANET_PAGES, sunAu, AU_KM, kindName, why } from '../../lib/worlds';
+import { body, smallSpread, smallFetched } from '../../data/bodies/index';
+import { moonCount, MOONS_AS_OF_TEXT } from '../../data/moon-counts';
+import facts from '../../data/facts.json';
 import { WORLD_PAGES } from '../../data/world-pages';
 const written = (id: string) => !!WORLD_PAGES[id];
 
-const LO = Math.log10(0.3), HI = Math.log10(700);
-const f = (au: number) => (Math.log10(Math.min(700, Math.max(0.3, au))) - LO) / (HI - LO);
-const x = (au: number) => f(au) * 100;
-const planets = PLANET_PAGES.filter((p) => p !== 'sun').map((id) => body(id)!);
+const radius = (b: { meanRadiusKm?: number; radiiKm?: [number, number, number] }) => b.meanRadiusKm ?? (b.radiiKm ? Math.cbrt(b.radiiKm[0] * b.radiiKm[1] * b.radiiKm[2]) : undefined);
+const ECC: Record<string, number> = Object.fromEntries(Object.entries((facts as unknown as { planets: Record<string, { physical: { eccentricity: number } }> }).planets).map(([k, v]) => [k, v.physical.eccentricity]));
+const LIGHT_S = 499.004784; // seconds light takes to cross one au
+const fmtAu = (a: number) => (a < 10 ? a.toFixed(2) : a < 100 ? a.toFixed(1) : Math.round(a).toLocaleString('en-GB'));
+const fmtLight = (au: number) => { const s = au * LIGHT_S; return s < 7200 ? `${s < 600 ? (s / 60).toFixed(1) : Math.round(s / 60)} min` : s < 172800 ? `${(s / 3600).toFixed(1)} hr` : `${(s / 86400).toFixed(1)} days`; };
+const fmtYear = (au: number) => { const d = 365.25 * au ** 1.5; if (d < 1000) return `${Math.round(d)} days`; const y = d / 365.25; return `${y < 10 ? y.toFixed(1) : y < 1000 ? Math.round(y) : (Math.round(y / 10) * 10).toLocaleString('en-GB')} yr`; };
+const fmtKm = (r: number) => r < 1 ? `${Math.round(r * 1000)} m` : `${r < 10 ? r.toFixed(1) : Math.round(r).toLocaleString('en-GB')} km`;
+const KINDS: Record<string, string> = { 'near-earth': 'Near-Earth asteroid', 'main-belt': 'Asteroid', trojan: 'Jupiter Trojan asteroid', centaur: 'Centaur', 'kuiper-belt': 'Kuiper belt object' };
+const tidy = (t?: string) => t?.replace(/'/g, '’');
 const moonsOf = (id: string) => outlineWorlds.filter((b) => b.kind === 'moon' && b.parent === id)
   .sort((a, b) => ((a.orbit as { aKm: number }).aKm) - ((b.orbit as { aKm: number }).aKm));
-const radius = (b: { meanRadiusKm?: number; radiiKm?: [number, number, number] }) => b.meanRadiusKm ?? (b.radiiKm ? Math.cbrt(b.radiiKm[0] * b.radiiKm[1] * b.radiiKm[2]) : undefined);
-const fmtAu = (a: number) => (a < 10 ? a.toFixed(2) : String(Math.round(a)));
-const P = planets.map((b) => {
-  const a = sunAu(b), r = radius(b) ?? 3000;
-  return { id: b.id, name: b.name.replace(/^The /, ''), a, x: x(a), d: Math.round(6 + Math.sqrt(r) / 16), moons: moonsOf(b.id), known: moonCount(b.id), skip: 0 };
-});
-// a moon list that would run into its neighbour's starts below it instead
-// (Jupiter's list reads to the right, towards Saturn's, so Saturn's always starts below it;
-// the Earth's one moon sits a row lower, under its distance, so Mars's list starts a row further down)
-P.forEach((p, i) => { const q = P[i - 1]; if (q && q.moons.length && (p.x - q.x < 7 || q.id === 'jupiter')) p.skip = q.skip + q.moons.length + (q.id === 'earth' ? 1 : 0); });
-// each moon row is 1.5rem (24px) tall so that every link meets the 24px target size; the band is as tall as the longest list
-const bandRem = Math.max(12.5, 0, ...P.map((p) => 2.2 + p.d / 32 + 1.3 + (p.skip + p.moons.length) * 1.5 + 1));
-const LANES = [
-  { kind: 'asteroid', name: 'Asteroids', about: 'rocky and metal worlds' },
-  { kind: 'comet', name: 'Comets', about: 'icy, on stretched paths' },
-  { kind: 'dwarf', name: 'Dwarf planets', about: 'five named by the IAU, the rest likely' },
-].map((l) => ({
-  ...l,
-  rows: outlineWorlds.filter((b) => b.kind === l.kind).map((b) => {
-    const o = b.orbit as { aKm: number; e: number };
-    const a = o.aKm / AU_KM, q = a * (1 - o.e), Q = a * (1 + o.e), r = radius(b);
-    return { id: b.id, name: b.name, likely: b.kind === 'dwarf' && !IAU_DWARFS.has(b.id), a, q, Q, xa: x(a), xq: x(q), xQ: x(Q), off: Q > 700, d: r ? Math.round(Math.min(12, 4 + Math.sqrt(r) / 3.5)) : 4,
-      moons: moonsOf(b.id), flip: x(Q) > 78 && x(q) >= 30, over: x(Q) > 78 && x(q) < 30 };
-  }).sort((p, q) => p.a - q.a),
-}));
-const ZONES = [
-  { name: 'Inner planets', from: 0.3, to: 1.7, about: 'Four rocky worlds close to the Sun, and the rocks that cross their paths.' },
-  { name: 'Asteroid belt', from: 1.7, to: 4.5, about: 'Rubble between Mars and Jupiter.' },
-  { name: 'Giant planets', from: 4.5, to: 31, about: 'Four giants and most of the Sun’s moons.' },
-  { name: 'Kuiper belt', from: 31, to: 100, about: 'Icy worlds past Neptune, among them most of the dwarf planets.' },
-  { name: 'Far out', from: 100, to: 700, about: 'Long paths that reach far beyond the planets.' },
-];
-const ticks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500];
 
-// The phone map runs down the page, the Sun at the top. Marks sit in narrow columns on the left;
-// every name sits in a column on the right at the height of its world, pushed down only as far as
-// it must be to stay clear of the name above, with a thin line back to its mark.
-// the stretch from 1.5 to 6 au, where the asteroids and short-period comets crowd, is drawn longer
-const VH = 2700, VT = 36, STRETCH = 700, SL = Math.log10(1.5), SH6 = Math.log10(6);
-const vy = (au: number) => VT + f(au) * VH + STRETCH * Math.min(1, Math.max(0, (Math.log10(au) - SL) / (SH6 - SL)));
-const VEND = VT + VH + STRETCH;
-const LX = 200;
-type VL = { id: string; href: string; name: string; pre?: string; sub?: [string, string]; subs?: { id: string; name: string; w?: boolean }[]; y: number; y0?: number; mx: number; my: number; out: boolean };
-// names of close neighbours are pushed apart so they do not run into each other
-const NUDGE: Record<string, string> = { venus: '-80%', mars: '-22%', uranus: '-72%', neptune: '-28%' };
-const vlabels: VL[] = [];
-const vmarks: { kind: string; mx: number; y1: number; y2: number; ya: number; d: number; out: boolean; off?: boolean }[] = [];
-for (const p of P) {
-  vmarks.push({ kind: 'planet', mx: 52, y1: vy(p.a), y2: vy(p.a), ya: vy(p.a), d: p.d, out: false });
-  vlabels.push({ id: p.id, href: `/${p.id}`, name: p.name, subs: p.moons.map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), y: vy(p.a), mx: 52, my: vy(p.a), out: false });
+type Row = { id: string; name: string; href: string; solid: boolean; kind: string; a: number; q: number; Q: number; r?: number; d: number; note?: string; total: number; moons: { id: string; name: string; w: boolean }[]; planet: boolean };
+const rows: Row[] = [];
+for (const id of PLANET_PAGES.filter((p) => p !== 'sun')) {
+  const b = body(id)!, a = sunAu(b), e = ECC[id] ?? 0, r = radius(b);
+  rows.push({ id, name: b.name, href: `/${id}`, solid: true, kind: 'Planet', a, q: a * (1 - e), Q: a * (1 + e), r, d: Math.round(6 + Math.sqrt(r ?? 3000) / 16), total: moonCount(id), moons: moonsOf(id).map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), planet: true });
 }
-const COLS: Record<string, [number, number]> = { asteroid: [70, 3], comet: [128, 4], dwarf: [164, 4] };
-for (const l of LANES) l.rows.forEach((r, i) => {
-  const mx = COLS[l.kind][0] + i * COLS[l.kind][1];
-  vmarks.push({ kind: l.kind, mx, y1: vy(r.q), y2: vy(r.Q), ya: vy(r.a), d: Math.max(4, Math.round(r.d * .7)), out: true, off: r.off });
-  vlabels.push({ id: r.id, href: `/worlds/${r.id}`, name: r.name, pre: r.likely ? 'likely dwarf planet · ' : undefined, sub: [`${fmtAu(r.q)}–`, `${r.off ? '700+' : fmtAu(r.Q)}\u00a0au`], subs: r.moons.map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), y: vy(r.a), mx, my: vy(r.a), out: !written(r.id) });
-});
-vlabels.sort((a, b) => a.y - b.y);
-let floor = 0;
-for (const l of vlabels) {
-  // lines this label takes in the narrowest phone column (about 78 px at 320 px wide), so that without the
-  // script below the names still clear each other; with it, each label is measured as drawn and the gaps close up
-  const C = 78, nameW = l.name.length * 7.6, range = l.sub ? l.sub.join('').length * 7.9 : 0, pre = (l.pre?.length ?? 0) * 7.9;
-  const labelLines = !l.sub ? Math.ceil(nameW / C) : nameW + 6 + pre + range <= C ? 1 : Math.ceil(nameW / C) + Math.ceil(pre / C) + (range > C ? 2 : 1);
-  const lines = labelLines + (l.subs && l.subs.length ? Math.ceil((l.subs.map((s) => s.name).join(', ').length + 7) * 6.6 / C) : 0);
-  l.y0 = l.y - 12;
-  l.y = Math.max(l.y0, floor);
-  floor = l.y + 3 + lines * 24;
+for (const b of outlineWorlds.filter((w) => w.kind !== 'moon')) {
+  const o = b.orbit as { aKm: number; e: number }, a = o.aKm / AU_KM, r = radius(b);
+  rows.push({ id: b.id, name: tidy(b.name)!, href: `/worlds/${b.id}`, solid: written(b.id), kind: KINDS[why(b.id)?.group ?? ''] ?? kindName(b), a, q: a * (1 - o.e), Q: a * (1 + o.e), r, d: r ? Math.round(Math.min(12, 5 + Math.sqrt(r) / 3.5)) : 5, note: tidy(why(b.id)?.why), total: moonCount(b.id), moons: moonsOf(b.id).map((m) => ({ id: m.id, name: m.name, w: written(m.id) })), planet: false });
 }
-const VTOTAL = Math.max(VEND + 30, floor + 20);
+rows.sort((p, q) => p.a - q.a);
+
+// Where each zone starts and ends is only for sorting worlds into regions; the axes are drawn per region.
+type Zone = { id: string; name: string; from: number; to: number; min: number; max: number; ticks: number[]; about: string; rows: Row[] };
+const range = (lo: number, hi: number) => { const r = rows.filter((w) => w.a >= lo && w.a < hi); return r; };
+const near = range(0, 2), belt = range(2, 4.5), giants = range(4.5, 31), kuiper = range(31, 100), far = range(100, 1e6);
+const lt = (au: number) => fmtLight(au);
+const ZONES: Zone[] = [
+  { id: 'inner', name: 'Inner planets', from: 0.3, to: 2, min: 0, max: 2.4, ticks: [0.5, 1, 1.5, 2], rows: near,
+    about: `Four rocky planets, and the small rocks that wander in among them. Sunlight reaches Mercury in ${lt(rows[0].a)} and Mars in ${lt(rows.find((w) => w.id === 'mars')!.a)}.` },
+  { id: 'belt', name: 'Asteroid belt', from: 2, to: 4.5, min: 1.5, max: 5.5, ticks: [2, 3, 4, 5], rows: belt,
+    about: 'The rubble between Mars and Jupiter, and the short-period comets whose paths bring them into it. Jupiter’s pull has swept some orbits almost clear; the gaps show in the count below.' },
+  { id: 'giants', name: 'Giant planets', from: 4.5, to: 31, min: 4, max: 36, ticks: [5, 10, 15, 20, 25, 30, 35], rows: giants,
+    about: `Jupiter, Saturn, Uranus and Neptune, with nearly all of the Sun’s known moons. Sunlight takes ${lt(rows.find((w) => w.id === 'jupiter')!.a)} to reach Jupiter and ${lt(rows.find((w) => w.id === 'neptune')!.a)} to reach Neptune.` },
+  { id: 'kuiper', name: 'Kuiper belt', from: 31, to: 100, min: 28, max: 70, ticks: [30, 40, 50, 60, 70], rows: kuiper,
+    about: 'Icy worlds beyond Neptune, among them Pluto and most of the other dwarf planets. Many keep time with Neptune. Plutinos, Pluto among them, go round twice for every three of its orbits; Twotinos go round once for every two.' },
+  { id: 'far', name: 'Far out', from: 100, to: 1100, min: 0, max: 1100, ticks: [200, 400, 600, 800, 1000], rows: far,
+    about: 'Past the Kuiper belt only a few bodies are known, on long stretched paths. Sunlight takes days, not hours, to reach the far end of Sedna’s.' },
+];
+const pct = (z: Zone, au: number) => Math.min(100, Math.max(0, ((au - z.min) / (z.max - z.min)) * 100));
+
+// the overview strip: every region on one scale where each step is a multiple
+const LO = Math.log10(0.3), HI = Math.log10(1100);
+const lx = (au: number) => ((Math.log10(Math.min(1100, Math.max(0.3, au))) - LO) / (HI - LO)) * 100;
+const ovTicks = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+const planetRows = rows.filter((r) => r.planet);
+
+// What a region's chart shows: the count of asteroid orbits by size (belt), and of the far objects (Kuiper belt)
+type Spread = { fromAu: number; toAu: number; stepAu: number; counts: number[] };
+const histPath = (s: Spread) => { const m = Math.max(...s.counts), n = s.counts.length; return `M0 60 ` + s.counts.map((c, i) => `L${((i + 0.5) / n * 400).toFixed(1)} ${(60 - (c / m) * 56).toFixed(1)}`).join(' ') + ` L400 60 Z`; };
+const sum = (s: Spread) => s.counts.reduce((p, c) => p + c, 0);
+const inner = smallSpread.inner as Spread, outer = smallSpread.outer as Spread;
+const FETCHED = new Date(smallFetched + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const JUP = 5.2029, NEP = 30.07;
+const res = (a: number, p: number, q: number) => a * (q / p) ** (2 / 3); // size of the orbit of a body that goes round p times while the planet goes round q times
+const beltMarks = [{ t: '3:1', au: res(JUP, 3, 1), hi: 0 }, { t: '5:2', au: res(JUP, 5, 2), hi: 1 }, { t: '2:1', au: res(JUP, 2, 1), hi: 0 }, { t: '3:2', au: res(JUP, 3, 2), hi: 1 }];
+const kuiperMarks = [{ t: 'Plutinos', au: res(NEP, 2, 3), hi: 0 }, { t: 'Twotinos', au: res(NEP, 1, 2), hi: 0 }];
 ---
-<Reading title="The Solar System" path="/worlds" description="Every planet, moon, dwarf planet, asteroid and comet on the site, set out by its distance from the Sun.">
+<Reading title="The Solar System" path="/worlds" description="Every planet, moon, dwarf planet, asteroid and comet on the site, set out by its distance from the Sun, region by region, with the measured numbers for each.">
   <header class="w-head">
     <h1>The Solar System, by distance from the Sun</h1>
-    <p class="lead">Every planet, moon, dwarf planet, asteroid and comet on the site, each at its true distance from the Sun. Solid dots have a full page; hollow ones have their measured numbers so far.</p>
+    <p class="lead">Five regions, each drawn on its own scale so that nothing crowds. For every world: how far it is from the Sun, how long light takes to cross that gap, how long its year is and how big it is.</p>
   </header>
 
-  <figure class="wm" aria-label="A map of every world by its distance from the Sun. Distance runs across on a scale where each step is a multiple; each small body is drawn as a line from the nearest to the farthest point of its path.">
-    <div class="wm-field">
-      {ZONES.map((z, i) => <div class:list={['wm-zone', { alt: i % 2 }]} style={`--a:${x(z.from)};--b:${x(z.to)}`}><span>{z.name}</span></div>)}
-      <div class="wm-ticks" aria-hidden="true">{ticks.map((t) => <i style={`--x:${x(t)}`}><b>{t} au</b></i>)}</div>
-      <a class="wm-sun" href="/sun" aria-label="The Sun"></a>
-      <ol class="wm-planets" style={`height:${bandRem.toFixed(1)}rem`}>
-        {P.map((p) => (
-          <li class:list={[{ low: p.id === 'earth', shift: p.id === 'uranus' }]} style={`--x:${p.x};--d:${p.d}px;--skip:${p.skip}${NUDGE[p.id] ? `;--sx:${NUDGE[p.id]}` : ''}`}>
-            <a class="wp-dot" href={`/${p.id}`}><span>{p.name}</span></a>
-            <span class="wp-au">{fmtAu(p.a)} au</span>
-            {p.moons.length > 0 && <ul class="wp-moons" aria-label={`${p.name}: moons with outline pages`}>{p.moons.map((m) => <li class:list={[{ written: written(m.id) }]}><a href={`/worlds/${m.id}`}>{m.name}</a></li>)}</ul>}
-          </li>
-        ))}
-      </ol>
-      {LANES.map((l) => (
-        <section class="wm-lane" aria-label={l.name}>
-          <h2 class="lane-h">{l.name} <small>{l.about}</small></h2>
-          <ol>
-            {l.rows.map((r) => (
-              <li class:list={['wr', { flip: r.flip, over: r.over }]} style={`--q:${r.xq};--Q:${r.xQ};--a:${r.xa};--d:${r.d}px`}>
-                <span class:list={['wr-span', { off: r.off }]} aria-hidden="true" />
-                <span class="wr-dot" aria-hidden="true" />
-                <span class="wr-name"><a href={`/worlds/${r.id}`}>{r.name}</a>{r.moons.map((m) => <> · <a class="wr-moon" href={`/worlds/${m.id}`}>{m.name}</a></>)}<small>{r.likely && 'likely · '}{fmtAu(r.q)}–{r.off ? '700+' : fmtAu(r.Q)} au</small></span>
-              </li>
-            ))}
-          </ol>
-        </section>
+  <figure class="ov" aria-label="The five regions of the Solar System on one scale of distance from the Sun, where each step is a multiple: inner planets, asteroid belt, giant planets, Kuiper belt and far out.">
+    <div class="ov-strip" aria-hidden="true">
+      {ZONES.map((z, i) => <i class:list={['ov-z', { alt: i % 2 }]} style={`--a:${lx(z.from)};--b:${lx(z.to)}`}><span>{z.name}</span></i>)}
+      {planetRows.map((p) => <b class="ov-p" style={`--x:${lx(p.a)}`} />)}
+      <u class="ov-sun" />
+    </div>
+    <div class="ov-ticks" aria-hidden="true">{ovTicks.map((t) => <i class:list={[{ odd: [0.5, 2, 20, 200].includes(t) }]} style={`--x:${lx(t)}`}><b>{t.toLocaleString('en-GB')}</b></i>)}<em>au</em></div>
+    <figcaption>Distance from the Sun on one scale where each step is a multiple: 1 to 10 au takes as much room as 10 to 100. One au is the Earth’s distance from the Sun. The small dots are the eight planets.</figcaption>
+    <ol class="ov-nav">
+      {ZONES.map((z) => (
+        <li><a href={`#${z.id}`}><span class="n">{z.name}</span><span class="r">{z.id === 'far' ? 'beyond 100 au' : `${z.from} to ${z.to} au`}</span></a></li>
       ))}
-    </div>
-
-    <div class="wm-v" style={`--vh:${VTOTAL}px`} data-min={VEND + 30} data-lx={LX}>
-      <svg class="wm-vs" width={LX} height={VTOTAL} viewBox={`0 0 ${LX} ${VTOTAL}`} aria-hidden="true">
-        {ZONES.map((z, i) => i % 2 ? <rect x="44" y={vy(z.from)} width={LX - 44} height={vy(z.to) - vy(z.from)} class="vz" /> : null)}
-        <circle cx="52" cy="10" r="14" class="vsun" />
-        <line x1="44" y1={VT} x2="44" y2={VEND} class="vax" />
-        {ticks.map((t) => <g><line x1="40" x2="44" y1={vy(t)} y2={vy(t)} class="vax" /><text x="37" y={vy(t) + 3.5} class="vt">{t}</text></g>)}
-        <text x="37" y={VT - 6} class="vt">au</text>
-        {vmarks.map((m) => m.kind === 'planet'
-          ? <circle cx={m.mx} cy={m.ya} r={m.d / 2} class="vp" />
-          : <g class:list={['vm', m.kind]}><line x1={m.mx} x2={m.mx} y1={m.y1} y2={m.off ? VEND + 14 : m.y2} />{m.off && <path d={`M${m.mx - 3} ${VEND + 8} L${m.mx} ${VEND + 14} L${m.mx + 3} ${VEND + 8}`} />}<circle cx={m.mx} cy={m.ya} r={m.d / 2} /></g>)}
-        {vlabels.map((l) => <path class="vlead" d={`M${l.mx + 3} ${l.my} C ${LX - 14} ${l.my}, ${LX - 18} ${l.y + 12}, ${LX} ${l.y + 12}`} />)}
-      </svg>
-      <ol class="wm-vl">
-        {vlabels.map((l) => (
-          <li class:list={[{ out: l.out }]} style={`top:${l.y}px`} data-y={l.y0} data-mx={l.mx} data-my={l.my}>
-            <a href={l.href}>{l.name}</a>
-            {l.sub && <small>{l.pre}<span class="rng"><span>{l.sub[0]}</span><wbr /><span>{l.sub[1]}</span></span></small>}
-            {l.subs && l.subs.length > 0 && <span class="vl-moons">{l.out ? 'Moon: ' : 'Moons: '}{l.subs.map((m, i) => <>{i > 0 && ', '}<a class:list={[{ w: m.w }]} href={`/worlds/${m.id}`}>{m.name}</a></>)}</span>}
-          </li>
-        ))}
-      </ol>
-    </div>
-
-    <figcaption>Distance from the Sun, on a scale where each step is a multiple: the near worlds would otherwise be lost in the first sliver. One au is the Earth’s distance from the Sun. Each line runs from the nearest point of a world’s path to the farthest, with the dot at its average distance. Solid dots have full pages; hollow ones have their measured numbers so far. Sedna’s path runs on past the edge, to about 1,000 au.<span class="v-note"> On this narrow screen the stretch from 1.5 to 6 au is drawn longer than the rest, to make room for the names there.</span></figcaption>
+    </ol>
   </figure>
 
-  <dl class="wm-key">
-    {ZONES.map((z) => <div><dt>{z.name}</dt><dd>{z.from} to {z.to} au. {z.about}</dd></div>)}
-  </dl>
-  <p class="w-more">Further out still, the Oort cloud is thought to wrap the whole Solar System in a thin shell of icy bodies; you can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>. Stars have their own pages under <a href="/stars">Stars</a>.</p>
+  {ZONES.map((z) => (
+    <section class="z" id={z.id} aria-labelledby={`${z.id}-h`}>
+      <header class="z-head">
+        <h2 id={`${z.id}-h`}>{z.name}</h2>
+        <p class="z-about">{z.about}</p>
+      </header>
+      <div class="zbox">
+        <div class="zgrid" aria-hidden="true"><div class="t">{z.ticks.map((t) => <i style={`--x:${pct(z, t)}`} />)}</div></div>
+        <div class="zrow zaxis" aria-hidden="true">
+          <span class="who">World · axis in au</span>
+          <div class="ch"><div class="t">{z.ticks.map((t) => <i style={`--x:${pct(z, t)}`}><b>{t.toLocaleString('en-GB')}{z.id === 'far' && <small>{fmtLight(t)}</small>}</b></i>)}<em>au</em></div></div>
+          <span class="fg-h">Measured, or worked out from the orbit</span>
+        </div>
+
+        {z.id === 'belt' && (
+          <div class="zrow zhist">
+            <div class="who"><strong>Orbits counted</strong><span>By the size of the orbit, in steps of {inner.stepAu} au</span></div>
+            <div class="ch">
+              <div class="t">
+                <div class="marks">{beltMarks.map((m) => <span class:list={[{ hi: m.hi }]} style={`--x:${pct(z, m.au)}`}>{m.t}</span>)}</div>
+                <svg viewBox="0 0 400 60" preserveAspectRatio="none" role="img" aria-label={`Known asteroids by orbit size, from ${inner.fromAu} to ${inner.toAu} au: most lie between 2 and 3.3 au, with gaps at 2.5, 2.8 and 3.3 au where Jupiter’s pull has cleared the orbits.`}><path d={histPath(inner)} />{beltMarks.map((m) => <line x1={(m.au - inner.fromAu) / (inner.toAu - inner.fromAu) * 400} x2={(m.au - inner.fromAu) / (inner.toAu - inner.fromAu) * 400} y1="0" y2="60" />)}</svg>
+              </div>
+            </div>
+            <p class="fg-note">{sum(inner).toLocaleString('en-GB')} asteroid orbits, JPL Small-Body Database, {FETCHED}. Marks: 3:1 means three trips round the Sun for each one of Jupiter’s; 5:2, 2:1 and 3:2 work the same way.</p>
+          </div>
+        )}
+        {z.id === 'kuiper' && (
+          <div class="zrow zhist">
+            <div class="who"><strong>Orbits counted</strong><span>By the size of the orbit, in steps of {outer.stepAu} au</span></div>
+            <div class="ch">
+              <div class="t">
+                <div class="marks">{kuiperMarks.map((m, i) => <span class:list={[{ hi: i % 2 }]} style={`--x:${pct(z, m.au)}`}>{m.t}</span>)}</div>
+                <svg viewBox="0 0 400 60" preserveAspectRatio="none" style={`width:${(outer.toAu - outer.fromAu) / (z.max - z.min) * 100}%;margin-left:${pct(z, outer.fromAu)}%`} role="img" aria-label={`Known objects beyond Neptune by orbit size, from ${outer.fromAu} to ${outer.toAu} au, bunched around 39 and 44 au.`}><path d={histPath(outer)} /></svg>
+                {kuiperMarks.map((m) => <i class="mk" style={`--x:${pct(z, m.au)}`} />)}
+              </div>
+            </div>
+            <p class="fg-note">{sum(outer).toLocaleString('en-GB')} objects with orbits between {outer.fromAu} and {outer.toAu} au, JPL Small-Body Database, {FETCHED}. Counted only to {outer.toAu} au.</p>
+          </div>
+        )}
+
+        <ol class="zrows">
+          {z.rows.map((r) => {
+            const x = (au: number) => pct(z, au).toFixed(2);
+            const cut = r.Q > z.max, cutl = r.q < z.min;
+            return (
+              <li class:list={['zrow', 'wrow', { cut, cutl }]} style={`--q:${x(Math.max(r.q, z.min))};--Q:${cut ? 100 : x(r.Q)};--a:${x(r.a)};--d:${r.d}px`}>
+                <div class="who">
+                  <a class="nm" href={r.href}>{r.name}</a>
+                  <span class="kd">{r.kind}</span>{!r.planet && <span class="kd">{fmtAu(r.q)}–{fmtAu(r.Q)} au</span>}
+                </div>
+                <div class="ch" aria-hidden="true"><div class="t">{z.ticks.map((t) => <i class="tk" data-t={t.toLocaleString('en-GB')} style={`--x:${pct(z, t)}`} />)}<span class="rg" /><span class:list={['dt', { solid: r.solid }]} /></div></div>
+                <dl class="fg">
+                  <div><dt>Distance</dt><dd>{fmtAu(r.a)} au</dd></div>
+                  <div><dt>Light</dt><dd>{fmtLight(r.a)}</dd></div>
+                  <div><dt>Year</dt><dd>{fmtYear(r.a)}</dd></div>
+                  <div><dt>Radius</dt><dd>{r.r ? fmtKm(r.r) : '—'}</dd></div>
+                </dl>
+                {(r.note || r.total > 0) && (
+                  <div class="more">
+                    {r.note && <p class="nt">{r.note}</p>}
+                    {r.total > 0 && <p class="mo"><span>{r.total.toLocaleString('en-GB')} known {r.total === 1 ? 'moon' : 'moons'}.</span>{r.moons.length > 0 && <> {r.moons.length === r.total ? 'With pages:' : 'With their own pages:'} {r.moons.map((m, i) => <>{i > 0 && ', '}<a class:list={[{ w: m.w }]} href={`/worlds/${m.id}`}>{m.name}</a></>)}.</>}</p>}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+      {z.id === 'far' && <p class="z-after">Beyond Sedna’s path, the Oort cloud is thought to surround the whole Solar System as a vast, sparse region of icy bodies, too far and too faint to have been mapped. You can <a href="/explore?go=oort-cloud">fly out to it in 3D</a>.</p>}
+    </section>
+  ))}
+
+  <p class="w-more">Orbit sizes and radii: NASA/JPL Solar System Dynamics and the JPL Small-Body Database. Moon counts: JPL’s list of planetary satellites, read on {MOONS_AS_OF_TEXT}. Light time and year length are worked out from the distance. Each line runs from a world’s nearest point to the Sun to its farthest, with the dot at its average distance; a line that runs off the edge of its chart carries on. Stars have their own pages under <a href="/stars">Stars</a>.</p>
 </Reading>
 
-<script>
-  // The label positions above are worked out before the page knows how wide the phone is, so a long name can wrap
-  // more than guessed. Here each label is measured as drawn and the stack is pushed down where two would touch.
-  function stack(): void {
-    const box = document.querySelector<HTMLElement>('.wm-v');
-    if (!box || box.offsetParent === null) return;
-    const lx = Number(box.dataset.lx), leads = box.querySelectorAll<SVGPathElement>('.vlead');
-    let floor = 0;
-    box.querySelectorAll<HTMLElement>('.wm-vl li').forEach((li, i) => {
-      const y = Math.max(Number(li.dataset.y), floor), mx = Number(li.dataset.mx), my = Number(li.dataset.my);
-      li.style.top = `${y}px`;
-      floor = y + li.offsetHeight + 3;
-      leads[i]?.setAttribute('d', `M${mx + 3} ${my} C ${lx - 14} ${my}, ${lx - 18} ${y + 12}, ${lx} ${y + 12}`);
-    });
-    box.style.setProperty('--vh', `${Math.max(Number(box.dataset.min), floor + 20)}px`);
-  }
-  stack();
-  document.fonts?.ready.then(stack);
-  addEventListener('resize', stack);
-</script>
-
 <style>
-  .w-head { max-width: 60rem; margin-bottom: clamp(20px, 3vw, 32px); }
+  .w-head { max-width: 52rem; margin-bottom: clamp(24px, 3.5vw, 40px); }
   .w-head h1 { font: 300 clamp(1.8rem, 3.2vw, 2.6rem)/1.1 var(--r-serif); margin: 0 0 .9rem; text-wrap: balance; }
   .w-head .lead { font: 300 clamp(1.08rem, 1rem + .3vw, 1.25rem)/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; }
-  .wm { margin: 0 0 clamp(32px, 5vw, 56px); }
-  .wm a { text-decoration: none; }
-  .wm-field { position: relative; margin: 0 7rem 0 2.2rem; padding: 3.6rem 0 1rem; }
-  .wm-zone { position: absolute; top: 0; bottom: 0; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); border-left: 1px solid rgba(236,231,220,.07); }
-  .wm-zone.alt { background: rgba(236,231,220,.025); }
-  .wm-zone span { position: absolute; top: 0; left: .5rem; font: 400 .8125rem/1 var(--r-mono); letter-spacing: .03em; text-transform: uppercase; color: var(--ink-faint); white-space: nowrap; }
-  .wm-ticks { position: absolute; top: 1.6rem; left: 0; right: 0; }
-  .wm-ticks i { position: absolute; left: calc(var(--x) * 1%); font-style: normal; }
-  .wm-ticks b { position: absolute; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; font-weight: 400; }
-  .wm-ticks i::after { content: ''; position: absolute; top: 1.1rem; left: 0; width: 1px; height: .4rem; background: var(--rule); }
-  .wm-sun { position: absolute; left: -2.2rem; top: 5.2rem; width: 34px; height: 34px; border-radius: 50%; background: #f6d38e; box-shadow: 0 0 28px rgba(246,211,142,.6); }
-  .wm-planets { list-style: none; margin: 0; padding: 0; position: relative; height: 12.5rem; }
-  .wm-planets > li { position: absolute; left: calc(var(--x) * 1%); top: 2.2rem; }
-  .wp-dot { position: absolute; left: calc(var(--d) / -2); top: calc(var(--d) / -2); width: var(--d); height: var(--d); border-radius: 50%; background: var(--accent); }
-  .wp-dot span { position: absolute; bottom: calc(100% + .35rem); left: 50%; transform: translateX(var(--sx, -50%)); font: 400 1rem/1 var(--r-serif); color: var(--ink); white-space: nowrap; }
-  .wp-au { position: absolute; top: calc(var(--d) / 2 + .3rem); left: 0; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
-  .wp-moons { list-style: none; margin: 0; padding: 0 0 0 .5rem; position: absolute; top: calc(var(--d) / 2 + 1.3rem); left: -.5rem; border-left: 1px solid rgba(233,196,138,.25); display: grid; gap: 0; padding-top: calc(var(--skip) * 1.5rem); }
-  .wp-moons a { display: flex; align-items: center; gap: .35rem; min-height: 1.5rem; font: 400 .8125rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
-  .wp-moons a::before { content: ''; width: 5px; height: 5px; border-radius: 50%; border: 1px solid rgba(233,196,138,.8); flex: none; }
-  .wm-planets > li.shift .wp-moons { left: .4rem; }
-  .wm-planets > li.low .wp-au { top: calc(var(--d) / 2 + 1.1rem); }
-  .wm-planets > li.low .wp-moons { top: calc(var(--d) / 2 + 2.6rem); }
-  /* Jupiter's long list of moons reads to the left, so it clears Saturn's */
-  .wm-planets > li.flip .wp-moons { left: auto; right: -.5rem; padding: calc(var(--skip) * 1.5rem) .5rem 0 0; border-left: 0; border-right: 1px solid rgba(233,196,138,.25); justify-items: end; }
-  .wm-planets > li.flip .wp-moons a { flex-direction: row-reverse; }
-  .wp-moons li.written a { color: var(--ink); }
-  .wp-moons li.written a::before { background: var(--accent); }
-  .wm-lane { position: relative; margin-top: 1rem; }
-  .lane-h { font: 400 .7rem/1 var(--r-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 .5rem -2.2rem; }
-  .lane-h small { font: 300 .9rem/1 var(--r-serif); letter-spacing: 0; text-transform: none; color: var(--ink-faint); margin-left: .5rem; }
-  .wm-lane ol { list-style: none; margin: 0; padding: 0; }
-  .wr { position: relative; height: 1.3rem; }
-  .wr-span { position: absolute; top: 50%; left: calc(var(--q) * 1%); width: calc((var(--Q) - var(--q)) * 1%); height: 1px; background: rgba(233,196,138,.45); }
-  .wr-span.off { width: calc((100 - var(--q)) * 1% + 1.2rem); background: linear-gradient(90deg, rgba(233,196,138,.45) 85%, transparent); }
-  .wr-span::before, .wr-span::after { content: ''; position: absolute; top: -3px; width: 1px; height: 7px; background: rgba(233,196,138,.45); }
-  .wr-span::before { left: 0; } .wr-span::after { right: 0; } .wr-span.off::after { display: none; }
-  .wr-dot { position: absolute; top: 50%; left: calc(var(--a) * 1%); width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); border-radius: 50%; background: #0b0b0c; border: 1px solid rgba(233,196,138,.9); box-sizing: border-box; }
-  .wr-name { position: absolute; top: 50%; left: calc(var(--Q) * 1% + .5rem); transform: translateY(-50%); white-space: nowrap; font: 400 .92rem/1 var(--r-serif); }
-  .wr.flip .wr-name { left: auto; right: calc((100 - var(--q)) * 1% + .5rem); }
-  /* a long path that starts near the Sun: no room on either side, so the name sits on the line, by its start */
-  .wr.over .wr-name { left: calc(var(--q) * 1% + .9rem); top: auto; bottom: 50%; transform: none; padding-bottom: 3px; }
-  .wr-name a { color: var(--ink); border-bottom: 1px dashed rgba(233,196,138,.4); }
-  .wr-name a.wr-moon { color: var(--ink-soft); font-size: .82rem; }
-  .wr-name small { margin-left: .45rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); }
-  .wr:hover .wr-span, .wr:focus-within .wr-span { background: var(--accent); }
-  .wr:hover .wr-dot, .wr:focus-within .wr-dot { background: var(--accent); }
-  .wm figcaption { font: 300 .92rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 1.6rem; max-width: 46rem; }
-  .wm-key { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 1.4rem; margin: 0; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
-  .wm-key dt { font: 400 1rem/1.2 var(--r-serif); color: var(--ink); }
-  .wm-key dd { margin: .3rem 0 0; font: 300 .86rem/1.45 var(--r-serif); color: var(--ink-faint); }
-  .w-more { font: 300 1rem/1.5 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; }
-  .wm-v { display: none; }
-  .v-note { display: none; }
-  @media (max-width: 760px) {
-    .wm-field { display: none; }
-    .wm-v { display: block; position: relative; height: var(--vh); }
-    .wm-vs { position: absolute; left: 0; top: 0; overflow: visible; }
-    .vz { fill: rgba(236,231,220,.035); }
-    .vsun { fill: #f6d38e; }
-    .vax { stroke: rgba(236,231,220,.25); stroke-width: 1; }
-    .vt { font: 400 13px var(--r-mono); fill: var(--ink-faint); text-anchor: end; }
-    .vp { fill: var(--accent); }
-    .vm line, .vm path { stroke: rgba(233,196,138,.55); stroke-width: 1; fill: none; }
-    .vm circle { fill: #0b0b0c; stroke: rgba(233,196,138,.9); stroke-width: 1; }
-    .vlead { fill: none; stroke: rgba(236,231,220,.16); stroke-width: .8; }
-    .wm-vl { list-style: none; margin: 0; padding: 0; position: absolute; left: 200px; right: 0; top: 0; }
-    .wm-vl li { position: absolute; left: .3rem; right: 0; font: 400 .95rem/24px var(--r-serif); }
-    .wm-vl li > a { color: var(--ink); display: inline-block; min-width: 24px; }
-    .wm-vl li.out > a { text-decoration: underline dashed rgba(233,196,138,.5); text-underline-offset: 3px; text-decoration-thickness: 1px; }
-    .wm-vl small { margin-left: .4rem; font: 400 .8125rem/24px var(--r-mono); color: var(--ink-faint); }
-    .wm-vl .rng, .wm-vl .rng span { white-space: nowrap; }
-    .wm-vl .vl-moons { display: block; font: 300 .8125rem/24px var(--r-serif); color: var(--ink-faint); }
-    .wm-vl .vl-moons a { color: var(--ink-soft); }
-    .wm-vl .vl-moons a.w { color: var(--ink); font-weight: 400; }
-    .wm-key { grid-template-columns: minmax(0, 1fr); }
-    .v-note { display: inline; }
+  .ov-nav a, .who a, .more .mo a { text-decoration: none; }
+
+  /* the overview: the whole range on one scale */
+  .ov { margin: 0 0 clamp(36px, 5vw, 64px); }
+  .ov-strip { position: relative; height: 3.4rem; border-bottom: 1px solid var(--rule); }
+  .ov-z { position: absolute; top: 0; bottom: 0; left: calc(var(--a) * 1%); width: calc((var(--b) - var(--a)) * 1%); background: rgba(233,196,138,.07); border-left: 1px solid rgba(236,231,220,.16); }
+  .ov-z.alt { background: rgba(233,196,138,.13); }
+  .ov-z span { position: absolute; left: .6rem; top: .55rem; font: 400 .95rem/1.2 var(--r-serif); color: var(--ink-soft); white-space: nowrap; }
+  .ov-p { position: absolute; bottom: -4px; left: calc(var(--x) * 1%); width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--accent); }
+  .ov-sun { position: absolute; left: -.9rem; bottom: -.9rem; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #f6d38e; box-shadow: 0 0 26px rgba(246,211,142,.55); }
+  .ov-ticks { position: relative; height: 1.6rem; margin-top: .5rem; }
+  .ov-ticks i { position: absolute; left: calc(var(--x) * 1%); font-style: normal; }
+  .ov-ticks b { position: absolute; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
+  .ov-ticks em { position: absolute; right: 0; top: 1.15rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); font-style: normal; }
+  .ov figcaption { font: 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); max-width: 44rem; margin: 1rem 0 1.4rem; }
+  .ov-nav { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--rule); }
+  .ov-nav li { border-left: 1px solid var(--rule); }
+  .ov-nav li:first-child { border-left: 0; }
+  .ov-nav a { display: block; padding: .9rem 1rem .9rem 1rem; min-height: 24px; }
+  .ov-nav li:first-child a { padding-left: 0; }
+  .ov-nav .n { display: block; font: 400 1.1rem/1.2 var(--r-serif); color: var(--ink); }
+  .ov-nav .r { display: block; margin-top: .3rem; font: 400 .8125rem/1.3 var(--r-mono); color: var(--ink-faint); }
+  .ov-nav a:hover .n { color: var(--accent); }
+
+  /* each region */
+  .z { margin: 0 0 clamp(40px, 6vw, 72px); scroll-margin-top: 5rem; }
+  .z-head { display: grid; grid-template-columns: minmax(0, 18rem) minmax(0, 1fr); gap: 1rem 2.5rem; align-items: baseline; margin-bottom: 1.1rem; }
+  .z-head h2 { font: 300 clamp(1.5rem, 2.4vw, 1.9rem)/1.1 var(--r-serif); margin: 0; }
+  .z-about { font: 300 1.05rem/1.55 var(--r-serif); color: var(--ink-soft); margin: 0; max-width: 40rem; }
+  .z-after { font: 300 1rem/1.55 var(--r-serif); color: var(--ink-faint); margin: 1.2rem 0 0; max-width: 44rem; }
+  .zbox { position: relative; --who: 12rem; --fg: 24rem; border-top: 1px solid var(--rule); background: linear-gradient(rgba(236,231,220,.02), transparent 40%); }
+  .zrows { list-style: none; margin: 0; padding: 0; }
+  .zrow { display: grid; grid-template-columns: var(--who) minmax(0, 1fr) var(--fg); align-items: center; column-gap: 0; }
+  .zrow .t { position: absolute; inset: 0 1rem; }
+  .ch { position: relative; align-self: stretch; min-height: 3.2rem; }
+  .zgrid { position: absolute; top: 0; bottom: 0; left: var(--who); right: var(--fg); pointer-events: none; }
+  .zgrid .t { position: absolute; inset: 0 1rem; }
+  .zgrid i { position: absolute; top: 0; bottom: 0; left: calc(var(--x) * 1%); width: 1px; background: rgba(236,231,220,.07); }
+  .zaxis { min-height: 2.2rem; border-bottom: 1px solid var(--rule); }
+  .zaxis .ch { min-height: 2.2rem; }
+  .zaxis .who, .zaxis .fg-h { font: 400 .8125rem/1.3 var(--r-mono); color: var(--ink-faint); padding: 0 .75rem 0 1rem; }
+  .zaxis .fg-h { padding-left: 1rem; }
+  .zaxis .t i { position: absolute; left: calc(var(--x) * 1%); top: 0; bottom: 0; font-style: normal; }
+  .zaxis .t b { position: absolute; top: .65rem; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); white-space: nowrap; }
+  #far .zaxis, #far .zaxis .ch { min-height: 3.2rem; }
+  .zaxis .t b small { display: block; margin-top: .3rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); opacity: .85; }
+  .zaxis .t em { position: absolute; right: -.9rem; top: .15rem; font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); font-style: normal; display: none; }
+
+  .wrow { border-top: 1px solid rgba(236,231,220,.08); padding: .5rem 0 .55rem; grid-template-areas: "who ch fg" "more more more"; }
+  .wrow > .who { grid-area: who; padding: 0 .75rem 0 1rem; }
+  .wrow > .ch { grid-area: ch; }
+  .wrow > .fg { grid-area: fg; }
+  .wrow > .more { grid-area: more; }
+  .zaxis + .zrows, .zaxis + .zhist { }
+  .who .nm { display: block; font: 400 1.1rem/1.25 var(--r-serif); color: var(--ink); }
+  .who .nm:hover { color: var(--accent); }
+  .who .kd { display: block; margin-top: .15rem; font: 400 .8125rem/1.35 var(--r-mono); color: var(--ink-faint); }
+  .tk { display: none; }
+  .rg { position: absolute; top: 50%; height: 1px; left: calc(var(--q) * 1%); width: calc((var(--Q) - var(--q)) * 1%); background: rgba(233,196,138,.5); }
+  .rg::before, .rg::after { content: ''; position: absolute; top: -3px; width: 1px; height: 7px; background: rgba(233,196,138,.5); }
+  .rg::before { left: 0; } .rg::after { right: 0; }
+  .cut .rg { width: calc((100 - var(--q)) * 1% + .9rem); background: linear-gradient(90deg, rgba(233,196,138,.5) 80%, transparent); }
+  .cut .rg::after { display: none; }
+  .cutl .rg { left: 0; width: calc(var(--Q) * 1% + .0rem); background: linear-gradient(90deg, transparent, rgba(233,196,138,.5) 20%); }
+  .cutl .rg::before { display: none; }
+  .cutl.cut .rg { width: 100%; background: linear-gradient(90deg, transparent, rgba(233,196,138,.5) 12%, rgba(233,196,138,.5) 85%, transparent); }
+  .dt { position: absolute; top: 50%; left: calc(var(--a) * 1%); width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); border-radius: 50%; border: 1px solid rgba(233,196,138,.95); background: #0b0b0c; box-sizing: border-box; }
+  .dt.solid { background: var(--accent); }
+  .wrow:hover .rg, .wrow:focus-within .rg { background: var(--accent); }
+  .fg { display: grid; grid-template-columns: 1fr 1fr 1.1fr 1.3fr; margin: 0; padding: 0 0 0 1rem; gap: .25rem .5rem; }
+  .fg div { min-width: 0; }
+  .fg dt { font: 400 .8125rem/1.2 var(--r-mono); color: var(--ink-faint); }
+  .fg dd { margin: .2rem 0 0; font: 400 .9rem/1.25 var(--r-mono); color: var(--ink); }
+  .more { padding: .35rem 1rem 0; max-width: 56rem; }
+  .more p { margin: .15rem 0 0; font: 300 .95rem/1.5 var(--r-serif); color: var(--ink-faint); }
+  .more .mo { color: var(--ink-soft); }
+  .more .mo a { color: var(--ink-soft); font: inherit; }
+  .more .mo a.w { color: var(--ink); }
+  .more .mo a:hover { color: var(--accent); }
+
+  .zhist { border-top: 1px solid rgba(236,231,220,.08); padding: .6rem 0 .5rem; align-items: stretch; grid-template-areas: "who ch fg"; }
+  .zhist .who { padding: 0 .75rem 0 1rem; align-self: end; }
+  .zhist .who strong { display: block; font: 400 1.05rem/1.25 var(--r-serif); color: var(--ink); }
+  .zhist .who span { display: block; margin-top: .15rem; font: 400 .8125rem/1.35 var(--r-mono); color: var(--ink-faint); }
+  .zhist .ch { min-height: 8.2rem; }
+  .zhist svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 5.4rem; overflow: visible; display: block; }
+  .zhist path { fill: rgba(233,196,138,.28); stroke: rgba(233,196,138,.9); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .zhist line { stroke: rgba(236,231,220,.35); stroke-width: 1; stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; }
+  .zhist .marks { position: absolute; left: 0; right: 0; top: 0; height: 2.4rem; }
+  .zhist .marks span { position: absolute; left: calc(var(--x) * 1%); top: 0; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-soft); white-space: nowrap; }
+  .zhist .marks span.hi { top: 1.3rem; }
+  .zhist .mk { position: absolute; bottom: 0; height: 5.4rem; left: calc(var(--x) * 1%); width: 0; border-left: 1px dashed rgba(236,231,220,.35); }
+  .fg-note { grid-column: 3; margin: 0; padding: 0 0 0 1rem; align-self: end; font: 300 .9rem/1.45 var(--r-serif); color: var(--ink-faint); }
+
+  .w-more { font: 300 .95rem/1.55 var(--r-serif); color: var(--ink-faint); margin-top: 2rem; max-width: 52rem; border-top: 1px solid var(--rule); padding-top: 1.2rem; }
+  .w-more a { color: var(--ink-soft); }
+
+  @media (max-width: 860px) {
+    .zbox { --who: 0px; --fg: 0px; }
+    .z-head { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+    .ov-z span { display: none; }
+    .ov-nav { grid-template-columns: minmax(0, 1fr); border-top: 1px solid var(--rule); }
+    .ov-nav li { border-left: 0; border-bottom: 1px solid var(--rule); }
+    .ov-nav a { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: .7rem 0; min-height: 44px; }
+    .ov-nav .r { margin: 0; }
+    .ov-ticks i.odd { display: none; }
+    .ov-ticks i:nth-child(3n+1) { display: none; }
+    .zgrid { display: none; }
+    .zrow { display: block; }
+    .zaxis { display: block; min-height: 0; padding-top: .3rem; }
+    .zaxis .who, .zaxis .fg-h { display: none; }
+    .zaxis .ch { min-height: 1.9rem; }
+    .zaxis .t { inset: 0 .9rem; }
+    #far .zaxis, #far .zaxis .ch { min-height: 3.2rem; }
+    .zaxis .t b small { display: none; }
+  .zaxis .t em { display: block; right: -.1rem; top: 1.1rem; }
+    .zaxis .t b { top: .3rem; }
+    .wrow { padding: .85rem 0; }
+    .wrow > .who { padding: 0; }
+    .ch { min-height: 3rem; margin-top: .1rem; }
+    .wrow .ch .t { inset: 0 .9rem 1.2rem; }
+    .tk::after { content: attr(data-t); position: absolute; top: 13px; left: 0; transform: translateX(-50%); font: 400 .8125rem/1 var(--r-mono); color: var(--ink-faint); }
+    .tk { display: block; position: absolute; left: calc(var(--x) * 1%); top: 50%; width: 1px; height: 9px; margin-top: -4px; background: rgba(236,231,220,.22); }
+    .ch .t::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(236,231,220,.07); }
+    .fg { padding: 0; margin-top: .1rem; grid-template-columns: 1fr 1fr 1fr 1.2fr; gap: .5rem .5rem; }
+    .fg dd { font-size: .8125rem; }
+    .more { padding: .6rem 0 0; }
+    .zhist { display: block; padding: .9rem 0; }
+    .zhist .who { padding: 0; }
+    .zhist .ch { min-height: 8.6rem; margin-top: .6rem; }
+    .fg-note { padding: 0; margin-top: .6rem; }
   }
-  @media (max-width: 340px) { .wm-vl .rng { white-space: normal; } .wm-vl li { right: 4px; } }
 </style>
