@@ -7,11 +7,12 @@ import Reading from '../../layouts/Reading.astro';
 import { outlineWorlds, IAU_DWARFS, PLANET_PAGES, sunAu, AU_KM, kindName, why } from '../../lib/worlds';
 import { body, smallSpread, smallFetched } from '../../data/bodies/index';
 import { moonCount, MOONS_AS_OF_TEXT } from '../../data/moon-counts';
+import facts from '../../data/facts.json';
 import { WORLD_PAGES } from '../../data/world-pages';
 const written = (id: string) => !!WORLD_PAGES[id];
 
 const radius = (b: { meanRadiusKm?: number; radiiKm?: [number, number, number] }) => b.meanRadiusKm ?? (b.radiiKm ? Math.cbrt(b.radiiKm[0] * b.radiiKm[1] * b.radiiKm[2]) : undefined);
-const ECC: Record<string, number> = { mercury: 0.2056, venus: 0.0068, earth: 0.0167, mars: 0.0934, jupiter: 0.0484, saturn: 0.0539, uranus: 0.0473, neptune: 0.0086 };
+const ECC: Record<string, number> = Object.fromEntries(Object.entries((facts as unknown as { planets: Record<string, { physical: { eccentricity: number } }> }).planets).map(([k, v]) => [k, v.physical.eccentricity]));
 const LIGHT_S = 499.004784; // seconds light takes to cross one au
 const fmtAu = (a: number) => (a < 10 ? a.toFixed(2) : a < 100 ? a.toFixed(1) : Math.round(a).toLocaleString('en-GB'));
 const fmtLight = (au: number) => { const s = au * LIGHT_S; return s < 7200 ? `${s < 600 ? (s / 60).toFixed(1) : Math.round(s / 60)} min` : s < 172800 ? `${(s / 3600).toFixed(1)} hr` : `${(s / 86400).toFixed(1)} days`; };
